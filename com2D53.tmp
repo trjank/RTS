@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6yi33u7qb82s"]
+
+[ext_resource type="Script" path="res://compute_compileShip.gd" id="1_1b0bh"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_cx7bl"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_1b0bh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_cx7bl")
+skeleton = NodePath("../Control/TextureRect")
+
+[node name="Camera3D" type="Camera3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.54327)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_right = 20.0
+offset_bottom = 20.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_left = 679.0
+offset_top = 39.0
+offset_right = 917.0
+offset_bottom = 79.0
+text = "Test"
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.15707)

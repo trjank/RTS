@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://dgxkcemh0gh17"
+path="res://.godot/imported/test_atlasmap.png-6c3e70408c2e431f8bb0b7e36425d57b.image"
+
+[deps]
+
+source_file="res://test_atlasmap.png"
+dest_files=["res://.godot/imported/test_atlasmap.png-6c3e70408c2e431f8bb0b7e36425d57b.image"]
+
+[params]
+
