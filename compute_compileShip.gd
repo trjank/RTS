@@ -40,7 +40,6 @@ Note: RenderingDevice is only available in the Forward+ and Mobile rendering met
 	var rotation_bytes := rotation.to_byte_array()
 	
 	# Create a storage buffer that can hold our float values.
-	# Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
 	var index_buffer := rd.storage_buffer_create(index_bytes.size(), index_bytes)
 	var rotation_buffer := rd.storage_buffer_create(rotation_bytes.size(), rotation_bytes)
 	
@@ -75,18 +74,14 @@ Note: RenderingDevice is only available in the Forward+ and Mobile rendering met
 	
 	
 	var computeShip_format := RDTextureFormat.new()
-	# There are a lot of different formats. It might take some studying to be able to be able to
-	# choose the right ones. In this case, we tell it to interpret the data as a single byte for red.
-	# Even though the noise image only has a luminance channel, we can just interpret this as if it
-	# was the red channel. The byte layout is the same!
+
 	computeShip_format.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
 	computeShip_format.width = shipX
 	computeShip_format.height = shipY
 	computeShip_format.usage_bits = RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT + RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
-	# Prepare heightmap texture. We will set the data later.
+
 	computeShip_rid = rd.texture_create(computeShip_format, RDTextureView.new())
 	
-	# Create uniform for heightmap.
 	var computeShip_uniform := RDUniform.new()
 	computeShip_uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
 	computeShip_uniform.binding = 3  # This matches the binding in the shader.
