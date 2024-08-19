@@ -33,7 +33,7 @@ Note: RenderingDevice is only available in the Forward+ and Mobile rendering met
 	shader_rid = load_shader(rd,"res://compute-computeShip.glsl")
 	
 	# Prepare our data. We use floats in the shader, so we need 32 bit.
-	var index := PackedInt32Array([0, 0, 1, 1, 1, 1, 1, 1, 1, 10, 0, 0, 1, 1, 1, 1, 1, 1, 1, 10, 0, 0, 1, 1, 1, 1, 1, 1, 1, 10])
+	var index := PackedInt32Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29])
 	var index_bytes := index.to_byte_array()
 	
 	var rotation := PackedInt32Array([0, 1, 0, 1, 2, 3, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1])
