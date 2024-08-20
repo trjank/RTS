@@ -22,8 +22,10 @@ offset_bottom = 40.0
 
 [node name="TextureRect" type="TextureRect" parent="Control"]
 layout_mode = 0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = 91.0
+offset_top = 123.0
+offset_right = 111.0
+offset_bottom = 143.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control"]
 layout_mode = 0

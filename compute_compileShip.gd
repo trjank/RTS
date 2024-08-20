@@ -2,8 +2,8 @@ extends Node
 
 #tests ship generation
 var blocksize = 32
-var shipX = 24 * blocksize
-var shipY = 24 * blocksize
+var shipX = 8 * blocksize
+var shipY = 8 * blocksize
 
 
 var computeShip_rid: RID
@@ -36,7 +36,7 @@ Note: RenderingDevice is only available in the Forward+ and Mobile rendering met
 	var index := PackedInt32Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29])
 	var index_bytes := index.to_byte_array()
 	
-	var rotation := PackedInt32Array([0, 1, 0, 1, 2, 3, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1])
+	var rotation := PackedInt32Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 	var rotation_bytes := rotation.to_byte_array()
 	
 	# Create a storage buffer that can hold our float values.
@@ -55,7 +55,7 @@ Note: RenderingDevice is only available in the Forward+ and Mobile rendering met
 	rotation_uniform.binding = 1 # this needs to match the "binding" in our shader file
 	rotation_uniform.add_id(rotation_buffer)
 	
-	var imageAtlas = load("res://dynas2big6.png")
+	var imageAtlas = load("res://textures/atlasmap.png")
 	var textureAtlas = ImageTexture.create_from_image(imageAtlas)
 	
 	var textureAtlas_format := RDTextureFormat.new()

@@ -23,8 +23,9 @@ layout(rgba8, set = 0, binding = 3) restrict uniform image2D ship;
 // The code we want to execute in each invocation
 void main() {
     int tileWidth = int(gl_WorkGroupSize.x);
+    int workSize = imageSize(ship).x/tileWidth;
     ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
-    uint i = gl_WorkGroupID.x+gl_WorkGroupID.y*(imageSize(ship).x/tileWidth);
+    uint i = gl_WorkGroupID.x+gl_WorkGroupID.y*(workSize);
     int index =  index_buffer.data[i];
     int rotation = rotation_buffer.data[i];
     ivec2 origt = (1-abs(sign(rotation)))*ivec2(gl_LocalInvocationID.xy);
@@ -32,8 +33,9 @@ void main() {
     ivec2 twot = (1-abs(sign(rotation-2)))*ivec2(tileWidth-gl_LocalInvocationID.x,tileWidth-gl_LocalInvocationID.y);
     ivec2 threet = (1-abs(sign(rotation-3)))*ivec2(tileWidth-gl_LocalInvocationID.y,gl_LocalInvocationID.x);
     ivec2 rotatedCoords = origt+onet+twot+threet;
-    ivec2 alteredCoords = ivec2(rotatedCoords.x+(index%tileWidth)*tileWidth,rotatedCoords.y+(index/tileWidth)*tileWidth);
+    ivec2 alteredCoords = ivec2(rotatedCoords.x+(index%workSize)*tileWidth,rotatedCoords.y+(index/workSize)*tileWidth);
     vec4 color = imageLoad(textureAtlas, alteredCoords);
-    //vec4 color = vec4(1,1,1,1);
+    // color = vec4(float(index%workSize)/float(workSize),float(index/workSize)/float(workSize),0,1);
+    // color = vec4(1,1,1,1);
     imageStore(ship, coords, color);
 }
