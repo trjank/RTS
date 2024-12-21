@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://bgx6pbxte11v8"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
+[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_lfo53"]
+[ext_resource type="Script" path="res://Body.gd" id="2_ybdkb"]
+[ext_resource type="Script" path="res://Unit.gd" id="4_fjvn2"]
+[ext_resource type="Script" path="res://Projectile.gd" id="5_4wuxt"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_h0c8p")
+
+[node name="Body" type="Body" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_ybdkb")
+
+[node name="Sprite2D" type="Sprite2D" parent="Body"]
+texture = ExtResource("2_lfo53")
+
+[node name="Unit" type="Unit" parent="."]
+script = ExtResource("4_fjvn2")
+
+[node name="Sprite2D" type="Sprite2D" parent="Unit"]
+texture = ExtResource("2_lfo53")
+
+[node name="Projectile" type="Projectile" parent="."]
+script = ExtResource("5_4wuxt")
+
+[node name="Sprite2D" type="Sprite2D" parent="Projectile"]
+texture = ExtResource("2_lfo53")
+
+[node name="Turret" type="Turret" parent="."]
