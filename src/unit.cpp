@@ -3,6 +3,8 @@
 Unit::Unit() {
    radar_signature.instantiate();
    radar_signature->state = ALIVE;
+   applying_thrust = false;
+   can_move = true;
 }
 Unit::~Unit() {
    radar_signature->state = DEAD;
@@ -16,13 +18,13 @@ void Unit::stop_moving() {
 void Unit::stop_targeting() {
    target.unref();
 }
-void Unit::queue_move(Ref<Command> new_command) {
+void Unit::queue_move(Ref<Unit::Command> new_command) {
    move_commands.push_back(new_command);
 }
-void Unit::set_target(Ref<Command> new_target) {
+void Unit::set_target(Ref<Unit::Command> new_target) {
    target = new_target;
 }
-Ref<const Unit::RadarSignature> Unit::lock_on() {
+Ref<Unit::RadarSignature> Unit::lock_on() {
    return radar_signature;
 }
 Vector2 Unit::get_forward_direction() {
@@ -47,9 +49,9 @@ void Unit::hit(float damage) {
 }
 void Unit::move_to_target() {
    if (move_commands.is_empty()) return;
-   Ref<Command> command = move_commands.front()->get();
+   Ref<Unit::Command> command = move_commands.front()->get();
    if (not command->is_valid()) return move_commands.pop_front();
-
+   /*--------------------------------------------------------------*/
    Vector2 separation = command->get_position() - get_global_position();
    distance_to_target = separation.length();
    angle_to_target    = separation.angle() - get_global_rotation();
@@ -59,7 +61,7 @@ void Unit::move_to_target() {
    applying_thrust    = can_move and
                         distance_to_target > stop_distance and
                         time_to_turn <= path_arcing * time_to_move;
-
+   /*--------------------------------------------------------------*/
    if (command->is_controlled_by(this)) order_attack(command);
 }
 void Unit::_physics_process(double dt) {
@@ -74,6 +76,59 @@ void Unit::_physics_process(double dt) {
 void Unit::_process(double _dt) {
    queue_redraw();
 }
-void Unit::_draw() {
+void Unit::_draw() {}
 
+
+
+Unit::Command::Command() {
+   icon = memnew(Sprite2D);
+}
+Unit::Command::~Command() {
+   icon->queue_free();
+}
+void Unit::Command::invalidate() {
+   valid = false;
+}
+bool Unit::Command::is_valid() {
+   return valid and (prey.is_null() or prey->state != Unit::DEAD);
+}
+Vector2 Unit::Command::get_position() {
+   return icon->get_global_position();
+}
+bool Unit::Command::is_controlled_by(Unit* caller) {
+   return predator == caller;
+}
+void Unit::Command::move_to(Vector2 new_position) {
+   icon->set_global_position(new_position);
+}
+void Unit::Command::ram() {
+   move_to(prey->position);
+}
+void Unit::Command::kite(float min_distance, float max_distance) {
+   bool too_close = predator->distance_to_target < min_distance;
+   bool too_far   = predator->distance_to_target > max_distance;
+   predator->can_move = too_close or too_far;
+   if (too_close) flee(max_distance);
+   else if (too_far) ram();
+}
+void Unit::Command::flee(float safe_distance) {
+   Vector2 pred_pos = predator->get_global_position();
+   Vector2 radial   = pred_pos - prey->position;
+   Vector2 safe_pos = pred_pos - safe_distance * radial.normalized();
+   move_to(safe_pos);
+}
+void Unit::Command::track() {
+   Vector2 pred_pos    = predator->get_global_position();
+   Vector2 radial      = pred_pos - prey->position;
+   float v_r           = prey->velocity.dot(radial);
+   float pred_speed_sq = predator->velocity.length_squared();
+   float prey_speed_sq = prey->velocity.length_squared();
+   float d_speed_sq    = pred_speed_sq - prey_speed_sq;
+   float discriminant  = v_r * v_r + d_speed_sq * radial.length_squared();
+   /*-----------------------------------------------------------*/
+   if (discriminant < 0) return ram(); // Target is unreachable
+   /*-----------------------------------------------------------*/
+   float time_intersect = (v_r + sqrt(discriminant)) / d_speed_sq;
+   Vector2 intersection = prey->position + time_intersect * prey->velocity;
+   move_to(intersection);
 }

@@ -6,7 +6,6 @@
 #include <godot_cpp/variant/vector2.hpp>
 #include <godot_cpp/classes/sprite2d.hpp>
 #include <godot_cpp/templates/list.hpp>
-#include "command.hpp"
 
 using godot::Sprite2D;
 using godot::List;
@@ -21,21 +20,14 @@ class Unit: public PhysicsBody2D {
    static int max_n_commands;
    static float friction;
    void move_to_target();
-   Unit();
-   ~Unit();
 public:
    enum State { DEAD, ALIVE, CLOAKED };
-   class RadarSignature: public RefCounted {
-      GDCLASS(RadarSignature, RefCounted)
-   public:
-      float HP;
-      State state;
-      Vector2 position;
-      Vector2 velocity;
-   };
+   class RadarSignature;
+   class Command;
 protected:
-   bool can_move: 1 = true;
-   bool applying_thrust: 1 = false;
+   static void _bind_methods();
+   bool can_move: 1;
+   bool applying_thrust: 1;
    float HP = 0;
    float path_arcing = 0.0;
    float turnrate = 0.0;
@@ -51,11 +43,9 @@ protected:
    List<Ref<Command>> move_commands;
    Ref<RadarSignature> radar_signature;
    Ref<Command> target;
-   static void _bind_methods();
-   void _draw() override;
-   void _process(double _dt) override;
-   void _physics_process(double dt) override;
    void update_radar_signature();
+   Unit();
+   ~Unit();
 public:
    float angular_velocity = 0;
    Vector2 velocity = {0, 0};
@@ -69,9 +59,45 @@ public:
    void stop_targeting();
    void queue_move(Ref<Command> new_command);
    void set_target(Ref<Command> new_target);
+   Ref<RadarSignature> lock_on();
    virtual void order_attack(Ref<Command> command) {};
-   Ref<const RadarSignature> lock_on();
+   void _draw() override;
+   void _process(double _dt) override;
+   void _physics_process(double dt) override;
    friend class Command;
+};
+
+class Unit::RadarSignature: public RefCounted {
+   GDCLASS(RadarSignature, RefCounted)
+protected:
+   static void _bind_methods() {};
+public:
+   float HP;
+   State state;
+   Vector2 position;
+   Vector2 velocity;
+};
+
+class Unit::Command: public RefCounted {
+   GDCLASS(Command, RefCounted)
+   bool valid;
+   Sprite2D* icon;
+protected:
+   static void _bind_methods() {};
+   Unit* predator;
+   Ref<Unit::RadarSignature> prey;
+   Command();
+   ~Command();
+public:
+   void invalidate();
+   bool is_valid();
+   Vector2 get_position();
+   bool is_controlled_by(Unit* caller);
+   void move_to(Vector2 new_position);
+   void ram();
+   void kite(float min_distance, float max_distance);
+   void flee(float safe_distance);
+   void track();
 };
 
 #endif

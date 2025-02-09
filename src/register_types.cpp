@@ -10,17 +10,28 @@
 using namespace godot;
 
 void Unit::_bind_methods() {
-
+	ClassDB::bind_method(D_METHOD("get_forward_direction"), &Unit::get_forward_direction);
+	ClassDB::bind_method(D_METHOD("cloak"), &Unit::cloak);
+	ClassDB::bind_method(D_METHOD("decloak"), &Unit::decloak);
+	ClassDB::bind_method(D_METHOD("hit"), &Unit::hit);
+	ClassDB::bind_method(D_METHOD("stop_moving"), &Unit::stop_moving);
+	ClassDB::bind_method(D_METHOD("stop_targeting"), &Unit::stop_targeting);
+	ClassDB::bind_method(D_METHOD("queue_move"), &Unit::queue_move);
+	ClassDB::bind_method(D_METHOD("set_target"), &Unit::set_target);
 }
 
 void initialize_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) return;
 	ClassDB::register_class<Unit>();
+	ClassDB::register_class<Unit::Command>();
+	ClassDB::register_class<Unit::RadarSignature>();
 	ClassDB::register_class<Projectile>();
 	ClassDB::register_class<Ship>();
 	UtilityFunctions::print("Loaded Unit from unit.cpp");
-	UtilityFunctions::print("Loaded Projectile from unit.cpp");
-	UtilityFunctions::print("Loaded Ship from unit.cpp");
+	UtilityFunctions::print("Loaded Unit::Command from command.cpp");
+	UtilityFunctions::print("Loaded Unit::RadarSignature from unit.cpp");
+	UtilityFunctions::print("Loaded Projectile from projectile.cpp");
+	UtilityFunctions::print("Loaded Ship from ship.cpp");
 }
 
 void uninitialize_module(ModuleInitializationLevel p_level) {
