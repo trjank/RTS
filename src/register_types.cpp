@@ -10,9 +10,7 @@
 using namespace godot;
 
 void Unit::_bind_methods() {
-	// ClassDB::bind_method(D_METHOD("get_mass"), &Body::get_mass);
-	// ClassDB::bind_method(D_METHOD("set_mass"), &Body::set_mass);
-	// ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "mass"), "set_mass", "get_mass");
+
 }
 
 void initialize_module(ModuleInitializationLevel p_level) {

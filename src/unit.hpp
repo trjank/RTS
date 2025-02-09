@@ -35,19 +35,21 @@ public:
    };
 protected:
    bool can_move: 1 = true;
-   bool can_turn: 1 = true;
    bool applying_thrust: 1 = false;
+   float HP = 0;
    float path_arcing = 0.0;
    float turnrate = 0.0;
    float thrust = 0.0;
    float mass = 1.0;
-   float time_to_turn;
-   float time_to_move;
-   float distance_to_target;
-   float angle_to_target;
-   float angular_velocity;
-   Vector2 velocity;
-   Vector2 force;
+   
+   float time_to_turn = 0;
+   float time_to_move = 0;
+   float distance_to_target = 0;
+   float angle_to_target = 0;
+   
+   float angular_velocity = 0;
+   Vector2 velocity = {0, 0};
+   Vector2 force = {0, 0};
    List<Ref<Command>> move_commands;
    Ref<RadarSignature> radar_signature;
    Ref<Command> target;
@@ -56,11 +58,13 @@ protected:
    void _process(double _dt) override;
    void _physics_process(double dt) override;
 public:
+   void hit(float damage);
    void kill();
    void stop_moving();
    void stop_targeting();
    void queue_move(Ref<Command> new_command);
    void set_target(Ref<Command> new_target);
+   virtual void attack(Unit& prey, Ref<Command> command);
    Ref<const RadarSignature> lock_on();
 };
 

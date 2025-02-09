@@ -25,11 +25,9 @@ public:
    Vector2 get_position();
    void move_to(Vector2 new_position);
    void ram(Unit& prey);
-   void kite(Unit& prey);
+   void kite(Unit& predator, Unit& prey, float distance);
    void flee(Unit& predator, Unit& prey, float safe_distance);
    void track(Unit& predator, Unit& prey);
-   void execute_from(Unit& caller);
-   virtual void attack(Unit& predator, Unit& prey);
 };
 
 #endif

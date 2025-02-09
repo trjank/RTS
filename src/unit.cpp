@@ -28,18 +28,39 @@ Ref<const Unit::RadarSignature> Unit::lock_on() {
    return radar_signature;
 }
 void Unit::move_to_target() {
-   // Get the current move command (if possible)
-   if (move_commands.is_empty()) return;
+   if (not can_move or move_commands.is_empty()) return;
+   /*-------------------------------------------------------*/
    Ref<Command> command = move_commands.front()->get();
    if (not command->is_valid()) return move_commands.pop_front();
-   command->execute_from(*this);
    Vector2 separation = command->get_position() - get_global_position();
    distance_to_target = separation.length();
-   // Turn to face the target (if possible)
-   if (not can_turn) return;
+
+   if (command.target_lock->state == Unit::ALIVE) {
+      attack(*(target_lock->unit), command);
+   }
+
    angle_to_target = separation.angle() - get_global_rotation();
    angular_velocity = copysign(turnrate, angle_to_target);
    time_to_turn = angle_to_target / angular_velocity;
+}
+void Unit::attack(Unit& prey, Ref<Command> command) {
+   command->ram(prey);
+}
+void Unit::hit(float damage) {
+   HP -= damage;
+   if (HP <= 0) kill();
+}
+void Unit::_physics_process(double dt) {
+   radar_signature->velocity = velocity;
+   radar_signature->position = get_global_position();
+   move_to_target();
+   applying_thrust = time_to_turn <= path_arcing * time_to_move;
+   Vector2 facing;
+   Vector2 net_force = force;
+   if (can_move and applying_thrust) net_force += thrust * facing;
+   velocity += net_force * (dt / mass);
+   set_position(get_position() + velocity * dt);
+   rotate(angular_velocity * dt);
 }
 void Unit::_process(double _dt) {
    // queue_redraw();
@@ -53,15 +74,4 @@ void Unit::_draw() {
    //    draw_line(line_start, line_end, PATH_COLOR, PATH_WIDTH);
    //    line_start = line_end;
    // }
-}
-void Unit::_physics_process(double dt) {
-   move_to_target();
-   radar_signature->velocity = velocity;
-   applying_thrust = time_to_turn <= path_arcing * time_to_move;
-   Vector2 facing;
-   Vector2 net_force = force;
-   if (can_move and applying_thrust) net_force += thrust * facing;
-   velocity += net_force * (dt / mass);
-   set_position(get_position() + velocity * dt);
-   rotate(angular_velocity * dt);
 }
