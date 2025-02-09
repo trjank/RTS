@@ -16,18 +16,20 @@ class Command: public RefCounted {
    Sprite2D* icon;
 protected:
    static void _bind_methods();
-   Ref<const Unit::RadarSignature> target_lock;
+   Unit* predator;
+   Ref<const Unit::RadarSignature> prey;
    Command();
    ~Command();
 public:
    void invalidate();
    bool is_valid();
    Vector2 get_position();
+   bool is_controlled_by(Unit* caller);
    void move_to(Vector2 new_position);
-   void ram(Unit& prey);
-   void kite(Unit& predator, Unit& prey, float distance);
-   void flee(Unit& predator, Unit& prey, float safe_distance);
-   void track(Unit& predator, Unit& prey);
+   void ram();
+   void kite(float min_distance, float max_distance);
+   void flee(float safe_distance);
+   void track();
 };
 
 #endif
