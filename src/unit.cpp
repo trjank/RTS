@@ -2,11 +2,13 @@
 
 Unit::Unit() {
    radar_signature.instantiate();
+   radar_signature->unit = this;
    radar_signature->state = ALIVE;
    applying_thrust = false;
    can_move = true;
 }
 Unit::~Unit() {
+   radar_signature->unit = nullptr;
    radar_signature->state = DEAD;
 }
 void Unit::kill() {
@@ -64,12 +66,15 @@ void Unit::move_to_target() {
    /*--------------------------------------------------------------*/
    if (command->is_controlled_by(this)) order_attack(command);
 }
+Vector2 Unit::get_net_force() {
+   return applying_thrust
+   ? force + thrust * get_forward_direction()
+   : force;
+}
 void Unit::_physics_process(double dt) {
    update_radar_signature();
    move_to_target();
-   Vector2 net_force = force;
-   if (applying_thrust) net_force += thrust * get_forward_direction();
-   velocity += net_force * (dt / mass);
+   velocity += get_net_force() * (dt / mass);
    set_position(get_position() + velocity * dt);
    rotate(angular_velocity * dt);
 }
@@ -131,4 +136,13 @@ void Unit::Command::track() {
    float time_intersect = (v_r + sqrt(discriminant)) / d_speed_sq;
    Vector2 intersection = prey->position + time_intersect * prey->velocity;
    move_to(intersection);
+}
+
+
+
+void Unit::RadarSignature::queue_move(Ref<Command> command) {
+   if (state != Unit::DEAD) unit->queue_move(command);
+}
+void Unit::RadarSignature::set_target(Ref<Command> command) {
+   if (state != Unit::DEAD) unit->set_target(command);
 }

@@ -24,6 +24,24 @@ public:
    enum State { DEAD, ALIVE, CLOAKED };
    class RadarSignature;
    class Command;
+   float angular_velocity = 0;
+   Vector2 velocity = {0, 0};
+   Vector2 force = {0, 0};
+   Vector2 get_forward_direction();
+   void cloak();
+   void decloak();
+   void hit(float damage);
+   void kill();
+   void stop_moving();
+   void stop_targeting();
+   void queue_move(Ref<Command> new_command);
+   void set_target(Ref<Command> new_target);
+   Ref<RadarSignature> lock_on();
+   virtual void order_attack(Ref<Command> command) {};
+   void _draw() override;
+   void _process(double _dt) override;
+   void _physics_process(double dt) override;
+   friend class Command;
 protected:
    static void _bind_methods();
    bool can_move: 1;
@@ -44,38 +62,24 @@ protected:
    Ref<RadarSignature> radar_signature;
    Ref<Command> target;
    void update_radar_signature();
+   Vector2 get_net_force();
    Unit();
    ~Unit();
-public:
-   float angular_velocity = 0;
-   Vector2 velocity = {0, 0};
-   Vector2 force = {0, 0};
-   Vector2 get_forward_direction();
-   void cloak();
-   void decloak();
-   void hit(float damage);
-   void kill();
-   void stop_moving();
-   void stop_targeting();
-   void queue_move(Ref<Command> new_command);
-   void set_target(Ref<Command> new_target);
-   Ref<RadarSignature> lock_on();
-   virtual void order_attack(Ref<Command> command) {};
-   void _draw() override;
-   void _process(double _dt) override;
-   void _physics_process(double dt) override;
-   friend class Command;
 };
 
 class Unit::RadarSignature: public RefCounted {
    GDCLASS(RadarSignature, RefCounted)
 protected:
+   Unit* unit;
    static void _bind_methods() {};
 public:
    float HP;
    State state;
    Vector2 position;
    Vector2 velocity;
+   void queue_move(Ref<Command> command);
+   void set_target(Ref<Command> command);
+   friend class Unit;
 };
 
 class Unit::Command: public RefCounted {
@@ -85,7 +89,7 @@ class Unit::Command: public RefCounted {
 protected:
    static void _bind_methods() {};
    Unit* predator;
-   Ref<Unit::RadarSignature> prey;
+   Ref<RadarSignature> prey;
    Command();
    ~Command();
 public:

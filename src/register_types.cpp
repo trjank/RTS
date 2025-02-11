@@ -7,7 +7,8 @@
 #include "ship.hpp"
 #include "projectile.hpp"
 
-using namespace godot;
+using godot::ClassDB;
+using godot::UtilityFunctions;
 
 void Unit::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_forward_direction"), &Unit::get_forward_direction);
