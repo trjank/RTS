@@ -71,7 +71,7 @@ class Unit::RadarSignature: public RefCounted {
    GDCLASS(RadarSignature, RefCounted)
 protected:
    Unit* unit;
-   static void _bind_methods() {};
+   static void _bind_methods();
 public:
    float HP;
    State state;
@@ -87,12 +87,12 @@ class Unit::Command: public RefCounted {
    bool valid;
    Sprite2D* icon;
 protected:
-   static void _bind_methods() {};
+   static void _bind_methods();
    Unit* predator;
    Ref<RadarSignature> prey;
-   Command();
    ~Command();
 public:
+   Command();
    void invalidate();
    bool is_valid();
    Vector2 get_position();
@@ -102,6 +102,7 @@ public:
    void kite(float min_distance, float max_distance);
    void flee(float safe_distance);
    void track();
+   friend class MouseCommands;
 };
 
 #endif

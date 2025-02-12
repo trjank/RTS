@@ -6,6 +6,7 @@
 #include "unit.hpp"
 #include "ship.hpp"
 #include "projectile.hpp"
+#include "mouse_commands.hpp"
 
 using godot::ClassDB;
 using godot::UtilityFunctions;
@@ -20,6 +21,9 @@ void Unit::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("queue_move"), &Unit::queue_move);
 	ClassDB::bind_method(D_METHOD("set_target"), &Unit::set_target);
 }
+void Unit::RadarSignature::_bind_methods() {}
+void Unit::Command::_bind_methods() {}
+void MouseCommands::_bind_methods() {}
 
 void initialize_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) return;
@@ -28,11 +32,13 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	ClassDB::register_class<Unit::RadarSignature>();
 	ClassDB::register_class<Projectile>();
 	ClassDB::register_class<Ship>();
+	ClassDB::register_class<MouseCommands>();
 	UtilityFunctions::print("Loaded Unit from unit.cpp");
-	UtilityFunctions::print("Loaded Unit::Command from command.cpp");
-	UtilityFunctions::print("Loaded Unit::RadarSignature from unit.cpp");
+	UtilityFunctions::print("Loaded Command from unit.cpp");
+	UtilityFunctions::print("Loaded RadarSignature from unit.cpp");
 	UtilityFunctions::print("Loaded Projectile from projectile.cpp");
 	UtilityFunctions::print("Loaded Ship from ship.cpp");
+	UtilityFunctions::print("Loaded MouseCommands from mouse_commands.cpp");
 }
 
 void uninitialize_module(ModuleInitializationLevel p_level) {

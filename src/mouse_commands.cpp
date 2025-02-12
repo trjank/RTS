@@ -12,12 +12,6 @@ using godot::MAX;
 using godot::Input;
 using godot::InputEventMouse;
 
-void MouseCommands::set_mode(Mode new_mode) {
-   mode = new_mode;
-}
-void MouseCommands::set_formation(Formation new_formation) {
-   formation = new_formation;
-}
 void MouseCommands::order_units_to_move() {
    // do sorting here (make this later)
 	for (int n = 0; n < units.size(); ++n)
@@ -25,20 +19,23 @@ void MouseCommands::order_units_to_move() {
 }
 Vector2 MouseCommands::get_point(float parametric_dist) {
 	int start_index       = MIN(int(parametric_dist), waypoints.size() - 2);
-	float subsegment_d    = MIN(parametric_dist - start_index, 1);
+	float subsegment_dist = MIN(parametric_dist - start_index, 1.0);
 	Vector2 segment_start = waypoints[start_index];
 	Vector2 segment_end   = waypoints[start_index + 1];
-	return segment_start.lerp(segment_end, subsegment_d);
+	return segment_start.lerp(segment_end, subsegment_dist);
 }
 void MouseCommands::begin_path_at(Vector2 start_pos) {
    waypoints.resize(static_cast<int>(formation));
    waypoints.fill(start_pos);
+   commands = Vector<Ref<Unit::Command>>();
    commands.resize(units.size());
-   for (int n = 0; n < units.size(); ++n) {
-      Ref<Unit::Command> command;
-      command.instantiate();
-      command->move_to(start_pos);
-      commands.set(n, command);
+   /*-----------------------------------------*/
+   for (int n = 0; n < commands.size(); ++n) {
+      Ref<Unit::Command> blank_command;
+      blank_command.instantiate();
+      get_parent()->add_child(blank_command->icon);
+      blank_command->move_to(start_pos);
+      commands.set(n, blank_command);
    }
 }
 void MouseCommands::move_path_end_to(Vector2 new_pos) {
