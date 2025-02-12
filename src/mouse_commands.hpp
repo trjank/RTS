@@ -15,25 +15,27 @@ using godot::Vector;
 class MouseCommands: public Node2D {
    GDCLASS(MouseCommands, Node)
 public:
+   enum Mode { MOVE, FOLLOW, TRACK, FIRE, MANUAL_FIRE };
    enum Formation { LINE = 2, V = 3, SMOOTH = 10, PRECISE = 30 };
    static const int MAX_LINE_WAYPOINTS = 30;
    static const int MAX_UNITS_SELECTED = 10;
+   void set_mode(Mode new_mode);
    void set_formation(Formation new_formation);
    void _unhandled_input(const Ref<InputEvent>& event) override;
 protected:
    float horizontal_priority = 0.1;
    float path_length = 0;
+   Mode mode = MOVE;
    Formation formation = LINE;
    Vector<Ref<Unit::RadarSignature>> units;
    Vector<Ref<Unit::Command>> commands;
    Vector<Vector2> waypoints;
-   MouseCommands();
    void create_waypoints();
    void order_units_to_move();
    void begin_path_at(Vector2 start_pos);
    void move_path_end_to(Vector2 new_pos);
-   void snap_targets_to_line();
-   Vector2 get_point(float parametric_d);
+   void update_commands();
+   Vector2 get_point(float parametric_dist);
    static void _bind_methods();
 };
 

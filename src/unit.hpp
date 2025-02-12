@@ -1,7 +1,8 @@
 #ifndef UNIT_HPP
 #define UNIT_HPP
 
-#include <godot_cpp/classes/physics_body2d.hpp>
+#include <godot_cpp/classes/rigid_body2d.hpp>
+#include <godot_cpp/classes/physics_direct_body_state2d.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/variant/vector2.hpp>
 #include <godot_cpp/classes/sprite2d.hpp>
@@ -9,14 +10,15 @@
 
 using godot::Sprite2D;
 using godot::List;
-using godot::PhysicsBody2D;
+using godot::RigidBody2D;
 using godot::Vector2;
 using godot::Color;
 using godot::Ref;
 using godot::RefCounted;
+using godot::PhysicsDirectBodyState2D;
 
-class Unit: public PhysicsBody2D {
-   GDCLASS(Unit, PhysicsBody2D)
+class Unit: public RigidBody2D {
+   GDCLASS(Unit, RigidBody2D)
    static int max_n_commands;
    static float friction;
    void move_to_target();
@@ -24,9 +26,6 @@ public:
    enum State { DEAD, ALIVE, CLOAKED };
    class RadarSignature;
    class Command;
-   float angular_velocity = 0;
-   Vector2 velocity = {0, 0};
-   Vector2 force = {0, 0};
    Vector2 get_forward_direction();
    void cloak();
    void decloak();
@@ -37,32 +36,33 @@ public:
    void queue_move(Ref<Command> new_command);
    void set_target(Ref<Command> new_target);
    Ref<RadarSignature> lock_on();
+   Ref<Command> get_current_command();
    virtual void order_attack(Ref<Command> command) {};
    void _draw() override;
    void _process(double _dt) override;
    void _physics_process(double dt) override;
+   void _integrate_forces(PhysicsDirectBodyState2D* state) override;
    friend class Command;
 protected:
    static void _bind_methods();
    bool can_move: 1;
    bool applying_thrust: 1;
-   float HP = 0;
+   float HP = 0.0;
    float path_arcing = 0.0;
    float turnrate = 0.0;
    float thrust = 0.0;
-   float mass = 1.0;
+   float drag = 1.0;
 
-   float time_to_turn = 0;
-   float time_to_move = 0;
-   float angle_to_target = 0;
-   float stop_distance = 0;
-   float distance_to_target = INFINITY;
+   float time_to_turn = 0.0;
+   float time_to_move = 0.0;
+   float angle_to_target = 0.0;
+   float stop_distance = 0.0;
+   float distance_to_target = 0.0;
    
    List<Ref<Command>> move_commands;
    Ref<RadarSignature> radar_signature;
    Ref<Command> target;
    void update_radar_signature();
-   Vector2 get_net_force();
    Unit();
    ~Unit();
 };
