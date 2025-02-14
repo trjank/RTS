@@ -35,7 +35,6 @@ public:
    void stop_targeting();
    void queue_move(Ref<Command> new_command);
    void set_target(Ref<Command> new_target);
-   Ref<RadarSignature> lock_on();
    Ref<Command> get_current_command();
    virtual void order_attack(Ref<Command> command) {};
    void _draw() override;

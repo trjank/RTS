@@ -28,9 +28,6 @@ void Unit::queue_move(Ref<Unit::Command> new_command) {
 void Unit::set_target(Ref<Unit::Command> new_target) {
    target = new_target;
 }
-Ref<Unit::RadarSignature> Unit::lock_on() {
-   return radar_signature;
-}
 Vector2 Unit::get_forward_direction() {
    constexpr int Y_BASIS_VECTOR = 1;
    return get_transform().columns[Y_BASIS_VECTOR];
@@ -57,7 +54,7 @@ void Unit::move_to_target() {
    if (move_commands.is_empty()) return;
    Ref<Command> command = get_current_command();
    if (not command->is_valid()) return move_commands.pop_front();
-   /*-----------------------------------------------------------------*/
+   //-------------------------------------------------------------------
    Vector2 separation = command->get_position() - get_global_position();
    distance_to_target = separation.length();
    angle_to_target    = separation.angle() - get_global_rotation();
@@ -66,7 +63,7 @@ void Unit::move_to_target() {
    applying_thrust    = can_move and
                         distance_to_target > stop_distance and
                         time_to_turn <= path_arcing * time_to_move;
-   /*-----------------------------------------------------------------*/
+   //--------------------------------------------------------------
    if (command->is_controlled_by(this)) order_attack(command);
 }
 void Unit::_physics_process(double dt) {
@@ -136,9 +133,9 @@ void Unit::Command::track() {
    float prey_speed_sq = prey->velocity.length_squared();
    float d_speed_sq    = pred_speed_sq - prey_speed_sq;
    float discriminant  = v_r * v_r + d_speed_sq * radial.length_squared();
-   /*---------------------------------------------------------------------*/
+   //---------------------------------------------------------------------
    if (discriminant < 0) return ram(); // Target is unreachable
-   /*---------------------------------------------------------------------*/
+   //-------------------------------------------------------------
    float time_intersect = (v_r + sqrt(discriminant)) / d_speed_sq;
    Vector2 intersection = prey->position + time_intersect * prey->velocity;
    move_to(intersection);
