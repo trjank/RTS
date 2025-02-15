@@ -1,7 +1,5 @@
 extends Node
 
-@onready var move_markers := $/root/Main/MoveMarkers
-
 var gravity := 1.0
 
 var jovian_config := {

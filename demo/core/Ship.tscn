@@ -1,8 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://bb6bj8b6mhosi"]
 
-[ext_resource type="Script" path="res://core/Unit.gd" id="1_1i1mg"]
-[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://images/icon.svg" id="2_8ffs1"]
-[ext_resource type="Script" path="res://core/LockIndicator.gd" id="3_t52qo"]
+[ext_resource type="Script" path="res://core/Ship.gd" id="1_x8t0t"]
+[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://images/icon.svg" id="2_hnp2h"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tm37y"]
 bg_color = Color(1, 1, 1, 1)
@@ -16,21 +15,16 @@ bg_color = Color(1, 1, 1, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kyic8"]
 bg_color = Color(0, 0.529412, 1, 1)
 
-[node name="Unit" type="RigidBody2D" node_paths=PackedStringArray("hp_bar", "shield_bar", "energy_bar") groups=["selectable"]]
+[sub_resource type="CircleShape2D" id="CircleShape2D_j187u"]
+
+[node name="Ship" type="Ship" node_paths=PackedStringArray("HP_bar", "shield_bar", "energy_bar")]
 gravity_scale = 1.66533e-16
 linear_damp_mode = 1
 angular_damp_mode = 1
-script = ExtResource("1_1i1mg")
-hp_bar = NodePath("HPBar")
+script = ExtResource("1_x8t0t")
+HP_bar = NodePath("HPBar")
 shield_bar = NodePath("ShieldBar")
 energy_bar = NodePath("EnergyBar")
-
-[node name="Image" type="Sprite2D" parent="."]
-texture = ExtResource("2_8ffs1")
-
-[node name="LockIndicator" type="Sprite2D" parent="."]
-visible = false
-script = ExtResource("3_t52qo")
 
 [node name="HPBar" type="ProgressBar" parent="."]
 anchors_preset = 5
@@ -67,3 +61,9 @@ grow_horizontal = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_14auu")
 theme_override_styles/fill = SubResource("StyleBoxFlat_kyic8")
 value = 50.0
+
+[node name="Image" type="Sprite2D" parent="."]
+texture = ExtResource("2_hnp2h")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_j187u")

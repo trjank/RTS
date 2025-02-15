@@ -35,17 +35,20 @@ public:
    void stop_targeting();
    void queue_move(Ref<Command> new_command);
    void set_target(Ref<Command> new_target);
+   float get_HP();
    Ref<Command> get_current_command();
    virtual void order_attack(Ref<Command> command) {};
    void _draw() override;
    void _process(double _dt) override;
    void _physics_process(double dt) override;
    void _integrate_forces(PhysicsDirectBodyState2D* state) override;
+   Unit();
+   ~Unit();
    friend class Command;
 protected:
    static void _bind_methods();
-   bool can_move: 1;
-   bool applying_thrust: 1;
+   bool can_move;
+   bool applying_thrust;
    float HP = 0.0;
    float path_arcing = 0.0;
    float turnrate = 0.0;
@@ -62,8 +65,6 @@ protected:
    Ref<RadarSignature> radar_signature;
    Ref<Command> target;
    void update_radar_signature();
-   Unit();
-   ~Unit();
 };
 
 class Unit::RadarSignature: public RefCounted {
@@ -72,7 +73,7 @@ protected:
    Unit* unit;
    static void _bind_methods();
 public:
-   float HP;
+   float HP = 0.0;
    State state;
    Vector2 position;
    Vector2 velocity;
@@ -89,9 +90,9 @@ protected:
    static void _bind_methods();
    Unit* predator;
    Ref<RadarSignature> prey;
-   ~Command();
 public:
    Command();
+   ~Command();
    void invalidate();
    bool is_valid();
    Vector2 get_position();

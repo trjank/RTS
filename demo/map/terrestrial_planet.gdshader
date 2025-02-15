@@ -10,6 +10,7 @@ uniform vec3 atmosphere_color;
 uniform float atmosphere_size : hint_range(0.0, 0.5);
 
 const float BASE_ATMOSPHERE_FADE = 3.0;
+const float MAX_RADIUS = 0.5;
 
 vec4 draw_atmosphere(float r) {
 	float fade = BASE_ATMOSPHERE_FADE / atmosphere_size;

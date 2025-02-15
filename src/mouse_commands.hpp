@@ -3,6 +3,7 @@
 
 #include <godot_cpp/classes/node2d.hpp>
 #include <godot_cpp/templates/vector.hpp>
+#include <godot_cpp/variant/typed_array.hpp>
 #include "unit.hpp"
 
 using godot::Ref;
@@ -10,6 +11,7 @@ using godot::Vector2;
 using godot::Node2D;
 using godot::InputEvent;
 using godot::Vector;
+using godot::TypedArray;
 
 class MouseCommands: public Node2D {
    GDCLASS(MouseCommands, Node2D)
@@ -21,7 +23,9 @@ public:
    void order_units_to_move();
    void begin_path();
    void update_path();
-   void update_commands();
+   void update_target();
+   void update_units(TypedArray<Node2D> unit_array);
+   MouseCommands();
 protected:
    float horizontal_priority = 0.1;
    float path_length = 0.0;
@@ -29,6 +33,9 @@ protected:
    Vector<Ref<Unit::RadarSignature>> units;
    Vector<Ref<Unit::Command>> commands;
    Vector<Vector2> waypoints;
+   Ref<Unit::Command> target;
+   void update_commands();
+   Ref<Unit::Command> new_command_at(Vector2 pos);
    Vector2 get_point(float parametric_dist);
    static void _bind_methods();
 };

@@ -13,6 +13,9 @@ Unit::~Unit() {
    radar_signature->unit = nullptr;
    radar_signature->state = DEAD;
 }
+float Unit::get_HP() {
+   return HP;
+}
 void Unit::kill() {
    queue_free();
 }
@@ -63,7 +66,7 @@ void Unit::move_to_target() {
    applying_thrust    = can_move and
                         distance_to_target > stop_distance and
                         time_to_turn <= path_arcing * time_to_move;
-   //--------------------------------------------------------------
+   //-------------------------------------------------------------------
    if (command->is_controlled_by(this)) order_attack(command);
 }
 void Unit::_physics_process(double dt) {
@@ -76,9 +79,10 @@ void Unit::_integrate_forces(PhysicsDirectBodyState2D* state) {
    state->set_angular_velocity(copysign(turnrate, angle_to_target));
 }
 void Unit::_process(double _dt) {
-   // if (not move_commands.is_empty()) queue_redraw();
+   queue_redraw();
 }
 void Unit::_draw() {
+   if (move_commands.is_empty()) return;
    static const Color WHITE(1.0, 1.0, 1.0, 0.3);
    draw_set_transform_matrix(get_global_transform().affine_inverse());
    Vector2 path_start = get_global_position();
@@ -135,7 +139,7 @@ void Unit::Command::track() {
    float discriminant  = v_r * v_r + d_speed_sq * radial.length_squared();
    //---------------------------------------------------------------------
    if (discriminant < 0) return ram(); // Target is unreachable
-   //-------------------------------------------------------------
+   //---------------------------------------------------------------------
    float time_intersect = (v_r + sqrt(discriminant)) / d_speed_sq;
    Vector2 intersection = prey->position + time_intersect * prey->velocity;
    move_to(intersection);

@@ -1,20 +1,15 @@
 [gd_scene load_steps=7 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
-[ext_resource type="Script" path="res://core/MoveMarkers.gd" id="2_fsifo"]
-[ext_resource type="Script" path="res://UI/Cursor.gd" id="2_owt3e"]
-[ext_resource type="Script" path="res://SelectionBox.gd" id="3_fkvel"]
+[ext_resource type="Script" path="res://mouse/MouseCommands.gd" id="2_ysidp"]
+[ext_resource type="Script" path="res://mouse/SelectionRect.gd" id="3_g3712"]
 [ext_resource type="Script" path="res://Map/Map.gd" id="7_rg2wc"]
 [ext_resource type="Script" path="res://core/Camera.gd" id="7_wdsxf"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y4s1u"]
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_h0c8p")
-
-[node name="MoveMarkers" type="Node2D" parent="."]
-script = ExtResource("2_fsifo")
-
-[node name="Cursor" type="Node" parent="."]
-script = ExtResource("2_owt3e")
 
 [node name="Camera" type="RigidBody2D" parent="." node_paths=PackedStringArray("camera_node")]
 gravity_scale = 1.66533e-16
@@ -24,10 +19,16 @@ camera_node = NodePath("Camera2D")
 
 [node name="Camera2D" type="Camera2D" parent="Camera"]
 
-[node name="SelectionBox" type="ColorRect" parent="."]
-z_index = 1
-color = Color(1, 1, 1, 0.109804)
-script = ExtResource("3_fkvel")
+[node name="MouseCommands" type="MouseCommands" parent="." node_paths=PackedStringArray("selection_box", "selection_rect")]
+script = ExtResource("2_ysidp")
+selection_box = NodePath("SelectionBox")
+selection_rect = NodePath("SelectionBox/SelectionRect")
+
+[node name="SelectionBox" type="Area2D" parent="MouseCommands"]
+
+[node name="SelectionRect" type="CollisionShape2D" parent="MouseCommands/SelectionBox"]
+shape = SubResource("RectangleShape2D_y4s1u")
+script = ExtResource("3_g3712")
 
 [node name="Objects" type="Node2D" parent="."]
 
