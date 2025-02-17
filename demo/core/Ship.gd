@@ -12,4 +12,3 @@ func _process(_dt):
 	HP_bar.value = get_HP()
 	shield_bar.value = get_shield()
 	energy_bar.value = get_energy()
-	queue_redraw()

@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/variant/vector2.hpp>
 #include <godot_cpp/classes/sprite2d.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/templates/list.hpp>
 
 using godot::Sprite2D;
@@ -16,6 +17,7 @@ using godot::Color;
 using godot::Ref;
 using godot::RefCounted;
 using godot::PhysicsDirectBodyState2D;
+using godot::Texture2D;
 
 class Unit: public RigidBody2D {
    GDCLASS(Unit, RigidBody2D)
@@ -45,6 +47,7 @@ public:
    Unit();
    ~Unit();
    friend class Command;
+   friend class MouseCommands;
 protected:
    static void _bind_methods();
    bool can_move;

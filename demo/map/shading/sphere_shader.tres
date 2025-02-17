@@ -5,7 +5,6 @@
 
 [resource]
 shader = ExtResource("1_0am4t")
-shader_parameter/transform = null
-shader_parameter/shadow_offset = 0.143
-shader_parameter/global_darkness = 0.905
+shader_parameter/inv_rot = Transform2D(1, 2.08165e-12, 2.08165e-12, 1, 2.08165e-12, 2.08165e-12)
+shader_parameter/global_darkness = 0.9
 shader_parameter/shadow_map = ExtResource("2_k08q8")

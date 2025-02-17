@@ -1,5 +1,7 @@
 #include "unit.hpp"
 
+#include <godot_cpp/variant/utility_functions.hpp>
+
 Unit::Unit() {
    radar_signature.instantiate();
    radar_signature->unit = this;
@@ -96,7 +98,7 @@ Unit::Command::Command() {
    icon = memnew(Sprite2D);
 }
 Unit::Command::~Command() {
-   icon->queue_free();
+   // icon->queue_free();
 }
 void Unit::Command::invalidate() {
    valid = false;
@@ -146,9 +148,10 @@ void Unit::Command::track() {
 }
 
 
-
 void Unit::RadarSignature::queue_move(Ref<Command> command) {
-   if (state != DEAD) unit->queue_move(command);
+   godot::UtilityFunctions::print("TRIED!");
+   if (state != DEAD) //unit->queue_move(command);
+   godot::UtilityFunctions::print("NOT DEAD!");
 }
 void Unit::RadarSignature::set_target(Ref<Command> command) {
    if (state != DEAD) unit->set_target(command);

@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/node2d.hpp>
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
 #include "unit.hpp"
 
 using godot::Ref;
@@ -12,6 +13,7 @@ using godot::Node2D;
 using godot::InputEvent;
 using godot::Vector;
 using godot::TypedArray;
+using godot::Texture2D;
 
 class MouseCommands: public Node2D {
    GDCLASS(MouseCommands, Node2D)
@@ -24,7 +26,9 @@ public:
    void begin_path();
    void update_path();
    void update_target();
-   void update_units(TypedArray<Node2D> unit_array);
+   void clear_units();
+   void select_unit(Unit* unit);
+   void set_command_icon(Ref<Texture2D> new_image);
    MouseCommands();
 protected:
    float horizontal_priority = 0.1;
@@ -34,6 +38,7 @@ protected:
    Vector<Ref<Unit::Command>> commands;
    Vector<Vector2> waypoints;
    Ref<Unit::Command> target;
+   Ref<Texture2D> move_icon_image;
    void update_commands();
    Ref<Unit::Command> new_command_at(Vector2 pos);
    Vector2 get_point(float parametric_dist);

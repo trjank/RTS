@@ -10,7 +10,7 @@ float Ship::get_energy() {
    return energy;
 }
 void Ship::hit(float damage, float shield_pen) {
-   float armor_pen = 1 - shield_pen;
+   float armor_pen = 1.0 - shield_pen;
    shield -= damage * shield_pen;
    //----------------------------------------------
    if (shield >= 0) return hit(damage * armor_pen);

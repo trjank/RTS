@@ -4,9 +4,9 @@ const CELESTIAL_T := preload("res://map/Celestial.tscn")
 const BACKGROUND_SIZE := Vector2i(2048, 2048)
 
 var central_star := Star.new()
-var map_seed := 0
+var map_seed := 1
 var n_terrestrial_planets := 5
-var n_jovian_planets := 5
+var n_jovian_planets := 10
 var min_orbit_radius := 500.0
 var frost_line_width := 500.0
 

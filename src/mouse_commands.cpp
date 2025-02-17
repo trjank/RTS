@@ -1,14 +1,19 @@
 #include <godot_cpp/core/math.hpp>
+#include <godot_cpp/classes/area2d.hpp>
 #include "mouse_commands.hpp"
 
-#include <godot_cpp/classes/area2d.hpp>
-
-#define max_i godot::MAX<int, int>
 #define min_i godot::MIN<int, int>
 #define min_f godot::MIN<float, float>
 
+using godot::Area2D;
+
+#include <godot_cpp/variant/utility_functions.hpp>
+
 MouseCommands::MouseCommands() {
    target.instantiate();
+}
+void MouseCommands::set_command_icon(Ref<Texture2D> new_image) {
+   move_icon_image = new_image;
 }
 void MouseCommands::update_target() {
    target->move_to(get_global_mouse_position());
@@ -16,13 +21,17 @@ void MouseCommands::update_target() {
 void MouseCommands::set_formation(Formation new_formation) {
    formation = new_formation;
 }
-void MouseCommands::update_units(TypedArray<Node2D> unit_array) {
-   // units.resize(max_i(unit_array.size(), MAX_UNITS_SELECTED));
-   // for (int n = 0; n < units.size(); ++n)
-   //    units.set(n, unit_array[n]->radar_signature);
+void MouseCommands::clear_units() {
+   units.clear();
+}
+void MouseCommands::select_unit(Unit* unit) {
+   if (unit == nullptr or units.size() == MAX_UNITS_SELECTED) return;
+   units.append(unit->radar_signature);
 }
 void MouseCommands::order_units_to_move() {
    // do sorting here (make this later)
+   godot::UtilityFunctions::print("UNITS: ", units.size());
+   godot::UtilityFunctions::print("COMMANDS: ", commands.size());
 	for (int n = 0; n < units.size(); ++n)
       units[n]->queue_move(commands[n]);
 }
@@ -37,8 +46,8 @@ void MouseCommands::begin_path() {
    Vector2 start_pos = get_global_mouse_position();
    waypoints.resize(static_cast<int>(formation));
    waypoints.fill(start_pos);
-   commands = Vector<Ref<Unit::Command>>();
    commands.resize(units.size());
+   path_length = 0.0;
    for (int n = 0; n < commands.size(); ++n)
       commands.set(n, new_command_at(start_pos));
 }
@@ -47,6 +56,7 @@ Ref<Unit::Command> MouseCommands::new_command_at(Vector2 pos) {
    blank_command.instantiate();
    add_child(blank_command->icon);
    blank_command->move_to(pos);
+   blank_command->icon->set_texture(move_icon_image);
    return blank_command;
 }
 void MouseCommands::update_path() {

@@ -1,6 +1,6 @@
 extends CollisionShape2D
 
-var color := Color(1.0, 1.0, 1.0, 0.15)
+var color := Color(1.0, 1.0, 1.0, 0.1)
 
 func _draw():
 	draw_rect(shape.get_rect(), color)
