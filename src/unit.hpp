@@ -21,7 +21,9 @@ using godot::Texture2D;
 
 class Unit: public RigidBody2D {
    GDCLASS(Unit, RigidBody2D)
-   static int max_n_commands;
+   static constexpr float ANGLE_TOLERANCE = 0.1;
+   static constexpr float DISTANCE_TOLERANCE = 50.0;
+   static constexpr int MAX_N_COMMANDS = 3;
    static float friction;
    void move_to_target();
 public:
@@ -39,7 +41,7 @@ public:
    void set_target(Ref<Command> new_target);
    float get_HP();
    Ref<Command> get_current_command();
-   virtual void order_attack(Ref<Command> command) {};
+   virtual void order_attack(Ref<Command> command);
    void _draw() override;
    void _process(double _dt) override;
    void _physics_process(double dt) override;
@@ -50,12 +52,12 @@ public:
    friend class MouseCommands;
 protected:
    static void _bind_methods();
-   bool can_move;
-   bool applying_thrust;
+   bool can_move: 1;
+   bool applying_thrust: 1;
    float HP = 0.0;
-   float path_arcing = 0.0;
-   float turnrate = 0.0;
-   float thrust = 0.0;
+   float path_arcing = 0.1;
+   float turnrate = 1.0;
+   float thrust = 500.0;
    float drag = 1.0;
 
    float time_to_turn = 0.0;
@@ -64,7 +66,7 @@ protected:
    float stop_distance = 0.0;
    float distance_to_target = 0.0;
    
-   List<Ref<Command>> move_commands;
+   List<Ref<Command>> commands;
    Ref<RadarSignature> radar_signature;
    Ref<Command> target;
    void update_radar_signature();

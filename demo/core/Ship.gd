@@ -9,6 +9,7 @@ func set_circle_radius(new_radius: float)->void:
 	circle.shape.radius = new_radius
 
 func _process(_dt):
+	queue_redraw()
 	HP_bar.value = get_HP()
 	shield_bar.value = get_shield()
 	energy_bar.value = get_energy()

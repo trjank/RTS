@@ -26,6 +26,7 @@ public:
    void begin_path();
    void update_path();
    void update_target();
+   void clear_commands();
    void clear_units();
    void select_unit(Unit* unit);
    void set_command_icon(Ref<Texture2D> new_image);

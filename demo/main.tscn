@@ -8,8 +8,9 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y4s1u"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("container")]
 script = ExtResource("1_h0c8p")
+container = NodePath("Objects")
 
 [node name="Camera" type="RigidBody2D" parent="." node_paths=PackedStringArray("camera_node")]
 gravity_scale = 1.66533e-16

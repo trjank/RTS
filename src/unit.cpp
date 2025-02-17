@@ -1,6 +1,7 @@
+#include <godot_cpp/core/math.hpp>
 #include "unit.hpp"
 
-#include <godot_cpp/variant/utility_functions.hpp>
+using godot::CLAMP;
 
 Unit::Unit() {
    radar_signature.instantiate();
@@ -22,20 +23,19 @@ void Unit::kill() {
    queue_free();
 }
 void Unit::stop_moving() {
-   move_commands.clear();
+   commands.clear();
 }
 void Unit::stop_targeting() {
    target.unref();
 }
 void Unit::queue_move(Ref<Unit::Command> new_command) {
-   move_commands.push_back(new_command);
+   if (commands.size() < MAX_N_COMMANDS) commands.push_back(new_command);
 }
 void Unit::set_target(Ref<Unit::Command> new_target) {
    target = new_target;
 }
 Vector2 Unit::get_forward_direction() {
-   constexpr int Y_BASIS_VECTOR = 1;
-   return get_transform().columns[Y_BASIS_VECTOR];
+   return -get_transform().columns[1];
 }
 void Unit::cloak() {
    radar_signature->state = CLOAKED;
@@ -53,42 +53,49 @@ void Unit::hit(float damage) {
    if ((HP -= damage) <= 0) kill();
 }
 Ref<Unit::Command> Unit::get_current_command() {
-   return move_commands.front()->get();
+   return commands.front()->get();
 }
 void Unit::move_to_target() {
-   if (move_commands.is_empty()) return;
+   angle_to_target = 0.0;
+   applying_thrust = false;
+   if (commands.is_empty()) return;
    Ref<Command> command = get_current_command();
-   if (not command->is_valid()) return move_commands.pop_front();
+   if (not command->is_valid()) return commands.pop_front();
    //-------------------------------------------------------------------
    Vector2 separation = command->get_position() - get_global_position();
    distance_to_target = separation.length();
-   angle_to_target    = separation.angle() - get_global_rotation();
+   angle_to_target    = get_forward_direction().angle_to(separation);
+   time_to_move       = distance_to_target / get_linear_velocity().length();
    time_to_turn       = angle_to_target / get_angular_velocity();
    stop_distance      = get_linear_velocity().dot(separation.normalized());
    applying_thrust    = can_move and
                         distance_to_target > stop_distance and
                         time_to_turn <= path_arcing * time_to_move;
    //-------------------------------------------------------------------
-   if (command->is_controlled_by(this)) order_attack(command);
+   if (distance_to_target <= DISTANCE_TOLERANCE) commands.pop_front();
+   // if (command->is_controlled_by(this)) order_attack(command);
+}
+void Unit::order_attack(Ref<Command> command) {
+   // do stuff here
 }
 void Unit::_physics_process(double dt) {
    update_radar_signature();
    move_to_target();
 }
 void Unit::_integrate_forces(PhysicsDirectBodyState2D* state) {
-   if (applying_thrust) state->apply_central_force(thrust * get_forward_direction());
+   const float K = 10.0;
    state->apply_central_force(-drag * get_linear_velocity());
-   state->set_angular_velocity(copysign(turnrate, angle_to_target));
+   state->set_angular_velocity(turnrate * CLAMP(K * angle_to_target, -1.0, 1.0));
+   if (applying_thrust) state->apply_central_force(thrust * get_forward_direction());
 }
 void Unit::_process(double _dt) {
    queue_redraw();
 }
 void Unit::_draw() {
-   if (move_commands.is_empty()) return;
+   if (commands.is_empty()) return;
    static const Color WHITE(1.0, 1.0, 1.0, 0.3);
-   draw_set_transform_matrix(get_global_transform().affine_inverse());
-   Vector2 path_start = get_global_position();
-   Vector2 path_end = get_current_command()->get_position();
+   Vector2 path_start = Vector2(0.0, 0.0);
+   Vector2 path_end = to_local(get_current_command()->get_position());
    draw_line(path_start, path_end, WHITE, 1.0);
 }
 
@@ -96,9 +103,10 @@ void Unit::_draw() {
 
 Unit::Command::Command() {
    icon = memnew(Sprite2D);
+   valid = true;
 }
 Unit::Command::~Command() {
-   // icon->queue_free();
+   icon->queue_free();
 }
 void Unit::Command::invalidate() {
    valid = false;
@@ -149,9 +157,7 @@ void Unit::Command::track() {
 
 
 void Unit::RadarSignature::queue_move(Ref<Command> command) {
-   godot::UtilityFunctions::print("TRIED!");
-   if (state != DEAD) //unit->queue_move(command);
-   godot::UtilityFunctions::print("NOT DEAD!");
+   if (state != DEAD) unit->queue_move(command);
 }
 void Unit::RadarSignature::set_target(Ref<Command> command) {
    if (state != DEAD) unit->set_target(command);

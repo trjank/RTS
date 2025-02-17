@@ -33,6 +33,7 @@ void Ship::_bind_methods() {
 }
 void MouseCommands::_bind_methods() {
 	bind("set_command_icon", &MouseCommands::set_command_icon);
+	bind("clear_commands", &MouseCommands::clear_commands);
 	bind("clear_units", &MouseCommands::clear_units);
 	bind("select_unit", &MouseCommands::select_unit);
 	bind("order_units_to_move", &MouseCommands::order_units_to_move);

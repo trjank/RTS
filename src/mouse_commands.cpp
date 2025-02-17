@@ -2,15 +2,14 @@
 #include <godot_cpp/classes/area2d.hpp>
 #include "mouse_commands.hpp"
 
-#define min_i godot::MIN<int, int>
-#define min_f godot::MIN<float, float>
-
+using godot::MIN;
+using godot::MAX;
 using godot::Area2D;
-
-#include <godot_cpp/variant/utility_functions.hpp>
+using godot::Callable;
 
 MouseCommands::MouseCommands() {
    target.instantiate();
+   connect("tree_exited", Callable(this, "clear_commands"));
 }
 void MouseCommands::set_command_icon(Ref<Texture2D> new_image) {
    move_icon_image = new_image;
@@ -21,6 +20,9 @@ void MouseCommands::update_target() {
 void MouseCommands::set_formation(Formation new_formation) {
    formation = new_formation;
 }
+void MouseCommands::clear_commands() {
+   commands.clear();
+}
 void MouseCommands::clear_units() {
    units.clear();
 }
@@ -30,14 +32,12 @@ void MouseCommands::select_unit(Unit* unit) {
 }
 void MouseCommands::order_units_to_move() {
    // do sorting here (make this later)
-   godot::UtilityFunctions::print("UNITS: ", units.size());
-   godot::UtilityFunctions::print("COMMANDS: ", commands.size());
 	for (int n = 0; n < units.size(); ++n)
       units[n]->queue_move(commands[n]);
 }
 Vector2 MouseCommands::get_point(float parametric_dist) {
-	int start_index       = min_i(parametric_dist, waypoints.size() - 2);
-	float subsegment_dist = min_f(parametric_dist - start_index, 1.0);
+	int start_index       = MIN(parametric_dist, waypoints.size() - 2);
+	float subsegment_dist = MIN(parametric_dist - start_index, 1.0);
 	Vector2 segment_start = waypoints[start_index];
 	Vector2 segment_end   = waypoints[start_index + 1];
 	return segment_start.lerp(segment_end, subsegment_dist);
