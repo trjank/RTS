@@ -94,9 +94,30 @@ void Unit::_process(double _dt) {
 void Unit::_draw() {
    if (commands.is_empty()) return;
    static const Color WHITE(1.0, 1.0, 1.0, 0.3);
-   Vector2 path_start = Vector2(0.0, 0.0);
+   Vector2 path_start = Vector2(0., 0.);
    Vector2 path_end = to_local(get_current_command()->get_position());
    draw_line(path_start, path_end, WHITE, 1.0);
+}
+
+
+
+float Unit::RadarSignature::get_HP() {
+   return HP;
+}
+Unit::State Unit::RadarSignature::get_state() {
+   return state;
+}
+Vector2 Unit::RadarSignature::get_position() {
+   return position;
+}
+Vector2 Unit::RadarSignature::get_velocity() {
+   return velocity;
+}
+void Unit::RadarSignature::try_queue_move(Ref<Command> command) {
+   if (state != DEAD) unit->queue_move(command);
+}
+void Unit::RadarSignature::try_set_target(Ref<Command> command) {
+   if (state != DEAD) unit->set_target(command);
 }
 
 
@@ -108,14 +129,14 @@ Unit::Command::Command() {
 Unit::Command::~Command() {
    icon->queue_free();
 }
+Vector2 Unit::Command::get_position() {
+   return icon->get_global_position();
+}
 void Unit::Command::invalidate() {
    valid = false;
 }
 bool Unit::Command::is_valid() {
    return valid and (prey.is_null() or prey->state != DEAD);
-}
-Vector2 Unit::Command::get_position() {
-   return icon->get_global_position();
 }
 bool Unit::Command::is_controlled_by(Unit* caller) {
    return predator == caller;
@@ -124,20 +145,7 @@ void Unit::Command::move_to(Vector2 new_position) {
    icon->set_global_position(new_position);
 }
 void Unit::Command::ram() {
-   move_to(prey->position);
-}
-void Unit::Command::kite(float min_distance, float max_distance) {
-   bool too_close = predator->distance_to_target < min_distance;
-   bool too_far   = predator->distance_to_target > max_distance;
-   predator->can_move = too_close or too_far;
-   if (too_close) flee(max_distance);
-   else if (too_far) ram();
-}
-void Unit::Command::flee(float safe_distance) {
-   Vector2 pred_pos = predator->get_global_position();
-   Vector2 radial   = pred_pos - prey->position;
-   Vector2 safe_pos = pred_pos - safe_distance * radial.normalized();
-   move_to(safe_pos);
+   move_to(prey->get_position());
 }
 void Unit::Command::track() {
    Vector2 pred_pos    = predator->get_global_position();
@@ -154,11 +162,16 @@ void Unit::Command::track() {
    Vector2 intersection = prey->position + time_intersect * prey->velocity;
    move_to(intersection);
 }
-
-
-void Unit::RadarSignature::queue_move(Ref<Command> command) {
-   if (state != DEAD) unit->queue_move(command);
+void Unit::Command::flee(float safe_distance) {
+   Vector2 pred_pos = predator->get_global_position();
+   Vector2 radial   = pred_pos - prey->position;
+   Vector2 safe_pos = pred_pos - safe_distance * radial.normalized();
+   move_to(safe_pos);
 }
-void Unit::RadarSignature::set_target(Ref<Command> command) {
-   if (state != DEAD) unit->set_target(command);
+void Unit::Command::kite(float min_distance, float max_distance) {
+   bool too_close = predator->distance_to_target < min_distance;
+   bool too_far   = predator->distance_to_target > max_distance;
+   predator->can_move = too_close or too_far;
+   if (too_close) flee(max_distance);
+   else if (too_far) ram();
 }

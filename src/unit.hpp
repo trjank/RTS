@@ -21,15 +21,16 @@ using godot::Texture2D;
 
 class Unit: public RigidBody2D {
    GDCLASS(Unit, RigidBody2D)
-   static constexpr float ANGLE_TOLERANCE = 0.1;
-   static constexpr float DISTANCE_TOLERANCE = 50.0;
-   static constexpr int MAX_N_COMMANDS = 3;
    static float friction;
    void move_to_target();
 public:
+   static constexpr float DISTANCE_TOLERANCE = 50.0;
+   static constexpr float ANGLE_TOLERANCE = 0.1;
+   static constexpr int MAX_N_COMMANDS = 3;
    enum State { DEAD, ALIVE, CLOAKED };
    class RadarSignature;
    class Command;
+   float get_HP();
    Vector2 get_forward_direction();
    void cloak();
    void decloak();
@@ -39,7 +40,6 @@ public:
    void stop_targeting();
    void queue_move(Ref<Command> new_command);
    void set_target(Ref<Command> new_target);
-   float get_HP();
    Ref<Command> get_current_command();
    virtual void order_attack(Ref<Command> command);
    void _draw() override;
@@ -48,7 +48,6 @@ public:
    void _integrate_forces(PhysicsDirectBodyState2D* state) override;
    Unit();
    ~Unit();
-   friend class Command;
    friend class MouseCommands;
 protected:
    static void _bind_methods();
@@ -74,40 +73,44 @@ protected:
 
 class Unit::RadarSignature: public RefCounted {
    GDCLASS(RadarSignature, RefCounted)
-protected:
-   Unit* unit;
-   static void _bind_methods();
-public:
-   float HP = 0.0;
+   float HP;
    State state;
    Vector2 position;
    Vector2 velocity;
-   void queue_move(Ref<Command> command);
-   void set_target(Ref<Command> command);
+   Unit* unit;
+public:
+   float get_HP();
+   State get_state();
+   Vector2 get_position();
+   Vector2 get_velocity();
+   void try_queue_move(Ref<Command> command);
+   void try_set_target(Ref<Command> command);
    friend class Unit;
+protected:
+   static void _bind_methods();
 };
 
 class Unit::Command: public RefCounted {
    GDCLASS(Command, RefCounted)
    bool valid;
    Sprite2D* icon;
+public:
+   Command();
+   ~Command();
+   Vector2 get_position();
+   void invalidate();
+   bool is_valid();
+   bool is_controlled_by(Unit* caller);
+   void move_to(Vector2 new_position);
+   friend class MouseCommands;
 protected:
    static void _bind_methods();
    Unit* predator;
    Ref<RadarSignature> prey;
-public:
-   Command();
-   ~Command();
-   void invalidate();
-   bool is_valid();
-   Vector2 get_position();
-   bool is_controlled_by(Unit* caller);
-   void move_to(Vector2 new_position);
    void ram();
-   void kite(float min_distance, float max_distance);
-   void flee(float safe_distance);
    void track();
-   friend class MouseCommands;
+   void flee(float safe_distance);
+   void kite(float min_distance, float max_distance);
 };
 
 #endif

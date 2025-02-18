@@ -17,6 +17,15 @@ using godot::Texture2D;
 
 class MouseCommands: public Node2D {
    GDCLASS(MouseCommands, Node2D)
+   float path_length = 0.0;
+   template<typename T> struct MoveOrder {
+      static Vector2 get_center(Vector<T> objects);
+      Vector2 axis;
+      Vector2 center;
+      bool operator()(const T& A, const T& B) const;
+   };
+   typedef MoveOrder<Ref<Unit::RadarSignature>> UnitMoveOrder;
+   typedef MoveOrder<Ref<Unit::Command>> CommandMoveOrder;
 public:
    enum Formation { LINE = 2, V = 3, SMOOTH = 10, PRECISE = 30 };
    static const int MAX_LINE_WAYPOINTS = 30;
@@ -30,10 +39,10 @@ public:
    void clear_units();
    void select_unit(Unit* unit);
    void set_command_icon(Ref<Texture2D> new_image);
+   Ref<Unit::Command> new_command(Vector2 pos);
    MouseCommands();
 protected:
    float horizontal_priority = 0.1;
-   float path_length = 0.0;
    Formation formation = LINE;
    Vector<Ref<Unit::RadarSignature>> units;
    Vector<Ref<Unit::Command>> commands;
@@ -41,7 +50,6 @@ protected:
    Ref<Unit::Command> target;
    Ref<Texture2D> move_icon_image;
    void update_commands();
-   Ref<Unit::Command> new_command_at(Vector2 pos);
    Vector2 get_point(float parametric_dist);
    static void _bind_methods();
 };

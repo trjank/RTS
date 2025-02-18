@@ -15,7 +15,7 @@ var selection_end: Vector2
 var __action := Action.NONE
 
 func _ready():
-	set_command_icon(preload("res://mouse/commands/move.png"))
+	set_command_icon(preload("res://mouse/commands/move_marker.png"))
 
 func set_action(new_action: Action, cursor := CURSOR_DEFAULT)->void:
 	__action = new_action
