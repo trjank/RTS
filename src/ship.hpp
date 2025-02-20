@@ -8,7 +8,7 @@ class Ship: public Unit {
 public:
    float get_shield();
    float get_energy();
-   void hit(float damage, float shield_pen = 0.0);
+   void hit(float damage, float shield_penetration);
    void _physics_process(double dt) override;
 protected:
    float max_HP = 100.0;
