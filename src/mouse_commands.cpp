@@ -1,16 +1,13 @@
 #include <godot_cpp/core/math.hpp>
-#include <godot_cpp/classes/area2d.hpp>
 #include "mouse_commands.hpp"
 
-#define INVALID_N_WAYPOINTS_MSG "Too few number of waypoints to construct path"
-#define MISSING_UNITS_MSG "Encountered missing units and/or too many commands"
-#define INVALID_SIZE_MSG "Cursor image size must be 32x32 pixels"
+#define INVALID_N_WAYPOINTS_MSG "(MouseCommands) Too few number of waypoints to construct path"
+#define MISSING_UNITS_MSG "(MouseCommands) Encountered missing units and/or too many commands"
+#define INVALID_SIZE_MSG "(MouseCommands) Cursor image size must be 32x32 pixels"
 
 using godot::MIN;
-using godot::Area2D;
-using godot::Callable;
 
-template<typename T>
+template<typename T /* UNIT OR COMMAND REF ONLY */>
 Vector2 MouseCommands::MoveOrder<T>::get_center(Vector<T> objects) {
    Vector2 center = { 0, 0 };
    for (T& object: objects) {
@@ -19,14 +16,14 @@ Vector2 MouseCommands::MoveOrder<T>::get_center(Vector<T> objects) {
    center /= objects.size();
    return center;
 }
-template<typename T>
+template<typename T /* UNIT OR COMMAND REF ONLY */>
 bool MouseCommands::MoveOrder<T>::operator()(const T& A, const T& B) const {
    /*-------------------------------------------------------*
     | Align the units and commands perpendicularly to the   |
-    | direction of travel. If the units are being commanded |
-    | to move from left to right, the units and commands    |
-    | will be sorted vertically; units will be sent to      |
-    | a position with a similar y value.                    |
+    | direction of travel. E.g. If the units are commanded  |
+    | to move horizontally, the units and commands will be  |
+    | sorted vertically; units will be sent to a position   |
+    | with a similar y value.                               |
     *-------------------------------------------------------*/
    float A_perp = (A->get_position() - center).cross(axis);
    float B_perp = (B->get_position() - center).cross(axis);
@@ -35,6 +32,12 @@ bool MouseCommands::MoveOrder<T>::operator()(const T& A, const T& B) const {
 
 MouseCommands::MouseCommands(): CURSOR_SIZE{32, 32}, CURSOR_CENTER{16, 16} {
    target.instantiate();
+}
+MouseCommands::Action MouseCommands::get_action() {
+   return action;
+}
+MouseCommands::Formation MouseCommands::get_formation() {
+   return formation;
 }
 void MouseCommands::set_command_icon(Ref<Texture2D> new_image) {
    move_icon_image = new_image;
@@ -102,7 +105,7 @@ void MouseCommands::begin_path() {
    int n_waypoints = static_cast<int>(formation);
    ERR_FAIL_COND_MSG(n_waypoints <= 1, INVALID_N_WAYPOINTS_MSG);
    Vector2 start_pos = get_global_mouse_position();
-   path_length = 0.0;
+   path_length = 0;
    waypoints.resize(n_waypoints);
    waypoints.fill(start_pos);
    commands.resize(units.size());
@@ -156,7 +159,7 @@ void MouseCommands::set_action_with_cursor(Action new_action, Input& input) {
    input.set_custom_mouse_cursor(image, Input::CURSOR_ARROW, CURSOR_CENTER);
 }
 void MouseCommands::bind_cursor_to_action(Ref<Texture2D> image, Action action) {
-   ERR_FAIL_COND_MSG(image != nullptr and image->get_size() != CURSOR_SIZE, INVALID_SIZE_MSG);
+   ERR_FAIL_COND_MSG(image.is_valid() and image->get_size() != CURSOR_SIZE, INVALID_SIZE_MSG);
    cursor_bindings[action] = image;
 }
 void MouseCommands::reset_selection() {
@@ -167,21 +170,7 @@ void MouseCommands::update_selection() {
    selection_end = get_global_mouse_position();
    call("_update_selection_box", selection_start, selection_end);
 }
-void MouseCommands::_process(double _dt) {
-   /*-------------------------------------------------------*
-    | Updates occur every frame instead of on keypress      |
-    | because camera movement, which is not always picked   |
-    | up by _input or _unhandled_input, changes the mouse's |
-    | world position.                                       |
-    *-------------------------------------------------------*/
-   switch (action) {
-      case MOVE:   update_path(); break;
-      case TARGET: update_target(); break;
-      case SELECT: update_selection(); break;
-      default: break;
-   }
-}
-void MouseCommands::update_formation_from_input(Input& input) {
+void MouseCommands::choose_formation(Input& input) {
    if (input.is_action_just_pressed("line formation"))
       formation = LINE;
    else if (input.is_action_just_pressed("v formation"))
@@ -191,36 +180,55 @@ void MouseCommands::update_formation_from_input(Input& input) {
    else if (input.is_action_just_pressed("precise formation"))
       formation = PRECISE;
 }
+void MouseCommands::choose_action(Input& input) {
+   if (input.is_action_just_pressed("left_click")) {
+      set_action_with_cursor(SELECT, input);
+      reset_selection();
+   } else if (input.is_action_just_pressed("move")) {
+      set_action_with_cursor(MOVE, input);
+      begin_path();
+   } else if (input.is_action_just_released("target"))
+      set_action_with_cursor(TARGET, input);
+}
+void MouseCommands::maybe_end_targeting(Input& input) {
+   if (not input.is_action_just_released("target")) return
+   // order_units_to_move but modified
+   set_action_with_cursor(NONE, input);
+}
+void MouseCommands::maybe_end_selection(Input& input) {
+   if (not input.is_action_just_released("left_click")) return;
+   call("_finish_selection");
+   reset_selection();
+   set_action_with_cursor(NONE, input);
+}
+void MouseCommands::maybe_end_move(Input& input) {
+   if (not input.is_action_just_released("move")) return;
+   order_units_to_move();
+   set_action_with_cursor(NONE, input);
+}
+void MouseCommands::_process(double _dt) {
+   /*-------------------------------------------------------*
+    | Updates occur every frame instead of on keypress      |
+    | because camera movement, which is not always picked   |
+    | up by _input or _unhandled_input, changes the mouse's |
+    | world position.                                       |
+    *-------------------------------------------------------*/
+   switch (action) {
+      case MOVE: update_path(); break;
+      case TARGET: update_target(); break;
+      case SELECT: update_selection(); break;
+      default: break;
+   }
+}
 void MouseCommands::_unhandled_input(const Ref<InputEvent>& event) {
    if (event->is_class("InputEventMouseMotion")) return;
    Input& input = *Input::get_singleton();
-   update_formation_from_input(input);
+   choose_formation(input);
    switch (action) {
-      case NONE:
-         if (input.is_action_just_pressed("left_click")) {
-            set_action_with_cursor(SELECT, input);
-            reset_selection();
-         } else if (input.is_action_just_pressed("move")) {
-            set_action_with_cursor(MOVE, input);
-            begin_path();
-         } else if (input.is_action_just_released("target"))
-            set_action_with_cursor(TARGET, input);
-         break;
-      case TARGET:
-         if (input.is_action_just_released("target"))
-            set_action_with_cursor(NONE, input);
-         break;
-      case SELECT:
-         if (input.is_action_just_released("left_click")) {
-            call("_finish_selection");
-            reset_selection();
-            set_action_with_cursor(NONE, input);
-         } break;
-      case MOVE:
-         if (input.is_action_just_released("move")) {
-            order_units_to_move();
-            set_action_with_cursor(NONE, input);
-         } break;
+      case NONE: choose_action(input); break;
+      case MOVE: maybe_end_move(input); break;
+      case TARGET: maybe_end_targeting(input); break;
+      case SELECT: maybe_end_selection(input); break;
       default: break;
    }
 }

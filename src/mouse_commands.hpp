@@ -1,9 +1,8 @@
 #ifndef MOUSE_COMMANDS_HPP
 #define MOUSE_COMMANDS_HPP
 
-#include <godot_cpp/classes/node2d.hpp>
 #include <godot_cpp/templates/vector.hpp>
-#include <godot_cpp/variant/typed_array.hpp>
+#include <godot_cpp/classes/node2d.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -15,7 +14,6 @@ using godot::Vector2i;
 using godot::Node2D;
 using godot::InputEvent;
 using godot::Vector;
-using godot::TypedArray;
 using godot::Texture2D;
 using godot::Input;
 
@@ -43,6 +41,8 @@ public:
    const Vector2i CURSOR_CENTER;
 
    MouseCommands();
+   Action get_action();
+   Formation get_formation();
    void bind_cursor_to_action(Ref<Texture2D> image, Action action);
    void clear_units();
    void select_unit(Unit* unit);
@@ -82,7 +82,7 @@ private:
     | move sensibly as to reduce travel distance and        |
     | intersections with other units.                       |
     *-------------------------------------------------------*/
-   template<typename T>
+   template<typename T /* UNIT OR COMMAND REF ONLY */>
    struct MoveOrder {
       static Vector2 get_center(Vector<T> objects);
       Vector2 axis;
@@ -92,6 +92,7 @@ private:
    typedef MoveOrder<Ref<Unit::RadarSignature>> UnitMoveOrder;
    typedef MoveOrder<Ref<Unit::Command>> CommandMoveOrder;
 
+   Vector2 get_point(float parametric_dist);
    void begin_path();
    void update_path();
    void reset_selection();
@@ -100,8 +101,13 @@ private:
    void update_commands();
    void order_units_to_move();
    void set_action_with_cursor(Action new_action, Input& input);
-   void update_formation_from_input(Input& input);
-   Vector2 get_point(float parametric_dist);
+
+   void choose_formation(Input& input);
+   void choose_action(Input& input);
+   void maybe_end_targeting(Input& input);
+   void maybe_end_selection(Input& input);
+   void maybe_end_move(Input& input);
+
 };
 
 VARIANT_ENUM_CAST(MouseCommands::Formation);

@@ -7,6 +7,7 @@
 #include "ship.hpp"
 #include "projectile.hpp"
 #include "mouse_commands.hpp"
+#include "hitbox.hpp"
 
 #define bind_method ClassDB::bind_method
 #define bind_enum ClassDB::bind_integer_constant
@@ -35,6 +36,8 @@ void MouseCommands::_bind_methods() {
 	BIND_VIRTUAL_METHOD(MouseCommands, _finish_selection);
 	BIND_VIRTUAL_METHOD(MouseCommands, _reset_selection_box);
 	BIND_VIRTUAL_METHOD(MouseCommands, _update_selection_box);
+	bind_method(D_METHOD("get_action"), &MouseCommands::get_action);
+	bind_method(D_METHOD("get_formation"), &MouseCommands::get_formation);
 	bind_method(D_METHOD("bind_cursor_to_action", "image", "action"), &MouseCommands::bind_cursor_to_action);
 	bind_method(D_METHOD("set_command_icon", "image"), &MouseCommands::set_command_icon);
 	bind_method(D_METHOD("clear_units"), &MouseCommands::clear_units);
@@ -47,6 +50,14 @@ void MouseCommands::_bind_methods() {
 	bind_enum("MouseCommands", "Action", "SELECT", SELECT);
 	bind_enum("MouseCommands", "Action", "MOVE", MOVE);
 	bind_enum("MouseCommands", "Action", "TARGET", TARGET);
+}
+void Hitbox::_bind_methods() {
+	bind_method(D_METHOD("contains", "coords"), &Hitbox::contains);
+	bind_method(D_METHOD("insert", "coords", "value"), &Hitbox::insert);
+	bind_method(D_METHOD("merge", "hitbox"), &Hitbox::merge);
+	bind_method(D_METHOD("remove", "hitbox"), &Hitbox::remove);
+	bind_method(D_METHOD("get_size"), &Hitbox::get_size);
+	bind_method(D_METHOD("calculate_size"), &Hitbox::calculate_size);
 }
 
 void initialize_module(ModuleInitializationLevel p_level) {
