@@ -11,7 +11,6 @@ class Ship: public Unit {
 public:
    static constexpr float ENERGY_PER_WARP = 0.0;
    static constexpr int MAX_N_TURRETS = 100;
-   static inline Color warp_color = Color(0.0, 1.0, 0.0, 0.3);
    class Turret;
    float get_shield();
    float get_energy();
@@ -21,9 +20,8 @@ public:
    Turret& get_turret(int ID);
    void _physics_process(double dt) override;
 protected:
-   float max_warp = 0.0;
-   float warp = 0.0;
-   float warp_per_sec = 0.0;
+   float max_warp = 1000.0;
+   float warp_per_sec = 100.0;
    float max_HP = 100.0;
    float shield = 0.0;
    float max_shield = 100.0;

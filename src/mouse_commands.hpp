@@ -64,6 +64,7 @@ public:
 protected:
    static void _bind_methods();
 private:
+   bool queue_move = true;
    Action action = NONE;
    Formation formation = LINE;
    float path_length = 0;

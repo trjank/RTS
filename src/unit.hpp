@@ -25,6 +25,7 @@ public:
    static constexpr float TURN_JERKINESS = 10.0;
    static constexpr int MAX_N_COMMANDS = 3;
    static inline Color path_color = Color(1.0, 1.0, 1.0, 0.3);
+   static inline Color warp_color = Color(0.6, 1.0, 0.8, 0.5);
    enum State { DEAD, ALIVE, CLOAKED };
    class RadarSignature;
    class Command;
@@ -36,8 +37,9 @@ public:
    void kill();
    void stop_moving();
    void stop_targeting();
-   void queue_move(Ref<Command> new_command);
+   void queue_move(Ref<Command> new_command, bool clear_queue = false);
    void set_target(Ref<Command> new_target);
+   int get_num_commands();
    Ref<Command> get_current_command();
    virtual void order_attack(Ref<Command> command);
    void _draw() override;
@@ -50,6 +52,7 @@ public:
 protected:
    static void _bind_methods();
    bool can_move: 1;
+   bool can_warp: 1;
    bool applying_thrust: 1;
    /*-------------------------------------------------------*
     | Godot's builtin damping is not force-based, which     |
@@ -69,6 +72,7 @@ protected:
     | conditions.                                           |
     *-------------------------------------------------------*/
    float path_arcing = 0.1;
+   float warp = 100.0;
    float turnrate = 1.0;
    float thrust = 500.0;
    float speed = 0.0;
@@ -80,8 +84,8 @@ protected:
    Ref<RadarSignature> radar_signature;
    Ref<Command> target;
    void update_radar_signature();
-private:
    void move_to_target();
+   void try_to_warp(PhysicsDirectBodyState2D* state);
 };
 
 class Unit::RadarSignature: public RefCounted {
@@ -92,7 +96,7 @@ public:
    Vector2 get_position();
    Vector2 get_velocity();
    void try_stop_moving();
-   void try_queue_move(Ref<Command> command);
+   void try_queue_move(Ref<Command> command, bool clear_queue = false);
    void try_set_target(Ref<Command> command);
    friend class Unit;
 protected:

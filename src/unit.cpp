@@ -30,8 +30,11 @@ void Unit::stop_moving() {
 void Unit::stop_targeting() {
    target.unref();
 }
-void Unit::queue_move(Ref<Unit::Command> new_command) {
-   if (commands.size() < MAX_N_COMMANDS) commands.push_back(new_command);
+void Unit::queue_move(Ref<Unit::Command> new_command, bool clear_queue) {
+   if (clear_queue) commands.clear();
+   else if (commands.size() >= MAX_N_COMMANDS) return;
+   can_warp = false;
+   commands.push_back(new_command);
 }
 void Unit::set_target(Ref<Unit::Command> new_target) {
    target = new_target;
@@ -57,6 +60,9 @@ void Unit::hit(float damage) {
 Ref<Unit::Command> Unit::get_current_command() {
    return commands.front()->get();
 }
+int Unit::get_num_commands() {
+   return commands.size();
+}
 void Unit::move_to_target() {
    if (commands.is_empty()) return;
    /*-------------------------------------------------------------------------*/
@@ -71,12 +77,21 @@ void Unit::move_to_target() {
    float time_to_move = distance_to_target / speed;
    float time_to_turn = ABS(angle_to_target) / turnrate;
    applying_thrust    = can_move and time_to_turn <= path_arcing * time_to_move;
+   can_warp           = get_num_commands() == 1 and distance_to_target <= warp;
    /*-------------------------------------------------------------------------*/
    if (command->is_controlled_by(this)) order_attack(command);
    if (distance_to_target <= stop_distance) commands.pop_front();
 }
 void Unit::order_attack(Ref<Command> command) {
    // do stuff here
+}
+void Unit::try_to_warp(PhysicsDirectBodyState2D* state) {
+   if (not can_warp) return;
+   warp -= distance_to_target;
+   set_global_position(get_current_command()->get_position());
+   rotate(angle_to_target);
+   commands.pop_front();
+   state->set_linear_velocity({ 0.0, 0.0 });
 }
 void Unit::_physics_process(double dt) {
    move_to_target();
@@ -90,15 +105,17 @@ void Unit::_integrate_forces(PhysicsDirectBodyState2D* state) {
    float turn_direction = CLAMP(TURN_JERKINESS * angle_to_target, -1.0, 1.0);
    state->set_angular_velocity(turnrate * turn_direction);
    if (applying_thrust) state->apply_central_force(thrust * get_forward_direction());
+   try_to_warp(state);
 }
 void Unit::_process(double _dt) {
    queue_redraw();
 }
 void Unit::_draw() {
+   draw_arc({ 0.0, 0.0 }, warp, 0.0, Math_TAU, 100, warp_color, 0.5, true);
    if (commands.is_empty()) return;
    Vector2 path_start = { 0.0, 0.0 };
    Vector2 path_end = to_local(get_current_command()->get_position());
-   draw_line(path_start, path_end, path_color, 1.0);
+   draw_line(path_start, path_end, path_color, 2.0, true);
 }
 
 
@@ -118,8 +135,8 @@ Vector2 Unit::RadarSignature::get_velocity() {
 void Unit::RadarSignature::try_stop_moving() {
    if (state != DEAD) unit->stop_moving();
 }
-void Unit::RadarSignature::try_queue_move(Ref<Command> command) {
-   if (state != DEAD) unit->queue_move(command);
+void Unit::RadarSignature::try_queue_move(Ref<Command> command, bool clear_queue) {
+   if (state != DEAD) unit->queue_move(command, clear_queue);
 }
 void Unit::RadarSignature::try_set_target(Ref<Command> command) {
    if (state != DEAD) unit->set_target(command);

@@ -62,7 +62,7 @@ void MouseCommands::order_units_to_move() {
    commands.sort_custom<CommandMoveOrder>(sort_axis, commands_center);
    /*---------------------------------------------------------------*/
    for (int n = 0; n < commands.size(); ++n) {
-      units[n]->try_queue_move(commands[n]);
+      units[n]->try_queue_move(commands[n], not queue_move);
    }
    commands.clear();
 }
@@ -236,5 +236,6 @@ void MouseCommands::_unhandled_input(const Ref<InputEvent>& event) {
       case SELECT: maybe_end_selection(input); break;
       default: break;
    }
+   if (input.is_action_just_pressed("toggle queue move")) queue_move = not queue_move;
    if (input.is_action_just_released("stop")) stop_all_units();
 }
