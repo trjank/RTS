@@ -7,16 +7,16 @@
 
 using godot::MIN;
 
-template<typename T /* UNIT OR COMMAND REF ONLY */>
+template<typename T>
 Vector2 MouseCommands::MoveOrder<T>::get_center(Vector<T> objects) {
    Vector2 center = { 0, 0 };
-   for (T& object: objects) {
+   for (const T& object: objects) {
       center += object->get_position();
    }
    center /= objects.size();
    return center;
 }
-template<typename T /* UNIT OR COMMAND REF ONLY */>
+template<typename T>
 bool MouseCommands::MoveOrder<T>::operator()(const T& A, const T& B) const {
    /*-------------------------------------------------------*
     | Align the units and commands perpendicularly to the   |
@@ -180,6 +180,11 @@ void MouseCommands::choose_formation(Input& input) {
    else if (input.is_action_just_pressed("precise formation"))
       formation = PRECISE;
 }
+void MouseCommands::stop_all_units() {
+   for (Ref<Unit::RadarSignature> unit: units) {
+      unit->try_stop_moving();
+   }
+}
 void MouseCommands::choose_action(Input& input) {
    if (input.is_action_just_pressed("left_click")) {
       set_action_with_cursor(SELECT, input);
@@ -191,7 +196,7 @@ void MouseCommands::choose_action(Input& input) {
       set_action_with_cursor(TARGET, input);
 }
 void MouseCommands::maybe_end_targeting(Input& input) {
-   if (not input.is_action_just_released("target")) return
+   if (not input.is_action_just_released("target")) return;
    // order_units_to_move but modified
    set_action_with_cursor(NONE, input);
 }
@@ -231,4 +236,5 @@ void MouseCommands::_unhandled_input(const Ref<InputEvent>& event) {
       case SELECT: maybe_end_selection(input); break;
       default: break;
    }
+   if (input.is_action_just_released("stop")) stop_all_units();
 }

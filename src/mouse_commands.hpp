@@ -82,13 +82,7 @@ private:
     | move sensibly as to reduce travel distance and        |
     | intersections with other units.                       |
     *-------------------------------------------------------*/
-   template<typename T /* UNIT OR COMMAND REF ONLY */>
-   struct MoveOrder {
-      static Vector2 get_center(Vector<T> objects);
-      Vector2 axis;
-      Vector2 center;
-      bool operator()(const T& A, const T& B) const;
-   };
+   template<typename T> struct MoveOrder;
    typedef MoveOrder<Ref<Unit::RadarSignature>> UnitMoveOrder;
    typedef MoveOrder<Ref<Unit::Command>> CommandMoveOrder;
 
@@ -100,6 +94,7 @@ private:
    void update_target();
    void update_commands();
    void order_units_to_move();
+   void stop_all_units();
    void set_action_with_cursor(Action new_action, Input& input);
 
    void choose_formation(Input& input);
@@ -107,7 +102,14 @@ private:
    void maybe_end_targeting(Input& input);
    void maybe_end_selection(Input& input);
    void maybe_end_move(Input& input);
+};
 
+template<typename T>
+struct MouseCommands::MoveOrder {
+   static Vector2 get_center(Vector<T> objects);
+   Vector2 axis;
+   Vector2 center;
+   bool operator()(const T& A, const T& B) const;
 };
 
 VARIANT_ENUM_CAST(MouseCommands::Formation);

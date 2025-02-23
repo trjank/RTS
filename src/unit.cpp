@@ -1,6 +1,8 @@
 #include <godot_cpp/core/math.hpp>
 #include "unit.hpp"
 
+#define ABS godot::Math::abs
+
 using godot::CLAMP;
 
 Unit::Unit() {
@@ -56,36 +58,37 @@ Ref<Unit::Command> Unit::get_current_command() {
    return commands.front()->get();
 }
 void Unit::move_to_target() {
-   angle_to_target = 0.0;
-   applying_thrust = false;
    if (commands.is_empty()) return;
+   /*-------------------------------------------------------------------------*/
    Ref<Command> command = get_current_command();
    if (not command->is_valid()) return commands.pop_front();
-   //-------------------------------------------------------------------
+   /*-------------------------------------------------------------------------*/
    Vector2 separation = command->get_position() - get_global_position();
    distance_to_target = separation.length();
    angle_to_target    = get_forward_direction().angle_to(separation);
-   time_to_move       = distance_to_target / get_linear_velocity().length();
-   time_to_turn       = angle_to_target / get_angular_velocity();
    stop_distance      = get_linear_velocity().dot(separation.normalized());
-   applying_thrust    = can_move and
-                        distance_to_target > stop_distance and
-                        time_to_turn <= path_arcing * time_to_move;
-   //-------------------------------------------------------------------
-   if (distance_to_target <= DISTANCE_TOLERANCE) commands.pop_front();
-   // if (command->is_controlled_by(this)) order_attack(command);
+   speed              = get_linear_velocity().length();
+   float time_to_move = distance_to_target / speed;
+   float time_to_turn = ABS(angle_to_target) / turnrate;
+   applying_thrust    = can_move and time_to_turn <= path_arcing * time_to_move;
+   /*-------------------------------------------------------------------------*/
+   if (command->is_controlled_by(this)) order_attack(command);
+   if (distance_to_target <= stop_distance) commands.pop_front();
 }
 void Unit::order_attack(Ref<Command> command) {
    // do stuff here
 }
 void Unit::_physics_process(double dt) {
-   update_radar_signature();
    move_to_target();
+   update_radar_signature();
 }
 void Unit::_integrate_forces(PhysicsDirectBodyState2D* state) {
-   const float K = 10.0;
    state->apply_central_force(-drag * get_linear_velocity());
-   state->set_angular_velocity(turnrate * CLAMP(K * angle_to_target, -1.0, 1.0));
+   /*----------------------------------------------------------------------*/
+   if (commands.is_empty()) return state->set_angular_velocity(0.0);
+   /*----------------------------------------------------------------------*/
+   float turn_direction = CLAMP(TURN_JERKINESS * angle_to_target, -1.0, 1.0);
+   state->set_angular_velocity(turnrate * turn_direction);
    if (applying_thrust) state->apply_central_force(thrust * get_forward_direction());
 }
 void Unit::_process(double _dt) {
@@ -93,10 +96,9 @@ void Unit::_process(double _dt) {
 }
 void Unit::_draw() {
    if (commands.is_empty()) return;
-   static const Color WHITE(1.0, 1.0, 1.0, 0.3);
-   Vector2 path_start = Vector2(0., 0.);
+   Vector2 path_start = { 0.0, 0.0 };
    Vector2 path_end = to_local(get_current_command()->get_position());
-   draw_line(path_start, path_end, WHITE, 1.0);
+   draw_line(path_start, path_end, path_color, 1.0);
 }
 
 
@@ -112,6 +114,9 @@ Vector2 Unit::RadarSignature::get_position() {
 }
 Vector2 Unit::RadarSignature::get_velocity() {
    return velocity;
+}
+void Unit::RadarSignature::try_stop_moving() {
+   if (state != DEAD) unit->stop_moving();
 }
 void Unit::RadarSignature::try_queue_move(Ref<Command> command) {
    if (state != DEAD) unit->queue_move(command);
@@ -155,9 +160,9 @@ void Unit::Command::track() {
    float prey_speed_sq = prey->velocity.length_squared();
    float d_speed_sq    = pred_speed_sq - prey_speed_sq;
    float discriminant  = v_r * v_r + d_speed_sq * radial.length_squared();
-   //---------------------------------------------------------------------
+   /*-------------------------------------------------------------------*/
    if (discriminant < 0) return ram(); // Target is unreachable
-   //---------------------------------------------------------------------
+   /*-------------------------------------------------------------------*/
    float time_intersect = (v_r + sqrt(discriminant)) / d_speed_sq;
    Vector2 intersection = prey->position + time_intersect * prey->velocity;
    move_to(intersection);

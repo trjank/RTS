@@ -21,12 +21,10 @@ using godot::Texture2D;
 
 class Unit: public RigidBody2D {
    GDCLASS(Unit, RigidBody2D)
-   static float friction;
-   void move_to_target();
 public:
-   static constexpr float DISTANCE_TOLERANCE = 50.0;
-   static constexpr float ANGLE_TOLERANCE = 0.1;
+   static constexpr float TURN_JERKINESS = 10.0;
    static constexpr int MAX_N_COMMANDS = 3;
+   static inline Color path_color = Color(1.0, 1.0, 1.0, 0.3);
    enum State { DEAD, ALIVE, CLOAKED };
    class RadarSignature;
    class Command;
@@ -53,47 +51,62 @@ protected:
    static void _bind_methods();
    bool can_move: 1;
    bool applying_thrust: 1;
-   float HP = 0.0;
+   /*-------------------------------------------------------*
+    | Godot's builtin damping is not force-based, which     |
+    | makes calculations like finding the top speed or stop |
+    | distance more difficult. Use the drag value below     |
+    | instead of setting linear_damp or angular_damp.       |
+    *-------------------------------------------------------*/
+   float drag = 1.0;
+   /*-------------------------------------------------------*
+    | NOTE: path_arcing should not be set exactly to zero   |
+    | because the angle to the target will not always be    |
+    | exactly zero and the unit may never move.             |
+    |                                                       |
+    | NOTE: path_arcing should be kept much lower than 1.0, |
+    | since high values may cause the unit to infinitely    |
+    | circle the destination depending on the initial       |
+    | conditions.                                           |
+    *-------------------------------------------------------*/
    float path_arcing = 0.1;
    float turnrate = 1.0;
    float thrust = 500.0;
-   float drag = 1.0;
-
-   float time_to_turn = 0.0;
-   float time_to_move = 0.0;
+   float speed = 0.0;
    float angle_to_target = 0.0;
    float stop_distance = 0.0;
    float distance_to_target = 0.0;
-   
+   float HP = 0.0;
    List<Ref<Command>> commands;
    Ref<RadarSignature> radar_signature;
    Ref<Command> target;
    void update_radar_signature();
+private:
+   void move_to_target();
 };
 
 class Unit::RadarSignature: public RefCounted {
    GDCLASS(RadarSignature, RefCounted)
-   float HP;
-   State state;
-   Vector2 position;
-   Vector2 velocity;
-   Unit* unit;
 public:
    float get_HP();
    State get_state();
    Vector2 get_position();
    Vector2 get_velocity();
+   void try_stop_moving();
    void try_queue_move(Ref<Command> command);
    void try_set_target(Ref<Command> command);
    friend class Unit;
 protected:
    static void _bind_methods();
+private:
+   float HP;
+   State state;
+   Vector2 position;
+   Vector2 velocity;
+   Unit* unit;
 };
 
 class Unit::Command: public RefCounted {
    GDCLASS(Command, RefCounted)
-   bool valid;
-   Sprite2D* icon;
 public:
    Command();
    ~Command();
@@ -111,6 +124,9 @@ protected:
    void track();
    void flee(float safe_distance);
    void kite(float min_distance, float max_distance);
+private:
+   bool valid;
+   Sprite2D* icon;
 };
 
-#endif
+#endif // UNIT_HPP
