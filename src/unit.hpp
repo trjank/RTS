@@ -28,7 +28,7 @@ public:
    static constexpr float TURN_JERKINESS = 10.0;
    static constexpr int MAX_N_COMMANDS = 3;
    static inline Color path_color = Color(1.0, 1.0, 1.0, 0.2);
-   static inline Color warp_color = Color(0.6, 1.0, 0.8, 0.3);
+   static inline Color warp_color = Color(0.8, 0.6, 0.9, 0.5);
    float get_HP();
    Vector2 get_forward_direction();
    void cloak();

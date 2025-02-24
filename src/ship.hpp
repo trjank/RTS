@@ -20,8 +20,8 @@ public:
    Turret& get_turret(int ID);
    void _physics_process(double dt) override;
 protected:
-   float max_warp = 1000.0;
-   float warp_per_sec = 100.0;
+   float max_warp = 5000.0;
+   float warp_per_sec = 200.0;
    float max_HP = 100.0;
    float shield = 0.0;
    float max_shield = 100.0;

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=8 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
 [ext_resource type="Script" path="res://mouse/MouseCommands.gd" id="2_ysidp"]
@@ -6,11 +6,28 @@
 [ext_resource type="Script" path="res://Map/Map.gd" id="7_rg2wc"]
 [ext_resource type="Script" path="res://core/Camera.gd" id="7_wdsxf"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
+bg_color = Color(0, 0, 0, 1)
+border_width_bottom = 2
+border_color = Color(0.772549, 0.611765, 0.85098, 1)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y4s1u"]
 
 [node name="Main" type="Node2D" node_paths=PackedStringArray("container")]
 script = ExtResource("1_h0c8p")
 container = NodePath("Objects")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="VSplitContainer" type="VSplitContainer" parent="UI"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 129.0
+grow_horizontal = 2
+
+[node name="ColorRect" type="PanelContainer" parent="UI/VSplitContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ajdbe")
 
 [node name="Camera" type="RigidBody2D" parent="." node_paths=PackedStringArray("camera_node")]
 gravity_scale = 1.66533e-16

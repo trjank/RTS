@@ -7,7 +7,7 @@ colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)
 
 [sub_resource type="Gradient" id="Gradient_lnt0b"]
 offsets = PackedFloat32Array(0, 0.2, 0.8, 1)
-colors = PackedColorArray(0, 0, 0, 0, 0.560784, 1, 0.752941, 1, 0.560784, 1, 0.752941, 1, 0, 0, 0, 0)
+colors = PackedColorArray(0.772549, 0.611765, 0.85098, 0, 0.772549, 0.611765, 0.85098, 1, 0.772549, 0.611765, 0.85098, 1, 0.772549, 0.611765, 0.85098, 0)
 metadata/_snap_enabled = true
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_1p4g7"]
