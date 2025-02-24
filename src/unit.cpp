@@ -1,8 +1,13 @@
 #include <godot_cpp/core/math.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
 #include "unit.hpp"
 
+#define WARP_VISUAL_PATH "res://mouse/WarpPathVisual.tscn"
 #define ABS godot::Math::abs
 
+using godot::ResourceLoader;
+using godot::PackedScene;
 using godot::CLAMP;
 
 Unit::Unit() {
@@ -87,8 +92,16 @@ void Unit::order_attack(Ref<Command> command) {
 }
 void Unit::try_to_warp(PhysicsDirectBodyState2D* state) {
    if (not can_warp) return;
+   /*-----------------------*/
+   Ref<Command> command = get_current_command();
+   Ref<PackedScene> warp_visual = ResourceLoader::get_singleton()->load(WARP_VISUAL_PATH);
+   Node* warp_path = warp_visual->instantiate();
+   get_parent()->add_child(warp_path);
+   warp_path->call("set_start", get_global_position());
+   warp_path->call("set_end", command->get_position());
+   /*------------------------------------------------*/
    warp -= distance_to_target;
-   set_global_position(get_current_command()->get_position());
+   set_global_position(command->get_position());
    rotate(angle_to_target);
    commands.pop_front();
    state->set_linear_velocity({ 0.0, 0.0 });
@@ -111,11 +124,12 @@ void Unit::_process(double _dt) {
    queue_redraw();
 }
 void Unit::_draw() {
-   draw_arc({ 0.0, 0.0 }, warp, 0.0, Math_TAU, 100, warp_color, 0.5, true);
+   draw_arc({ 0.0, 0.0 }, warp, 0.0, Math_TAU, 100, warp_color, 1.0, true);
    if (commands.is_empty()) return;
+   Ref<Command> command = get_current_command();
    Vector2 path_start = { 0.0, 0.0 };
-   Vector2 path_end = to_local(get_current_command()->get_position());
-   draw_line(path_start, path_end, path_color, 2.0, true);
+   Vector2 path_end = to_local(command->get_position());
+   draw_line(path_start, path_end, path_color, 1.0, true);
 }
 
 
@@ -146,6 +160,7 @@ void Unit::RadarSignature::try_set_target(Ref<Command> command) {
 
 Unit::Command::Command() {
    icon = memnew(Sprite2D);
+   icon->set_z_index(1);
    valid = true;
 }
 Unit::Command::~Command() {
