@@ -23,7 +23,10 @@ func drawShip():
 		newPart.scale = globals.partScale * partData["size"] / newPart.texture.get_size()
 		#var offset = (newPart.scale/2)
 		newPart.position = globals.partScale * (part[1] + partData["offset"])
-		#newPart.rotate(PI/2 * part[2])
+		if part[2]:
+			var rot = PI/2 * part[2]
+			newPart.position = globals.partScale * ( part[1] + partData["offset"].rotated(rot) )
+			newPart.rotate(rot)
 		add_child(newPart)
 
 
