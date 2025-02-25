@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=11 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://images/logo.png" id="2_5s37y"]
 [ext_resource type="Script" path="res://mouse/MouseCommands.gd" id="2_ysidp"]
+[ext_resource type="StyleBox" uid="uid://7ddhu1wc1g27" path="res://navigator_button.tres" id="3_1dx7b"]
 [ext_resource type="Script" path="res://mouse/SelectionRect.gd" id="3_g3712"]
+[ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navigator_button_hover.tres" id="4_dotd0"]
 [ext_resource type="Script" path="res://Map/Map.gd" id="7_rg2wc"]
 [ext_resource type="Script" path="res://core/Camera.gd" id="7_wdsxf"]
 
@@ -40,7 +42,7 @@ theme_override_constants/margin_bottom = 20
 [node name="GridContainer" type="GridContainer" parent="UI/VSplitContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 20
-columns = 5
+columns = 6
 
 [node name="TextureRect" type="TextureRect" parent="UI/VSplitContainer/PanelContainer/MarginContainer/GridContainer"]
 layout_mode = 2
@@ -67,15 +69,24 @@ popup/item_0/id = 0
 [node name="Design" type="Button" parent="UI/VSplitContainer/PanelContainer/MarginContainer/GridContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = ExtResource("3_1dx7b")
+theme_override_styles/hover = ExtResource("4_dotd0")
 text = "design"
 
 [node name="Battle" type="Button" parent="UI/VSplitContainer/PanelContainer/MarginContainer/GridContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = ExtResource("3_1dx7b")
+theme_override_styles/hover = ExtResource("4_dotd0")
 text = "battle"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="UI/VSplitContainer/PanelContainer/MarginContainer/GridContainer"]
+[node name="Chat" type="Button" parent="UI/VSplitContainer/PanelContainer/MarginContainer/GridContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = ExtResource("3_1dx7b")
+theme_override_styles/hover = ExtResource("4_dotd0")
+text = "chat
+"
 
 [node name="Camera" type="RigidBody2D" parent="." node_paths=PackedStringArray("camera_node")]
 gravity_scale = 1.66533e-16
