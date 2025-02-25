@@ -5,19 +5,24 @@
 #include "unit.hpp"
 
 using godot::Vector;
+using godot::String;
 
 class Ship: public Unit {
    GDCLASS(Ship, Unit)
 public:
+   class Part;
+   class Turret;
+   enum Error {};
    static constexpr float ENERGY_PER_WARP = 0.0;
    static constexpr int MAX_N_TURRETS = 100;
-   class Turret;
    float get_shield();
    float get_energy();
    float hit_shield(float damage);
    void hit(float damage, float shield_penetration);
    int make_turret();
    Turret& get_turret(int ID);
+   String encode();
+   Error decode(String code);
    void _physics_process(double dt) override;
 protected:
    float max_warp = 5000.0;
@@ -32,10 +37,18 @@ protected:
    float shield_threshold = 1.0;
    static void _bind_methods();
 private:
+   Vector<Part> parts;
    Vector<Turret> turrets;
 };
 
-class Ship::Turret {
+class Ship::Part {
+   static Vector<Part> part_table;
+   float mass;
+   float armor;
+   String encode();
+};
+
+class Ship::Turret: public Ship::Part {
    float min_angle;
    float max_angle;
    void fire();

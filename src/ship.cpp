@@ -17,9 +17,8 @@ float Ship::hit_shield(float damage) {
 }
 void Ship::hit(float damage, float shield_penetration) {
    float shield_damage = damage * shield_penetration;
-   float raw_HP_damage = damage - shield_damage;
    float shield_overkill = hit_shield(shield_damage);
-   Unit::hit(raw_HP_damage + shield_overkill);
+   Unit::hit(damage - shield_damage + shield_overkill);
 }
 void Ship::_physics_process(double dt) {
    Unit::_physics_process(dt);

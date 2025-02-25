@@ -5,10 +5,10 @@ extends MouseCommands
 
 func _ready():
 	set_command_icon(preload("res://mouse/commands/move_marker.png"))
-	bind_cursor_to_action(preload("res://mouse/cursors/cursor_default.png"), NONE)
-	bind_cursor_to_action(preload("res://mouse/cursors/cursor_select.png"), SELECT)
-	bind_cursor_to_action(preload("res://mouse/cursors/cursor_move.png"), MOVE)
-	bind_cursor_to_action(preload("res://mouse/cursors/cursor_target.png"), TARGET)
+	bind_cursor_to_action(preload("res://mouse/cursors/default.png"), NONE)
+	bind_cursor_to_action(preload("res://mouse/cursors/select.png"), SELECT)
+	bind_cursor_to_action(preload("res://mouse/cursors/move.png"), MOVE)
+	bind_cursor_to_action(preload("res://mouse/cursors/target.png"), TARGET)
 
 func _finish_selection()->void:
 	clear_units()
