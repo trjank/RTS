@@ -49,7 +49,7 @@ void MouseCommands::clear_units() {
    units.clear();
 }
 void MouseCommands::select_unit(Unit* unit) {
-   if (unit != nullptr and units.size() < MAX_UNITS_SELECTED)
+   if (unit != nullptr && units.size() < MAX_UNITS_SELECTED)
       units.append(unit->radar_signature);
 }
 void MouseCommands::order_units_to_move() {
@@ -62,7 +62,7 @@ void MouseCommands::order_units_to_move() {
    commands.sort_custom<CommandMoveOrder>(sort_axis, commands_center);
    /*---------------------------------------------------------------*/
    for (int n = 0; n < commands.size(); ++n) {
-      units[n]->try_queue_move(commands[n], not queue_move);
+      units[n]->try_queue_move(commands[n], !queue_move);
    }
    commands.clear();
 }
@@ -159,7 +159,7 @@ void MouseCommands::set_action_with_cursor(Action new_action, Input& input) {
    input.set_custom_mouse_cursor(image, Input::CURSOR_ARROW, CURSOR_CENTER);
 }
 void MouseCommands::bind_cursor_to_action(Ref<Texture2D> image, Action action) {
-   ERR_FAIL_COND_MSG(image.is_valid() and image->get_size() != CURSOR_SIZE, INVALID_SIZE_MSG);
+   ERR_FAIL_COND_MSG(image.is_valid() && image->get_size() != CURSOR_SIZE, INVALID_SIZE_MSG);
    cursor_bindings[action] = image;
 }
 void MouseCommands::reset_selection() {
@@ -196,18 +196,18 @@ void MouseCommands::choose_action(Input& input) {
       set_action_with_cursor(TARGET, input);
 }
 void MouseCommands::maybe_end_targeting(Input& input) {
-   if (not input.is_action_just_released("target")) return;
+   if (! input.is_action_just_released("target")) return;
    // order_units_to_move but modified
    set_action_with_cursor(NONE, input);
 }
 void MouseCommands::maybe_end_selection(Input& input) {
-   if (not input.is_action_just_released("left_click")) return;
+   if (! input.is_action_just_released("left_click")) return;
    call("_finish_selection");
    reset_selection();
    set_action_with_cursor(NONE, input);
 }
 void MouseCommands::maybe_end_move(Input& input) {
-   if (not input.is_action_just_released("move")) return;
+   if (! input.is_action_just_released("move")) return;
    order_units_to_move();
    set_action_with_cursor(NONE, input);
 }
@@ -236,6 +236,6 @@ void MouseCommands::_unhandled_input(const Ref<InputEvent>& event) {
       case SELECT: maybe_end_selection(input); break;
       default: break;
    }
-   if (input.is_action_just_pressed("toggle queue move")) queue_move = not queue_move;
+   if (input.is_action_just_pressed("toggle queue move")) queue_move = ! queue_move;
    if (input.is_action_just_released("stop")) stop_all_units();
 }

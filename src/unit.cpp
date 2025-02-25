@@ -72,7 +72,7 @@ void Unit::move_to_target() {
    if (commands.is_empty()) return;
    /*-------------------------------------------------------------------------*/
    Ref<Command> command = get_current_command();
-   if (not command->is_valid()) return commands.pop_front();
+   if (! command->is_valid()) return commands.pop_front();
    /*-------------------------------------------------------------------------*/
    Vector2 separation = command->get_position() - get_global_position();
    distance_to_target = separation.length();
@@ -81,8 +81,8 @@ void Unit::move_to_target() {
    speed              = get_linear_velocity().length();
    float time_to_move = distance_to_target / speed;
    float time_to_turn = ABS(angle_to_target) / turnrate;
-   applying_thrust    = can_move and time_to_turn <= path_arcing * time_to_move;
-   can_warp           = get_num_commands() == 1 and distance_to_target <= warp;
+   applying_thrust    = can_move && time_to_turn <= path_arcing * time_to_move;
+   can_warp           = get_num_commands() == 1 && distance_to_target <= warp;
    /*-------------------------------------------------------------------------*/
    if (command->is_controlled_by(this)) order_attack(command);
    if (distance_to_target <= stop_distance) commands.pop_front();
@@ -91,7 +91,7 @@ void Unit::order_attack(Ref<Command> command) {
    // do stuff here
 }
 void Unit::try_to_warp(PhysicsDirectBodyState2D* state) {
-   if (not can_warp) return;
+   if (! can_warp) return;
    /*-----------------------*/
    Ref<Command> command = get_current_command();
    Ref<PackedScene> warp_visual = ResourceLoader::get_singleton()->load(WARP_VISUAL_PATH);
@@ -173,7 +173,7 @@ void Unit::Command::invalidate() {
    valid = false;
 }
 bool Unit::Command::is_valid() {
-   return valid and (prey.is_null() or prey->state != DEAD);
+   return valid && (prey.is_null() || prey->state != DEAD);
 }
 bool Unit::Command::is_controlled_by(Unit* caller) {
    return predator == caller;
@@ -208,7 +208,7 @@ void Unit::Command::flee(float safe_distance) {
 void Unit::Command::kite(float min_distance, float max_distance) {
    bool too_close = predator->distance_to_target < min_distance;
    bool too_far   = predator->distance_to_target > max_distance;
-   predator->can_move = too_close or too_far;
+   predator->can_move = too_close || too_far;
    if (too_close) flee(max_distance);
    else if (too_far) ram();
 }
