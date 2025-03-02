@@ -3,7 +3,7 @@
 #include <godot_cpp/classes/packed_scene.hpp>
 #include "unit.hpp"
 
-#define WARP_VISUAL_PATH "res://mouse/WarpPathVisual.tscn"
+#define WARP_VISUAL_PATH "res://battle/WarpPathVisual.tscn"
 #define ABS godot::Math::abs
 
 using godot::ResourceLoader;
@@ -70,10 +70,10 @@ int Unit::get_num_commands() {
 }
 void Unit::move_to_target() {
    if (commands.is_empty()) return;
-   /*-------------------------------------------------------------------------*/
+   /*------------------------------------------------------------------------*/
    Ref<Command> command = get_current_command();
-   if (! command->is_valid()) return commands.pop_front();
-   /*-------------------------------------------------------------------------*/
+   if ( !command->is_valid()) return commands.pop_front();
+   /*------------------------------------------------------------------------*/
    Vector2 separation = command->get_position() - get_global_position();
    distance_to_target = separation.length();
    angle_to_target    = get_forward_direction().angle_to(separation);
@@ -83,7 +83,7 @@ void Unit::move_to_target() {
    float time_to_turn = ABS(angle_to_target) / turnrate;
    applying_thrust    = can_move && time_to_turn <= path_arcing * time_to_move;
    can_warp           = get_num_commands() == 1 && distance_to_target <= warp;
-   /*-------------------------------------------------------------------------*/
+   /*------------------------------------------------------------------------*/
    if (command->is_controlled_by(this)) order_attack(command);
    if (distance_to_target <= stop_distance) commands.pop_front();
 }
@@ -91,8 +91,10 @@ void Unit::order_attack(Ref<Command> command) {
    // do stuff here
 }
 void Unit::try_to_warp(PhysicsDirectBodyState2D* state) {
-   if (! can_warp) return;
-   /*-----------------------*/
+   if ( !can_warp) return;
+   /*-----------------------------------------*/
+   // NOTE FOR LATER: if WARP_VISUAL_PATH is invalid, this code will segfault
+   // FIX THIS SOMETIME IN THE NEAR FUTURE
    Ref<Command> command = get_current_command();
    Ref<PackedScene> warp_visual = ResourceLoader::get_singleton()->load(WARP_VISUAL_PATH);
    Node* warp_path = warp_visual->instantiate();

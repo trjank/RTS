@@ -2,29 +2,34 @@
 #define SHIP_HPP
 
 #include <godot_cpp/templates/vector.hpp>
+#include <godot_cpp/classes/ref_counted.hpp>
 #include "unit.hpp"
+#include "battle.hpp"
+#include "destructable.hpp"
 
+using godot::RefCounted;
 using godot::Vector;
 using godot::String;
 
-class Ship: public Unit {
+class Ship: public Unit, public Destructable {
    GDCLASS(Ship, Unit)
 public:
+   class Data;
    class Part;
    class Turret;
-   enum Error {};
    static constexpr float ENERGY_PER_WARP = 0.0;
    static constexpr int MAX_N_TURRETS = 100;
+   int get_cost() override;
+   float get_energy() override;
    float get_shield();
-   float get_energy();
    float hit_shield(float damage);
-   void hit(float damage, float shield_penetration);
+   void hit(float damage, float shield_penetration = 0.0);
    int make_turret();
    Turret& get_turret(int ID);
-   String encode();
-   Error decode(String code);
+   void kill() override;
    void _physics_process(double dt) override;
 protected:
+   int cost;
    float max_warp = 5000.0;
    float warp_per_sec = 200.0;
    float max_HP = 100.0;
@@ -37,8 +42,13 @@ protected:
    float shield_threshold = 1.0;
    static void _bind_methods();
 private:
+   Ref<Battle::Player> owner;
    Vector<Part> parts;
    Vector<Turret> turrets;
+};
+
+class Ship::Data: public RefCounted {
+   GDCLASS(Data, RefCounted);
 };
 
 class Ship::Part {

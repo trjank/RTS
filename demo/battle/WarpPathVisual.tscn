@@ -1,13 +1,13 @@
 [gd_scene load_steps=5 format=3 uid="uid://xtpx4pnyrhf8"]
 
-[ext_resource type="Script" path="res://mouse/WarpPathVisual.gd" id="1_jilyn"]
+[ext_resource type="Script" path="res://battle/WarpPathVisual.gd" id="1_jilyn"]
 
 [sub_resource type="Gradient" id="Gradient_qappt"]
 colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)
 
 [sub_resource type="Gradient" id="Gradient_lnt0b"]
 offsets = PackedFloat32Array(0, 0.2, 0.8, 1)
-colors = PackedColorArray(0.772549, 0.611765, 0.85098, 0, 0.772549, 0.611765, 0.85098, 1, 0.772549, 0.611765, 0.85098, 1, 0.772549, 0.611765, 0.85098, 0)
+colors = PackedColorArray(0, 0.929412, 0.54902, 0, 1.30146e-06, 0.930476, 0.55002, 1, 1.30146e-06, 0.930476, 0.55002, 1, 0, 0.929412, 0.54902, 0)
 metadata/_snap_enabled = true
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_1p4g7"]

@@ -8,6 +8,8 @@
 #include "projectile.hpp"
 #include "mouse_commands.hpp"
 #include "hitbox.hpp"
+#include "battle.hpp"
+#include "fleet.hpp"
 
 #define bind_method ClassDB::bind_method
 #define bind_enum ClassDB::bind_integer_constant
@@ -59,6 +61,21 @@ void Hitbox::_bind_methods() {
 	bind_method(D_METHOD("get_size"), &Hitbox::get_size);
 	bind_method(D_METHOD("calculate_size"), &Hitbox::calculate_size);
 }
+void Battle::_bind_methods() {
+	bind_method(D_METHOD("get_state"), &Battle::get_state);
+	bind_method(D_METHOD("get_winner"), &Battle::get_winner);
+	bind_method(D_METHOD("new_team", "name"), &Battle::new_team);
+	bind_method(D_METHOD("get_seconds_left"), &Battle::get_seconds_left);
+	bind_method(D_METHOD("get_minutes_left"), &Battle::get_minutes_left);
+	bind_method(D_METHOD("get_time_left_sec"), &Battle::get_time_left_sec);
+	bind_method(D_METHOD("get_duration_sec"), &Battle::get_duration_sec);
+	bind_method(D_METHOD("get_countdown_sec"), &Battle::get_countdown_sec);
+	bind_method(D_METHOD("set_duration_sec", "new_duration_sec"), &Battle::set_duration_sec);
+	bind_method(D_METHOD("set_countdown_sec", "new_countdown_sec"), &Battle::set_countdown_sec);
+	bind_method(D_METHOD("start"), &Battle::start);
+	bind_method(D_METHOD("start_countdown"), &Battle::start_countdown);
+	bind_method(D_METHOD("stop"), &Battle::stop);
+}
 
 void initialize_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) return;
@@ -68,12 +85,14 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(Projectile);
 	GDREGISTER_CLASS(Ship);
 	GDREGISTER_CLASS(MouseCommands);
+	GDREGISTER_CLASS(Battle);
 	println("Loaded Unit from unit.cpp");
 	println("Loaded Command from unit.cpp");
 	println("Loaded RadarSignature from unit.cpp");
 	println("Loaded Projectile from projectile.cpp");
 	println("Loaded Ship from ship.cpp");
 	println("Loaded MouseCommands from mouse_commands.cpp");
+	println("Loaded Battle from battle.cpp");
 }
 void uninitialize_module(ModuleInitializationLevel p_level) {}
 

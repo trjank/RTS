@@ -1,20 +1,15 @@
 #include <godot_cpp/core/math.hpp>
 #include "mouse_commands.hpp"
 
-#define INVALID_N_WAYPOINTS_MSG "(MouseCommands) Too few number of waypoints to construct path"
-#define MISSING_UNITS_MSG "(MouseCommands) Encountered missing units and/or too many commands"
-#define INVALID_SIZE_MSG "(MouseCommands) Cursor image size must be 32x32 pixels"
-
 using godot::MIN;
 
 template<typename T>
 Vector2 MouseCommands::MoveOrder<T>::get_center(Vector<T> objects) {
-   Vector2 center = { 0, 0 };
+   Vector2 center = { 0.0, 0.0 };
    for (const T& object: objects) {
       center += object->get_position();
    }
-   center /= objects.size();
-   return center;
+   return center / objects.size();
 }
 template<typename T>
 bool MouseCommands::MoveOrder<T>::operator()(const T& A, const T& B) const {
@@ -50,10 +45,12 @@ void MouseCommands::clear_units() {
 }
 void MouseCommands::select_unit(Unit* unit) {
    if (unit != nullptr && units.size() < MAX_UNITS_SELECTED)
+   if (unit != nullptr && units.size() < MAX_UNITS_SELECTED)
       units.append(unit->radar_signature);
 }
 void MouseCommands::order_units_to_move() {
-   ERR_FAIL_COND_MSG(commands.size() > units.size(), MISSING_UNITS_MSG);
+   ERR_FAIL_COND_MSG(commands.size() > units.size(),
+                     "(MouseCommands::order_units_to_move) missing units");
    Vector2 units_center    = UnitMoveOrder::get_center(units);
    Vector2 commands_center = CommandMoveOrder::get_center(commands);
    Vector2 sort_axis       = commands_center - units_center;
@@ -62,6 +59,7 @@ void MouseCommands::order_units_to_move() {
    commands.sort_custom<CommandMoveOrder>(sort_axis, commands_center);
    /*---------------------------------------------------------------*/
    for (int n = 0; n < commands.size(); ++n) {
+      units[n]->try_queue_move(commands[n], !queue_move);
       units[n]->try_queue_move(commands[n], !queue_move);
    }
    commands.clear();
@@ -103,7 +101,8 @@ void MouseCommands::begin_path() {
     | errors.                                               |
     *-------------------------------------------------------*/
    int n_waypoints = static_cast<int>(formation);
-   ERR_FAIL_COND_MSG(n_waypoints <= 1, INVALID_N_WAYPOINTS_MSG);
+   ERR_FAIL_COND_MSG(n_waypoints <= 1,
+                     "(MouseCommands::begin_path) too few waypoints in formation");
    Vector2 start_pos = get_global_mouse_position();
    path_length = 0;
    waypoints.resize(n_waypoints);
@@ -159,7 +158,8 @@ void MouseCommands::set_action_with_cursor(Action new_action, Input& input) {
    input.set_custom_mouse_cursor(image, Input::CURSOR_ARROW, CURSOR_CENTER);
 }
 void MouseCommands::bind_cursor_to_action(Ref<Texture2D> image, Action action) {
-   ERR_FAIL_COND_MSG(image.is_valid() && image->get_size() != CURSOR_SIZE, INVALID_SIZE_MSG);
+   ERR_FAIL_COND_MSG(image.is_valid() && image->get_size() != CURSOR_SIZE,
+                     "(MouseCommands::bind_cursor_to_action) cursor image be 32x32 pixels");
    cursor_bindings[action] = image;
 }
 void MouseCommands::reset_selection() {
@@ -196,18 +196,18 @@ void MouseCommands::choose_action(Input& input) {
       set_action_with_cursor(TARGET, input);
 }
 void MouseCommands::maybe_end_targeting(Input& input) {
-   if (! input.is_action_just_released("target")) return;
+   if ( !input.is_action_just_released("target")) return;
    // order_units_to_move but modified
    set_action_with_cursor(NONE, input);
 }
 void MouseCommands::maybe_end_selection(Input& input) {
-   if (! input.is_action_just_released("left_click")) return;
+   if ( !input.is_action_just_released("left_click")) return;
    call("_finish_selection");
    reset_selection();
    set_action_with_cursor(NONE, input);
 }
 void MouseCommands::maybe_end_move(Input& input) {
-   if (! input.is_action_just_released("move")) return;
+   if ( !input.is_action_just_released("move")) return;
    order_units_to_move();
    set_action_with_cursor(NONE, input);
 }
@@ -236,6 +236,6 @@ void MouseCommands::_unhandled_input(const Ref<InputEvent>& event) {
       case SELECT: maybe_end_selection(input); break;
       default: break;
    }
-   if (input.is_action_just_pressed("toggle queue move")) queue_move = ! queue_move;
+   if (input.is_action_just_pressed("toggle queue move")) queue_move = !queue_move;
    if (input.is_action_just_released("stop")) stop_all_units();
 }

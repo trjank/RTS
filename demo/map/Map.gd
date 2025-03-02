@@ -14,7 +14,7 @@ var backgrounds: Array = [ # Image paths -->
 	preload("res://map/backgrounds/dark/preset_1.png"),
 	preload("res://map/backgrounds/light/preset_1.png") ]
 
-@onready var __background_image := $Background/BackgroundImage
+@export var background_image: TextureRect
 
 func generate_cluster(orbit_radius: float, center: Node2D, n_celestials: float, config: Dictionary) -> float:
 	var orbit_spacing: float = config.orbit_spacing
@@ -30,7 +30,7 @@ func generate_cluster(orbit_radius: float, center: Node2D, n_celestials: float, 
 func generate():
 	seed(map_seed)
 	add_child(central_star)
-	__background_image.texture = backgrounds.pick_random()
+	background_image.texture = backgrounds.pick_random()
 	var orbit_radius := min_orbit_radius
 	orbit_radius = generate_cluster(orbit_radius, central_star, n_terrestrial_planets, globals.terrestrial_config)
 	orbit_radius = generate_cluster(orbit_radius + frost_line_width, central_star, n_jovian_planets, globals.jovian_config)

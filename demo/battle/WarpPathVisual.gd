@@ -13,9 +13,9 @@ func _on_timer_timeout()->void:
 
 func _ready()->void:
 	var death_timer := Timer.new()
+	var tween := create_tween()
 	add_child(death_timer)
 	death_timer.one_shot = true
 	death_timer.timeout.connect(_on_timer_timeout)
 	death_timer.start(LIFESPAN)
-	var tween := create_tween()
 	tween.tween_property(self, "modulate:a", 0, LIFESPAN)

@@ -34,7 +34,7 @@ public:
    void cloak();
    void decloak();
    void hit(float damage);
-   void kill();
+   virtual void kill();
    void stop_moving();
    void stop_targeting();
    void queue_move(Ref<Command> new_command, bool clear_queue = false);

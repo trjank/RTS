@@ -1,0 +1,264 @@
+[gd_scene load_steps=8 format=3 uid="uid://c8r8u7e7qkegq"]
+
+[ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
+[ext_resource type="Script" path="res://mouse/MouseCommands.gd" id="1_777ku"]
+[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://images/icon.svg" id="2_j65k6"]
+[ext_resource type="Script" path="res://mouse/SelectionRect.gd" id="2_pc5y6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fasl0"]
+bg_color = Color(0, 0, 0, 0.588235)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k4xxy"]
+bg_color = Color(0, 0, 0, 0.588235)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.677157, 0.984528, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fcolb"]
+
+[node name="Battle" type="Battle" node_paths=PackedStringArray("clock", "clock_minutes_label", "clock_seconds_label")]
+script = ExtResource("1_2ostc")
+clock = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/Timer")
+clock_minutes_label = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Minutes")
+clock_seconds_label = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Seconds")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="FleetBar" type="VBoxContainer" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -752.0
+offset_top = -291.0
+offset_right = 752.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ResourceBar" type="MarginContainer" parent="UI/FleetBar"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/FleetBar/ResourceBar"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/FleetBar/ResourceBar/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="Clock" type="PanelContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fasl0")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_font_sizes/font_size = 32
+text = "Time: "
+
+[node name="Minutes" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1.30146e-06, 0.930476, 0.55002, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "15"
+
+[node name="Delimeter" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_font_sizes/font_size = 32
+text = ":"
+
+[node name="Seconds" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1.30146e-06, 0.930476, 0.55002, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "32"
+
+[node name="Timer" type="Timer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock"]
+
+[node name="AlloyBar" type="PanelContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fasl0")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_font_sizes/font_size = 32
+text = "Alloy:  "
+
+[node name="AlloyValue" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.654622, 0.791916, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "1923"
+
+[node name="Label2" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_font_sizes/font_size = 32
+text = " ("
+
+[node name="AlloyRate" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.654622, 0.791916, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "32"
+
+[node name="Label3" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_font_sizes/font_size = 32
+text = "/sec)"
+
+[node name="EnergyBar" type="PanelContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fasl0")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/EnergyBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/EnergyBar/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/EnergyBar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_font_sizes/font_size = 32
+text = "Energy: "
+
+[node name="EnergyRate" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/EnergyBar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 0.431373, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "32"
+
+[node name="Label3" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/EnergyBar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
+theme_override_font_sizes/font_size = 32
+text = "/sec"
+
+[node name="ShipsBar" type="PanelContainer" parent="UI/FleetBar"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_k4xxy")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/FleetBar/ShipsBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/FleetBar/ShipsBar/MarginContainer"]
+layout_mode = 2
+
+[node name="VFlowContainer" type="VFlowContainer" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+
+[node name="TextureButton" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+stretch_mode = 0
+
+[node name="TextureButton2" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+stretch_mode = 0
+
+[node name="TextureButton3" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+stretch_mode = 0
+
+[node name="TextureButton4" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+stretch_mode = 0
+
+[node name="TextureButton5" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+stretch_mode = 0
+
+[node name="TextureButton6" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+stretch_mode = 0
+
+[node name="TextureButton7" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+stretch_mode = 0
+
+[node name="TextureButton8" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+stretch_mode = 0
+
+[node name="TextureButton9" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+stretch_mode = 0
+
+[node name="TextureButton10" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+stretch_mode = 0
+
+[node name="MouseCommands" type="MouseCommands" parent="." node_paths=PackedStringArray("selection_box", "selection_rect")]
+script = ExtResource("1_777ku")
+selection_box = NodePath("SelectionBox")
+selection_rect = NodePath("SelectionBox/SelectionRect")
+
+[node name="SelectionBox" type="Area2D" parent="MouseCommands"]
+
+[node name="SelectionRect" type="CollisionShape2D" parent="MouseCommands/SelectionBox"]
+shape = SubResource("RectangleShape2D_fcolb")
+script = ExtResource("2_pc5y6")
