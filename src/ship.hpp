@@ -6,12 +6,13 @@
 #include "unit.hpp"
 #include "battle.hpp"
 #include "destructable.hpp"
+#include "selectable.hpp"
 
 using godot::RefCounted;
 using godot::Vector;
 using godot::String;
 
-class Ship: public Unit, public Destructable {
+class Ship: public Unit, public Destructable, public Selectable {
    GDCLASS(Ship, Unit)
 public:
    class Data;
@@ -42,7 +43,8 @@ protected:
    float shield_threshold = 1.0;
    static void _bind_methods();
 private:
-   Ref<Battle::Player> owner;
+   bool selected = false;
+   Battle::Player* owner = nullptr;
    Vector<Part> parts;
    Vector<Turret> turrets;
 };

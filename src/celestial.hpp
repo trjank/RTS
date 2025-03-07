@@ -3,11 +3,13 @@
 
 #include <godot_cpp/classes/sprite2d.hpp>
 #include "capturable.hpp"
+#include "selectable.hpp"
+#include "battle.hpp"
 
 using godot::Sprite2D;
 using godot::Vector2;
 
-class Celestial: public Sprite2D, public Capturable {
+class Celestial: public Sprite2D, public Capturable, public Selectable {
    GDCLASS(Celestial, Sprite2D)
 public:
    static constexpr double G = 6.674e-11;
@@ -35,10 +37,11 @@ private:
    static inline Vector2 UNIT_RADIAL = { 0.0, 1.0 };
    static double gravity_scale;
    static double time_scale;
+   bool selected = false;
    double mass = 0.0;
    double central_celestial_mass = 0.0;
    float orbit_radius = MIN_ORBIT_RADIUS;
-   // Ref<Team> owner;
+   Ref<Battle::Team> owner;
 };
 
 double Celestial::gravity_scale = G;

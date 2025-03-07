@@ -1,4 +1,4 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://dbi3jifqpeg3l"]
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://bi1uvaap4r8yn"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_5l1qc"]
 load_path = "res://.godot/imported/stardustatlas.png-01cfd6b4350a7fad44219fc9710b20f1.ctex"

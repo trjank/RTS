@@ -35,6 +35,7 @@ public:
    State get_state();
    Ref<Team> get_winner();
    Ref<Team> new_team(String name);
+   Player* new_player();
    int get_seconds_left();
    int get_minutes_left();
    double get_time_left_sec();
@@ -60,8 +61,6 @@ private:
    friend class Team;
 };
 
-VARIANT_ENUM_CAST(Battle::State);
-
 class Battle::Gamemode: public RefCounted {
    GDCLASS(Gamemode, RefCounted)
 public:
@@ -82,6 +81,8 @@ private:
    bool allow_team_imbalance = false;
    float alloy_bounty = 0.0;
    float energy_bounty = 0.0;
+   double starting_alloy = 2000.0;
+   double starting_energy = 2000.0;
    Vector<String> team_names;
 };
 
@@ -95,6 +96,8 @@ public:
    int count_kills();
    int count_losses();
    float get_net_value();
+   double get_alloy_per_sec();
+   double get_energy_per_sec();
    void register_kill(Destructable& ship);
    void register_loss(Destructable& ship);
    void register_capture(Capturable& capturable);
@@ -111,18 +114,21 @@ private:
    float value_killed = 0.0;
    float value_lost = 0.0;
    String name;
-   Vector<Ref<Player>> players;
+   Vector<Player*> players;
 };
 
-class Battle::Player: public RefCounted {
-   GDCLASS(Player, RefCounted)
+class Battle::Player: public Node2D {
+   GDCLASS(Player, Node2D)
 public:
+   static constexpr double ALLOY_CAPACITY = 1.0e5;
+   static constexpr double ENERGY_CAPACITY = 1.0e5;
    float get_energy();
    int get_alloy();
    Ref<Team> get_team();
    void set_team(Ref<Team> new_team);
    void register_kill(Destructable& kill);
    void register_loss(Destructable& loss);
+   void _physics_process(double dt) override;
 private:
    int rank;
    float energy = 0.0;
@@ -133,5 +139,7 @@ private:
    // Ref<Fleet> fleet;
    Battle* battle = nullptr;
 };
+
+VARIANT_ENUM_CAST(Battle::State);
 
 #endif // BATTLE_HPP

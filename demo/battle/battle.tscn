@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://c8r8u7e7qkegq"]
+[gd_scene load_steps=6 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" path="res://mouse/MouseCommands.gd" id="1_777ku"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://images/icon.svg" id="2_j65k6"]
-[ext_resource type="Script" path="res://mouse/SelectionRect.gd" id="2_pc5y6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fasl0"]
 bg_color = Color(0, 0, 0, 0.588235)
@@ -23,8 +22,6 @@ corner_radius_top_left = 25
 corner_radius_top_right = 25
 corner_radius_bottom_right = 25
 corner_radius_bottom_left = 25
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_fcolb"]
 
 [node name="Battle" type="Battle" node_paths=PackedStringArray("clock", "clock_minutes_label", "clock_seconds_label")]
 script = ExtResource("1_2ostc")
@@ -252,13 +249,8 @@ layout_mode = 2
 texture_normal = ExtResource("2_j65k6")
 stretch_mode = 0
 
-[node name="MouseCommands" type="MouseCommands" parent="." node_paths=PackedStringArray("selection_box", "selection_rect")]
+[node name="MouseCommands" type="MouseCommands" parent="." node_paths=PackedStringArray("selection")]
 script = ExtResource("1_777ku")
-selection_box = NodePath("SelectionBox")
-selection_rect = NodePath("SelectionBox/SelectionRect")
+selection = NodePath("../MouseSelection")
 
-[node name="SelectionBox" type="Area2D" parent="MouseCommands"]
-
-[node name="SelectionRect" type="CollisionShape2D" parent="MouseCommands/SelectionBox"]
-shape = SubResource("RectangleShape2D_fcolb")
-script = ExtResource("2_pc5y6")
+[node name="MouseSelection" type="MouseSelection" parent="."]

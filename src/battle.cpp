@@ -1,8 +1,8 @@
 #include <godot_cpp/core/math.hpp>
 #include "battle.hpp"
 
-using godot::CLAMP;
-using godot::MAX;
+using godot::Math::clamp;
+using godot::Math::min;
 
 Battle::State Battle::get_state() {
    return state;
@@ -16,6 +16,11 @@ Ref<Battle::Team> Battle::new_team(String name) {
    team->set_name(name);
    teams.append(team);
    return team;
+}
+Battle::Player* Battle::new_player() {
+   Player* player = memnew(Player);
+   add_child(player);
+   return player;
 }
 int Battle::get_seconds_left() {
    return static_cast<int>(time_left_sec) % 60;
@@ -33,10 +38,10 @@ double Battle::get_countdown_sec() {
    return countdown_sec;
 }
 void Battle::set_duration_sec(double new_duration_sec) {
-   duration_sec = CLAMP(new_duration_sec, MIN_DURATION_SEC, MAX_DURATION_SEC);
+   duration_sec = clamp(new_duration_sec, MIN_DURATION_SEC, MAX_DURATION_SEC);
 }
 void Battle::set_countdown_sec(double new_countdown_sec) {
-   countdown_sec = CLAMP(new_countdown_sec, MIN_COUNTDOWN_SEC, MAX_COUNTDOWN_SEC);
+   countdown_sec = clamp(new_countdown_sec, MIN_COUNTDOWN_SEC, MAX_COUNTDOWN_SEC);
 }
 void Battle::start() {
    if (state == RUNNING) stop();
@@ -80,6 +85,12 @@ int Battle::Team::count_losses() {
 }
 float Battle::Team::get_net_value() {
    return value_killed - value_lost;
+}
+double Battle::Team::get_alloy_per_sec() {
+   return alloy_per_sec;
+}
+double Battle::Team::get_energy_per_sec() {
+   return energy_per_sec;
 }
 void Battle::Team::register_kill(Destructable& kill) {
    value_killed += kill.get_cost();
@@ -135,4 +146,9 @@ void Battle::Player::register_kill(Destructable& kill) {
 }
 void Battle::Player::register_loss(Destructable& loss) {
    if (team.is_valid()) team->register_loss(loss);
+}
+void Battle::Player::_physics_process(double dt) {
+   if (team.is_null()) return;
+   alloy  = min(alloy  + dt * team->get_alloy_per_sec(), ALLOY_CAPACITY);
+   energy = min(energy + dt * team->get_energy_per_sec(), ENERGY_CAPACITY);
 }

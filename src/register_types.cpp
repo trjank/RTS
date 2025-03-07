@@ -7,6 +7,7 @@
 #include "ship.hpp"
 #include "projectile.hpp"
 #include "mouse_commands.hpp"
+#include "mouse_selection.hpp"
 #include "hitbox.hpp"
 #include "battle.hpp"
 #include "fleet.hpp"
@@ -16,7 +17,9 @@
 #define println UtilityFunctions::print
 
 void Unit::_bind_methods() {
+	ClassDB::bind_static_method("Unit", D_METHOD("set_warp_visual", "new_warp_visual"), &Unit::set_warp_visual);
 	bind_method(D_METHOD("get_HP"), &Unit::get_HP);
+	bind_method(D_METHOD("get_radar_signature"), &Unit::get_radar_signature);
 	bind_method(D_METHOD("kill"), &Unit::kill);
 	bind_method(D_METHOD("get_forward_direction"), &Unit::get_forward_direction);
 	bind_method(D_METHOD("cloak"), &Unit::cloak);
@@ -35,23 +38,30 @@ void Ship::_bind_methods() {
 	bind_method(D_METHOD("hit", "damage", "shield_penetration"), &Ship::hit);
 }
 void MouseCommands::_bind_methods() {
-	BIND_VIRTUAL_METHOD(MouseCommands, _finish_selection);
-	BIND_VIRTUAL_METHOD(MouseCommands, _reset_selection_box);
-	BIND_VIRTUAL_METHOD(MouseCommands, _update_selection_box);
 	bind_method(D_METHOD("get_action"), &MouseCommands::get_action);
 	bind_method(D_METHOD("get_formation"), &MouseCommands::get_formation);
 	bind_method(D_METHOD("bind_cursor_to_action", "image", "action"), &MouseCommands::bind_cursor_to_action);
 	bind_method(D_METHOD("set_command_icon", "image"), &MouseCommands::set_command_icon);
-	bind_method(D_METHOD("clear_units"), &MouseCommands::clear_units);
-	bind_method(D_METHOD("select_unit", "unit"), &MouseCommands::select_unit);
+	bind_method(D_METHOD("select_units", "selection"), &MouseCommands::select_units);
 	bind_enum("MouseCommands", "Formation", "LINE", LINE);
 	bind_enum("MouseCommands", "Formation", "V", V);
 	bind_enum("MouseCommands", "Formation", "SMOOTH", SMOOTH);
 	bind_enum("MouseCommands", "Formation", "PRECISE", PRECISE);
 	bind_enum("MouseCommands", "Action", "NONE", NONE);
-	bind_enum("MouseCommands", "Action", "SELECT", SELECT);
 	bind_enum("MouseCommands", "Action", "MOVE", MOVE);
 	bind_enum("MouseCommands", "Action", "TARGET", TARGET);
+}
+void MouseSelection::_bind_methods() {
+	bind_method(D_METHOD("is_enabled"), &MouseSelection::is_enabled);
+	bind_method(D_METHOD("get_color"), &MouseSelection::get_color);
+	bind_method(D_METHOD("get_selected"), &MouseSelection::get_selected);
+	bind_method(D_METHOD("set_enabled", "enable"), &MouseSelection::set_enabled);
+	bind_method(D_METHOD("set_color", "new_color"), &MouseSelection::set_color);
+	bind_method(D_METHOD("set_visibility", "visibility"), &MouseSelection::set_visibility);
+	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enabled"), "set_enabled", "is_enabled");
+	ADD_SIGNAL(MethodInfo("selection_started"));
+	ADD_SIGNAL(MethodInfo("selection_ended", PropertyInfo(Variant::ARRAY, "selected")));
 }
 void Hitbox::_bind_methods() {
 	bind_method(D_METHOD("contains", "coords"), &Hitbox::contains);
@@ -85,6 +95,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(Projectile);
 	GDREGISTER_CLASS(Ship);
 	GDREGISTER_CLASS(MouseCommands);
+	GDREGISTER_CLASS(MouseSelection);
 	GDREGISTER_CLASS(Battle);
 	println("Loaded Unit from unit.cpp");
 	println("Loaded Command from unit.cpp");
@@ -92,6 +103,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	println("Loaded Projectile from projectile.cpp");
 	println("Loaded Ship from ship.cpp");
 	println("Loaded MouseCommands from mouse_commands.cpp");
+	println("Loaded MouseSelection from mouse_selection.cpp");
 	println("Loaded Battle from battle.cpp");
 }
 void uninitialize_module(ModuleInitializationLevel p_level) {}

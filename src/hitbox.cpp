@@ -1,7 +1,5 @@
 #include "hitbox.hpp"
 
-#define OUT_OF_BOUNDS_MSG "(Hitbox) Out of bounds coordinates"
-
 void Hitbox::calculate_size() {
    size = cells.count();
 }
@@ -20,7 +18,8 @@ bool Hitbox::contains(Vector2i coords) {
    return inside_grid(coords) && cells[to_index_1D(coords)];
 }
 void Hitbox::insert(Vector2i coords, bool value) {
-   ERR_FAIL_COND_MSG(! inside_grid(coords), OUT_OF_BOUNDS_MSG);
+   ERR_FAIL_COND_MSG( !inside_grid(coords),
+                     "(Hitbox::insert) Out of bounds coordinates");
    cells[to_index_1D(coords)] = value;
 }
 void Hitbox::merge(Ref<Hitbox> hitbox) {

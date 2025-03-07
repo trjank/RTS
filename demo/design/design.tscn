@@ -7,12 +7,6 @@ bg_color = Color(0.439216, 0.701961, 0.921569, 1)
 
 [node name="Design" type="Node2D"]
 
-[node name="GridBackground" type="Sprite2D" parent="."]
-texture_repeat = 2
-texture = ExtResource("1_kbf3m")
-region_enabled = true
-region_rect = Rect2(-1638.4, -1638.4, 3276.8, 3276.8)
-
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="HSplitContainer" type="HSplitContainer" parent="UI"]
@@ -28,6 +22,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_4yids")
 
 [node name="Control" type="Control" parent="UI/HSplitContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="HSplitContainer2" type="HSplitContainer" parent="UI"]
 offset_left = 212.0
@@ -37,6 +32,14 @@ offset_bottom = 648.0
 [node name="Control" type="Control" parent="UI/HSplitContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 
 [node name="StatsContainer" type="PanelContainer" parent="UI/HSplitContainer2"]
 layout_mode = 2
+
+[node name="MouseSelection" type="MouseSelection" parent="."]
+
+[node name="GridBackground" type="Sprite2D" parent="."]
+texture_repeat = 2
+texture = ExtResource("1_kbf3m")
+region_enabled = true

@@ -8,6 +8,18 @@
 #include <godot_cpp/classes/sprite2d.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/templates/list.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/variant/string_name.hpp>
+
+/*------------------------------------------------------*
+|                                                       |
+|              __ ___ _  ___ ___ _  _ __ ___            |
+|             (__` | / \ |__)|  \|  |(__` |             |
+|             .__) |/```\|  \|__/!__!.__) |             |
+|                                                       |
+|                        unit.hpp                       |
+|                                                       |
+*------------------------------------------------------*/
 
 using godot::Sprite2D;
 using godot::List;
@@ -18,6 +30,8 @@ using godot::Ref;
 using godot::RefCounted;
 using godot::PhysicsDirectBodyState2D;
 using godot::Texture2D;
+using godot::PackedScene;
+using godot::StringName;
 
 class Unit: public RigidBody2D {
    GDCLASS(Unit, RigidBody2D)
@@ -25,12 +39,20 @@ public:
    enum State { DEAD, ALIVE, CLOAKED };
    class RadarSignature;
    class Command;
-   static constexpr float TURN_JERKINESS = 10.0;
+   static constexpr double TURN_JERKINESS = 10.0;
    static constexpr int MAX_N_COMMANDS = 3;
    static inline Color path_color = Color(1.0, 1.0, 1.0, 0.2);
    static inline Color warp_color = Color(0.8, 0.6, 0.9, 0.5);
+   static Ref<PackedScene> warp_visual;
+
+   Unit();
+   ~Unit();
+   static void set_warp_visual(Ref<PackedScene> new_warp_visual);
    float get_HP();
+   int get_num_commands();
    Vector2 get_forward_direction();
+   Ref<Command> get_current_command();
+   Ref<RadarSignature> get_radar_signature();
    void cloak();
    void decloak();
    void hit(float damage);
@@ -39,18 +61,14 @@ public:
    void stop_targeting();
    void queue_move(Ref<Command> new_command, bool clear_queue = false);
    void set_target(Ref<Command> new_target);
-   int get_num_commands();
-   Ref<Command> get_current_command();
    virtual void order_attack(Ref<Command> command);
    void _draw() override;
    void _process(double _dt) override;
    void _physics_process(double dt) override;
    void _integrate_forces(PhysicsDirectBodyState2D* state) override;
-   Unit();
-   ~Unit();
-   friend class MouseCommands;
 protected:
    static void _bind_methods();
+
    bool can_move: 1;
    bool can_warp: 1;
    bool applying_thrust: 1;
@@ -71,34 +89,36 @@ protected:
     | circle the destination depending on the initial       |
     | conditions.                                           |
     *-------------------------------------------------------*/
+   float HP = 0.0;
    float path_arcing = 0.1;
    float warp = 100.0;
-   float turnrate = 1.0;
    float thrust = 500.0;
    float speed = 0.0;
    float angle_to_target = 0.0;
    float stop_distance = 0.0;
    float distance_to_target = 0.0;
-   float HP = 0.0;
+   double turnrate = 1.0;
+private:
+   Ref<Command> target;
    List<Ref<Command>> commands;
    Ref<RadarSignature> radar_signature;
-   Ref<Command> target;
+
    void update_radar_signature();
    void move_to_target();
-   void try_to_warp(PhysicsDirectBodyState2D* state);
+   void make_warp_visual(Vector2 warp_start, Vector2 warp_end);
+   void try_to_warp(PhysicsDirectBodyState2D& state);
+   void try_to_use_thrusters(PhysicsDirectBodyState2D& state);
 };
 
 class Unit::RadarSignature: public RefCounted {
    GDCLASS(RadarSignature, RefCounted)
 public:
    float get_HP();
+   Unit* as_unit();
    State get_state();
+   bool is_valid();
    Vector2 get_position();
    Vector2 get_velocity();
-   void try_stop_moving();
-   void try_queue_move(Ref<Command> command, bool clear_queue = false);
-   void try_set_target(Ref<Command> command);
-   friend class Unit;
 protected:
    static void _bind_methods();
 private:
@@ -107,6 +127,7 @@ private:
    Vector2 position;
    Vector2 velocity;
    Unit* unit;
+   friend class Unit;
 };
 
 class Unit::Command: public RefCounted {
@@ -122,8 +143,10 @@ public:
    friend class MouseCommands;
 protected:
    static void _bind_methods();
+
    Unit* predator;
    Ref<RadarSignature> prey;
+
    void ram();
    void track();
    void flee(float safe_distance);
