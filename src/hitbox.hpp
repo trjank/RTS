@@ -4,6 +4,17 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <bitset>
 
+/*------------------------------------------------------*
+|                                                       |
+|            ______              __         __          |
+|           / __/ /____ ________/ /_ _____ / /_         |
+|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
+|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
+|                                                       |
+|                       hitbox.hpp                      |
+|                                                       |
+*------------------------------------------------------*/
+
 using godot::RefCounted;
 using godot::Vector2i;
 using godot::Ref;
@@ -14,9 +25,10 @@ class Hitbox: public RefCounted {
 public:
    static const int WIDTH = 64;
    static const int HEIGHT = 64;
+
    int get_size();
-   bool contains(Vector2i coords);
-   void insert(Vector2i coords, bool value = true);
+   bool lookup(Vector2i coords);
+   bool insert(Vector2i coords, bool value = true);
    void merge(Ref<Hitbox> hitbox);
    void remove(Ref<Hitbox> hitbox);
    void calculate_size();
@@ -25,6 +37,7 @@ protected:
 private:
    bitset<WIDTH * HEIGHT> cells;
    int size = 0;
+   
    bool inside_grid(Vector2i coords);
    int to_index_1D(Vector2i coords);
 };

@@ -1,5 +1,16 @@
 #include "hitbox.hpp"
 
+/*------------------------------------------------------*
+|                                                       |
+|            ______              __         __          |
+|           / __/ /____ ________/ /_ _____ / /_         |
+|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
+|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
+|                                                       |
+|                       hitbox.cpp                      |
+|                                                       |
+*------------------------------------------------------*/
+
 void Hitbox::calculate_size() {
    size = cells.count();
 }
@@ -14,13 +25,13 @@ bool Hitbox::inside_grid(Vector2i coords) {
 int Hitbox::to_index_1D(Vector2i coords) {
    return coords.x + WIDTH * coords.y;
 }
-bool Hitbox::contains(Vector2i coords) {
+bool Hitbox::lookup(Vector2i coords) {
    return inside_grid(coords) && cells[to_index_1D(coords)];
 }
-void Hitbox::insert(Vector2i coords, bool value) {
-   ERR_FAIL_COND_MSG( !inside_grid(coords),
-                     "(Hitbox::insert) Out of bounds coordinates");
+bool Hitbox::insert(Vector2i coords, bool value) {
+   if ( !inside_grid(coords)) return false;
    cells[to_index_1D(coords)] = value;
+   return true;
 }
 void Hitbox::merge(Ref<Hitbox> hitbox) {
    if (hitbox.is_valid()) cells |= hitbox->cells;

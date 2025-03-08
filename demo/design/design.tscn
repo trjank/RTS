@@ -1,45 +1,204 @@
-[gd_scene load_steps=3 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=13 format=3 uid="uid://coexpo0l4q1vv"]
 
+[ext_resource type="Texture2D" uid="uid://c14cadhha1ghj" path="res://design/parts_container_background.png" id="1_8h85s"]
 [ext_resource type="Texture2D" uid="uid://dkhfwggchc705" path="res://images/grid_squares.png" id="1_kbf3m"]
+[ext_resource type="Texture2D" uid="uid://e74ugrg0a4ev" path="res://design/dropdown.png" id="1_l3pce"]
+[ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
+[ext_resource type="Texture2D" uid="uid://cshbow58gynqu" path="res://design/part_tab_icons/energy.png" id="3_8fvd3"]
+[ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://design/part_tab_icons/armor.png" id="4_2mexk"]
+[ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://design/part_tab_icons/weapons.png" id="5_8b5fk"]
+[ext_resource type="Texture2D" uid="uid://b7qaksb6v8ox3" path="res://design/part_grouping_background.png" id="5_wl7bj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4yids"]
-bg_color = Color(0.439216, 0.701961, 0.921569, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bomom"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 0.588235)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o6k85"]
+bg_color = Color(0, 0, 0, 1)
+border_color = Color(1, 0.678431, 0.984314, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w8n0p"]
+texture = ExtResource("1_8h85s")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yh7po"]
+bg_color = Color(0.928977, 0.659506, 0.460741, 1)
+border_color = Color(0, 0, 0, 1)
 
 [node name="Design" type="Node2D"]
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="HSplitContainer" type="HSplitContainer" parent="UI"]
-offset_right = 1152.0
-offset_bottom = 648.0
+[node name="NavigatorOffset" type="MarginContainer" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_top = 125
+
+[node name="HSplitContainer" type="HSplitContainer" parent="UI/NavigatorOffset"]
+layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PartsContainer" type="PanelContainer" parent="UI/HSplitContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/NavigatorOffset/HSplitContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_4yids")
+theme_override_constants/separation = 0
 
-[node name="Control" type="Control" parent="UI/HSplitContainer"]
+[node name="FleetContainer" type="PanelContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer"]
 layout_mode = 2
-mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bomom")
 
-[node name="HSplitContainer2" type="HSplitContainer" parent="UI"]
-offset_left = 212.0
-offset_right = 1152.0
-offset_bottom = 648.0
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer"]
+layout_mode = 2
 
-[node name="Control" type="Control" parent="UI/HSplitContainer2"]
+[node name="PanelContainer" type="PanelContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o6k85")
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 20
+
+[node name="VFlowContainer" type="VFlowContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/CenterContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 0
+
+[node name="Label" type="Label" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/CenterContainer/MarginContainer/VFlowContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 28
+text = "Fleet"
+vertical_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/CenterContainer/MarginContainer/VFlowContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.34902, 0.462745, 1)
+theme_override_colors/font_hover_color = Color(1, 0.572419, 0.617748, 1)
+theme_override_constants/h_separation = 15
+theme_override_constants/arrow_margin = 15
+theme_override_font_sizes/font_size = 28
+theme_override_icons/arrow = ExtResource("1_l3pce")
+theme_override_styles/focus = ExtResource("2_wxr8y")
+theme_override_styles/normal = ExtResource("2_wxr8y")
+theme_override_styles/hover = ExtResource("2_wxr8y")
+theme_override_styles/pressed = ExtResource("2_wxr8y")
+item_count = 1
+selected = 0
+popup/item_0/text = "Aurora"
+popup/item_0/id = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="PartsContainer" type="PanelContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_w8n0p")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yh7po")
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 20
+
+[node name="VFlowContainer" type="VFlowContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+
+[node name="Label" type="Label" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/MarginContainer/VFlowContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 28
+text = "Parts"
+vertical_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/MarginContainer/VFlowContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/h_separation = 15
+theme_override_constants/arrow_margin = 15
+theme_override_font_sizes/font_size = 28
+theme_override_icons/arrow = ExtResource("1_l3pce")
+theme_override_styles/focus = ExtResource("2_wxr8y")
+theme_override_styles/normal = ExtResource("2_wxr8y")
+theme_override_styles/hover = ExtResource("2_wxr8y")
+theme_override_styles/pressed = ExtResource("2_wxr8y")
+item_count = 3
+selected = 0
+fit_to_longest_item = false
+popup/item_0/text = "Energy"
+popup/item_0/icon = ExtResource("3_8fvd3")
+popup/item_0/id = 0
+popup/item_1/text = "Armor"
+popup/item_1/icon = ExtResource("4_2mexk")
+popup/item_1/id = 1
+popup/item_2/text = "Weapons"
+popup/item_2/icon = ExtResource("5_8b5fk")
+popup/item_2/id = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="RightSidebar" type="HSplitContainer" parent="UI/NavigatorOffset/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Control" type="Control" parent="UI/NavigatorOffset/HSplitContainer/RightSidebar"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="StatsContainer" type="PanelContainer" parent="UI/HSplitContainer2"]
+[node name="StatsContainer" type="PanelContainer" parent="UI/NavigatorOffset/HSplitContainer/RightSidebar"]
 layout_mode = 2
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
 
 [node name="GridBackground" type="Sprite2D" parent="."]
 texture_repeat = 2
+position = Vector2(1175, 758)
 texture = ExtResource("1_kbf3m")
 region_enabled = true
+region_rect = Rect2(2.08165e-12, 2.08165e-12, 1000, 1000)
+
+[node name="PartGrouping" type="TextureRect" parent="."]
+offset_left = 722.0
+offset_top = 86.0
+offset_right = 1682.0
+offset_bottom = 1046.0
+texture = ExtResource("5_wl7bj")
+stretch_mode = 1

@@ -64,7 +64,7 @@ void MouseSelection::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("selection_ended", PropertyInfo(Variant::ARRAY, "selected")));
 }
 void Hitbox::_bind_methods() {
-	bind_method(D_METHOD("contains", "coords"), &Hitbox::contains);
+	bind_method(D_METHOD("lookup", "coords"), &Hitbox::lookup);
 	bind_method(D_METHOD("insert", "coords", "value"), &Hitbox::insert);
 	bind_method(D_METHOD("merge", "hitbox"), &Hitbox::merge);
 	bind_method(D_METHOD("remove", "hitbox"), &Hitbox::remove);

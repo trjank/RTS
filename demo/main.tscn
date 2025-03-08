@@ -83,8 +83,6 @@ theme_override_styles/hover = ExtResource("4_dotd0")
 text = "chat
 "
 
-[node name="Battle" parent="." instance=ExtResource("5_rtafa")]
-
 [node name="Camera" type="RigidBody2D" parent="." node_paths=PackedStringArray("camera_node")]
 gravity_scale = 1.66533e-16
 linear_damp = 5.0
@@ -92,6 +90,8 @@ script = ExtResource("7_wdsxf")
 camera_node = NodePath("Camera2D")
 
 [node name="Camera2D" type="Camera2D" parent="Camera"]
+
+[node name="Battle" parent="." instance=ExtResource("5_rtafa")]
 
 [node name="Objects" type="Node2D" parent="."]
 
