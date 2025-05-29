@@ -10,9 +10,11 @@ var n_jovian_planets := 10
 var min_orbit_radius := 500.0
 var frost_line_width := 500.0
 
-var backgrounds: Array = [ # Image paths -->
+var backgrounds: Array = [
+	# Image paths -->
 	preload("res://map/backgrounds/dark/preset_1.png"),
-	preload("res://map/backgrounds/light/preset_1.png") ]
+	preload("res://map/backgrounds/light/preset_1.png")
+]
 
 @export var background_image: TextureRect
 

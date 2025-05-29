@@ -8,9 +8,12 @@
 #include "projectile.hpp"
 #include "mouse_commands.hpp"
 #include "mouse_selection.hpp"
+#include "celestial.hpp"
 #include "hitbox.hpp"
 #include "battle.hpp"
-#include "fleet.hpp"
+#include "part_data.hpp"
+#include "part.hpp"
+#include "resizable_sprite_2d.hpp"
 
 #define bind_method ClassDB::bind_method
 #define bind_enum ClassDB::bind_integer_constant
@@ -86,6 +89,65 @@ void Battle::_bind_methods() {
 	bind_method(D_METHOD("start_countdown"), &Battle::start_countdown);
 	bind_method(D_METHOD("stop"), &Battle::stop);
 }
+void Orbit::_bind_methods() {
+	ClassDB::bind_static_method("Celestial", D_METHOD("get_time_scale"), &Orbit::get_time_scale);
+	ClassDB::bind_static_method("Celestial", D_METHOD("get_gravity_scale"), &Orbit::get_gravity_scale);
+	ClassDB::bind_static_method("Celestial", D_METHOD("set_time_scale", "new_time_scale"), &Orbit::set_time_scale);
+	ClassDB::bind_static_method("Celestial", D_METHOD("set_gravity_scale", "new_gravity_scale"), &Orbit::set_gravity_scale);
+	bind_method(D_METHOD("get_angular_velocity"), &Orbit::get_angular_velocity);
+	bind_method(D_METHOD("get_distance"), &Orbit::get_distance);
+	bind_method(D_METHOD("set_distance", "new_distance"), &Orbit::set_distance);
+}
+void Celestial::_bind_methods() {
+	bind_method(D_METHOD("can_capture"), &Celestial::can_capture);
+	bind_method(D_METHOD("get_mass"), &Celestial::get_mass);
+	bind_method(D_METHOD("get_radius"), &Celestial::get_radius);
+	bind_method(D_METHOD("get_angular_velocity"), &Celestial::get_angular_velocity);
+	bind_method(D_METHOD("get_alloy_per_sec"), &Celestial::get_alloy_per_sec);
+	bind_method(D_METHOD("get_energy_per_sec"), &Celestial::get_energy_per_sec);
+	bind_method(D_METHOD("set_radius", "new_radius"), &Celestial::set_radius);
+	bind_method(D_METHOD("set_angular_velocity", "new_angular_velocity"), &Celestial::set_angular_velocity);
+}
+void PartData::_bind_methods() {
+	bind_method(D_METHOD("get_ID"), &PartData::get_ID);
+	bind_method(D_METHOD("get_cost"), &PartData::get_cost);
+	bind_method(D_METHOD("get_HP"), &PartData::get_HP);
+	bind_method(D_METHOD("get_size"), &PartData::get_size);
+	bind_method(D_METHOD("get_name"), &PartData::get_name);
+	bind_method(D_METHOD("get_tab"), &PartData::get_tab);
+	bind_method(D_METHOD("get_texture"), &PartData::get_texture);
+	bind_method(D_METHOD("set_cost", "new_cost"), &PartData::set_cost);
+	bind_method(D_METHOD("set_HP", "new_HP"), &PartData::set_HP);
+	bind_method(D_METHOD("set_size", "new_size"), &PartData::set_size);
+	bind_method(D_METHOD("set_name", "new_name"), &PartData::set_name);
+	bind_method(D_METHOD("set_tab", "new_tab"), &PartData::set_tab);
+	bind_method(D_METHOD("set_texture_path"), &PartData::set_texture_path);
+}
+void PartManager::_bind_methods() {
+	bind_method(D_METHOD("count_parts"), &PartManager::count_parts);
+	bind_method(D_METHOD("get_parts"), &PartManager::get_parts);
+	bind_method(D_METHOD("new_part"), &PartManager::new_part);
+	bind_method(D_METHOD("save"), &PartManager::save);
+	bind_method(D_METHOD("load"), &PartManager::load);
+}
+void ResizableSprite2D::_bind_methods() {
+	bind_method(D_METHOD("resize_scaled", "new_size"), &ResizableSprite2D::resize_scaled);
+	bind_method(D_METHOD("resize_region", "new_size"), &ResizableSprite2D::resize_region);
+}
+void Part::_bind_methods() {
+	ClassDB::bind_static_method("Part", D_METHOD("create_from", "part_data"), &Part::create_from);
+	BIND_CONSTANT(SCALE_PX);
+}
+void PartGrouping::_bind_methods() {
+	bind_method(D_METHOD("is_dragging"), &PartGrouping::is_dragging);
+	bind_method(D_METHOD("spawn_part", "part_data"), &PartGrouping::spawn_part);
+	bind_method(D_METHOD("select_parts", "parts"), &PartGrouping::select_parts);
+	bind_method(D_METHOD("clear_parts"), &PartGrouping::clear_parts);
+	bind_method(D_METHOD("delete_parts"), &PartGrouping::delete_parts);
+	bind_method(D_METHOD("get_mirroring"), &PartGrouping::get_mirroring);
+	bind_method(D_METHOD("set_mirroring"), &PartGrouping::set_mirroring);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "mirroring"), "set_mirroring", "get_mirroring");
+}
 
 void initialize_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) return;
@@ -97,6 +159,12 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(MouseCommands);
 	GDREGISTER_CLASS(MouseSelection);
 	GDREGISTER_CLASS(Battle);
+	GDREGISTER_CLASS(Celestial);
+	GDREGISTER_CLASS(PartData);
+	GDREGISTER_CLASS(Part);
+	GDREGISTER_CLASS(PartGrouping);
+	GDREGISTER_CLASS(PartManager);
+	GDREGISTER_CLASS(ResizableSprite2D);
 	println("Loaded Unit from unit.cpp");
 	println("Loaded Command from unit.cpp");
 	println("Loaded RadarSignature from unit.cpp");
@@ -105,6 +173,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	println("Loaded MouseCommands from mouse_commands.cpp");
 	println("Loaded MouseSelection from mouse_selection.cpp");
 	println("Loaded Battle from battle.cpp");
+	println("Loaded Celestial from celestial.cpp");
 }
 void uninitialize_module(ModuleInitializationLevel p_level) {}
 

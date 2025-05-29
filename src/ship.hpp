@@ -6,27 +6,25 @@
 #include "unit.hpp"
 #include "battle.hpp"
 #include "destructable.hpp"
-#include "selectable.hpp"
 
+using godot::Ref;
 using godot::RefCounted;
 using godot::Vector;
 using godot::String;
 
-class Ship: public Unit, public Destructable, public Selectable {
+class Ship: public Unit, public Destructable {
    GDCLASS(Ship, Unit)
 public:
-   class Data;
-   class Part;
-   class Turret;
    static constexpr float ENERGY_PER_WARP = 0.0;
    static constexpr int MAX_N_TURRETS = 100;
+
    int get_cost() override;
    float get_energy() override;
    float get_shield();
    float hit_shield(float damage);
    void hit(float damage, float shield_penetration = 0.0);
-   int make_turret();
-   Turret& get_turret(int ID);
+   // int make_turret();
+   // Turret& get_turret(int ID);
    void kill() override;
    void _physics_process(double dt) override;
 protected:
@@ -41,29 +39,13 @@ protected:
    float max_energy = 100.0;
    float energy_per_sec = 10.0;
    float shield_threshold = 1.0;
+
    static void _bind_methods();
 private:
    bool selected = false;
    Battle::Player* owner = nullptr;
-   Vector<Part> parts;
-   Vector<Turret> turrets;
-};
-
-class Ship::Data: public RefCounted {
-   GDCLASS(Data, RefCounted);
-};
-
-class Ship::Part {
-   static Vector<Part> part_table;
-   float mass;
-   float armor;
-   String encode();
-};
-
-class Ship::Turret: public Ship::Part {
-   float min_angle;
-   float max_angle;
-   void fire();
+   // Vector<Part> parts;
+   // Vector<Turret> turrets;
 };
 
 #endif

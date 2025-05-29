@@ -7,7 +7,7 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m4rah"]
 
-[node name="OrbitCenter" type="Node2D" node_paths=PackedStringArray("name_label", "indicators", "image", "celestial_body") groups=["selectable"]]
+[node name="OrbitCenter" type="Node2D" node_paths=PackedStringArray("name_label", "indicators", "image", "celestial_body")]
 script = ExtResource("1_n4f1o")
 name_label = NodePath("CelestialBody/Indicators/Name")
 indicators = NodePath("CelestialBody/Indicators")

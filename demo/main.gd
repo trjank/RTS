@@ -1,11 +1,21 @@
 extends Node2D
 
-const ship_t := preload('res://core/Ship.tscn')
+const ship_t := preload('res://battle/Ship.tscn')
 
-@export var container: Node2D
+@export var battle: Battle
 
 func _ready():
+	#var manager := PartManager.new()
+	##var part1 := manager.new_part()
+	##var part2 := manager.new_part()
+	##part1.set_name("TEST1")
+	##part2.set_name("TEST2")
+	##manager.save()
+	#manager.load()
+	#print(manager.get_part(0).get_name())
+	#print(manager.count_parts())
+	
 	for n in range(10):
 		var ship := ship_t.instantiate()
-		container.add_child(ship)
+		battle.add_child(ship)
 		ship.position = Vector2(100, 100) * n

@@ -51,4 +51,5 @@ func _physics_process(dt):
 	var inv_rot := Transform2D(image.rotation, Vector2.ZERO)
 	image.material.set_shader_parameter("inv_rot", inv_rot)
 	celestial_body.position = orbit_radius * Vector2.UP
-	if upright_text: indicators.rotation = -rotation
+	if upright_text:
+		indicators.rotation = -rotation

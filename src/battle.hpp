@@ -6,6 +6,18 @@
 #include <godot_cpp/templates/vector.hpp>
 #include "capturable.hpp"
 #include "destructable.hpp"
+#include "part_data.hpp"
+
+/*------------------------------------------------------*
+|                                                       |
+|            ______              __         __          |
+|           / __/ /____ ________/ /_ _____ / /_         |
+|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
+|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
+|                                                       |
+|                      battle.hpp                       |
+|                                                       |
+*------------------------------------------------------*/
 
 using godot::Ref;
 using godot::Vector;
@@ -14,10 +26,7 @@ using godot::Node2D;
 using godot::RefCounted;
 using godot::Color;
 
-/*-------------------------------------------------------*
- | Forward declaration                                   |
- *-------------------------------------------------------*/
-class Fleet;
+// class Fleet;
 
 class Battle: public Node2D {
    GDCLASS(Battle, Node2D)
@@ -50,11 +59,11 @@ public:
 protected:
    static void _bind_methods();
 private:
-   static Battle* singleton;
    State state;
    Ref<Team> winner;
    Ref<Gamemode> gamemode;
    Vector<Ref<Team>> teams;
+   Ref<PartManager> part_manager;
    double duration_sec = 0.0;
    double countdown_sec = 5.0;
    double time_left_sec = 0.0;
@@ -64,11 +73,11 @@ private:
 class Battle::Gamemode: public RefCounted {
    GDCLASS(Gamemode, RefCounted)
 public:
-   /*-------------------------------------------------------*
-    | When a player kills a ship, they receive a percentage |
-    | of the ship's alloy cost and energy. The percentages  |
-    | are stored as alloy_bounty and energy_bounty.         |
-    *-------------------------------------------------------*/
+   /*------------------------------------------------------*
+   | When a player kills a ship, they receive a percentage |
+   | of the ship's alloy cost and energy. The exact ratios |
+   | are stored as alloy_bounty and energy_bounty.         |
+   *------------------------------------------------------*/
    float get_alloy_bounty();
    float get_energy_bounty();
    void set_alloy_bounty(float new_alloy_bounty);
@@ -90,6 +99,7 @@ class Battle::Team: public RefCounted {
    GDCLASS(Team, RefCounted)
 public:
    static constexpr int MIN_NAME_LENGTH = 5;
+
    String get_name();
    void set_name(String new_name);
    int count_celestials_captured();
@@ -122,6 +132,7 @@ class Battle::Player: public Node2D {
 public:
    static constexpr double ALLOY_CAPACITY = 1.0e5;
    static constexpr double ENERGY_CAPACITY = 1.0e5;
+
    float get_energy();
    int get_alloy();
    Ref<Team> get_team();

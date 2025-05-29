@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
-[ext_resource type="Script" path="res://mouse/MouseCommands.gd" id="1_777ku"]
+[ext_resource type="Script" path="res://battle/MouseCommands.gd" id="1_777ku"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://images/icon.svg" id="2_j65k6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fasl0"]
@@ -23,13 +23,15 @@ corner_radius_top_right = 25
 corner_radius_bottom_right = 25
 corner_radius_bottom_left = 25
 
-[node name="Battle" type="Battle" node_paths=PackedStringArray("clock", "clock_minutes_label", "clock_seconds_label")]
+[node name="Battle" type="Battle" node_paths=PackedStringArray("clock", "clock_minutes_label", "clock_seconds_label", "overlay")]
 script = ExtResource("1_2ostc")
 clock = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/Timer")
 clock_minutes_label = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Minutes")
 clock_seconds_label = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Seconds")
+overlay = NodePath("UI")
 
 [node name="UI" type="CanvasLayer" parent="."]
+layer = 0
 
 [node name="FleetBar" type="VBoxContainer" parent="UI"]
 anchors_preset = 7
@@ -249,8 +251,9 @@ layout_mode = 2
 texture_normal = ExtResource("2_j65k6")
 stretch_mode = 0
 
-[node name="MouseCommands" type="MouseCommands" parent="." node_paths=PackedStringArray("selection")]
+[node name="MouseCommands" type="MouseCommands" parent="."]
 script = ExtResource("1_777ku")
-selection = NodePath("../MouseSelection")
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
+
+[connection signal="selection_ended" from="MouseSelection" to="MouseCommands" method="_on_mouse_selection_selection_ended"]

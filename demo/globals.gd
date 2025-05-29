@@ -1,25 +1,22 @@
 extends Node
 
 var partScale = 32
-var parts:= {
+var parts := {
 	"1x1LightBlock": {
 		"size": Vector2(1,1),
 		"offset": Vector2(0,0),
 		"img": "res://1x1LightBlock.tres"
 	},
-		
 	"1x2LightBlock": {
 		"size": Vector2(1,2),
 		"offset": Vector2(0,.5),
 		"img": "res://1x2LightBlock.tres"
 	},
-
 	"2x2LightBlock": {
 		"size": Vector2(2,2),
 		"offset": Vector2(-.5,-.5),
 		"img": "res://2x2LightBlock.tres"
 	},
-
 	"3x3LightBlock": {
 		"size": Vector2(3,3),
 		"offset": Vector2(0,0),

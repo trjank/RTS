@@ -73,23 +73,23 @@ protected:
    bool can_move: 1;
    bool can_warp: 1;
    bool applying_thrust: 1;
-   /*-------------------------------------------------------*
-    | Godot's builtin damping is not force-based, which     |
-    | makes calculations like finding the top speed or stop |
-    | distance more difficult. Use the drag value below     |
-    | instead of setting linear_damp or angular_damp.       |
-    *-------------------------------------------------------*/
+   /*------------------------------------------------------*
+   | Godot's builtin damping is not force-based, which     |
+   | makes calculations like finding the top speed or stop |
+   | distance more difficult. Use the drag value below     |
+   | instead of setting linear_damp or angular_damp.       |
+   *------------------------------------------------------*/
    float drag = 1.0;
-   /*-------------------------------------------------------*
-    | NOTE: path_arcing should not be set exactly to zero   |
-    | because the angle to the target will not always be    |
-    | exactly zero and the unit may never move.             |
-    |                                                       |
-    | NOTE: path_arcing should be kept much lower than 1.0, |
-    | since high values may cause the unit to infinitely    |
-    | circle the destination depending on the initial       |
-    | conditions.                                           |
-    *-------------------------------------------------------*/
+   /*------------------------------------------------------*
+   | NOTE: path_arcing should not be set exactly to zero   |
+   | because the angle to the target will not always be    |
+   | exactly zero and the unit may never move.             |
+   |                                                       |
+   | NOTE: path_arcing should be kept much lower than 1.0, |
+   | since high values may cause the unit to infinitely    |
+   | circle the destination depending on the initial       |
+   | conditions.                                           |
+   *------------------------------------------------------*/
    float HP = 0.0;
    float path_arcing = 0.1;
    float warp = 100.0;

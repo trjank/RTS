@@ -8,7 +8,7 @@ static var gravity := 1.0
 static var star_stability := 1.0
 static var min_radius := 250.0
 static var max_radius := 300.0
-static var star_images: Array = [preload("res://map/star/star_images/neutron.png")]
+static var star_images: Array = [preload("res://map/star/star_images/blue.png")]
 static var black_hole_images: Array = [preload("res://map/star/star_images/neutron.png")]
 
 var radius := 0.0

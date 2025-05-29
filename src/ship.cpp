@@ -25,8 +25,9 @@ void Ship::hit(float damage, float shield_penetration) {
 }
 void Ship::kill() {
    Unit::kill();
-   ERR_FAIL_COND_MSG( !owner || owner->get_team().is_null(),
-                     "(Ship::kill) ship does not belong to a team");
+
+   ERR_FAIL_COND( !owner || owner->get_team().is_null());
+   
    owner->get_team()->register_kill(*this);
 }
 void Ship::_physics_process(double dt) {

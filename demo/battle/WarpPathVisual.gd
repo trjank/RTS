@@ -1,6 +1,6 @@
 extends Line2D
 
-const LIFESPAN := 1.0 # seconds
+const LIFESPAN := 1.0 # (seconds)
 
 func set_start(new_start: Vector2)->void:
 	points[0] = new_start
