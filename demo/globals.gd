@@ -5,17 +5,17 @@ var parts := {
 	"1x1LightBlock": {
 		"size": Vector2(1,1),
 		"offset": Vector2(0,0),
-		"img": "res://1x1LightBlock.tres"
+		"img": "res://part_images/armor_heavy_1x1.png"
 	},
 	"1x2LightBlock": {
 		"size": Vector2(1,2),
 		"offset": Vector2(0,.5),
-		"img": "res://1x2LightBlock.tres"
+		"img": "res://part_images/armor_heavy_triangular_1x2.png"
 	},
 	"2x2LightBlock": {
 		"size": Vector2(2,2),
 		"offset": Vector2(-.5,-.5),
-		"img": "res://2x2LightBlock.tres"
+		"img": "res://part_images/armor_heavy_2x2.png"
 	},
 	"3x3LightBlock": {
 		"size": Vector2(3,3),

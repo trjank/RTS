@@ -1,7 +1,0 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://dto2jsfexf2b8"]
-
-[ext_resource type="Texture2D" uid="uid://ba4nhc1wyuesh" path="res://images/stardustatlas.png" id="1_axlyd"]
-
-[resource]
-atlas = ExtResource("1_axlyd")
-region = Rect2(34, 204, 32, 32)

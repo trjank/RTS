@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ba4nhc1wyuesh"
-path="res://.godot/imported/stardustatlas.png-01cfd6b4350a7fad44219fc9710b20f1.ctex"
+uid="uid://d17xy8dut5moj"
+path="res://.godot/imported/armor_heavy_curved_1x2_R.png-d8ba1be1fb18f36f15ab475a13cf5697.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/stardustatlas.png"
-dest_files=["res://.godot/imported/stardustatlas.png-01cfd6b4350a7fad44219fc9710b20f1.ctex"]
+source_file="res://part_images/armor_heavy_curved_1x2_R.png"
+dest_files=["res://.godot/imported/armor_heavy_curved_1x2_R.png-d8ba1be1fb18f36f15ab475a13cf5697.ctex"]
 
 [params]
 
