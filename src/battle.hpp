@@ -63,7 +63,6 @@ private:
    Ref<Team> winner;
    Ref<Gamemode> gamemode;
    Vector<Ref<Team>> teams;
-   Ref<PartManager> part_manager;
    double duration_sec = 0.0;
    double countdown_sec = 5.0;
    double time_left_sec = 0.0;

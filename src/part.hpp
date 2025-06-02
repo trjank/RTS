@@ -15,35 +15,12 @@
 #include "part_data.hpp"
 #include "resizable_sprite_2d.hpp"
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                   part_grouping.hpp                   |
-|                                                       |
-*------------------------------------------------------*/
-
-using godot::Node2D;
-using godot::Vector;
-using godot::Vector2;
-using godot::TypedArray;
-using godot::StaticBody2D;
-using godot::Rect2;
-using godot::InputEvent;
-using godot::Color;
-using godot::Tween;
-using godot::PropertyTweener;
-using godot::RectangleShape2D;
-using godot::CollisionShape2D;
-
+namespace godot {
 
 class Part: public StaticBody2D {
    GDCLASS(Part, StaticBody2D)
 public:
-   static constexpr int SCALE_PX = 32;
+   static constexpr int SCALE_PX = 64;
    static Part* create_from(Ref<PartData> part_data, Node* parent);
    Part();
    void get_adjacent_parts();
@@ -51,12 +28,46 @@ public:
 protected:
    static void _bind_methods();
 private:
-   ResizableSprite2D* image;
-   CollisionShape2D* shape;
+   ResizableSprite2D* image = nullptr;
+   CollisionShape2D* shape = nullptr;
    Ref<RectangleShape2D> hitbox;
 };
 
+// class Weapon: public Part {
+//    GDCLASS(Weapon, Part)
+// public:
+// protected:
+//    static void _bind_methods();
+// private:
+//    // Projectile* projectile;
+//    int shots_per_burst;
+//    double energy_per_shot;
+//    double burst_firerate;
+//    double net_firerate;
+//    double range;
+// };
 
+// class TurretMount: public Part {
+//    GDCLASS(TurretMount, Part)
+// public:
+//    void set_weapon(Weapon* weapon);
+// protected:
+//    static void _bind_methods();
+// private:
+//    Weapon* weapon = nullptr;
+//    double min_angle;
+//    double max_angle;
+// };
+
+// class WarpDrive: public Part {
+//    double warp_mass_ratio;
+//    double warp_recharge_rate;
+// };
+
+// class ShieldGenerator: public Part {
+//    double max_shield;
+//    double shield_recharge_rate;
+// };
 
 class PartGrouping: public ResizableSprite2D {
    GDCLASS(PartGrouping, Sprite2D)
@@ -89,5 +100,7 @@ private:
    Vector2 mouse_offset;
    PartGrouping* mirrored = nullptr;
 };
+
+}
 
 #endif // PART_HPP

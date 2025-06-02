@@ -109,26 +109,42 @@ void Celestial::_bind_methods() {
 	bind_method(D_METHOD("set_angular_velocity", "new_angular_velocity"), &Celestial::set_angular_velocity);
 }
 void PartData::_bind_methods() {
-	bind_method(D_METHOD("get_ID"), &PartData::get_ID);
+	BIND_CONSTANT(PX_PER_SQUARE);
+	BIND_CONSTANT(MAX_NAME_LENGTH);
+	BIND_CONSTANT(MAX_DESC_LENGTH);
+	BIND_CONSTANT(NUM_CSV_COLUMNS);
 	bind_method(D_METHOD("get_cost"), &PartData::get_cost);
-	bind_method(D_METHOD("get_HP"), &PartData::get_HP);
+	bind_method(D_METHOD("get_hp"), &PartData::get_hp);
+	bind_method(D_METHOD("get_weight"), &PartData::get_weight);
 	bind_method(D_METHOD("get_size"), &PartData::get_size);
+	bind_method(D_METHOD("get_code"), &PartData::get_code);
 	bind_method(D_METHOD("get_name"), &PartData::get_name);
 	bind_method(D_METHOD("get_tab"), &PartData::get_tab);
 	bind_method(D_METHOD("get_texture"), &PartData::get_texture);
+	bind_method(D_METHOD("get_desc"), &PartData::get_desc);
 	bind_method(D_METHOD("set_cost", "new_cost"), &PartData::set_cost);
-	bind_method(D_METHOD("set_HP", "new_HP"), &PartData::set_HP);
+	bind_method(D_METHOD("set_weight", "new_weight"), &PartData::set_weight);
+	bind_method(D_METHOD("set_hp", "new_hp"), &PartData::set_hp);
 	bind_method(D_METHOD("set_size", "new_size"), &PartData::set_size);
 	bind_method(D_METHOD("set_name", "new_name"), &PartData::set_name);
 	bind_method(D_METHOD("set_tab", "new_tab"), &PartData::set_tab);
 	bind_method(D_METHOD("set_texture_path"), &PartData::set_texture_path);
 }
 void PartManager::_bind_methods() {
+	BIND_CONSTANT(CODE_LENGTH)
 	bind_method(D_METHOD("count_parts"), &PartManager::count_parts);
-	bind_method(D_METHOD("get_parts"), &PartManager::get_parts);
-	bind_method(D_METHOD("new_part"), &PartManager::new_part);
-	bind_method(D_METHOD("save"), &PartManager::save);
-	bind_method(D_METHOD("load"), &PartManager::load);
+	bind_method(D_METHOD("load_csv", "path"), &PartManager::load_csv);
+	bind_method(D_METHOD("save_csv", "path"), &PartManager::save_csv);
+	bind_method(D_METHOD("load_json", "path"), &PartManager::load_json);
+	bind_method(D_METHOD("save_json", "path"), &PartManager::save_json);
+	bind_method(D_METHOD("copy_defaults", "path", "default_path"), &PartManager::copy_defaults);
+	bind_method(D_METHOD("new_atlas"), &PartManager::new_atlas);
+	bind_method(D_METHOD("remove_part", "part"), &PartManager::remove_part);
+	bind_method(D_METHOD("new_part", "code"), &PartManager::new_part);
+	bind_method(D_METHOD("lookup_id", "atlas_id"), &PartManager::lookup_id);
+	bind_method(D_METHOD("lookup_code", "code"), &PartManager::lookup_code);
+	bind_method(D_METHOD("get_unique", "code"), &PartManager::get_unique);
+	bind_method(D_METHOD("set_unique", "code", "new_data"), &PartManager::set_unique);
 }
 void ResizableSprite2D::_bind_methods() {
 	bind_method(D_METHOD("resize_scaled", "new_size"), &ResizableSprite2D::resize_scaled);
@@ -161,9 +177,9 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(Battle);
 	GDREGISTER_CLASS(Celestial);
 	GDREGISTER_CLASS(PartData);
+	GDREGISTER_CLASS(PartManager);
 	GDREGISTER_CLASS(Part);
 	GDREGISTER_CLASS(PartGrouping);
-	GDREGISTER_CLASS(PartManager);
 	GDREGISTER_CLASS(ResizableSprite2D);
 	println("Loaded Unit from unit.cpp");
 	println("Loaded Command from unit.cpp");

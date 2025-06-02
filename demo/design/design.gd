@@ -21,9 +21,11 @@ func set_grid_size(size: Vector2)->void:
 func _ready():
 	set_grid_size(Vector2(64, 64))
 	var manager := PartManager.new()
-	manager.load()
+	manager.load_csv("user://parts.csv")
+	manager.new_atlas("res://test_atlas.png")
 	PartButton.part_container = part_grouping
-	for part in manager.get_parts():
+	for atlas_id in range(manager.count_parts()):
+		var part := manager.lookup_id(atlas_id)
 		var part_container := container.get_node(part.get_tab())
 		var part_display := PartButton.new()
 		part_display.part_data = part

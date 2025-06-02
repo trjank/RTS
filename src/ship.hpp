@@ -6,6 +6,7 @@
 #include "unit.hpp"
 #include "battle.hpp"
 #include "destructable.hpp"
+#include "part.hpp"
 
 using godot::Ref;
 using godot::RefCounted;
@@ -17,7 +18,6 @@ class Ship: public Unit, public Destructable {
 public:
    static constexpr float ENERGY_PER_WARP = 0.0;
    static constexpr int MAX_N_TURRETS = 100;
-
    int get_cost() override;
    float get_energy() override;
    float get_shield();
@@ -39,13 +39,11 @@ protected:
    float max_energy = 100.0;
    float energy_per_sec = 10.0;
    float shield_threshold = 1.0;
-
    static void _bind_methods();
 private:
    bool selected = false;
    Battle::Player* owner = nullptr;
-   // Vector<Part> parts;
-   // Vector<Turret> turrets;
+   // Vector<TurretMount*> turrets;
 };
 
 #endif

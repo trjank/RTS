@@ -8,24 +8,7 @@
 #include "part_data.hpp"
 #include "part.hpp"
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                     ship_data.hpp                     |
-|                                                       |
-*------------------------------------------------------*/
-
-using godot::Ref;
-using godot::RefCounted;
-using godot::String;
-using godot::Vector2;
-using godot::Vector;
-using godot::PackedStringArray;
-using godot::FileAccess;
+namespace godot {
 
 class ShipData: public RefCounted {
    GDCLASS(ShipData, RefCounted)
@@ -56,5 +39,9 @@ private:
    const Vector<Part*> parts;
    static PackedStringArray to_csv_line(Part* part);
 };
+
+}
+
+class ShipManager;
 
 #endif // SHIP_DATA_HPP

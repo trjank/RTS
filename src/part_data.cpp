@@ -1,34 +1,24 @@
-#include <godot_cpp/core/math.hpp>
-#include <godot_cpp/variant/string.hpp>
-#include <godot_cpp/variant/array.hpp>
 #include "part_data.hpp"
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                     part_data.cpp                     |
-|                                                       |
-*------------------------------------------------------*/
+using namespace godot;
 
-using godot::Math::min;
-using godot::Array;
-using godot::FileAccess;
-
-int PartData::get_ID() {
-   return ID;
-}
 int PartData::get_cost() {
    return cost;
 }
-double PartData::get_HP() {
-   return HP;
+double PartData::get_hp() {
+   return hp;
+}
+double PartData::get_weight() {
+   return weight;
 }
 Vector2i PartData::get_size() {
    return size;
+}
+Vector2i PartData::get_size_px() {
+   return PX_PER_SQUARE * size;
+}
+String PartData::get_code() {
+   return code;
 }
 String PartData::get_name() {
    return name;
@@ -36,31 +26,36 @@ String PartData::get_name() {
 String PartData::get_tab() {
    return tab;
 }
-Ref<ImageTexture> PartData::get_texture() {
+String PartData::get_desc() {
+   return desc;
+}
+Ref<CompressedTexture2D> PartData::get_texture() {
    return texture;
 }
 void PartData::set_cost(int new_cost) {
-   cost = min(0, new_cost);
+   cost = Math::max(0, new_cost);
 }
-void PartData::set_HP(double new_HP) {
-   HP = min(0.0, new_HP);
+void PartData::set_hp(double new_hp) {
+   hp = Math::max(0.0, new_hp);
+}
+void PartData::set_weight(double new_weight) {
+   weight = Math::max(0.0, new_weight);
 }
 void PartData::set_size(Vector2i new_size) {
-   size = new_size.max({ 1, 1 });
+   size = new_size.max( {1, 1} );
 }
 void PartData::set_name(String new_name) {
-   ERR_FAIL_COND(new_name.length() > MAX_NAME_LENGTH);
-   name = new_name;
+   name = new_name.substr(0, MAX_NAME_LENGTH);
 }
 void PartData::set_tab(String new_tab) {
-   ERR_FAIL_COND(new_tab.length() > MAX_NAME_LENGTH);
    tab = new_tab;
 }
+void PartData::set_desc(String new_desc) {
+   desc = new_desc.substr(0, MAX_DESC_LENGTH);
+}
 void PartData::set_texture_path(String resource_path) {
-   texture_path = "res://" + resource_path;
-   // REMEMBER TO DEAL WITH FILE NOT FOUND ERROR
-   Ref<Image> image = Image::load_from_file(texture_path);
-   texture = ImageTexture::create_from_image(image);
+   resource_path = "res://part_images/" + resource_path;
+   texture = ResourceLoader::get_singleton()->load(resource_path);
 }
 
 
@@ -68,61 +63,123 @@ void PartData::set_texture_path(String resource_path) {
 int PartManager::count_parts() {
    return parts.size();
 }
-TypedArray<PartData> PartManager::get_parts() {
-   return parts;
+Ref<PartData> PartManager::lookup_id(int atlas_id) {
+   return parts[atlas_id];
 }
-Ref<PartData> PartManager::new_part() {
-   Ref<PartData> part;
-   part.instantiate();
-   part->ID = parts.size();
-   parts.push_back(part);
-   return part;
+Ref<PartData> PartManager::lookup_code(String code) {
+   return parts[code_to_id[code]];
 }
-void PartManager::save() {
-   Ref<FileAccess> csv = FileAccess::open(csv_path, FileAccess::WRITE);
-   csv->store_csv_line(csv_columns);
-   for (int ID = 0; ID < parts.size(); ++ID) {
-      Ref<PartData> part = parts[ID];
-      ERR_FAIL_COND(part.is_null());
-      csv->store_csv_line(to_csv_line(part));
-   }
-   csv->close();
-}
-void PartManager::load() {
-   Ref<FileAccess> csv = FileAccess::open(csv_path, FileAccess::READ);
-   ERR_FAIL_COND(csv->get_csv_line() != csv_columns);
+void PartManager::load_csv(String path) {
+   Ref<FileAccess> file = FileAccess::open(path, FileAccess::READ);
+   ERR_FAIL_COND(file->get_csv_line() != CSV_COLUMNS);
    parts.clear();
-   while ( !csv->eof_reached()) {
-      load_part(csv->get_csv_line());
+   while ( !file->eof_reached()) {
+      load_part(file->get_csv_line());
    }
-   csv->close();
+   file->close();
 }
-void PartManager::load_part(PackedStringArray data) {
-   const PackedStringArray empty_line = { "" };
-   if (data == empty_line) return;
-   ERR_FAIL_COND(data.size() != csv_columns.size());
-   
-   Ref<PartData> part = new_part();
-   part->ID = data[ID].to_int();
-   part->set_name(data[NAME]);
-   part->set_tab(data[TAB]);
-   part->set_cost(data[COST].to_int());
-   part->set_HP(data[HP].to_float());
-   part->set_size({
-      static_cast<int32_t>(data[WIDTH].to_int()),
-      static_cast<int32_t>(data[HEIGHT].to_int())
-   });
-   part->set_texture_path(data[PATH]);
+void PartManager::save_csv(String path) {
+   Ref<FileAccess> file = FileAccess::open(path, FileAccess::WRITE);
+   file->store_csv_line(CSV_COLUMNS);
+   for (Ref<PartData> part: parts) {
+      file->store_csv_line(to_csv_line(part));
+   }
+   file->close();
 }
 PackedStringArray PartManager::to_csv_line(Ref<PartData> part) {
    return {
-      String::num_int64(part->ID),
-      part->name,
-      part->tab,
+      part->code, part->name, part->tab,
       String::num_int64(part->cost),
-      String::num(part->HP),
+      String::num(part->hp),
       String::num_int64(part->size.width),
       String::num_int64(part->size.height),
-      part->texture_path
+      part->texture_path, part->desc
    };
+}
+void PartManager::load_json(String path) {
+   String raw_text = FileAccess::get_file_as_string(path);
+   unique_data = JSON::parse_string(raw_text);
+}
+void PartManager::save_json(String path) {
+   Ref<FileAccess> file = FileAccess::open(path, FileAccess::WRITE);
+   file->store_string(JSON::stringify(unique_data));
+}
+void PartManager::load_part(PackedStringArray data) {
+   if (data == PackedStringArray{""}) return;
+   ERR_FAIL_COND(data.size() != CSV_COLUMNS.size());
+
+   Ref<PartData> part = new_part(data[0]);
+   ERR_FAIL_COND(part.is_null());
+   int32_t width = data[6].to_int();
+   int32_t height = data[7].to_int();
+   part->set_name(data[1]);
+   part->set_tab(data[2]);
+   part->set_cost(data[3].to_int());
+   part->set_hp(data[4].to_float());
+   part->set_weight(data[5].to_float());
+   part->set_size( {width, height} );
+   part->set_texture_path(data[8]);
+   part->set_desc(data[9]);
+}
+void PartManager::copy_defaults(String path, String default_path) {
+   if ( !FileAccess::file_exists(path))
+      DirAccess::open("res://")->copy(default_path, path);
+}
+void PartManager::remove_part(Ref<PartData> part) {
+   ERR_FAIL_COND( !code_to_id.has(part->code));
+
+   // Swap with the last element to avoid shifting the entire vector down
+   int largest_id = parts.size() - 1;
+   Ref<PartData> last_part = lookup_id(largest_id);
+   code_to_id[last_part->code] = part->atlas_id;
+   last_part->atlas_id = part->atlas_id;
+   parts.set(part->atlas_id, last_part);
+   parts.remove_at(largest_id);
+
+   unique_data.erase(part->code);
+   code_to_id.erase(part->code);
+}
+Ref<PartData> PartManager::new_part(String code) {
+   if (code.length() != CODE_LENGTH || code_to_id.has(code)) return nullptr;
+
+   Ref<PartData> part;
+   part.instantiate();
+   part->code = code;
+   part->atlas_id = parts.size();
+   parts.push_back(part);
+   code_to_id[code] = part->atlas_id;
+   return part;
+}
+Dictionary PartManager::get_unique(String code) {
+   return unique_data.get(code, Dictionary{});
+}
+void PartManager::set_unique(String code, Dictionary new_data) {
+   unique_data[code] = new_data;
+}
+void PartManager::new_atlas(String save_path) {
+   WARN_PRINT("Atlas generation is CPU-based and may take several seconds");
+   create_atlas();
+   populate_atlas();
+   atlas->save_png(save_path);
+}
+void PartManager::create_atlas() {
+   PackedVector2Array part_sizes;
+   for (Ref<PartData> part: parts) {
+      part_sizes.push_back(part->get_size_px());
+   }
+   Dictionary atlas_data = Geometry2D::get_singleton()->make_atlas(part_sizes);
+   Vector2i size = atlas_data["size"];
+   atlas_offsets = atlas_data["points"];
+   atlas = Image::create(size.x, size.y, true, Image::FORMAT_RGBA8);
+}
+void PartManager::populate_atlas() {
+   ERR_FAIL_COND(atlas_offsets.size() != parts.size());
+
+   for (Ref<PartData> part: parts) {
+      Rect2i sizing( {0, 0}, part->get_size_px());
+      Vector2i offset = atlas_offsets[part->atlas_id];
+      Ref<Image> img = part->texture->get_image();
+      img->convert(Image::FORMAT_RGBA8);
+      atlas->blit_rect(img, sizing, offset);
+   }
 }

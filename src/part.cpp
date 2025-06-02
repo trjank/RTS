@@ -1,18 +1,6 @@
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                   part_grouping.cpp                   |
-|                                                       |
-*------------------------------------------------------*/
-
 #include "part.hpp"
 
-using godot::Vector2;
-using godot::Math::snapped;
+using namespace godot;
 
 Part::Part() {
 	hitbox.instantiate();
@@ -24,7 +12,7 @@ Rect2 Part::get_global_rect() {
 	return image->get_global_transform().xform(image->get_rect());
 }
 Part* Part::create_from(Ref<PartData> part_data, Node* parent) {
-	if (part_data.is_null() || parent == nullptr) return nullptr;
+	if (part_data.is_null() || !parent) return nullptr;
 
 	Part* part = memnew(Part);
 	Vector2 size = SCALE_PX * part_data->get_size();
@@ -101,7 +89,7 @@ void PartGrouping::update_region() {
 }
 void PartGrouping::rotate_smoothly(int quarter_turns, float duration) {
 	Ref<Tween> tween = create_tween();
-	float start = snapped(get_rotation(), M_PI_2);
+	float start = Math::snapped(get_rotation(), M_PI_2);
 	float end = start + M_PI_2 * quarter_turns;
 	tween->tween_property(this, "rotation", end, duration)->from(start);
 	if (mirrored) mirrored->rotate_smoothly(-quarter_turns, duration);
