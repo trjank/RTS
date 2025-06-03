@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://djcw3g4u7o6er"
+path="res://.godot/imported/recolor.glsl-ceeb37d71a480663855df19792995b46.res"
+
+[deps]
+
+source_file="res://shaders/recolor.glsl"
+dest_files=["res://.godot/imported/recolor.glsl-ceeb37d71a480663855df19792995b46.res"]
+
+[params]
+
