@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cbwtj2otq5cnl"
-path="res://.godot/imported/stardust_atlas.png-df65c6b964f72cde9a6c738a45148781.ctex"
+uid="uid://dm20rnnvt5n3y"
+path="res://.godot/imported/dropdown.png-f9fa99401c4351dec13af9fcc86776a6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/stardust_atlas.png"
-dest_files=["res://.godot/imported/stardust_atlas.png-df65c6b964f72cde9a6c738a45148781.ctex"]
+source_file="res://icons/dropdown.png"
+dest_files=["res://.godot/imported/dropdown.png-f9fa99401c4351dec13af9fcc86776a6.ctex"]
 
 [params]
 

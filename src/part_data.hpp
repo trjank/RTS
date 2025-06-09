@@ -22,13 +22,17 @@ namespace godot {
 class PartData: public RefCounted {
    GDCLASS(PartData, RefCounted)
 public:
-   static constexpr int PX_PER_SQUARE = 32;
+   static constexpr int MIN_WIDTH = 1;
+   static constexpr int MIN_HEIGHT = 1;
+   static constexpr int PX_PER_GRID_SQUARE = 32;
    static constexpr int MAX_NAME_LENGTH = 50;
    static constexpr int MAX_DESC_LENGTH = 400;
    static constexpr int NUM_CSV_COLUMNS = 10;
+   bool is_unique();
+   int get_atlas_id();
    int get_cost();
    double get_hp();
-   double get_weight();
+   double get_mass();
    Vector2i get_size();
    Vector2i get_size_px();
    String get_code();
@@ -38,21 +42,21 @@ public:
    Ref<CompressedTexture2D> get_texture();
    void set_cost(int new_cost);
    void set_hp(double new_hp);
-   void set_weight(double new_weight);
+   void set_mass(double new_mass);
    void set_size(Vector2i new_size);
    void set_name(String new_name);
    void set_tab(String new_tab);
    void set_desc(String new_desc);
    void set_texture_path(String resource_path);
-   // virtual void add_stats_to_ship(/* ShipData* ship_data*/);
 protected:
    static void _bind_methods();
 private:
+   bool unique = false;
    int atlas_id = -1;
    int cost = 0;
    double hp = 0.0;
-   double weight = 0.0;
-   Vector2i size = {1, 1};
+   double mass = 0.0;
+   Vector2i size = {MIN_WIDTH, MIN_HEIGHT};
    String code = "";
    String name = "Unnamed";
    String tab = "Unset";
@@ -65,9 +69,10 @@ private:
 class PartManager: public RefCounted {
    GDCLASS(PartManager, RefCounted)
 public:
+   static constexpr Image::Format IMAGE_FORMAT = Image::FORMAT_RGBA8;
    static constexpr int CODE_LENGTH = 4;
    const PackedStringArray CSV_COLUMNS = {
-      "code", "name", "tab", "cost", "hp", "weight", "width", "height", "path", "desc"
+      "code", "name", "tab", "cost", "hp", "mass", "width", "height", "path", "desc"
    };
    int count_parts();
    void load_csv(String path);
@@ -91,6 +96,7 @@ private:
    Dictionary code_to_id;
    Vector<Ref<PartData>> parts;
    void create_atlas();
+   void add_part_to_atlas(Ref<PartData> part);
    void populate_atlas();
    void load_part(PackedStringArray data);
    PackedStringArray to_csv_line(Ref<PartData> part);

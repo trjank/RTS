@@ -9,11 +9,11 @@
 #include "mouse_commands.hpp"
 #include "mouse_selection.hpp"
 #include "celestial.hpp"
-#include "hitbox.hpp"
 #include "battle.hpp"
 #include "part_data.hpp"
 #include "part.hpp"
 #include "resizable_sprite_2d.hpp"
+#include "ship_data.hpp"
 
 #define bind_method ClassDB::bind_method
 #define bind_enum ClassDB::bind_integer_constant
@@ -66,14 +66,6 @@ void MouseSelection::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("selection_started"));
 	ADD_SIGNAL(MethodInfo("selection_ended", PropertyInfo(Variant::ARRAY, "selected")));
 }
-void Hitbox::_bind_methods() {
-	bind_method(D_METHOD("lookup", "coords"), &Hitbox::lookup);
-	bind_method(D_METHOD("insert", "coords", "value"), &Hitbox::insert);
-	bind_method(D_METHOD("merge", "hitbox"), &Hitbox::merge);
-	bind_method(D_METHOD("remove", "hitbox"), &Hitbox::remove);
-	bind_method(D_METHOD("get_size"), &Hitbox::get_size);
-	bind_method(D_METHOD("calculate_size"), &Hitbox::calculate_size);
-}
 void Battle::_bind_methods() {
 	bind_method(D_METHOD("get_state"), &Battle::get_state);
 	bind_method(D_METHOD("get_winner"), &Battle::get_winner);
@@ -109,21 +101,24 @@ void Celestial::_bind_methods() {
 	bind_method(D_METHOD("set_angular_velocity", "new_angular_velocity"), &Celestial::set_angular_velocity);
 }
 void PartData::_bind_methods() {
-	BIND_CONSTANT(PX_PER_SQUARE);
+	BIND_CONSTANT(MIN_WIDTH);
+	BIND_CONSTANT(MIN_HEIGHT);
+	BIND_CONSTANT(PX_PER_GRID_SQUARE);
 	BIND_CONSTANT(MAX_NAME_LENGTH);
 	BIND_CONSTANT(MAX_DESC_LENGTH);
 	BIND_CONSTANT(NUM_CSV_COLUMNS);
 	bind_method(D_METHOD("get_cost"), &PartData::get_cost);
 	bind_method(D_METHOD("get_hp"), &PartData::get_hp);
-	bind_method(D_METHOD("get_weight"), &PartData::get_weight);
+	bind_method(D_METHOD("get_mass"), &PartData::get_mass);
 	bind_method(D_METHOD("get_size"), &PartData::get_size);
+	bind_method(D_METHOD("get_size_px"), &PartData::get_size_px);
 	bind_method(D_METHOD("get_code"), &PartData::get_code);
 	bind_method(D_METHOD("get_name"), &PartData::get_name);
 	bind_method(D_METHOD("get_tab"), &PartData::get_tab);
 	bind_method(D_METHOD("get_texture"), &PartData::get_texture);
 	bind_method(D_METHOD("get_desc"), &PartData::get_desc);
 	bind_method(D_METHOD("set_cost", "new_cost"), &PartData::set_cost);
-	bind_method(D_METHOD("set_weight", "new_weight"), &PartData::set_weight);
+	bind_method(D_METHOD("set_mass", "new_mass"), &PartData::set_mass);
 	bind_method(D_METHOD("set_hp", "new_hp"), &PartData::set_hp);
 	bind_method(D_METHOD("set_size", "new_size"), &PartData::set_size);
 	bind_method(D_METHOD("set_name", "new_name"), &PartData::set_name);
@@ -151,8 +146,8 @@ void ResizableSprite2D::_bind_methods() {
 	bind_method(D_METHOD("resize_region", "new_size"), &ResizableSprite2D::resize_region);
 }
 void Part::_bind_methods() {
-	ClassDB::bind_static_method("Part", D_METHOD("create_from", "part_data"), &Part::create_from);
-	BIND_CONSTANT(SCALE_PX);
+	bind_method(D_METHOD("get_data"), &Part::get_data);
+	bind_method(D_METHOD("set_data", "new_data"), &Part::set_data);
 }
 void PartGrouping::_bind_methods() {
 	bind_method(D_METHOD("is_dragging"), &PartGrouping::is_dragging);
@@ -163,6 +158,12 @@ void PartGrouping::_bind_methods() {
 	bind_method(D_METHOD("get_mirroring"), &PartGrouping::get_mirroring);
 	bind_method(D_METHOD("set_mirroring"), &PartGrouping::set_mirroring);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "mirroring"), "set_mirroring", "get_mirroring");
+}
+void ShipData::_bind_methods() {
+
+}
+void ShipManager::_bind_methods() {
+
 }
 
 void initialize_module(ModuleInitializationLevel p_level) {
@@ -181,6 +182,8 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(Part);
 	GDREGISTER_CLASS(PartGrouping);
 	GDREGISTER_CLASS(ResizableSprite2D);
+	GDREGISTER_CLASS(ShipData);
+	GDREGISTER_CLASS(ShipManager);
 	println("Loaded Unit from unit.cpp");
 	println("Loaded Command from unit.cpp");
 	println("Loaded RadarSignature from unit.cpp");

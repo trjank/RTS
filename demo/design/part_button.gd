@@ -2,7 +2,7 @@ class_name PartButton extends TextureButton
 
 static var part_container: PartGrouping
 
-const DISPLAY_SCALE := Part.SCALE_PX
+const DISPLAY_SCALE := 1.5 * PartData.PX_PER_GRID_SQUARE
 
 var part_data: PartData
 

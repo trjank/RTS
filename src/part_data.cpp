@@ -2,20 +2,26 @@
 
 using namespace godot;
 
+bool PartData::is_unique() {
+   return unique;
+}
+int PartData::get_atlas_id() {
+   return atlas_id;
+}
 int PartData::get_cost() {
    return cost;
 }
 double PartData::get_hp() {
    return hp;
 }
-double PartData::get_weight() {
-   return weight;
+double PartData::get_mass() {
+   return mass;
 }
 Vector2i PartData::get_size() {
    return size;
 }
 Vector2i PartData::get_size_px() {
-   return PX_PER_SQUARE * size;
+   return PX_PER_GRID_SQUARE * size;
 }
 String PartData::get_code() {
    return code;
@@ -38,11 +44,11 @@ void PartData::set_cost(int new_cost) {
 void PartData::set_hp(double new_hp) {
    hp = Math::max(0.0, new_hp);
 }
-void PartData::set_weight(double new_weight) {
-   weight = Math::max(0.0, new_weight);
+void PartData::set_mass(double new_mass) {
+   mass = Math::max(0.0, new_mass);
 }
 void PartData::set_size(Vector2i new_size) {
-   size = new_size.max( {1, 1} );
+   size = new_size.max( {MIN_WIDTH, MIN_HEIGHT} );
 }
 void PartData::set_name(String new_name) {
    name = new_name.substr(0, MAX_NAME_LENGTH);
@@ -56,8 +62,9 @@ void PartData::set_desc(String new_desc) {
 void PartData::set_texture_path(String resource_path) {
    resource_path = "res://part_images/" + resource_path;
    texture = ResourceLoader::get_singleton()->load(resource_path);
+   if (texture.is_valid() && texture->get_size() != get_size_px())
+      WARN_PRINT_ED("Incorrect image size: " + resource_path);
 }
-
 
 
 int PartManager::count_parts() {
@@ -109,14 +116,16 @@ void PartManager::load_part(PackedStringArray data) {
    ERR_FAIL_COND(data.size() != CSV_COLUMNS.size());
 
    Ref<PartData> part = new_part(data[0]);
+
    ERR_FAIL_COND(part.is_null());
+
    int32_t width = data[6].to_int();
    int32_t height = data[7].to_int();
    part->set_name(data[1]);
    part->set_tab(data[2]);
    part->set_cost(data[3].to_int());
    part->set_hp(data[4].to_float());
-   part->set_weight(data[5].to_float());
+   part->set_mass(data[5].to_float());
    part->set_size( {width, height} );
    part->set_texture_path(data[8]);
    part->set_desc(data[9]);
@@ -157,7 +166,7 @@ void PartManager::set_unique(String code, Dictionary new_data) {
    unique_data[code] = new_data;
 }
 void PartManager::new_atlas(String save_path) {
-   WARN_PRINT("Atlas generation is CPU-based and may take several seconds");
+   WARN_PRINT_ED("Atlas generation is CPU-based and may take several seconds");
    create_atlas();
    populate_atlas();
    atlas->save_png(save_path);
@@ -170,16 +179,19 @@ void PartManager::create_atlas() {
    Dictionary atlas_data = Geometry2D::get_singleton()->make_atlas(part_sizes);
    Vector2i size = atlas_data["size"];
    atlas_offsets = atlas_data["points"];
-   atlas = Image::create(size.x, size.y, true, Image::FORMAT_RGBA8);
+   atlas = Image::create(size.x, size.y, true, IMAGE_FORMAT);
+}
+void PartManager::add_part_to_atlas(Ref<PartData> part) {
+   Rect2i part_size( {0, 0}, part->get_size_px());
+   Vector2i offset  = atlas_offsets[part->atlas_id];
+   Ref<Image> image = part->texture->get_image();
+   image->convert(IMAGE_FORMAT);
+   atlas->blit_rect(image, part_size, offset);
 }
 void PartManager::populate_atlas() {
    ERR_FAIL_COND(atlas_offsets.size() != parts.size());
 
    for (Ref<PartData> part: parts) {
-      Rect2i sizing( {0, 0}, part->get_size_px());
-      Vector2i offset = atlas_offsets[part->atlas_id];
-      Ref<Image> img = part->texture->get_image();
-      img->convert(Image::FORMAT_RGBA8);
-      atlas->blit_rect(img, sizing, offset);
+      add_part_to_atlas(part);
    }
 }

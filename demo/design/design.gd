@@ -15,7 +15,7 @@ func hide_overlay()->void:
 	overlay.hide()
 
 func set_grid_size(size: Vector2)->void:
-	grid_background.region_rect.size = Part.SCALE_PX * size
+	grid_background.region_rect.size = PartData.PX_PER_GRID_SQUARE * size
 	info_text.position.y = -0.5 * grid_background.region_rect.size.y - 200
 
 func _ready():

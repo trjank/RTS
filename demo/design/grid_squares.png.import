@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ddbayoukbqc4l"
-path="res://.godot/imported/plasma_bolt.png-e6c112211b267046a7d59b6ba954588f.ctex"
+uid="uid://dkhfwggchc705"
+path="res://.godot/imported/grid_squares.png-30eac61cf185a772f9f052ee5582e6c8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/plasma_bolt.png"
-dest_files=["res://.godot/imported/plasma_bolt.png-e6c112211b267046a7d59b6ba954588f.ctex"]
+source_file="res://design/grid_squares.png"
+dest_files=["res://.godot/imported/grid_squares.png-30eac61cf185a772f9f052ee5582e6c8.ctex"]
 
 [params]
 

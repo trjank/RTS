@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" path="res://battle/MouseCommands.gd" id="1_777ku"]
-[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://images/icon.svg" id="2_j65k6"]
+[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_j65k6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fasl0"]
 bg_color = Color(0, 0, 0, 0.588235)
@@ -12,6 +12,10 @@ corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k4xxy"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
 bg_color = Color(0, 0, 0, 0.588235)
 border_width_left = 2
 border_width_top = 2
@@ -185,71 +189,135 @@ text = "/sec"
 
 [node name="ShipsBar" type="PanelContainer" parent="UI/FleetBar"]
 layout_mode = 2
+size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_k4xxy")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/FleetBar/ShipsBar"]
+[node name="GridContainer" type="GridContainer" parent="UI/FleetBar/ShipsBar"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/h_separation = 100
+columns = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="UI/FleetBar/ShipsBar/MarginContainer"]
-layout_mode = 2
-
-[node name="VFlowContainer" type="VFlowContainer" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer"]
+[node name="Hotbar" type="VFlowContainer" parent="UI/FleetBar/ShipsBar/GridContainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 20
 
-[node name="TextureButton" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+[node name="Slot1" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 texture_normal = ExtResource("2_j65k6")
-stretch_mode = 0
+ignore_texture_size = true
+stretch_mode = 4
 
-[node name="TextureButton2" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-stretch_mode = 0
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar/Slot1"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="TextureButton3" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+[node name="Slot2" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 texture_normal = ExtResource("2_j65k6")
-stretch_mode = 0
+ignore_texture_size = true
+stretch_mode = 4
 
-[node name="TextureButton4" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-stretch_mode = 0
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar/Slot2"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="TextureButton5" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+[node name="Slot3" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 texture_normal = ExtResource("2_j65k6")
-stretch_mode = 0
+ignore_texture_size = true
+stretch_mode = 4
 
-[node name="TextureButton6" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-stretch_mode = 0
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar/Slot3"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="TextureButton7" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+[node name="Turrets" type="VFlowContainer" parent="UI/FleetBar/ShipsBar/GridContainer"]
 layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-stretch_mode = 0
+theme_override_constants/h_separation = 20
 
-[node name="TextureButton8" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+[node name="Slot1" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 texture_normal = ExtResource("2_j65k6")
-stretch_mode = 0
+ignore_texture_size = true
+stretch_mode = 4
 
-[node name="TextureButton9" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-stretch_mode = 0
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot1"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "f1"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="TextureButton10" type="TextureButton" parent="UI/FleetBar/ShipsBar/MarginContainer/CenterContainer/VFlowContainer"]
+[node name="Slot2" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 texture_normal = ExtResource("2_j65k6")
-stretch_mode = 0
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot2"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "f2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot3" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot3"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "f3"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="MouseCommands" type="MouseCommands" parent="."]
 script = ExtResource("1_777ku")

@@ -8,21 +8,21 @@ Part::Part() {
 	add_child(image = memnew(ResizableSprite2D));
 	shape->set_shape(hitbox);
 }
+Ref<PartData> Part::get_data() {
+	return data;
+}
+void Part::set_data(Ref<PartData> part_data) {
+	ERR_FAIL_COND(part_data.is_null());
+
+	Vector2i size = part_data->get_size_px();
+	image->set_texture(part_data->get_texture());
+	image->resize_scaled(size);
+	hitbox->set_size(size);
+	data = part_data;
+}
 Rect2 Part::get_global_rect() {
 	return image->get_global_transform().xform(image->get_rect());
 }
-Part* Part::create_from(Ref<PartData> part_data, Node* parent) {
-	if (part_data.is_null() || !parent) return nullptr;
-
-	Part* part = memnew(Part);
-	Vector2 size = SCALE_PX * part_data->get_size();
-	part->image->set_texture(part_data->get_texture());
-	part->image->resize_scaled(size);
-	part->hitbox->set_size(size);
-	parent->add_child(part);
-	return part;
-}
-
 
 
 const Rect2 PartGrouping::EMPTY_REGION(0.0, 0.0, 0.0, 0.0);
@@ -58,7 +58,9 @@ void PartGrouping::delete_parts() {
 void PartGrouping::spawn_part(Ref<PartData> part_data) {
 	ERR_FAIL_COND(part_data.is_null());
 
-	Part* part = Part::create_from(part_data, get_parent());
+	Part* part = memnew(Part);
+	get_parent()->add_child(part);
+	part->set_data(part_data);
 	part->set_global_position(get_global_mouse_position());
 	clear_parts();
 	add_part(part);

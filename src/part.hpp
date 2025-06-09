@@ -20,44 +20,44 @@ namespace godot {
 class Part: public StaticBody2D {
    GDCLASS(Part, StaticBody2D)
 public:
-   static constexpr int SCALE_PX = 64;
-   static Part* create_from(Ref<PartData> part_data, Node* parent);
    Part();
-   void get_adjacent_parts();
    Rect2 get_global_rect();
+   Ref<PartData> get_data();
+   void set_data(Ref<PartData> part_data);
 protected:
    static void _bind_methods();
 private:
-   ResizableSprite2D* image = nullptr;
-   CollisionShape2D* shape = nullptr;
+   Ref<PartData> data;
    Ref<RectangleShape2D> hitbox;
+   CollisionShape2D* shape = nullptr;
+   ResizableSprite2D* image = nullptr;
 };
 
-// class Weapon: public Part {
-//    GDCLASS(Weapon, Part)
-// public:
-// protected:
-//    static void _bind_methods();
-// private:
-//    // Projectile* projectile;
-//    int shots_per_burst;
-//    double energy_per_shot;
-//    double burst_firerate;
-//    double net_firerate;
-//    double range;
-// };
+class Weapon: public Part {
+   GDCLASS(Weapon, Part)
+public:
+protected:
+   static void _bind_methods();
+private:
+   // Projectile* projectile;
+   int shots_per_burst = 0;
+   double energy_per_shot = 0.0;
+   double burst_firerate = 0.0;
+   double net_firerate = 0.0;
+   double range = 0.0;
+};
 
-// class TurretMount: public Part {
-//    GDCLASS(TurretMount, Part)
-// public:
-//    void set_weapon(Weapon* weapon);
-// protected:
-//    static void _bind_methods();
-// private:
-//    Weapon* weapon = nullptr;
-//    double min_angle;
-//    double max_angle;
-// };
+class TurretMount: public Part {
+   GDCLASS(TurretMount, Part)
+public:
+   void set_weapon(Weapon* weapon);
+protected:
+   static void _bind_methods();
+private:
+   Weapon* weapon = nullptr;
+   double min_angle;
+   double max_angle;
+};
 
 // class WarpDrive: public Part {
 //    double warp_mass_ratio;
