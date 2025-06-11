@@ -9,27 +9,7 @@
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                  mouse_selection.hpp                  |
-|                                                       |
-*------------------------------------------------------*/
-
-using godot::Ref;
-using godot::Color;
-using godot::Vector2;
-using godot::Node2D;
-using godot::Area2D;
-using godot::CollisionShape2D;
-using godot::RectangleShape2D;
-using godot::Input;
-using godot::InputEvent;
-using godot::TypedArray;
+namespace godot {
 
 class MouseSelection: public Area2D {
    GDCLASS(MouseSelection, Area2D)
@@ -60,5 +40,7 @@ private:
    void end_selection();
    void resize(Vector2 new_size);
 };
+
+}
 
 #endif // MOUSE_SELECTION_HPP

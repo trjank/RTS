@@ -1,19 +1,7 @@
 #include <godot_cpp/core/math.hpp>
 #include "celestial.hpp"
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                     celestial.cpp                     |
-|                                                       |
-*------------------------------------------------------*/
-
-using godot::Math::max;
-using godot::Math::clamp;
+using namespace godot;
 
 double Orbit::time_scale = 1.0;
 double Orbit::gravity_scale = 1.0;
@@ -25,10 +13,10 @@ double Orbit::get_gravity_scale() {
    return gravity_scale;
 }
 void Orbit::set_time_scale(double new_time_scale) {
-   time_scale = clamp(new_time_scale, MIN_TIME_SCALE, MAX_TIME_SCALE);
+   time_scale = Math::clamp(new_time_scale, MIN_TIME_SCALE, MAX_TIME_SCALE);
 }
 void Orbit::set_gravity_scale(double new_gravity_scale) {
-   gravity_scale = clamp(new_gravity_scale, MIN_GRAVITY_SCALE, MAX_GRAVITY_SCALE);
+   gravity_scale = Math::clamp(new_gravity_scale, MIN_GRAVITY_SCALE, MAX_GRAVITY_SCALE);
 }
 
 double Orbit::get_angular_velocity() {
@@ -40,7 +28,7 @@ double Orbit::get_distance() {
    return distance;
 }
 void Orbit::set_distance(double new_distance) {
-   distance = max(new_distance, MIN_DISTANCE);
+   distance = Math::max(new_distance, MIN_DISTANCE);
    set_position(new_distance * unit_radial);
    queue_redraw();
 }
@@ -55,7 +43,7 @@ void Orbit::_physics_process(double dt) {
 void Orbit::_draw() {
    constexpr int NUM_SEGMENTS = 100;
    constexpr double THICKNESS = 1.0;
-   draw_arc({ 0.0, 0.0 }, distance, 0.0, Math_TAU, NUM_SEGMENTS, COLOR, THICKNESS, true);
+   draw_arc( {0.0, 0.0}, distance, 0.0, Math_TAU, NUM_SEGMENTS, COLOR, THICKNESS, true);
 }
 
 
@@ -89,7 +77,7 @@ void Celestial::set_angular_velocity(float new_angular_velocity) {
    angular_velocity = new_angular_velocity;
 }
 void Celestial::set_radius(double new_radius) {
-   radius = max(new_radius, 0.0);
+   radius = Math::max(new_radius, 0.0);
    hitbox->set_radius(radius);
 }
 void Celestial::_physics_process(double dt) {

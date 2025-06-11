@@ -1,15 +1,6 @@
 #include "mouse_selection.hpp"
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                  mouse_selection.cpp                  |
-|                                                       |
-*------------------------------------------------------*/
+using namespace godot;
 
 MouseSelection::MouseSelection() {
    CollisionShape2D* selection_rect = memnew(CollisionShape2D);

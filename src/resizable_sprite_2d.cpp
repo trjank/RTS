@@ -1,15 +1,6 @@
 #include "resizable_sprite_2d.hpp"
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                resizable_sprite_2d.cpp                |
-|                                                       |
-*------------------------------------------------------*/
+using namespace godot;
 
 void ResizableSprite2D::resize_scaled(Vector2 new_size) {
    Ref<Texture2D> texture = get_texture();

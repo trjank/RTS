@@ -15,6 +15,9 @@
 
 namespace godot {
 
+constexpr int NUM_NULL_PARTS = 1;
+constexpr int NULL_PART_ID = 0;
+
 class ShipData: public RefCounted {
    GDCLASS(ShipData, RefCounted)
 public:
@@ -41,15 +44,12 @@ public:
    float get_max_energy();
    const PackedByteArray get_index_buffer();
    const PackedByteArray get_rotation_buffer();
-   const PackedByteArray get_atlas_id_buffer();
    const PackedByteArray get_position_buffer();
    void clear_all_data();
    void assemble_from(Vector<Part*>);
 protected:
    static void _bind_methods();
 private:
-   static constexpr int NUM_NULL_PARTS = 1;
-   static constexpr int NULL_PART_ID = 0;
    State state = EMPTY;
    int cost = 0;
    float mass = 0.0;
@@ -65,8 +65,8 @@ private:
    Vector<Part*> turrets;
    PackedInt32Grid index_grid;
    PackedInt32Array rotation_states;
-   PackedInt32Array atlas_ids;
    PackedVector2Array centers;
+   PackedStringArray codes;
    DisjointSets part_clusters;
    String get_part_code(int part_id);
    void check_for_adjacent_part(int part_id, Vector2i xy);
@@ -107,7 +107,6 @@ private:
    Ref<ShipData> capital_ship = nullptr;
    Vector<Ref<ShipData>> hotbar;
    Vector<Ref<ShipData>> turrets;
-   String get_part_code(Ref<ShipData> ship, int part_id);
    void load_part_into_ship(Ref<ShipData> ship, PackedStringArray csv_line);
    PackedStringArray to_csv_line(Ref<ShipData> ship, int part_id);
 };

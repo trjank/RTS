@@ -9,24 +9,7 @@
 #include "capturable.hpp"
 #include "battle.hpp"
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                     celestial.hpp                     |
-|                                                       |
-*------------------------------------------------------*/
-
-using godot::Color;
-using godot::Node2D;
-using godot::Sprite2D;
-using godot::Vector2;
-using godot::Area2D;
-using godot::CollisionShape2D;
-using godot::CircleShape2D;
+namespace godot {
 
 class Celestial;
 
@@ -88,5 +71,7 @@ private:
    Ref<CircleShape2D> hitbox;
    Ref<Battle::Team> owner;
 };
+
+}
 
 #endif // CELESTIAL_HPP

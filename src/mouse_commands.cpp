@@ -1,18 +1,7 @@
 #include <godot_cpp/core/math.hpp>
 #include "mouse_commands.hpp"
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                  mouse_commands.cpp                   |
-|                                                       |
-*------------------------------------------------------*/
-
-using godot::Math::min;
+using namespace godot;
 
 MouseCommands::MouseCommands() {
    target.instantiate();
@@ -83,8 +72,8 @@ void MouseCommands::stop_all_units() {
 }
 Vector2 MouseCommands::get_point(float parametric_dist) {
    float path_end_dist   = waypoints.size() - 1;
-   int seg_start_index   = min(parametric_dist, path_end_dist - DIST_BETWEEN_WAYPOINTS);
-   float subsegment_dist = min(parametric_dist - seg_start_index, DIST_BETWEEN_WAYPOINTS);
+   int seg_start_index   = Math::min(parametric_dist, path_end_dist - DIST_BETWEEN_WAYPOINTS);
+   float subsegment_dist = Math::min(parametric_dist - seg_start_index, DIST_BETWEEN_WAYPOINTS);
    Vector2 segment_start = waypoints[seg_start_index];
    Vector2 segment_end   = waypoints[seg_start_index + 1];
    

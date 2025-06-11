@@ -87,6 +87,7 @@ public:
    Ref<PartData> lookup_code(String code);
    Dictionary get_unique(String code);
    void set_unique(String code, Dictionary new_data);
+   const PackedByteArray get_offsets_buffer();
 protected:
    static void _bind_methods();
 private:
@@ -96,7 +97,7 @@ private:
    Dictionary code_to_id;
    Vector<Ref<PartData>> parts;
    void create_atlas();
-   void add_part_to_atlas(Ref<PartData> part);
+   void draw_part_on_atlas(Ref<PartData> part);
    void populate_atlas();
    void load_part(PackedStringArray data);
    PackedStringArray to_csv_line(Ref<PartData> part);

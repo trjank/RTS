@@ -1,19 +1,7 @@
 #include <godot_cpp/core/math.hpp>
 #include "unit.hpp"
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                        unit.cpp                       |
-|                                                       |
-*------------------------------------------------------*/
-
-using godot::Math::clamp;
-using godot::Math::abs;
+using namespace godot;
 
 Ref<PackedScene> Unit::warp_visual = nullptr;
 
@@ -141,7 +129,7 @@ void Unit::_integrate_forces(PhysicsDirectBodyState2D* state) {
    
    if (commands.is_empty()) return state->set_angular_velocity(0.0);
    
-   double turn_direction = clamp(TURN_JERKINESS * angle_to_target, -1.0, 1.0);
+   double turn_direction = Math::clamp(TURN_JERKINESS * angle_to_target, -1.0, 1.0);
    state->set_angular_velocity(turnrate * turn_direction);
    try_to_use_thrusters(*state);
    try_to_warp(*state);

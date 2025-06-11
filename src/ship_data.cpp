@@ -3,7 +3,7 @@
 using namespace godot;
 
 int ShipData::count_parts() {
-   return atlas_ids.size() - NUM_NULL_PARTS;
+   return codes.size() - NUM_NULL_PARTS;
 }
 ShipData::State ShipData::get_state() {
    return state;
@@ -28,9 +28,6 @@ const PackedByteArray ShipData::get_index_buffer() {
 }
 const PackedByteArray ShipData::get_rotation_buffer() {
    return rotation_states.to_byte_array();
-}
-const PackedByteArray ShipData::get_atlas_id_buffer() {
-   return atlas_ids.to_byte_array();
 }
 const PackedByteArray ShipData::get_position_buffer() {
    return centers.to_byte_array();
@@ -83,7 +80,7 @@ void ShipData::check_for_adjacent_parts(int part_id, Rect2i rect) {
 void ShipData::add_part_to_grid(Ref<PartData> part, Vector2 center, RotationState rotation_state) {
    ERR_FAIL_COND(part.is_null());
 
-   atlas_ids.push_back(part->get_atlas_id());
+   codes.push_back(part->get_code());
    rotation_states.push_back(rotation_state);
    cost += part->get_cost();
    mass += part->get_mass();
@@ -162,9 +159,10 @@ void ShipManager::load_part_into_ship(Ref<ShipData> ship, PackedStringArray csv_
 }
 Ref<ShipData> ShipManager::load_ship(String csv_path) {
    Ref<FileAccess> file = FileAccess::open(csv_path, FileAccess::READ);
-
-   // ERR_FAIL_COND(file->get_csv_line() != CSV_COLUMNS);
-
+   if (file->get_csv_line() != CSV_COLUMNS) {
+      WARN_PRINT_ED("Ship csv header is incorrect (failed to load)");
+      return nullptr;
+   }
    Ref<ShipData> ship;
    ship.instantiate();
    while ( !file->eof_reached()) {
@@ -173,14 +171,9 @@ Ref<ShipData> ShipManager::load_ship(String csv_path) {
    file->close();
    return ship;
 }
-String ShipManager::get_part_code(Ref<ShipData> ship, int part_id) {
-   int atlas_id = ship->atlas_ids[part_id];
-   Ref<PartData> part = part_manager->lookup_id(atlas_id);
-   return part->get_code();
-}
 PackedStringArray ShipManager::to_csv_line(Ref<ShipData> ship, int part_id) {
    return {
-      get_part_code(ship, part_id),
+      ship->codes[part_id],
       String::num(ship->centers[part_id].x),
       String::num(ship->centers[part_id].y),
       String::num_int64(ship->rotation_states[part_id])
@@ -189,7 +182,7 @@ PackedStringArray ShipManager::to_csv_line(Ref<ShipData> ship, int part_id) {
 void ShipManager::save_ship(Ref<ShipData> ship, String csv_path) {
    Ref<FileAccess> csv = FileAccess::open(csv_path, FileAccess::WRITE);
    csv->store_csv_line(CSV_COLUMNS);
-   for (int part_id = 1; part_id <= ship->count_parts(); ++part_id) {
+   for (int part_id = NUM_NULL_PARTS; part_id <= ship->count_parts(); ++part_id) {
       csv->store_csv_line(to_csv_line(ship, part_id));
    }
    csv->close();

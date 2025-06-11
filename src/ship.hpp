@@ -8,10 +8,7 @@
 #include "destructable.hpp"
 #include "part.hpp"
 
-using godot::Ref;
-using godot::RefCounted;
-using godot::Vector;
-using godot::String;
+namespace godot {
 
 class Ship: public Unit, public Destructable {
    GDCLASS(Ship, Unit)
@@ -45,5 +42,7 @@ private:
    Battle::Player* owner = nullptr;
    // Vector<TurretMount*> turrets;
 };
+
+}
 
 #endif

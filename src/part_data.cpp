@@ -181,17 +181,26 @@ void PartManager::create_atlas() {
    atlas_offsets = atlas_data["points"];
    atlas = Image::create(size.x, size.y, true, IMAGE_FORMAT);
 }
-void PartManager::add_part_to_atlas(Ref<PartData> part) {
-   Rect2i part_size( {0, 0}, part->get_size_px());
-   Vector2i offset  = atlas_offsets[part->atlas_id];
+void PartManager::draw_part_on_atlas(Ref<PartData> part) {
+   const Vector2i TOP_LEFT_CORNER = {0, 0};
+   Vector2i size_px = part->get_size_px();
+   Vector2& offset  = atlas_offsets[part->atlas_id];
    Ref<Image> image = part->texture->get_image();
    image->convert(IMAGE_FORMAT);
-   atlas->blit_rect(image, part_size, offset);
+   atlas->blit_rect(image, {TOP_LEFT_CORNER, size_px}, offset);
+
+   // We need the part's offset to be the center, not the top left corner
+   // This is done for the ship image assembly compute shader
+   offset += 0.5 * size_px;
+
 }
 void PartManager::populate_atlas() {
    ERR_FAIL_COND(atlas_offsets.size() != parts.size());
 
    for (Ref<PartData> part: parts) {
-      add_part_to_atlas(part);
+      draw_part_on_atlas(part);
    }
+}
+const PackedByteArray PartManager::get_offsets_buffer() {
+   return atlas_offsets.to_byte_array();
 }

@@ -1,7 +1,7 @@
 #include <godot_cpp/core/math.hpp>
 #include "ship.hpp"
 
-using godot::MIN;
+using namespace godot;
 
 int Ship::get_cost() {
    return cost;

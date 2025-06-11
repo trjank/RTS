@@ -9,27 +9,7 @@
 #include <godot_cpp/variant/typed_array.hpp>
 #include "unit.hpp"
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                  mouse_commands.hpp                   |
-|                                                       |
-*------------------------------------------------------*/
-
-using godot::Ref;
-using godot::Variant;
-using godot::Vector2;
-using godot::Vector2i;
-using godot::Node2D;
-using godot::Input;
-using godot::InputEvent;
-using godot::Texture2D;
-using godot::Vector;
-using godot::TypedArray;
+namespace godot {
 
 class MouseCommands: public Node2D {
    GDCLASS(MouseCommands, Node2D)
@@ -108,6 +88,8 @@ struct MouseCommands::MoveOrder {
    Vector2 center;
    bool operator()(const T& A, const T& B) const;
 };
+
+}
 
 VARIANT_ENUM_CAST(MouseCommands::Action);
 VARIANT_ENUM_CAST(MouseCommands::Formation);

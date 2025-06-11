@@ -11,28 +11,7 @@
 #include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/variant/string_name.hpp>
 
-/*------------------------------------------------------*
-|                                                       |
-|            ______              __         __          |
-|           / __/ /____ ________/ /_ _____ / /_         |
-|          _\ \/ __/ _ `/ __/ _  / // (_-</ __/         |
-|         /___/\__/\_,_/_/  \_,_/\_,_/___/\__/          |
-|                                                       |
-|                        unit.hpp                       |
-|                                                       |
-*------------------------------------------------------*/
-
-using godot::Sprite2D;
-using godot::List;
-using godot::RigidBody2D;
-using godot::Vector2;
-using godot::Color;
-using godot::Ref;
-using godot::RefCounted;
-using godot::PhysicsDirectBodyState2D;
-using godot::Texture2D;
-using godot::PackedScene;
-using godot::StringName;
+namespace godot {
 
 class Unit: public RigidBody2D {
    GDCLASS(Unit, RigidBody2D)
@@ -156,5 +135,7 @@ private:
    bool valid;
    Sprite2D* icon;
 };
+
+}
 
 #endif // UNIT_HPP
