@@ -180,7 +180,10 @@ void PartGrouping::_bind_methods() {
 	bind_method(D_METHOD("delete_parts"), &PartGrouping::delete_parts);
 	bind_method(D_METHOD("get_mirroring"), &PartGrouping::get_mirroring);
 	bind_method(D_METHOD("set_mirroring"), &PartGrouping::set_mirroring);
+	bind_method(D_METHOD("snap_to_grid"), &PartGrouping::snap_to_grid);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "mirroring"), "set_mirroring", "get_mirroring");
+	ADD_SIGNAL(MethodInfo("dragging_started"));
+	ADD_SIGNAL(MethodInfo("dragging_ended"));
 }
 void ShipData::_bind_methods() {
 

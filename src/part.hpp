@@ -44,7 +44,9 @@ public:
    void delete_parts();
    void spawn_part(Ref<PartData> part_data);
    void select_parts(TypedArray<Node2D> selection);
-   void _unhandled_input(const Ref<InputEvent>& event) override;
+   void snap_to_grid();
+   void begin_dragging();
+   void _input(const Ref<InputEvent>& event) override;
    void _process(double _dt) override;
 protected:
    static void _bind_methods();

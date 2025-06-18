@@ -37,7 +37,8 @@ private:
    TypedArray<Node2D> selected;
    
    void begin_selection();
-   void end_selection();
+   void stop_selection();
+   void finish_selection();
    void resize(Vector2 new_size);
 };
 

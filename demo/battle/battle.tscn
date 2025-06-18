@@ -338,5 +338,6 @@ vertical_alignment = 1
 script = ExtResource("1_777ku")
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
+enabled = false
 
 [connection signal="selection_ended" from="MouseSelection" to="MouseCommands" method="_on_mouse_selection_selection_ended"]

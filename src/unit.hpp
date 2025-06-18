@@ -6,7 +6,6 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/variant/vector2.hpp>
 #include <godot_cpp/classes/sprite2d.hpp>
-#include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/templates/list.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/variant/string_name.hpp>

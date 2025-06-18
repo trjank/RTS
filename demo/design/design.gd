@@ -3,7 +3,7 @@ extends Node2D
 @export var overlay: CanvasLayer
 @export var container: TabContainer
 @export var part_grouping: PartGrouping
-@export var grid_background: Sprite2D
+@export var grid: Sprite2D
 @export var info_text: Label
 
 func show_overlay()->void:
@@ -13,8 +13,8 @@ func hide_overlay()->void:
 	overlay.hide()
 
 func set_grid_size(size: Vector2)->void:
-	grid_background.region_rect.size = PartData.PX_PER_GRID_SQUARE * size
-	info_text.position.y = -0.5 * grid_background.region_rect.size.y - 200
+	grid.region_rect.size = PartData.PX_PER_GRID_SQUARE * size
+	info_text.position.y = -0.5 * grid.region_rect.size.y - 200
 
 func _ready():
 	set_grid_size(Vector2(64, 64))

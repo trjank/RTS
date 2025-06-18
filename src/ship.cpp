@@ -3,8 +3,11 @@
 
 using namespace godot;
 
+Ship::Ship() {
+   add_child(image = memnew(ResizableSprite2D));
+}
 int Ship::get_cost() {
-   return cost;
+   return stats->get_cost();
 }
 float Ship::get_energy() {
    return energy;
@@ -12,29 +15,49 @@ float Ship::get_energy() {
 float Ship::get_shield() {
    return shield;
 }
+Ref<ShipData> Ship::get_data() {
+   return stats;
+}
+void Ship::set_data(Ref<ShipData> new_data) {
+   ERR_FAIL_COND(new_data.is_null());
+
+   stats = new_data;
+   hp = stats->get_max_hp();
+   shield = stats->get_max_shield();
+   energy = stats->get_max_energy();
+   turnrate = stats->get_turnrate();
+   // image->set_texture(stats->get_texture());
+}
 float Ship::hit_shield(float damage) {
    shield -= damage;
-   if (shield >= 0) return 0.0;
+
+   if (shield > 0) return 0.0;
+
    float overkill = -shield;
    shield = 0.0;
    return overkill;
 }
 void Ship::hit(float damage, float shield_penetration) {
-   float shield_damage = damage * shield_penetration;
+   float shield_damage   = damage * shield_penetration;
    float shield_overkill = hit_shield(shield_damage);
    Unit::hit(damage - shield_damage + shield_overkill);
 }
 void Ship::kill() {
    Unit::kill();
 
-   // ERR_FAIL_COND( !owner || owner->get_team().is_null());
+   ERR_FAIL_COND( !owner || owner->get_team().is_null());
    
-   // owner->get_team()->register_kill(*this);
+   owner->get_team()->register_kill(*this);
+}
+void Ship::fire() {
+   // for (TurretMount* weapon: weapons) {
+   //    weapon->fire_at(get_target());
+   // }
 }
 void Ship::_physics_process(double dt) {
    Unit::_physics_process(dt);
    // TODO: update shield regen rate based on energy
-	energy = MIN(energy + energy_per_sec * dt, max_energy);
-   shield = MIN(shield + shield_per_sec * dt, max_shield);
-   warp = MIN(warp + warp_per_sec * dt, max_warp);
+	// energy = MIN(energy + energy_per_sec * dt, max_energy);
+   // shield = MIN(shield + shield_per_sec * dt, max_shield);
+   // warp = MIN(warp + warp_per_sec * dt, max_warp);
 }

@@ -2,6 +2,8 @@
 
 using namespace godot;
 
+constexpr int SQUARE_SIZE = PartData::PX_PER_GRID_SQUARE;
+
 Part::Part() {
 	hitbox.instantiate();
 	add_child(shape = memnew(CollisionShape2D));
@@ -63,9 +65,8 @@ void PartGrouping::spawn_part(Ref<PartData> part_data) {
 	get_parent()->add_child(part);
 	part->set_data(part_data);
 	part->set_global_position(get_global_mouse_position());
-	clear_parts();
-	add_part(part);
-	update_region();
+	select_parts(TypedArray<Node2D>::make(part));
+	begin_dragging();
 }
 void PartGrouping::select_parts(TypedArray<Node2D> selection) {
 	clear_parts();
@@ -82,8 +83,10 @@ void PartGrouping::select_parts(TypedArray<Node2D> selection) {
 void PartGrouping::add_part(Part* part) {
 	if (part == nullptr) return;
 
-	Rect2 rect = part->get_global_rect();
-	region = parts.is_empty() ? rect : region.merge(rect);
+	Rect2 part_bounding_box = part->get_global_rect();
+	region = parts.is_empty()
+	       ? part_bounding_box
+	       : region.merge(part_bounding_box);
 	parts.push_back(part);
 }
 void PartGrouping::update_region() {
@@ -113,23 +116,36 @@ void PartGrouping::reposition_mirrored() {
 	position.x = -position.x;
 	mirrored->set_position(position);
 }
+void PartGrouping::snap_to_grid() {
+	Rect2 rect = get_transform().xform(get_rect());
+	rect.position = rect.position.snapped( {SQUARE_SIZE, SQUARE_SIZE} );
+	set_position(rect.get_center());
+
+	dragging = false;
+	if (mirrored) mirrored->snap_to_grid();
+	emit_signal("dragging_ended");
+}
+void PartGrouping::begin_dragging() {
+	mouse_offset = get_global_mouse_position() - get_global_position();
+	create_mirrored();
+
+	dragging = true;
+	emit_signal("dragging_started");
+}
 void PartGrouping::_process(double _dt) {
 	if ( !dragging) return;
 
 	set_global_position(get_global_mouse_position() - mouse_offset);
 	reposition_mirrored();
 }
-void PartGrouping::_unhandled_input(const Ref<InputEvent>& event) {
+void PartGrouping::_input(const Ref<InputEvent>& event) {
 	if (event->is_action_released("delete"))
 		delete_parts();
-	if (event->is_action_pressed("select") && contains_mouse()) {
-		mouse_offset = get_global_mouse_position() - get_global_position();
-		create_mirrored();
-		dragging = true;
-	}
+	if (event->is_action_pressed("select") && contains_mouse())
+		begin_dragging();
 	if ( !dragging) return;
 	if (event->is_action_released("select"))
-		dragging = false;
+		snap_to_grid();
 	if (event->is_action_pressed("rotate cw"))
 		rotate_smoothly(CLOCKWISE);
 	if (event->is_action_pressed("rotate ccw"))

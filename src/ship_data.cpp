@@ -11,17 +11,20 @@ ShipData::State ShipData::get_state() {
 int ShipData::get_cost() {
    return cost;
 }
-float ShipData::get_max_warp() {
+double ShipData::get_max_warp() {
    return max_warp;
 }
-float ShipData::get_max_hp() {
+double ShipData::get_max_hp() {
    return max_hp;
 }
-float ShipData::get_max_shield() {
+double ShipData::get_max_shield() {
    return max_shield;
 }
-float ShipData::get_max_energy() {
+double ShipData::get_max_energy() {
    return max_energy;
+}
+double ShipData::get_turnrate() {
+   return turnrate;
 }
 const PackedByteArray ShipData::get_index_buffer() {
    return index_grid.to_byte_array();

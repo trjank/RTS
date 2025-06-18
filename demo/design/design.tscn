@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=19 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Texture2D" uid="uid://c14cadhha1ghj" path="res://design/parts_container_background.png" id="1_8h85s"]
 [ext_resource type="Texture2D" uid="uid://dm20rnnvt5n3y" path="res://icons/dropdown.png" id="1_l3pce"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://b1q6iuiq8kne0" path="res://icons/mirror_mode_disabled.png" id="9_neots"]
 [ext_resource type="Script" path="res://design/PartGrouping.gd" id="10_6vk6i"]
 [ext_resource type="Script" path="res://design/MirrorButton.gd" id="10_u7s8c"]
+[ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://design/grid_background_5x5.png" id="12_my7uj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bomom"]
@@ -44,12 +45,12 @@ border_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f44sc"]
 bg_color = Color(1, 1, 1, 0)
 
-[node name="Design" type="Node2D" node_paths=PackedStringArray("overlay", "container", "part_grouping", "grid_background", "info_text")]
+[node name="Design" type="Node2D" node_paths=PackedStringArray("overlay", "container", "part_grouping", "grid", "info_text")]
 script = ExtResource("1_wctwy")
 overlay = NodePath("UI")
 container = NodePath("UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer")
-part_grouping = NodePath("PartGrouping")
-grid_background = NodePath("GridBackground")
+part_grouping = NodePath("Grid/PartGrouping")
+grid = NodePath("Grid")
 info_text = NodePath("InfoText")
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -237,7 +238,17 @@ mouse_filter = 2
 [node name="StatsContainer" type="PanelContainer" parent="UI/NavigatorOffset/HSplitContainer/RightSidebar"]
 layout_mode = 2
 
-[node name="PartGrouping" type="PartGrouping" parent="."]
+[node name="MouseSelection" type="MouseSelection" parent="."]
+script = ExtResource("11_541lb")
+
+[node name="Grid" type="Sprite2D" parent="."]
+texture_filter = 1
+texture_repeat = 2
+texture = ExtResource("12_my7uj")
+region_enabled = true
+region_rect = Rect2(2.08165e-12, 2.08165e-12, 256, 256)
+
+[node name="PartGrouping" type="PartGrouping" parent="Grid"]
 mirroring = true
 z_index = 1
 texture_filter = 1
@@ -245,15 +256,6 @@ texture_repeat = 2
 texture = ExtResource("1_8h85s")
 region_enabled = true
 script = ExtResource("10_6vk6i")
-
-[node name="MouseSelection" type="MouseSelection" parent="."]
-
-[node name="GridBackground" type="Sprite2D" parent="."]
-texture_filter = 1
-texture_repeat = 2
-texture = ExtResource("12_my7uj")
-region_enabled = true
-region_rect = Rect2(2.08165e-12, 2.08165e-12, 256, 256)
 
 [node name="InfoText" type="Label" parent="."]
 custom_minimum_size = Vector2(1000, 2.08165e-12)
@@ -280,3 +282,6 @@ width = 5.0
 default_color = Color(1, 0, 0, 1)
 
 [connection signal="button_down" from="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" method="_on_button_down"]
+[connection signal="selection_ended" from="MouseSelection" to="Grid/PartGrouping" method="_on_mouse_selection_selection_ended"]
+[connection signal="dragging_ended" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_ended"]
+[connection signal="dragging_started" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_started"]

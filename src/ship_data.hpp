@@ -38,10 +38,11 @@ public:
    int get_cost();
    Vector2i get_size();
    Vector2i get_size_px();
-   float get_max_warp();
-   float get_max_hp();
-   float get_max_shield();
-   float get_max_energy();
+   double get_max_warp();
+   double get_max_hp();
+   double get_max_shield();
+   double get_max_energy();
+   double get_turnrate();
    const PackedByteArray get_index_buffer();
    const PackedByteArray get_rotation_buffer();
    const PackedByteArray get_position_buffer();
@@ -53,13 +54,14 @@ protected:
 private:
    State state = EMPTY;
    int cost = 0;
-   float mass = 0.0;
-   float warp_per_sec = 0.0;
-   float shield_per_sec = 0.0;
-   float max_warp = 0.0;
-   float max_hp = 0.0;
-   float max_shield = 0.0;
-   float max_energy = 0.0;
+   double mass = 0.0;
+   double warp_per_sec = 0.0;
+   double shield_per_sec = 0.0;
+   double max_warp = 0.0;
+   double max_hp = 0.0;
+   double max_shield = 0.0;
+   double max_energy = 0.0;
+   double turnrate = 0.0;
    Vector2 mass_offset;
    Vector2 center_of_mass;
    String name = "<unnamed>";
