@@ -113,7 +113,6 @@ Celestial* System::create_correct_type() {
    return memnew(Celestial);
 }
 Celestial* System::create_celestial(Ref<RNG> rng) {
-   double rotation   = rng->randf_range(0.0, Math_TAU);
    double mass       = rng->randf_range(min_mass, max_mass);
    double radius     = rng->randf_range(min_radius, max_radius);
    int name_index    = rng->randi_range(0, names.size() - 1);
@@ -125,8 +124,7 @@ Celestial* System::create_celestial(Ref<RNG> rng) {
    celestial->set_radius(radius);
    celestial->set_energy_density(energy_density);
    celestial->set_alloy_density(alloy_density);
-   celestial->set_name(names[name_index]);
-   celestial->set_rotation(rotation);
+   celestial->set_custom_name(names[name_index]);
 
    return celestial;
 }

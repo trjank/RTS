@@ -95,10 +95,8 @@ void Battle::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "countdown_sec"), "set_countdown_sec", "get_countdown_sec");
 }
 void Orbit::_bind_methods() {
-	ClassDB::bind_static_method("Celestial", D_METHOD("get_time_scale"), &Orbit::get_time_scale);
-	ClassDB::bind_static_method("Celestial", D_METHOD("get_gravity_scale"), &Orbit::get_gravity_scale);
-	ClassDB::bind_static_method("Celestial", D_METHOD("set_time_scale", "new_time_scale"), &Orbit::set_time_scale);
-	ClassDB::bind_static_method("Celestial", D_METHOD("set_gravity_scale", "new_gravity_scale"), &Orbit::set_gravity_scale);
+	ClassDB::bind_static_method("Orbit", D_METHOD("get_time_scale"), &Orbit::get_time_scale);
+	ClassDB::bind_static_method("Orbit", D_METHOD("set_time_scale", "new_time_scale"), &Orbit::set_time_scale);
 	bind_method(D_METHOD("get_angular_velocity"), &Orbit::get_angular_velocity);
 	bind_method(D_METHOD("get_distance"), &Orbit::get_distance);
 	bind_method(D_METHOD("set_distance", "new_distance"), &Orbit::set_distance);

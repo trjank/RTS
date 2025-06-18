@@ -13,6 +13,9 @@ Ref<ShaderMaterial>& Star::get_black_hole_shader() {
 bool Star::is_black_hole() {
    return collapsed;
 }
+bool Star::can_capture() {
+   return false;
+}
 void Star::set_star_shader(Ref<ShaderMaterial> shader){
    get_star_shader() = shader;
 }

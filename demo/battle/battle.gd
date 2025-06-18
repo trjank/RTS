@@ -14,6 +14,8 @@ func show_overlay()->void:
 	overlay.show()
 
 func _ready()->void:
+	Orbit.set_time_scale(100)
+	
 	var sun := StarSystem.new()
 	sun.set_radius_range(300, 500)
 	sun.set_mass_range(100, 200)

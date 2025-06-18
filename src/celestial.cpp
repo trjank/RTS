@@ -4,19 +4,12 @@
 using namespace godot;
 
 double Orbit::time_scale = 1.0;
-double Orbit::gravity_scale = 1.0;
 
 double Orbit::get_time_scale() {
    return time_scale;
 }
-double Orbit::get_gravity_scale() {
-   return gravity_scale;
-}
 void Orbit::set_time_scale(double new_scale) {
    time_scale = Math::clamp(new_scale, MIN_TIME_SCALE, MAX_TIME_SCALE);
-}
-void Orbit::set_gravity_scale(double new_scale) {
-   gravity_scale = Math::clamp(new_scale, MIN_GRAVITY_SCALE, MAX_GRAVITY_SCALE);
 }
 double Orbit::get_distance() {
    return distance;
@@ -24,8 +17,8 @@ double Orbit::get_distance() {
 double Orbit::get_angular_velocity() {
    if ( !orbiting) return 0.0;
 
-   double scaled_G = gravity_scale * GRAVITATIONAL_CONSTANT;
-   return sqrt(scaled_G * orbiting->mass / distance);
+   double speed = sqrt(GRAVITATIONAL_CONSTANT * orbiting->mass / distance);
+   return speed / distance;
 }
 void Orbit::set_angle(Node2D* orbiter, double angle) {
    ERR_FAIL_COND( !orbiter);
@@ -82,9 +75,11 @@ Celestial::Celestial() {
    CollisionShape2D* shape = memnew(CollisionShape2D);
    add_child(capture_zone = memnew(Area2D));
    add_child(image = memnew(ResizableSprite2D));
+   add_child(label = memnew(Label));
    capture_zone->add_child(shape);
    hitbox.instantiate();
    shape->set_shape(hitbox);
+   label->add_theme_font_size_override("font_size", TEXT_SIZE);
 }
 bool Celestial::can_capture() {
    return true;
@@ -104,14 +99,19 @@ double Celestial::get_alloy_per_sec() {
 double Celestial::get_energy_per_sec() {
    return surface_area * energy_density * energy_abundance;
 }
+String Celestial::get_custom_name() {
+   return custom_name;
+}
 Ref<Texture2D> Celestial::get_texture() {
    return image->get_texture();
 }
 void Celestial::set_alloy_density(double density) {
    alloy_density = density;
+   update_label_text();
 }
 void Celestial::set_energy_density(double density) {
    energy_density = density;
+   update_label_text();
 }
 void Celestial::set_angular_velocity(double new_angular_velocity) {
    angular_velocity = new_angular_velocity;
@@ -129,12 +129,38 @@ void Celestial::set_radius(double new_radius) {
    float diameter = 2 * radius;
    image->resize_scaled( {diameter, diameter} );
    surface_area = M_PI * diameter * diameter;
+   update_label_text();
+}
+void Celestial::set_custom_name(String new_custom_name) {
+   custom_name = new_custom_name;
+   update_label_text();
 }
 void Celestial::set_texture(Ref<Texture2D> new_texture) {
    image->set_texture(new_texture);
 }
+void Celestial::reposition_label() {
+   Vector2 position;
+   position.x = -0.5 * label->get_size().x;
+   position.y = -radius - LABEL_OFFSET;
+   label->set_position(position);
+   label->set_pivot_offset(-position);
+}
+void Celestial::update_label_text() {
+   String text = custom_name;
+   if (can_capture()) {
+      text += " | ";
+      text += String::num(get_alloy_per_sec(), DISPLAY_DECIMAL_PLACES) + "aps | ";
+      text += String::num(get_energy_per_sec(), DISPLAY_DECIMAL_PLACES) + "eps";
+   }
+   label->set_text(text);
+   reposition_label();
+}
+void Celestial::_ready() {
+   reposition_label();
+}
 void Celestial::_physics_process(double dt) {
    rotate(angular_velocity * Orbit::get_time_scale() * dt);
+   label->set_rotation(-get_global_rotation());
 }
 void Celestial::_draw() {
    if (owner.is_valid())
