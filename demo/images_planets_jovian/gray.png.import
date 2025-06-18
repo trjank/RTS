@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dh3gscm0yhqmx"
-path="res://.godot/imported/blue.png-707dc3389139a7b3b980590d0a7d96ac.ctex"
+uid="uid://bqlcw5ojpq25b"
+path="res://.godot/imported/gray.png-29666a74cb712305c966349fc62ffdd2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://map/star/star_images/blue.png"
-dest_files=["res://.godot/imported/blue.png-707dc3389139a7b3b980590d0a7d96ac.ctex"]
+source_file="res://images_planets_jovian/gray.png"
+dest_files=["res://.godot/imported/gray.png-29666a74cb712305c966349fc62ffdd2.ctex"]
 
 [params]
 

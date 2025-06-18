@@ -23,7 +23,8 @@ public:
    Part();
    Rect2 get_global_rect();
    Ref<PartData> get_data();
-   void set_data(Ref<PartData> part_data);
+   virtual void set_data(Ref<PartData> part_data);
+   virtual bool keep_as_node();
 protected:
    static void _bind_methods();
 private:
@@ -32,42 +33,6 @@ private:
    CollisionShape2D* shape = nullptr;
    ResizableSprite2D* image = nullptr;
 };
-
-class Weapon: public Part {
-   GDCLASS(Weapon, Part)
-public:
-protected:
-   static void _bind_methods();
-private:
-   // Projectile* projectile;
-   int shots_per_burst = 0;
-   double energy_per_shot = 0.0;
-   double burst_firerate = 0.0;
-   double net_firerate = 0.0;
-   double range = 0.0;
-};
-
-class TurretMount: public Part {
-   GDCLASS(TurretMount, Part)
-public:
-   void set_weapon(Weapon* weapon);
-protected:
-   static void _bind_methods();
-private:
-   Weapon* weapon = nullptr;
-   double min_angle;
-   double max_angle;
-};
-
-// class WarpDrive: public Part {
-//    double warp_mass_ratio;
-//    double warp_recharge_rate;
-// };
-
-// class ShieldGenerator: public Part {
-//    double max_shield;
-//    double shield_recharge_rate;
-// };
 
 class PartGrouping: public ResizableSprite2D {
    GDCLASS(PartGrouping, Sprite2D)
@@ -86,7 +51,6 @@ protected:
 private:
    static constexpr int CLOCKWISE = 1;
    static constexpr int COUNTER_CLOCKWISE = -1;
-   static const Rect2 EMPTY_REGION;
    void update_region();
    void create_mirrored();
    void reposition_mirrored();
@@ -96,7 +60,7 @@ private:
    bool dragging = false;
    bool mirroring = false;
    Vector<Part*> parts;
-   Rect2 region = EMPTY_REGION;
+   Rect2 region = {0.0, 0.0, 0.0, 0.0};
    Vector2 mouse_offset;
    PartGrouping* mirrored = nullptr;
 };

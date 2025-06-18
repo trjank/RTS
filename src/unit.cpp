@@ -3,7 +3,7 @@
 
 using namespace godot;
 
-Ref<PackedScene> Unit::warp_visual = nullptr;
+// Ref<PackedScene> Unit::warp_visual = nullptr;
 
 Unit::Unit() {
    radar_signature.instantiate();
@@ -42,9 +42,9 @@ void Unit::queue_move(Ref<Unit::Command> new_command, bool clear_queue) {
 void Unit::set_target(Ref<Unit::Command> new_target) {
    target = new_target;
 }
-void Unit::set_warp_visual(Ref<PackedScene> new_warp_visual) {
-   warp_visual = new_warp_visual;
-}
+// void Unit::set_warp_visual(Ref<PackedScene> new_warp_visual) {
+//    warp_visual = new_warp_visual;
+// }
 Vector2 Unit::get_forward_direction() {
    return -get_transform().columns[1];
 }
@@ -97,21 +97,21 @@ void Unit::try_to_use_thrusters(PhysicsDirectBodyState2D& state) {
    Vector2 thrust_vector = thrust * get_forward_direction();
    state.apply_central_force(thrust_vector);
 }
-void Unit::make_warp_visual(Vector2 warp_start, Vector2 warp_end) {
-   if (warp_visual.is_null()) return;
+// void Unit::make_warp_visual(Vector2 warp_start, Vector2 warp_end) {
+//    if (warp_visual.is_null()) return;
    
-   Node* warp_visual_node = warp_visual->instantiate();
-   get_parent()->add_child(warp_visual_node);
-   warp_visual_node->call("set_start", warp_start);
-   warp_visual_node->call("set_end", warp_end);
-}
+//    Node* warp_visual_node = warp_visual->instantiate();
+//    get_parent()->add_child(warp_visual_node);
+//    warp_visual_node->call("set_start", warp_start);
+//    warp_visual_node->call("set_end", warp_end);
+// }
 void Unit::try_to_warp(PhysicsDirectBodyState2D& state) {
    if ( !can_warp) return;
    
    Ref<Command> command = get_current_command();
    Vector2 warp_start = get_global_position();
    Vector2 warp_end = command->get_position();
-   make_warp_visual(warp_start, warp_end);
+   // make_warp_visual(warp_start, warp_end);
    
    warp -= distance_to_target;
    state.set_linear_velocity({ 0.0, 0.0 });
@@ -138,14 +138,17 @@ void Unit::_process(double _dt) {
    queue_redraw();
 }
 void Unit::_draw() {
-   draw_arc({ 0.0, 0.0 }, warp, 0.0, Math_TAU, 100, warp_color, 1.0, true);
+   static const Color PATH_COLOR = Color(1.0, 1.0, 1.0, 0.2);
+   static const Color WARP_COLOR = Color(0.8, 0.6, 0.9, 0.5);
+
+   draw_arc({ 0.0, 0.0 }, warp, 0.0, Math_TAU, 100, WARP_COLOR, 1.0, true);
    
    if (commands.is_empty()) return;
    
    Ref<Command> command = get_current_command();
    Vector2 path_start = { 0.0, 0.0 };
    Vector2 path_end = to_local(command->get_position());
-   draw_line(path_start, path_end, path_color, 1.0, true);
+   draw_line(path_start, path_end, PATH_COLOR, 1.0, true);
 }
 
 float Unit::RadarSignature::get_HP() {

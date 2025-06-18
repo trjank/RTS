@@ -21,13 +21,13 @@ public:
    class Command;
    static constexpr double TURN_JERKINESS = 10.0;
    static constexpr int MAX_N_COMMANDS = 3;
-   static inline Color path_color = Color(1.0, 1.0, 1.0, 0.2);
-   static inline Color warp_color = Color(0.8, 0.6, 0.9, 0.5);
-   static Ref<PackedScene> warp_visual;
+   // static inline Color path_color = Color(1.0, 1.0, 1.0, 0.2);
+   // static inline Color warp_color = Color(0.8, 0.6, 0.9, 0.5);
+   // static Ref<PackedScene> warp_visual;
 
    Unit();
    ~Unit();
-   static void set_warp_visual(Ref<PackedScene> new_warp_visual);
+   // static void set_warp_visual(Ref<PackedScene> new_warp_visual);
    float get_HP();
    int get_num_commands();
    Vector2 get_forward_direction();
@@ -85,7 +85,7 @@ private:
 
    void update_radar_signature();
    void move_to_target();
-   void make_warp_visual(Vector2 warp_start, Vector2 warp_end);
+   // void make_warp_visual(Vector2 warp_start, Vector2 warp_end);
    void try_to_warp(PhysicsDirectBodyState2D& state);
    void try_to_use_thrusters(PhysicsDirectBodyState2D& state);
 };

@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://c8r8u7e7qkegq"]
+[gd_scene load_steps=7 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" path="res://battle/MouseCommands.gd" id="1_777ku"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_j65k6"]
+[ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fasl0"]
 bg_color = Color(0, 0, 0, 0.588235)
@@ -28,11 +29,25 @@ corner_radius_bottom_right = 25
 corner_radius_bottom_left = 25
 
 [node name="Battle" type="Battle" node_paths=PackedStringArray("clock", "clock_minutes_label", "clock_seconds_label", "overlay")]
+seed = -1909400080011345178
 script = ExtResource("1_2ostc")
 clock = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/Timer")
 clock_minutes_label = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Minutes")
 clock_seconds_label = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Seconds")
 overlay = NodePath("UI")
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="TextureRect" type="TextureRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_lrxve")
+expand_mode = 3
+stretch_mode = 6
 
 [node name="UI" type="CanvasLayer" parent="."]
 layer = 0

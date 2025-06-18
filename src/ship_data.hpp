@@ -47,6 +47,7 @@ public:
    const PackedByteArray get_position_buffer();
    void clear_all_data();
    void assemble_from(Vector<Part*>);
+   String get_error_message();
 protected:
    static void _bind_methods();
 private:

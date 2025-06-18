@@ -6,8 +6,6 @@ extends Node2D
 @export var grid_background: Sprite2D
 @export var info_text: Label
 
-const parts_image_folder := ""
-
 func show_overlay()->void:
 	overlay.show()
 

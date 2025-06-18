@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=14 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="2_5s37y"]
@@ -10,7 +10,6 @@
 [ext_resource type="Script" path="res://Chat.gd" id="7_6efvs"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="7_873ts"]
 [ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat/chat.tscn" id="7_ep3nq"]
-[ext_resource type="Script" path="res://map/Map.gd" id="7_rg2wc"]
 [ext_resource type="Script" path="res://Camera.gd" id="7_wdsxf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
@@ -118,6 +117,7 @@ layer = 2
 visible = false
 
 [node name="Battle" parent="." instance=ExtResource("5_rtafa")]
+seed = -4660530014316562278
 
 [node name="Design" parent="." instance=ExtResource("7_873ts")]
 
@@ -128,22 +128,6 @@ script = ExtResource("7_wdsxf")
 camera_node = NodePath("Camera2D")
 
 [node name="Camera2D" type="Camera2D" parent="Camera"]
-
-[node name="Map" type="Node2D" parent="." node_paths=PackedStringArray("background_image")]
-script = ExtResource("7_rg2wc")
-background_image = NodePath("Background/BackgroundImage")
-
-[node name="Background" type="CanvasLayer" parent="Map"]
-layer = -1
-
-[node name="BackgroundImage" type="TextureRect" parent="Map/Background"]
-unique_name_in_owner = true
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch_mode = 6
 
 [connection signal="pressed" from="UI/Nagivator/MarginContainer/GridContainer/Design" to="UI/Nagivator/MarginContainer/GridContainer/Design" method="_on_pressed"]
 [connection signal="pressed" from="UI/Nagivator/MarginContainer/GridContainer/Battle" to="UI/Nagivator/MarginContainer/GridContainer/Battle" method="_on_pressed"]

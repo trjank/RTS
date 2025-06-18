@@ -124,11 +124,11 @@ void MouseCommands::set_action_with_cursor(Action new_action) {
    action = new_action;
    Input* input = Input::get_singleton();
    Ref<Texture2D> cursor = cursor_bindings[action];
-   input->set_custom_mouse_cursor(cursor, Input::CURSOR_ARROW, CURSOR_CENTER);
+   input->set_custom_mouse_cursor(cursor, Input::CURSOR_ARROW, Vector2i(16, 16));
 }
 void MouseCommands::bind_cursor_to_action(Ref<Texture2D> image, Action action) {
    ERR_FAIL_COND(action < 0 || action >= NUM_OF_ACTIONS);
-   ERR_FAIL_COND(image.is_valid() && image->get_size() != CURSOR_SIZE);
+   ERR_FAIL_COND(image.is_valid() && image->get_size() != Vector2i(32, 32));
    
    cursor_bindings[action] = image;
 }
@@ -169,7 +169,7 @@ void MouseCommands::_unhandled_input(const Ref<InputEvent>& event) {
 
 template<typename T>
 Vector2 MouseCommands::MoveOrder<T>::get_center(Vector<T> objects) {
-   Vector2 sum_pos = { 0.0, 0.0 };
+   Vector2 sum_pos = {0.0, 0.0};
    for (T object: objects) {
       sum_pos += object->get_position();
    }

@@ -110,6 +110,14 @@ void ShipData::add_part_to_grid(Part* part) {
    RotationState state = encode_rotation(rotation, flipped);
    add_part_to_grid(part->get_data(), part->get_position(), state);
 }
+String ShipData::get_error_message() {
+   switch (state) {
+      case VALID: return "";
+      case EMPTY: return "No parts found";
+      case PART_OVERLAP: return "Parts are overlapping!";
+      case PARTS_DISCONNECTED: return "Ship is not connected!";
+   }
+}
 
 
 ShipManager::ShipManager() {

@@ -1,7 +1,6 @@
 [gd_scene load_steps=18 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Texture2D" uid="uid://c14cadhha1ghj" path="res://design/parts_container_background.png" id="1_8h85s"]
-[ext_resource type="Texture2D" uid="uid://dkhfwggchc705" path="res://design/grid_squares.png" id="1_kbf3m"]
 [ext_resource type="Texture2D" uid="uid://dm20rnnvt5n3y" path="res://icons/dropdown.png" id="1_l3pce"]
 [ext_resource type="Script" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
@@ -12,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://b1q6iuiq8kne0" path="res://icons/mirror_mode_disabled.png" id="9_neots"]
 [ext_resource type="Script" path="res://design/PartGrouping.gd" id="10_6vk6i"]
 [ext_resource type="Script" path="res://design/MirrorButton.gd" id="10_u7s8c"]
+[ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://design/grid_background_5x5.png" id="12_my7uj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bomom"]
 content_margin_left = 0.0
@@ -251,24 +251,27 @@ script = ExtResource("10_6vk6i")
 [node name="GridBackground" type="Sprite2D" parent="."]
 texture_filter = 1
 texture_repeat = 2
-texture = ExtResource("1_kbf3m")
+texture = ExtResource("12_my7uj")
 region_enabled = true
 region_rect = Rect2(2.08165e-12, 2.08165e-12, 256, 256)
 
 [node name="InfoText" type="Label" parent="."]
+custom_minimum_size = Vector2(1000, 2.08165e-12)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -378.5
-offset_top = -256.0
-offset_right = 378.5
-offset_bottom = -214.0
+offset_left = -499.0
+offset_top = -22.0
+offset_right = 501.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 30
 text = "Drag parts from the sidebar to begin building a ship!"
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="MirrorAxis" type="Line2D" parent="."]
 position = Vector2(2.08165e-12, -1000)
@@ -277,4 +280,3 @@ width = 5.0
 default_color = Color(1, 0, 0, 1)
 
 [connection signal="button_down" from="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" method="_on_button_down"]
-[connection signal="selection_ended" from="MouseSelection" to="PartGrouping" method="_on_mouse_selection_selection_ended"]

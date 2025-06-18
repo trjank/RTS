@@ -28,12 +28,10 @@ public:
    | mouse movement. You can add more or modify SMOOTH and |
    | PRECISE so long as the value is greater than 1.       |
    *------------------------------------------------------*/
-   enum Action { NONE, MOVE, TARGET, NUM_OF_ACTIONS };
-   enum Formation { LINE = 2, V = 3, SMOOTH = 10, PRECISE = 30 };
+   enum Action {NONE, MOVE, TARGET, NUM_OF_ACTIONS};
+   enum Formation: int {LINE = 2, V = 3, SMOOTH = 10, PRECISE = 30};
    static constexpr float DIST_BETWEEN_WAYPOINTS = 1.0;
    static constexpr int MAX_UNITS_SELECTED = 10;
-   static inline Vector2i CURSOR_SIZE = { 32, 32 };
-   static inline Vector2i CURSOR_CENTER = { 16, 16 };
    
    MouseCommands();
    Action get_action();

@@ -1,6 +1,10 @@
 #ifndef PACKED_INT32_GRID_HPP
 #define PACKED_INT32_GRID_HPP
 
+#include <godot_cpp/variant/vector2.hpp>
+#include <godot_cpp/variant/rect2i.hpp>
+#include <godot_cpp/variant/packed_byte_array.hpp>
+#include <godot_cpp/variant/packed_int32_array.hpp>
 #include "part.hpp"
 
 namespace godot {

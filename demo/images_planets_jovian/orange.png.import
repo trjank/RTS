@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6s7s35g54k11"
-path="res://.godot/imported/red.png-99be5da0a8588ac14cc0baf18ffc0743.ctex"
+uid="uid://flpse1fe4pmt"
+path="res://.godot/imported/orange.png-bc1f8abfd63461a467b7282a83b38fc3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://map/jovian_planet/red.png"
-dest_files=["res://.godot/imported/red.png-99be5da0a8588ac14cc0baf18ffc0743.ctex"]
+source_file="res://images_planets_jovian/orange.png"
+dest_files=["res://.godot/imported/orange.png-bc1f8abfd63461a467b7282a83b38fc3.ctex"]
 
 [params]
 

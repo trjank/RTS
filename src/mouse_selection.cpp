@@ -33,7 +33,7 @@ void MouseSelection::begin_selection() {
    }
    selected.clear();
    selecting = true;
-   resize({ 0.0, 0.0 });
+   resize( {0.0, 0.0} );
    start_pos = get_global_mouse_position();
    set_visibility(Input::MOUSE_MODE_HIDDEN);
    emit_signal("selection_started");
@@ -43,7 +43,7 @@ void MouseSelection::end_selection() {
    for (int n = 0; n < selected.size(); ++n) {
       selected[n].call("on_select");
    }
-   resize({ 0.0, 0.0 });
+   resize( {0.0, 0.0} );
    selecting = false;
    set_visibility(Input::MOUSE_MODE_VISIBLE);
    emit_signal("selection_ended", selected);

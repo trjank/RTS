@@ -13,7 +13,8 @@ float Ship::get_shield() {
    return shield;
 }
 float Ship::hit_shield(float damage) {
-   if ((shield -= damage) >= 0) return 0.0;
+   shield -= damage;
+   if (shield >= 0) return 0.0;
    float overkill = -shield;
    shield = 0.0;
    return overkill;
@@ -26,9 +27,9 @@ void Ship::hit(float damage, float shield_penetration) {
 void Ship::kill() {
    Unit::kill();
 
-   ERR_FAIL_COND( !owner || owner->get_team().is_null());
+   // ERR_FAIL_COND( !owner || owner->get_team().is_null());
    
-   owner->get_team()->register_kill(*this);
+   // owner->get_team()->register_kill(*this);
 }
 void Ship::_physics_process(double dt) {
    Unit::_physics_process(dt);

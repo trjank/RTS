@@ -35,7 +35,7 @@ String PartData::get_tab() {
 String PartData::get_desc() {
    return desc;
 }
-Ref<CompressedTexture2D> PartData::get_texture() {
+Ref<Texture2D> PartData::get_texture() {
    return texture;
 }
 void PartData::set_cost(int new_cost) {
@@ -61,9 +61,11 @@ void PartData::set_desc(String new_desc) {
 }
 void PartData::set_texture_path(String resource_path) {
    resource_path = "res://part_images/" + resource_path;
-   texture = ResourceLoader::get_singleton()->load(resource_path);
-   if (texture.is_valid() && texture->get_size() != get_size_px())
-      WARN_PRINT_ED("Incorrect image size: " + resource_path);
+   Ref<Texture2D> new_texture = ResourceLoader::get_singleton()->load(resource_path);
+
+   ERR_FAIL_COND(new_texture.is_null() || new_texture->get_size() != get_size_px());
+
+   texture = new_texture;
 }
 
 

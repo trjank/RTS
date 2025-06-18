@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c44o4uu5jrbl5"
-path="res://.godot/imported/preset_1.png-18c086b07945507091f07500f58f9692.ctex"
+uid="uid://i65ckqldccfe"
+path="res://.godot/imported/neutron.png-0a02e25c96a6ed96fa74ae32ed40aaf1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://map/backgrounds/dark/preset_1.png"
-dest_files=["res://.godot/imported/preset_1.png-18c086b07945507091f07500f58f9692.ctex"]
+source_file="res://images_stars/neutron.png"
+dest_files=["res://.godot/imported/neutron.png-0a02e25c96a6ed96fa74ae32ed40aaf1.ctex"]
 
 [params]
 

@@ -39,7 +39,7 @@ public:
    String get_name();
    String get_tab();
    String get_desc();
-   Ref<CompressedTexture2D> get_texture();
+   Ref<Texture2D> get_texture();
    void set_cost(int new_cost);
    void set_hp(double new_hp);
    void set_mass(double new_mass);
@@ -58,11 +58,12 @@ private:
    double mass = 0.0;
    Vector2i size = {MIN_WIDTH, MIN_HEIGHT};
    String code = "";
-   String name = "Unnamed";
-   String tab = "Unset";
+   String name = "<unnamed>";
+   String tab = "<no tab>";
    String texture_path = "";
    String desc = "<no description>";
-   Ref<CompressedTexture2D> texture;
+   Ref<Texture2D> texture;
+   Dictionary unique_data;
    friend class PartManager;
 };
 

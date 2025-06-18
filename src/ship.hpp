@@ -39,7 +39,7 @@ protected:
    static void _bind_methods();
 private:
    bool selected = false;
-   Battle::Player* owner = nullptr;
+   Player* owner = nullptr;
    // Vector<TurretMount*> turrets;
 };
 

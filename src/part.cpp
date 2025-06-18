@@ -11,6 +11,9 @@ Part::Part() {
 Ref<PartData> Part::get_data() {
 	return data;
 }
+bool Part::keep_as_node() {
+	return false;
+}
 void Part::set_data(Ref<PartData> part_data) {
 	ERR_FAIL_COND(part_data.is_null());
 
@@ -24,8 +27,6 @@ Rect2 Part::get_global_rect() {
 	return image->get_global_transform().xform(image->get_rect());
 }
 
-
-const Rect2 PartGrouping::EMPTY_REGION(0.0, 0.0, 0.0, 0.0);
 
 void PartGrouping::set_mirroring(bool mirroring) {
 	this->mirroring = mirroring;
@@ -51,7 +52,7 @@ void PartGrouping::delete_parts() {
 		part->queue_free();
 	}
 	parts.clear();
-	region = EMPTY_REGION;
+	region = {0.0, 0.0, 0.0, 0.0};
 	update_region();
 	if (mirrored) mirrored->delete_parts();
 }
@@ -68,7 +69,7 @@ void PartGrouping::spawn_part(Ref<PartData> part_data) {
 }
 void PartGrouping::select_parts(TypedArray<Node2D> selection) {
 	clear_parts();
-	region = EMPTY_REGION;
+	region = {0.0, 0.0, 0.0, 0.0};
 	for (int n = 0; n < selection.size(); ++n) {
 		add_part(Object::cast_to<Part>( selection[n] ));
 	}
