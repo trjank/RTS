@@ -1,12 +1,14 @@
-[gd_scene load_steps=19 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=23 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Texture2D" uid="uid://c14cadhha1ghj" path="res://design/parts_container_background.png" id="1_8h85s"]
-[ext_resource type="Texture2D" uid="uid://dm20rnnvt5n3y" path="res://icons/dropdown.png" id="1_l3pce"]
 [ext_resource type="Script" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
-[ext_resource type="Texture2D" uid="uid://cshbow58gynqu" path="res://icons/tab_energy.png" id="5_q73th"]
+[ext_resource type="Texture2D" uid="uid://6b0r1c3b02gp" path="res://icons/delete_fleet.png" id="5_2vu4p"]
+[ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="5_q73th"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="6_0y3e0"]
+[ext_resource type="Texture2D" uid="uid://d7mr4ylp8wdl" path="res://icons/delete_fleet_hover.png" id="6_pauun"]
 [ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="7_5fbpj"]
+[ext_resource type="Theme" uid="uid://dgs1qnc6a3qos" path="res://design/dropdown_theme.tres" id="7_leno0"]
 [ext_resource type="Script" path="res://design/OptionButton.gd" id="8_s4sq3"]
 [ext_resource type="Texture2D" uid="uid://b1q6iuiq8kne0" path="res://icons/mirror_mode_disabled.png" id="9_neots"]
 [ext_resource type="Script" path="res://design/PartGrouping.gd" id="10_6vk6i"]
@@ -29,6 +31,9 @@ content_margin_bottom = 20.0
 bg_color = Color(0, 0, 0, 1)
 border_color = Color(1, 0.678431, 0.984314, 1)
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgale"]
+load_path = "res://.godot/imported/dropdown.png-93d17bf64bfb644e333fbc0cc4d57b4f.ctex"
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w8n0p"]
 texture = ExtResource("1_8h85s")
 axis_stretch_horizontal = 1
@@ -41,6 +46,15 @@ content_margin_right = 40.0
 content_margin_bottom = 20.0
 bg_color = Color(0.928977, 0.659506, 0.460741, 1)
 border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epnfi"]
+content_margin_left = 20.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f44sc"]
 bg_color = Color(1, 1, 1, 0)
@@ -85,7 +99,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_o6k85")
 
 [node name="VFlowContainer" type="VFlowContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
-theme_override_constants/h_separation = 0
+theme_override_constants/h_separation = 10
 
 [node name="Label" type="Label" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VFlowContainer"]
 layout_mode = 2
@@ -97,21 +111,34 @@ vertical_alignment = 1
 
 [node name="OptionButton" type="OptionButton" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VFlowContainer"]
 layout_mode = 2
+theme = ExtResource("7_leno0")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.572549, 0.619608, 1)
 theme_override_colors/font_hover_color = Color(1, 0.572419, 0.617748, 1)
 theme_override_constants/h_separation = 15
 theme_override_constants/arrow_margin = 15
 theme_override_font_sizes/font_size = 28
-theme_override_icons/arrow = ExtResource("1_l3pce")
+theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
 theme_override_styles/focus = ExtResource("2_wxr8y")
 theme_override_styles/normal = ExtResource("2_wxr8y")
 theme_override_styles/hover = ExtResource("2_wxr8y")
 theme_override_styles/pressed = ExtResource("2_wxr8y")
-item_count = 1
+item_count = 2
 selected = 0
 popup/item_0/text = "Aurora"
 popup/item_0/id = 0
+popup/item_1/text = "NEW FLEET"
+popup/item_1/id = 1
+
+[node name="DeleteFleet" type="TextureButton" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VFlowContainer"]
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+texture_normal = ExtResource("5_2vu4p")
+texture_hover = ExtResource("6_pauun")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer"]
 layout_mode = 2
@@ -151,18 +178,18 @@ vertical_alignment = 1
 
 [node name="OptionButton" type="OptionButton" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer" node_paths=PackedStringArray("part_tabs_container")]
 layout_mode = 2
+theme = ExtResource("7_leno0")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/h_separation = 15
 theme_override_constants/arrow_margin = 15
 theme_override_font_sizes/font_size = 28
-theme_override_icons/arrow = ExtResource("1_l3pce")
+theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
 theme_override_styles/focus = ExtResource("2_wxr8y")
 theme_override_styles/normal = ExtResource("2_wxr8y")
 theme_override_styles/hover = ExtResource("2_wxr8y")
-theme_override_styles/pressed = ExtResource("2_wxr8y")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_epnfi")
 item_count = 4
 selected = 0
-fit_to_longest_item = false
 popup/item_0/text = "Energy"
 popup/item_0/icon = ExtResource("5_q73th")
 popup/item_0/id = 0

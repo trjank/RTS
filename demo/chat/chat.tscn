@@ -53,12 +53,11 @@ mouse_filter = 2
 
 [node name="GridContainer" type="GridContainer" parent="NavigatorOffset/HSplitContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 
 [node name="Messages" type="TextEdit" parent="NavigatorOffset/HSplitContainer/GridContainer"]
-custom_minimum_size = Vector2(600, 2.08165e-12)
+custom_minimum_size = Vector2(800, 2.08165e-12)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

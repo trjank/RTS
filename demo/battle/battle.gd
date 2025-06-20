@@ -20,19 +20,19 @@ func _ready()->void:
 	sun.set_radius_range(300, 500)
 	sun.set_mass_range(100, 200)
 	sun.load_textures_from_folder("res://images_stars")
-	sun.names = ["test"]
+	sun.names = ["Star"]
 	
 	var planets := System.new()
 	planets.set_radius_range(200, 300)
 	planets.set_mass_range(100, 200)
 	planets.load_textures_from_folder("res://images_planets_jovian")
-	planets.names = ["<test planet>"]
+	planets.names = ["Planet"]
 	
 	var moons := System.new()
 	moons.set_radius_range(100, 200)
 	moons.set_mass_range(50, 100)
 	moons.load_textures_from_folder("res://images_planets_jovian")
-	moons.names = ["RAHH"]
+	moons.names = ["Moon"]
 
 	var planets_layer := MapLayer.new()
 	planets_layer.set_preset(planets)

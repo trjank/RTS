@@ -1,0 +1,30 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://dgs1qnc6a3qos"]
+
+[ext_resource type="Texture2D" uid="uid://dgogkgiafu7ls" path="res://icons/radio_checked.png" id="1_n0n08"]
+[ext_resource type="Texture2D" uid="uid://dfyamahqhhp5u" path="res://icons/radio_unchecked.png" id="2_7alu6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sx8de"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e8ydy"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 1)
+
+[resource]
+PopupMenu/constants/h_separation = 20
+PopupMenu/constants/icon_max_width = 30
+PopupMenu/constants/item_end_padding = 0
+PopupMenu/constants/item_start_padding = 20
+PopupMenu/constants/v_separation = 25
+PopupMenu/font_sizes/font_size = 24
+PopupMenu/icons/radio_checked = ExtResource("1_n0n08")
+PopupMenu/icons/radio_unchecked = ExtResource("2_7alu6")
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_sx8de")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_e8ydy")
