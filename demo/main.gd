@@ -5,6 +5,10 @@ const ship_t := preload('res://battle/Ship.tscn')
 @export var battle: Battle
 
 func _ready():
+	battle.hide_overlay()
+	#battle.hide()
+	$Design.hide_overlay()
+	$Design.hide()
 	return
 	#var manager := PartManager.new()
 	##var part1 := manager.new_part()

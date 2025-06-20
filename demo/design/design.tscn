@@ -32,7 +32,6 @@ bg_color = Color(0, 0, 0, 1)
 border_color = Color(1, 0.678431, 0.984314, 1)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgale"]
-load_path = "res://.godot/imported/dropdown.png-93d17bf64bfb644e333fbc0cc4d57b4f.ctex"
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w8n0p"]
 texture = ExtResource("1_8h85s")

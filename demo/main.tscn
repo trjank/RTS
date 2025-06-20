@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=15 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="2_5s37y"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="7_873ts"]
 [ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat/chat.tscn" id="7_ep3nq"]
 [ext_resource type="Script" path="res://Camera.gd" id="7_wdsxf"]
+[ext_resource type="PackedScene" uid="uid://dsjqlpphoyfsp" path="res://mainmenu.tscn" id="12_6l15o"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
 bg_color = Color(0, 0, 0, 0.588235)
@@ -33,6 +34,7 @@ battle = NodePath("Battle")
 
 [node name="UI" type="CanvasLayer" parent="."]
 layer = 3
+visible = false
 
 [node name="Nagivator" type="PanelContainer" parent="UI"]
 z_index = 1
@@ -109,6 +111,10 @@ chat = NodePath("../../../../../Chat")
 [node name="Chat" parent="." instance=ExtResource("7_ep3nq")]
 layer = 2
 visible = false
+
+[node name="mainmenu2" type="CanvasLayer" parent="."]
+
+[node name="mainmenu" parent="mainmenu2" instance=ExtResource("12_6l15o")]
 
 [node name="Battle" parent="." instance=ExtResource("5_rtafa")]
 seed = -4660530014316562278
