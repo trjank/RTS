@@ -2,3 +2,10 @@
 .godot/
 *.DS_Store
 *.os
+demo/bin/*
+!demo/bin/test.gdextension
+*.obj
+*.o
+.sconsign.dblite
+msvc_capture.log
+.vscode

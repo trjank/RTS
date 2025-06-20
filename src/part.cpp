@@ -1,5 +1,8 @@
 #include "part.hpp"
-
+// needed to use math primitives on visual studio compiler...
+#define _USE_MATH_DEFINES
+#include <cmath>
+#include <math.h>
 using namespace godot;
 
 constexpr int SQUARE_SIZE = PartData::PX_PER_GRID_SQUARE;
