@@ -18,8 +18,8 @@ Unit::~Unit() {
    radar_signature->unit = nullptr;
    radar_signature->state = DEAD;
 }
-float Unit::get_HP() {
-   return HP;
+float Unit::get_hp() {
+   return hp;
 }
 Ref<Unit::RadarSignature> Unit::get_radar_signature() {
    return radar_signature;
@@ -56,12 +56,13 @@ void Unit::decloak() {
 }
 void Unit::update_radar_signature() {
    if (radar_signature->state == CLOAKED) return;
-   radar_signature->HP = HP;
+   radar_signature->hp = hp;
    radar_signature->velocity = get_linear_velocity();
    radar_signature->position = get_global_position();
 }
 void Unit::hit(float damage) {
-   if ((HP -= damage) <= 0) kill();
+   hp -= damage;
+   if (hp <= 0) kill();
 }
 Ref<Unit::Command> Unit::get_current_command() {
    return commands.front()->get();
@@ -114,7 +115,7 @@ void Unit::try_to_warp(PhysicsDirectBodyState2D& state) {
    // make_warp_visual(warp_start, warp_end);
    
    warp -= distance_to_target;
-   state.set_linear_velocity({ 0.0, 0.0 });
+   state.set_linear_velocity( {0.0, 0.0} );
    set_global_position(warp_end);
    rotate(angle_to_target);
    commands.pop_front();
@@ -141,18 +142,18 @@ void Unit::_draw() {
    static const Color PATH_COLOR = Color(1.0, 1.0, 1.0, 0.2);
    static const Color WARP_COLOR = Color(0.8, 0.6, 0.9, 0.5);
 
-   draw_arc({ 0.0, 0.0 }, warp, 0.0, Math_TAU, 100, WARP_COLOR, 1.0, true);
+   draw_arc( {0.0, 0.0}, warp, 0.0, Math_TAU, 100, WARP_COLOR, 1.0, true);
    
    if (commands.is_empty()) return;
    
    Ref<Command> command = get_current_command();
-   Vector2 path_start = { 0.0, 0.0 };
+   Vector2 path_start = {0.0, 0.0};
    Vector2 path_end = to_local(command->get_position());
    draw_line(path_start, path_end, PATH_COLOR, 1.0, true);
 }
 
-float Unit::RadarSignature::get_HP() {
-   return HP;
+float Unit::RadarSignature::get_hp() {
+   return hp;
 }
 Unit* Unit::RadarSignature::as_unit() {
    return unit;
@@ -205,7 +206,8 @@ void Unit::Command::track() {
    float d_speed_sq    = pred_speed_sq - prey_speed_sq;
    float discriminant  = v_r * v_r + d_speed_sq * radial.length_squared();
    
-   if (discriminant < 0) return ram(); // target is unreachable
+   // Ram if the target is unreachable
+   if (discriminant < 0) return ram();
    
    float time_intersect = (v_r + sqrt(discriminant)) / d_speed_sq;
    Vector2 intersection = prey->position + time_intersect * prey->velocity;

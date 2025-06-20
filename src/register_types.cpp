@@ -23,7 +23,7 @@
 
 void Unit::_bind_methods() {
 	// ClassDB::bind_static_method("Unit", D_METHOD("set_warp_visual", "new_warp_visual"), &Unit::set_warp_visual);
-	bind_method(D_METHOD("get_HP"), &Unit::get_HP);
+	bind_method(D_METHOD("get_HP"), &Unit::get_hp);
 	bind_method(D_METHOD("get_radar_signature"), &Unit::get_radar_signature);
 	bind_method(D_METHOD("kill"), &Unit::kill);
 	bind_method(D_METHOD("get_forward_direction"), &Unit::get_forward_direction);
@@ -129,10 +129,15 @@ void PartData::_bind_methods() {
 	BIND_CONSTANT(PX_PER_GRID_SQUARE);
 	BIND_CONSTANT(MAX_NAME_LENGTH);
 	BIND_CONSTANT(MAX_DESC_LENGTH);
-	BIND_CONSTANT(NUM_CSV_COLUMNS);
 	bind_method(D_METHOD("get_cost"), &PartData::get_cost);
 	bind_method(D_METHOD("get_hp"), &PartData::get_hp);
 	bind_method(D_METHOD("get_mass"), &PartData::get_mass);
+	bind_method(D_METHOD("get_shield"), &PartData::get_shield);
+	bind_method(D_METHOD("get_shield_per_sec"), &PartData::get_shield_per_sec);
+	bind_method(D_METHOD("get_warp"), &PartData::get_warp);
+	bind_method(D_METHOD("get_warp_per_sec"), &PartData::get_warp_per_sec);
+	bind_method(D_METHOD("get_torque"), &PartData::get_torque);
+	bind_method(D_METHOD("get_thrust"), &PartData::get_thrust);
 	bind_method(D_METHOD("get_size"), &PartData::get_size);
 	bind_method(D_METHOD("get_size_px"), &PartData::get_size_px);
 	bind_method(D_METHOD("get_code"), &PartData::get_code);
@@ -146,16 +151,22 @@ void PartData::_bind_methods() {
 	bind_method(D_METHOD("set_size", "new_size"), &PartData::set_size);
 	bind_method(D_METHOD("set_name", "new_name"), &PartData::set_name);
 	bind_method(D_METHOD("set_tab", "new_tab"), &PartData::set_tab);
-	bind_method(D_METHOD("set_texture_path"), &PartData::set_texture_path);
+	bind_method(D_METHOD("set_texture_path", "local_path"), &PartData::set_texture_path);
+	bind_method(D_METHOD("set_desc", "new_desc"), &PartData::set_desc);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "cost"), "set_cost", "get_cost");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "hp"), "set_hp", "get_hp");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "mass"), "set_mass", "get_mass");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2I, "size"), "set_size", "get_size");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "desc"), "set_desc", "get_desc");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "name"), "set_name", "get_name");
 }
 void PartManager::_bind_methods() {
 	BIND_CONSTANT(CODE_LENGTH)
 	bind_method(D_METHOD("count_parts"), &PartManager::count_parts);
 	bind_method(D_METHOD("load_csv", "path"), &PartManager::load_csv);
 	bind_method(D_METHOD("save_csv", "path"), &PartManager::save_csv);
-	bind_method(D_METHOD("load_json", "path"), &PartManager::load_json);
-	bind_method(D_METHOD("save_json", "path"), &PartManager::save_json);
-	bind_method(D_METHOD("copy_defaults", "path", "default_path"), &PartManager::copy_defaults);
+	bind_method(D_METHOD("load_json", "path"), &PartManager::load_unique_data);
+	bind_method(D_METHOD("save_json", "path"), &PartManager::save_unique_data);
 	bind_method(D_METHOD("new_atlas"), &PartManager::new_atlas);
 	bind_method(D_METHOD("remove_part", "part"), &PartManager::remove_part);
 	bind_method(D_METHOD("new_part", "code"), &PartManager::new_part);

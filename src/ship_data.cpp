@@ -49,7 +49,7 @@ void ShipData::assemble_from(Vector<Part*> parts) {
 }
 ShipData::RotationState ShipData::encode_rotation(double radians, bool flipped) {
    constexpr int NUM_QUADRANTS = 4;
-   int quadrant = Math::snapped(radians, M_PI_2) * M_2_PI;
+   int quadrant = Math::snapped(radians, Math_PI / 2) * (2 / Math_PI);
    int encoding = quadrant + NUM_QUADRANTS * int(flipped);
    return static_cast<RotationState>(encoding);
 }
@@ -115,10 +115,15 @@ void ShipData::add_part_to_grid(Part* part) {
 }
 String ShipData::get_error_message() {
    switch (state) {
-      case VALID: return "";
-      case EMPTY: return "No parts found";
-      case PART_OVERLAP: return "Parts are overlapping!";
-      case PARTS_DISCONNECTED: return "Ship is not connected!";
+      case EMPTY:
+         return "Ship has no parts";
+      case VALID:
+         return "No problems found.";
+      case PART_OVERLAP:
+         return "Parts are overlapping!";
+      case PARTS_DISCONNECTED:
+         String clusters = String::num_int64(part_clusters.count_num_sets());
+         return "Ship is not connected! (" + clusters + " clusters)";
    }
 }
 
@@ -162,39 +167,37 @@ void ShipManager::set_turret_slot(int slot, Ref<ShipData> turret) {
    turrets.set(slot, turret);
 }
 void ShipManager::load_part_into_ship(Ref<ShipData> ship, PackedStringArray csv_line) {
-   Ref<PartData> part = part_manager->lookup_code(csv_line[0]);
-   float x = csv_line[1].to_float();
-   float y = csv_line[2].to_float();
-   auto rotation_state = static_cast<ShipData::RotationState>(csv_line[3].to_int());
-   ship->add_part_to_grid(part, {x, y}, rotation_state);
+   Ref<PartData> part = part_manager->lookup_code(csv_line[CODE]);
+   float x = csv_line[X].to_float();
+   float y = csv_line[Y].to_float();
+   int rotation = csv_line[ROTATION].to_int();
+   ship->add_part_to_grid(part, {x, y}, static_cast<ShipData::RotationState>(rotation));
 }
 Ref<ShipData> ShipManager::load_ship(String csv_path) {
    Ref<FileAccess> file = FileAccess::open(csv_path, FileAccess::READ);
-   if (file->get_csv_line() != CSV_COLUMNS) {
+   if (file->get_csv_line() != CSV_HEADER) {
       WARN_PRINT_ED("Ship csv header is incorrect (failed to load)");
       return nullptr;
    }
-   Ref<ShipData> ship;
-   ship.instantiate();
+   Ref<ShipData> ship = memnew(ShipData);
    while ( !file->eof_reached()) {
       load_part_into_ship(ship, file->get_csv_line());
    }
-   file->close();
    return ship;
 }
 PackedStringArray ShipManager::to_csv_line(Ref<ShipData> ship, int part_id) {
-   return {
-      ship->codes[part_id],
-      String::num(ship->centers[part_id].x),
-      String::num(ship->centers[part_id].y),
-      String::num_int64(ship->rotation_states[part_id])
-   };
+   PackedStringArray line;
+   line.resize(NUM_PROPERTIES);
+   line[CODE]     = ship->codes[part_id];
+   line[X]        = String::num(ship->centers[part_id].x);
+   line[Y]        = String::num(ship->centers[part_id].y);
+   line[ROTATION] = String::num_int64(ship->rotation_states[part_id]);
+   return line;
 }
 void ShipManager::save_ship(Ref<ShipData> ship, String csv_path) {
    Ref<FileAccess> csv = FileAccess::open(csv_path, FileAccess::WRITE);
-   csv->store_csv_line(CSV_COLUMNS);
+   csv->store_csv_line(CSV_HEADER);
    for (int part_id = NUM_NULL_PARTS; part_id <= ship->count_parts(); ++part_id) {
       csv->store_csv_line(to_csv_line(ship, part_id));
    }
-   csv->close();
 }

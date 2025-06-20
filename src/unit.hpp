@@ -27,7 +27,7 @@ public:
    Unit();
    ~Unit();
    // static void set_warp_visual(Ref<PackedScene> new_warp_visual);
-   float get_HP();
+   float get_hp();
    int get_num_commands();
    Vector2 get_forward_direction();
    Ref<Command> get_current_command();
@@ -68,7 +68,7 @@ protected:
    | circle the destination depending on the initial       |
    | conditions.                                           |
    *------------------------------------------------------*/
-   float HP = 0.0;
+   float hp = 0.0;
    float path_arcing = 0.1;
    float warp = 100.0;
    float thrust = 500.0;
@@ -92,7 +92,7 @@ private:
 class Unit::RadarSignature: public RefCounted {
    GDCLASS(RadarSignature, RefCounted)
 public:
-   float get_HP();
+   float get_hp();
    Unit* as_unit();
    State get_state();
    bool is_valid();
@@ -101,7 +101,7 @@ public:
 protected:
    static void _bind_methods();
 private:
-   float HP;
+   float hp;
    State state;
    Vector2 position;
    Vector2 velocity;

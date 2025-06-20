@@ -2,8 +2,21 @@
 
 using namespace godot;
 
-bool PartData::is_unique() {
-   return unique;
+bool PartData::exposed_to_design_mode() {
+   return true;
+}
+bool PartData::flatten_with_ship() {
+   return true;
+}
+void PartData::load_unique(Dictionary data) {
+   if (data.is_empty()) return;
+
+   shield         = data.get("shield", shield);
+   shield_per_sec = data.get("shield_per_sec", shield_per_sec);
+   warp           = data.get("warp", warp);
+   warp_per_sec   = data.get("warp_per_sec", warp_per_sec);
+   torque         = data.get("torque", torque);
+   thrust         = data.get("thrust", thrust);
 }
 int PartData::get_atlas_id() {
    return atlas_id;
@@ -16,6 +29,24 @@ double PartData::get_hp() {
 }
 double PartData::get_mass() {
    return mass;
+}
+double PartData::get_shield() {
+   return shield;
+}
+double PartData::get_shield_per_sec() {
+   return shield_per_sec;
+}
+double PartData::get_warp() {
+   return warp;
+}
+double PartData::get_warp_per_sec() {
+   return warp_per_sec;
+}
+double PartData::get_torque() {
+   return torque;
+}
+double PartData::get_thrust() {
+   return torque;
 }
 Vector2i PartData::get_size() {
    return size;
@@ -59,12 +90,14 @@ void PartData::set_tab(String new_tab) {
 void PartData::set_desc(String new_desc) {
    desc = new_desc.substr(0, MAX_DESC_LENGTH);
 }
-void PartData::set_texture_path(String resource_path) {
-   resource_path = "res://part_images/" + resource_path;
-   Ref<Texture2D> new_texture = ResourceLoader::get_singleton()->load(resource_path);
+void PartData::set_texture_path(String local_path) {
+   String absolute_path = PART_IMAGES_FOLDER + local_path;
+   Ref<Texture2D> new_texture = ResourceLoader::get_singleton()->load(absolute_path);
 
-   ERR_FAIL_COND(new_texture.is_null() || new_texture->get_size() != get_size_px());
+   ERR_FAIL_COND(new_texture.is_null());
+   ERR_FAIL_COND(new_texture->get_size() != get_size_px());
 
+   texture_path = local_path;
    texture = new_texture;
 }
 
@@ -78,63 +111,80 @@ Ref<PartData> PartManager::lookup_id(int atlas_id) {
 Ref<PartData> PartManager::lookup_code(String code) {
    return parts[code_to_id[code]];
 }
+const PackedVector2Array PartManager::get_atlas_offsets() {
+   return atlas_offsets;
+}
+Dictionary PartManager::get_unique(String code) {
+   return unique_data.get(code, Dictionary{});
+}
+void PartManager::set_unique(String code, Dictionary new_data) {
+   unique_data[code] = new_data;
+}
 void PartManager::load_csv(String path) {
    Ref<FileAccess> file = FileAccess::open(path, FileAccess::READ);
-   ERR_FAIL_COND(file->get_csv_line() != CSV_COLUMNS);
+
+   ERR_FAIL_COND(file->get_csv_line() != CSV_HEADER);
+
    parts.clear();
    while ( !file->eof_reached()) {
       load_part(file->get_csv_line());
    }
-   file->close();
 }
 void PartManager::save_csv(String path) {
    Ref<FileAccess> file = FileAccess::open(path, FileAccess::WRITE);
-   file->store_csv_line(CSV_COLUMNS);
+   file->store_csv_line(CSV_HEADER);
    for (Ref<PartData> part: parts) {
       file->store_csv_line(to_csv_line(part));
    }
-   file->close();
 }
 PackedStringArray PartManager::to_csv_line(Ref<PartData> part) {
-   return {
-      part->code, part->name, part->tab,
-      String::num_int64(part->cost),
-      String::num(part->hp),
-      String::num_int64(part->size.width),
-      String::num_int64(part->size.height),
-      part->texture_path, part->desc
-   };
+   PackedStringArray line;
+   line.resize(NUM_PROPERTIES);
+   line[CODE]   = part->code;
+   line[NAME]   = part->name;
+   line[TAB]    = part->tab;
+   line[COST]   = String::num_int64(part->cost);
+   line[HP]     = String::num(part->hp);
+   line[WIDTH]  = String::num_int64(part->size.width);
+   line[HEIGHT] = String::num_int64(part->size.height);
+   line[PATH]   = part->texture_path;
+   line[DESC]   = part->desc;
+   return line;
 }
-void PartManager::load_json(String path) {
+void PartManager::load_unique_data(String path) {
+   ERR_FAIL_COND( !path.ends_with(".json"));
+
    String raw_text = FileAccess::get_file_as_string(path);
    unique_data = JSON::parse_string(raw_text);
+   Array codes = unique_data.keys();
+   for (int n = 0; n < codes.size(); ++n) {
+      String code = codes[n];
+      lookup_code(code)->load_unique(unique_data[code]);
+   }
 }
-void PartManager::save_json(String path) {
+void PartManager::save_unique_data(String path) {
    Ref<FileAccess> file = FileAccess::open(path, FileAccess::WRITE);
    file->store_string(JSON::stringify(unique_data));
 }
 void PartManager::load_part(PackedStringArray data) {
    if (data == PackedStringArray{""}) return;
-   ERR_FAIL_COND(data.size() != CSV_COLUMNS.size());
 
-   Ref<PartData> part = new_part(data[0]);
+   ERR_FAIL_COND(data.size() != NUM_PROPERTIES);
+
+   Ref<PartData> part = new_part(data[CODE]);
 
    ERR_FAIL_COND(part.is_null());
 
-   int32_t width = data[6].to_int();
-   int32_t height = data[7].to_int();
-   part->set_name(data[1]);
-   part->set_tab(data[2]);
-   part->set_cost(data[3].to_int());
-   part->set_hp(data[4].to_float());
-   part->set_mass(data[5].to_float());
+   int32_t width  = data[WIDTH].to_int();
+   int32_t height = data[HEIGHT].to_int();
+   part->set_name(data[NAME]);
+   part->set_tab(data[TAB]);
+   part->set_cost(data[COST].to_int());
+   part->set_hp(data[HP].to_float());
+   part->set_mass(data[MASS].to_float());
    part->set_size( {width, height} );
-   part->set_texture_path(data[8]);
-   part->set_desc(data[9]);
-}
-void PartManager::copy_defaults(String path, String default_path) {
-   if ( !FileAccess::file_exists(path))
-      DirAccess::open("res://")->copy(default_path, path);
+   part->set_texture_path(data[PATH]);
+   part->set_desc(data[DESC]);
 }
 void PartManager::remove_part(Ref<PartData> part) {
    ERR_FAIL_COND( !code_to_id.has(part->code));
@@ -150,22 +200,15 @@ void PartManager::remove_part(Ref<PartData> part) {
    unique_data.erase(part->code);
    code_to_id.erase(part->code);
 }
-Ref<PartData> PartManager::new_part(String code) {
+Ref<PartData> PartManager::new_part(String code, String subtype) {
    if (code.length() != CODE_LENGTH || code_to_id.has(code)) return nullptr;
 
-   Ref<PartData> part;
-   part.instantiate();
+   Ref<PartData> part = PartData::create_correct_subtype(subtype);
    part->code = code;
    part->atlas_id = parts.size();
    parts.push_back(part);
    code_to_id[code] = part->atlas_id;
    return part;
-}
-Dictionary PartManager::get_unique(String code) {
-   return unique_data.get(code, Dictionary{});
-}
-void PartManager::set_unique(String code, Dictionary new_data) {
-   unique_data[code] = new_data;
 }
 void PartManager::new_atlas(String save_path) {
    WARN_PRINT_ED("Atlas generation is CPU-based and may take several seconds");
@@ -190,11 +233,6 @@ void PartManager::draw_part_on_atlas(Ref<PartData> part) {
    Ref<Image> image = part->texture->get_image();
    image->convert(IMAGE_FORMAT);
    atlas->blit_rect(image, {TOP_LEFT_CORNER, size_px}, offset);
-
-   // We need the part's offset to be the center, not the top left corner
-   // This is done for the ship image assembly compute shader
-   offset += 0.5 * size_px;
-
 }
 void PartManager::populate_atlas() {
    ERR_FAIL_COND(atlas_offsets.size() != parts.size());
@@ -202,7 +240,4 @@ void PartManager::populate_atlas() {
    for (Ref<PartData> part: parts) {
       draw_part_on_atlas(part);
    }
-}
-const PackedByteArray PartManager::get_offsets_buffer() {
-   return atlas_offsets.to_byte_array();
 }

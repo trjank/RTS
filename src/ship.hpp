@@ -33,7 +33,6 @@ public:
 protected:
    static void _bind_methods();
 private:
-   float hp = 0.0;
    float shield = 0.0;
    float energy = 0.0;
    float warp = 0.0;
