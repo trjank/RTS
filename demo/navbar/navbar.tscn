@@ -1,0 +1,87 @@
+[gd_scene load_steps=7 format=3 uid="uid://bfjh4qh7fjvbt"]
+
+[ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="1_4max0"]
+[ext_resource type="Script" path="res://navbar/navbar.gd" id="1_rsvkd"]
+[ext_resource type="StyleBox" uid="uid://7ddhu1wc1g27" path="res://navigator_button.tres" id="2_70ivd"]
+[ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navigator_button_hover.tres" id="3_eayf2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
+bg_color = Color(0, 0, 0, 0.588235)
+border_width_bottom = 2
+border_color = Color(0.772549, 0.611765, 0.85098, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fnf26"]
+content_margin_left = 20.0
+content_margin_top = 0.0
+content_margin_right = 20.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 0)
+border_width_bottom = 5
+border_color = Color(0.772549, 0.611765, 0.85098, 1)
+expand_margin_bottom = 20.0
+
+[node name="Nagivator" type="PanelContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 95.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ajdbe")
+script = ExtResource("1_rsvkd")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 20
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+columns = 6
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+texture = ExtResource("1_4max0")
+expand_mode = 3
+
+[node name="MenuButton" type="Button" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 32
+text = "Menu"
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="DesignButton" type="Button" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = ExtResource("2_70ivd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
+theme_override_styles/pressed = ExtResource("3_eayf2")
+theme_override_styles/focus = ExtResource("3_eayf2")
+text = "Design"
+
+[node name="BattleButton" type="Button" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = ExtResource("2_70ivd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
+theme_override_styles/pressed = ExtResource("3_eayf2")
+theme_override_styles/focus = ExtResource("3_eayf2")
+text = "Battle"
+
+[node name="ChatButton" type="Button" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = ExtResource("2_70ivd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
+theme_override_styles/pressed = ExtResource("3_eayf2")
+theme_override_styles/focus = ExtResource("3_eayf2")
+text = "Chat
+"
+
+[connection signal="pressed" from="MarginContainer/GridContainer/ChatButton" to="MarginContainer/GridContainer/ChatButton" method="_on_pressed"]

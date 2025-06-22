@@ -1,5 +1,7 @@
 extends Node
 
+enum {NONE,DESIGN,BATTLE}
+
 var partScale = 32
 var parts := {
 	"1x1LightBlock": {

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=24 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Texture2D" uid="uid://c14cadhha1ghj" path="res://design/parts_container_background.png" id="1_8h85s"]
 [ext_resource type="Script" path="res://design/design.gd" id="1_wctwy"]
@@ -15,6 +15,7 @@
 [ext_resource type="Script" path="res://design/MirrorButton.gd" id="10_u7s8c"]
 [ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://design/grid_background_5x5.png" id="12_my7uj"]
+[ext_resource type="PackedScene" uid="uid://j7rna5tdvxk4" path="res://camera.tscn" id="16_3y03o"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bomom"]
 content_margin_left = 0.0
@@ -306,6 +307,8 @@ position = Vector2(2.08165e-12, -1000)
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
 default_color = Color(1, 0, 0, 1)
+
+[node name="Camera" parent="." instance=ExtResource("16_3y03o")]
 
 [connection signal="button_down" from="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" method="_on_button_down"]
 [connection signal="selection_ended" from="MouseSelection" to="Grid/PartGrouping" method="_on_mouse_selection_selection_ended"]

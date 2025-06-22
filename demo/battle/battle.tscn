@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://c8r8u7e7qkegq"]
+[gd_scene load_steps=8 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" path="res://battle/MouseCommands.gd" id="1_777ku"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_j65k6"]
 [ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
+[ext_resource type="PackedScene" uid="uid://j7rna5tdvxk4" path="res://camera.tscn" id="5_kce6k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fasl0"]
 bg_color = Color(0, 0, 0, 0.588235)
@@ -51,6 +52,7 @@ stretch_mode = 6
 
 [node name="UI" type="CanvasLayer" parent="."]
 layer = 0
+visible = false
 
 [node name="FleetBar" type="VBoxContainer" parent="UI"]
 anchors_preset = 7
@@ -339,5 +341,7 @@ script = ExtResource("1_777ku")
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
 enabled = false
+
+[node name="Camera" parent="." instance=ExtResource("5_kce6k")]
 
 [connection signal="selection_ended" from="MouseSelection" to="MouseCommands" method="_on_mouse_selection_selection_ended"]
