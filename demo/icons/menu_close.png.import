@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6b0r1c3b02gp"
-path="res://.godot/imported/delete_fleet.png-5422ab34731af8bb29e742753f253f1a.ctex"
+uid="uid://b7i3ye8e4fjyl"
+path="res://.godot/imported/menu_close.png-b8ab9e960d0813cfea52e91b2be56436.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://icons/delete_fleet.png"
-dest_files=["res://.godot/imported/delete_fleet.png-5422ab34731af8bb29e742753f253f1a.ctex"]
+source_file="res://icons/menu_close.png"
+dest_files=["res://.godot/imported/menu_close.png-b8ab9e960d0813cfea52e91b2be56436.ctex"]
 
 [params]
 

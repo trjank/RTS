@@ -77,7 +77,6 @@ void Battle::_bind_methods() {
 	bind_method(D_METHOD("get_map"), &Battle::get_map);
 	bind_method(D_METHOD("get_state"), &Battle::get_state);
 	bind_method(D_METHOD("get_winner"), &Battle::get_winner);
-	bind_method(D_METHOD("new_team", "name"), &Battle::new_team);
 	bind_method(D_METHOD("get_seconds_left"), &Battle::get_seconds_left);
 	bind_method(D_METHOD("get_minutes_left"), &Battle::get_minutes_left);
 	bind_method(D_METHOD("get_time_left_sec"), &Battle::get_time_left_sec);
@@ -87,12 +86,32 @@ void Battle::_bind_methods() {
 	bind_method(D_METHOD("set_map", "new_map"), &Battle::set_map);
 	bind_method(D_METHOD("set_duration_sec", "new_duration_sec"), &Battle::set_duration_sec);
 	bind_method(D_METHOD("set_countdown_sec", "new_countdown_sec"), &Battle::set_countdown_sec);
+	bind_method(D_METHOD("new_team", "name"), &Battle::new_team);
+	bind_method(D_METHOD("new_player"), &Battle::new_player);
 	bind_method(D_METHOD("start"), &Battle::start);
 	bind_method(D_METHOD("start_countdown"), &Battle::start_countdown);
 	bind_method(D_METHOD("stop"), &Battle::stop);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "seed"), "set_seed", "get_seed");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration_sec"), "set_duration_sec", "get_duration_sec");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "countdown_sec"), "set_countdown_sec", "get_countdown_sec");
+}
+void Player::_bind_methods() {
+	bind_method(D_METHOD("get_energy"), &Player::get_energy);
+	bind_method(D_METHOD("get_alloy"), &Player::get_alloy);
+	bind_method(D_METHOD("get_color"), &Player::get_color);
+	bind_method(D_METHOD("get_name"), &Player::get_name);
+	bind_method(D_METHOD("get_clan"), &Player::get_clan);
+	bind_method(D_METHOD("get_team"), &Player::get_team);
+	bind_method(D_METHOD("set_color", "new_color"), &Player::set_color);
+	bind_method(D_METHOD("set_name", "new_name"), &Player::set_name);
+	bind_method(D_METHOD("set_clan", "new_clan"), &Player::set_clan);
+	bind_method(D_METHOD("set_team", "new_team"), &Player::set_team);
+	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "name"), "set_name", "get_name");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "clan"), "set_clan", "get_clan");
+}
+void Team::_bind_methods() {
+
 }
 void Orbit::_bind_methods() {
 	ClassDB::bind_static_method("Orbit", D_METHOD("get_time_scale"), &Orbit::get_time_scale);
@@ -264,6 +283,8 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(MouseCommands);
 	GDREGISTER_CLASS(MouseSelection);
 	GDREGISTER_CLASS(Battle);
+	GDREGISTER_CLASS(Player);
+	GDREGISTER_CLASS(Team)
 	GDREGISTER_CLASS(Celestial);
 	GDREGISTER_CLASS(Orbit);
 	GDREGISTER_CLASS(Star);

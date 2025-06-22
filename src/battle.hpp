@@ -22,11 +22,13 @@ public:
    static constexpr double MAX_COUNTDOWN_SEC = 60.0;
    static constexpr double MIN_DURATION_SEC = 5.0;
    static constexpr double MAX_DURATION_SEC = 600.0;
+
    Battle();
    State get_state();
    Ref<Team> get_winner();
    uint64_t get_seed();
    Ref<Map> get_map();
+   Player* get_client();
    int get_seconds_left();
    int get_minutes_left();
    double get_time_left_sec();
@@ -55,6 +57,7 @@ private:
    Ref<RandomNumberGenerator> rng;
    Ref<Map> map;
    Node2D* map_root = nullptr;
+
    void generate_map();
 };
 

@@ -1,15 +1,16 @@
-[gd_scene load_steps=14 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=15 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="2_5s37y"]
 [ext_resource type="StyleBox" uid="uid://7ddhu1wc1g27" path="res://navigator_button.tres" id="3_1dx7b"]
+[ext_resource type="PackedScene" uid="uid://fr0valo8082b" path="res://player_box/player.tscn" id="3_6wvv6"]
 [ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navigator_button_hover.tres" id="4_dotd0"]
 [ext_resource type="Script" path="res://Design.gd" id="5_mf6ox"]
 [ext_resource type="PackedScene" uid="uid://c8r8u7e7qkegq" path="res://battle/battle.tscn" id="5_rtafa"]
 [ext_resource type="Script" path="res://Battle.gd" id="6_4n2ky"]
 [ext_resource type="Script" path="res://Chat.gd" id="7_6efvs"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="7_873ts"]
-[ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat/chat.tscn" id="7_ep3nq"]
+[ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="7_ep3nq"]
 [ext_resource type="Script" path="res://Camera.gd" id="7_wdsxf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
@@ -69,6 +70,9 @@ text = "menu"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="Player" parent="UI/Nagivator/MarginContainer/GridContainer/CenterContainer" instance=ExtResource("3_6wvv6")]
+layout_mode = 2
 
 [node name="Design" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("design", "battle")]
 layout_mode = 2

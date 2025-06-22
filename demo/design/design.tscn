@@ -1,13 +1,14 @@
-[gd_scene load_steps=24 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=29 format=3 uid="uid://coexpo0l4q1vv"]
 
-[ext_resource type="Texture2D" uid="uid://c14cadhha1ghj" path="res://design/parts_container_background.png" id="1_8h85s"]
 [ext_resource type="Script" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
 [ext_resource type="Script" path="res://design/fleet_selector.gd" id="4_nwsnp"]
-[ext_resource type="Texture2D" uid="uid://6b0r1c3b02gp" path="res://icons/delete_fleet.png" id="5_2vu4p"]
+[ext_resource type="Texture2D" uid="uid://dt71s811b4uqw" path="res://icons/fleet_rename.png" id="5_e2e55"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="5_q73th"]
+[ext_resource type="Texture2D" uid="uid://inbrq5b8ia5x" path="res://icons/fleet_delete.png" id="5_tfe8n"]
+[ext_resource type="Texture2D" uid="uid://wq8ei1nlxqqq" path="res://icons/fleet_new.png" id="5_tiyvg"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="6_0y3e0"]
-[ext_resource type="Texture2D" uid="uid://d7mr4ylp8wdl" path="res://icons/delete_fleet_hover.png" id="6_pauun"]
+[ext_resource type="Texture2D" uid="uid://c14cadhha1ghj" path="res://icons/parts_container_background.png" id="7_1reeb"]
 [ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="7_5fbpj"]
 [ext_resource type="Theme" uid="uid://dgs1qnc6a3qos" path="res://design/dropdown_theme.tres" id="7_leno0"]
 [ext_resource type="Script" path="res://design/OptionButton.gd" id="8_s4sq3"]
@@ -15,28 +16,39 @@
 [ext_resource type="Script" path="res://design/PartGrouping.gd" id="10_6vk6i"]
 [ext_resource type="Script" path="res://design/MirrorButton.gd" id="10_u7s8c"]
 [ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
-[ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://design/grid_background_5x5.png" id="12_my7uj"]
+[ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://icons/grid_background_5x5.png" id="15_ha1ne"]
+[ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popup_menu.tres" id="18_01mpa"]
+[ext_resource type="Script" path="res://design/RenameFleetPopup.gd" id="19_ract4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bomom"]
 content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
-bg_color = Color(0, 0, 0, 0.588235)
+bg_color = Color(0.262745, 0.305882, 0.368627, 0.588235)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o6k85"]
 content_margin_left = 40.0
 content_margin_top = 20.0
 content_margin_right = 40.0
 content_margin_bottom = 20.0
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0.261579, 0.30508, 0.367227, 1)
 border_color = Color(1, 0.678431, 0.984314, 1)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgale"]
 load_path = "res://.godot/imported/dropdown.png-93d17bf64bfb644e333fbc0cc4d57b4f.ctex"
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jti52"]
+content_margin_left = 20.0
+content_margin_top = 15.0
+content_margin_right = 60.0
+content_margin_bottom = 15.0
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w8n0p"]
-texture = ExtResource("1_8h85s")
+texture = ExtResource("7_1reeb")
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
@@ -59,6 +71,17 @@ corner_radius_top_right = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f44sc"]
 bg_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkia0"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="Design" type="Node2D" node_paths=PackedStringArray("overlay", "container", "part_grouping", "grid", "info_text")]
 script = ExtResource("1_wctwy")
@@ -98,19 +121,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_o6k85")
 
-[node name="VFlowContainer" type="VFlowContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 10
-
-[node name="Label" type="Label" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VFlowContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 28
-text = "Fleet"
-vertical_alignment = 1
-
-[node name="FleetDropdown" type="OptionButton" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VFlowContainer"]
+[node name="FleetDropdown" type="OptionButton" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer" node_paths=PackedStringArray("rename_fleet_popup", "delete_fleet_popup")]
 layout_mode = 2
 theme = ExtResource("7_leno0")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -123,24 +134,28 @@ theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
 theme_override_styles/focus = ExtResource("2_wxr8y")
 theme_override_styles/normal = ExtResource("2_wxr8y")
 theme_override_styles/hover = ExtResource("2_wxr8y")
-theme_override_styles/pressed = ExtResource("2_wxr8y")
-item_count = 2
-selected = 0
-popup/item_0/text = "Aurora"
+theme_override_styles/pressed = SubResource("StyleBoxFlat_jti52")
+item_count = 5
+selected = 3
+popup/item_0/text = "NEW FLEET"
+popup/item_0/icon = ExtResource("5_tiyvg")
 popup/item_0/id = 0
-popup/item_1/text = "NEW FLEET"
+popup/item_1/text = "RENAME FLEET"
+popup/item_1/icon = ExtResource("5_e2e55")
 popup/item_1/id = 1
+popup/item_1/disabled = true
+popup/item_2/text = "DELETE FLEET"
+popup/item_2/icon = ExtResource("5_tfe8n")
+popup/item_2/id = 2
+popup/item_2/disabled = true
+popup/item_3/text = "Fleets"
+popup/item_3/id = 3
+popup/item_3/separator = true
+popup/item_4/text = "Starter Fleet"
+popup/item_4/id = 4
 script = ExtResource("4_nwsnp")
-
-[node name="DeleteFleet" type="TextureButton" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VFlowContainer"]
-custom_minimum_size = Vector2(55, 55)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-texture_normal = ExtResource("5_2vu4p")
-texture_hover = ExtResource("6_pauun")
-ignore_texture_size = true
-stretch_mode = 5
+rename_fleet_popup = NodePath("../../../../../../../../RenameFleetPopup")
+delete_fleet_popup = NodePath("../../../../../../../../DeleteFleetPopup")
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer"]
 layout_mode = 2
@@ -166,7 +181,7 @@ layout_mode = 2
 
 [node name="VFlowContainer" type="VFlowContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer"]
 layout_mode = 2
-theme_override_constants/h_separation = 20
+theme_override_constants/h_separation = 25
 
 [node name="Label" type="Label" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer"]
 layout_mode = 2
@@ -268,12 +283,13 @@ mouse_filter = 2
 layout_mode = 2
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
+z_index = 1
 script = ExtResource("11_541lb")
 
 [node name="Grid" type="Sprite2D" parent="."]
 texture_filter = 1
 texture_repeat = 2
-texture = ExtResource("12_my7uj")
+texture = ExtResource("15_ha1ne")
 region_enabled = true
 region_rect = Rect2(2.08165e-12, 2.08165e-12, 256, 256)
 
@@ -282,7 +298,7 @@ mirroring = true
 z_index = 1
 texture_filter = 1
 texture_repeat = 2
-texture = ExtResource("1_8h85s")
+texture = ExtResource("7_1reeb")
 region_enabled = true
 script = ExtResource("10_6vk6i")
 
@@ -310,9 +326,96 @@ points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
 default_color = Color(1, 0, 0, 1)
 
-[connection signal="item_selected" from="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VFlowContainer/FleetDropdown" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VFlowContainer/FleetDropdown" method="_on_item_selected"]
-[connection signal="button_down" from="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VFlowContainer/DeleteFleet" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VFlowContainer/FleetDropdown" method="_on_delete_fleet_button_down"]
+[node name="RenameFleetPopup" type="AcceptDialog" parent="." node_paths=PackedStringArray("warning_label", "name_edit")]
+title = "RENAME FLEET"
+initial_position = 2
+size = Vector2i(648, 364)
+exclusive = false
+unresizable = true
+theme = ExtResource("18_01mpa")
+ok_button_text = "Confirm changes"
+dialog_hide_on_ok = false
+script = ExtResource("19_ract4")
+warning_label = NodePath("VBoxContainer/Warning")
+name_edit = NodePath("VBoxContainer/NewName")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RenameFleetPopup"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -274.0
+offset_top = -132.0
+offset_right = 274.0
+offset_bottom = 81.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="RenameFleetPopup/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
+text = "What would you like your fleet to be called?
+"
+
+[node name="Warning" type="Label" parent="RenameFleetPopup/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.928333, 0.57, 1)
+theme_override_font_sizes/font_size = 26
+text = "No name provided!"
+
+[node name="NewName" type="LineEdit" parent="RenameFleetPopup/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 70)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_placeholder_color = Color(0.489622, 0.489622, 0.489622, 1)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_fkia0")
+placeholder_text = "*Unnamed"
+
+[node name="DeleteFleetPopup" type="AcceptDialog" parent="."]
+title = "DELETE FLEET"
+initial_position = 2
+size = Vector2i(643, 278)
+exclusive = false
+unresizable = true
+theme = ExtResource("18_01mpa")
+ok_button_text = "Yes, delete this fleet"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DeleteFleetPopup"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -271.5
+offset_top = -89.0
+offset_right = 271.5
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="DeleteFleetPopup/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
+text = "Are you sure you want to delete your fleet?
+"
+
+[node name="Warning" type="Label" parent="DeleteFleetPopup/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.928333, 0.57, 1)
+theme_override_font_sizes/font_size = 26
+text = "This action cannot be undone!"
+
+[connection signal="item_selected" from="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_item_selected"]
 [connection signal="button_down" from="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" method="_on_button_down"]
 [connection signal="selection_ended" from="MouseSelection" to="Grid/PartGrouping" method="_on_mouse_selection_selection_ended"]
 [connection signal="dragging_ended" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_ended"]
 [connection signal="dragging_started" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_started"]
+[connection signal="confirmed" from="RenameFleetPopup" to="RenameFleetPopup" method="_on_confirmed"]
+[connection signal="valid_rename" from="RenameFleetPopup" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_rename_fleet_popup_valid_rename"]
+[connection signal="confirmed" from="DeleteFleetPopup" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_delete_fleet_popup_confirmed"]
