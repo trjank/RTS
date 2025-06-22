@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
 [ext_resource type="Script" path="res://State_Manager.gd" id="2_ni5sh"]
 [ext_resource type="PackedScene" uid="uid://c8r8u7e7qkegq" path="res://battle/battle.tscn" id="5_rtafa"]
-[ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat/chat.tscn" id="7_ep3nq"]
+[ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="7_ep3nq"]
 
 [node name="Main" type="Node2D" node_paths=PackedStringArray("battle")]
 script = ExtResource("1_h0c8p")
@@ -17,83 +17,6 @@ script = ExtResource("2_ni5sh")
 layer = 3
 
 [node name="Chat" parent="UI" instance=ExtResource("7_ep3nq")]
-[node name="Nagivator" type="PanelContainer" parent="UI"]
-z_index = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 125.0
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ajdbe")
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/Nagivator"]
-layout_mode = 2
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 20
-
-[node name="GridContainer" type="GridContainer" parent="UI/Nagivator/MarginContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 20
-columns = 6
-
-[node name="TextureRect" type="TextureRect" parent="UI/Nagivator/MarginContainer/GridContainer"]
-layout_mode = 2
-texture = ExtResource("2_5s37y")
-expand_mode = 3
-
-[node name="Button" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer"]
-layout_mode = 2
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 32
-text = "menu"
-
-[node name="CenterContainer" type="CenterContainer" parent="UI/Nagivator/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Player" parent="UI/Nagivator/MarginContainer/GridContainer/CenterContainer" instance=ExtResource("3_6wvv6")]
-layout_mode = 2
-
-[node name="Design" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("design", "battle")]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = ExtResource("3_1dx7b")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
-theme_override_styles/pressed = ExtResource("4_dotd0")
-theme_override_styles/focus = ExtResource("4_dotd0")
-text = "design"
-script = ExtResource("5_mf6ox")
-design = NodePath("../../../../../Design")
-battle = NodePath("../../../../../Battle")
-
-[node name="Battle" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("design", "battle")]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = ExtResource("3_1dx7b")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
-theme_override_styles/pressed = ExtResource("4_dotd0")
-theme_override_styles/focus = ExtResource("4_dotd0")
-text = "battle"
-script = ExtResource("6_4n2ky")
-design = NodePath("../../../../../Design")
-battle = NodePath("../../../../../Battle")
-
-[node name="Chat" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("chat")]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = ExtResource("3_1dx7b")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
-theme_override_styles/pressed = ExtResource("4_dotd0")
-theme_override_styles/focus = ExtResource("4_dotd0")
-text = "chat
-"
-script = ExtResource("7_6efvs")
-chat = NodePath("../../../../../Chat")
-
-[node name="Chat" parent="." instance=ExtResource("7_ep3nq")]
-layer = 2
 visible = false
 
 [node name="Battle" parent="." instance=ExtResource("5_rtafa")]

@@ -42,8 +42,8 @@ public:
    void set_energy_per_shot(double new_energy_per_shot);
    void set_base_range(double new_base_range);
    void set_spread_angle(double new_spread_angle);
-   double set_sec_between_shots(double new_sec_between_shots);
-   double set_reload_sec(double new_reload_sec);
+   void set_sec_between_shots(double new_sec_between_shots);
+   void set_reload_sec(double new_reload_sec);
 protected:
    static void _bind_methods();
 private:

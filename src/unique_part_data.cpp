@@ -85,11 +85,11 @@ void WeaponData::set_base_range(double new_base_range) {
 void WeaponData::set_spread_angle(double new_spread_angle) {
    spread_angle = Math::abs(new_spread_angle);
 }
-double WeaponData::set_sec_between_shots(double new_sec_between_shots) {
+void WeaponData::set_sec_between_shots(double new_sec_between_shots) {
    sec_between_shots = Math::max(new_sec_between_shots, MIN_SEC_BETWEEN_SHOTS);
    calculate_firerates();
 }
-double WeaponData::set_reload_sec(double new_reload_sec) {
+void WeaponData::set_reload_sec(double new_reload_sec) {
    reload_sec = Math::max(new_reload_sec, MIN_RELOAD_SEC);
    calculate_firerates();
 }
