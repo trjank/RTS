@@ -6,8 +6,8 @@ const ship_t := preload('res://battle/Ship.tscn')
 @onready var state_manager = $state_manager
 
 func _ready():
-	state_manager.change_state("BATTLE")
-	state_manager.change_new_ui_state("NAVBAR")
+	state_manager.change_state(state_manager.BACKGROUND)
+	state_manager.change_new_ui_state(state_manager.MAIN_MENU)
 	return
 	#var manager := PartManager.new()
 	##var part1 := manager.new_part()

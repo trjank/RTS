@@ -10,8 +10,8 @@ func _ready():
 	pass # Replace with function body.
 
 func play_button_pressed():
-	stateManager.change_state("BATTLE")
-	stateManager.change_ui_state("NAVBAR")
+	stateManager.change_state(stateManager.BATTLE)
+	stateManager.change_ui_state(stateManager.NAVBAR)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

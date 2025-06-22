@@ -6,14 +6,14 @@ extends Node
 @onready var ui = $"../UI"
 
 
-const BACKGROUND = "BACKGROUND"
-const NONE      = "NONE"
-const DESIGN    = "DESIGN"
-const BATTLE    = "BATTLE"
-const NO_UI     = "NO_UI"
-const NAVBAR    = "NAVBAR"
-const MAIN_MENU = "MAIN_MENU"
-
+# const BACKGROUND = "BACKGROUND"
+# const NONE      = "NONE"
+# const DESIGN    = "DESIGN"
+# const BATTLE    = "BATTLE"
+# const NO_UI     = "NO_UI"
+# const NAVBAR    = "NAVBAR"
+# const MAIN_MENU = "MAIN_MENU"
+enum {NONE, NO_UI,BACKGROUND ,DESIGN, BATTLE, NAVBAR, MAIN_MENU}
 var state = NONE
 var ui_state = NO_UI
 
