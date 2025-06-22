@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d7mr4ylp8wdl"
-path="res://.godot/imported/delete_fleet_hover.png-53dc8b234e6341864ade9464c7dc8d60.ctex"
+uid="uid://dt71s811b4uqw"
+path="res://.godot/imported/fleet_rename.png-d681642064217127795012d8abc3c788.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://icons/delete_fleet_hover.png"
-dest_files=["res://.godot/imported/delete_fleet_hover.png-53dc8b234e6341864ade9464c7dc8d60.ctex"]
+source_file="res://icons/fleet_rename.png"
+dest_files=["res://.godot/imported/fleet_rename.png-d681642064217127795012d8abc3c788.ctex"]
 
 [params]
 

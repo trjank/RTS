@@ -20,8 +20,8 @@ double Orbit::get_distance() {
 double Orbit::get_angular_velocity() {
    if ( !orbiting) return 0.0;
 
-   double speed = sqrt(GRAVITATIONAL_CONSTANT * orbiting->mass / distance);
-   return speed / distance;
+   double linear_speed = Math::sqrt(GRAVITATIONAL_CONSTANT * orbiting->mass / distance);
+   return linear_speed / distance;
 }
 void Orbit::set_angle(Node2D* orbiter, double angle) {
    ERR_FAIL_COND( !orbiter);
@@ -31,11 +31,7 @@ void Orbit::set_angle(Node2D* orbiter, double angle) {
 void Orbit::fix_distance(Node2D* orbiter) {
    ERR_FAIL_COND( !orbiter);
 
-   Vector2 direction = orbiter->get_position();
-   if (direction.is_zero_approx())
-      direction = {1.0, 0.0};
-   else
-      direction.normalize();
+   Vector2 direction = orbiter->get_position().normalized();
    orbiter->set_position(distance * direction);
 }
 void Orbit::set_distance(double new_distance) {

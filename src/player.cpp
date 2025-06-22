@@ -11,14 +11,27 @@ double Player::get_energy() {
 double Player::get_alloy() {
    return alloy;
 }
-Ref<Team> Player::get_team() {
-   return team;
+Color Player::get_color() {
+   return color;
 }
 String Player::get_name() {
    return name;
 }
+String Player::get_clan() {
+   return clan;
+}
+Ref<Team> Player::get_team() {
+   return team;
+}
+void Player::set_color(Color new_color) {
+   color = new_color;
+   color.a = 1.0;
+}
 void Player::set_name(String new_name) {
    name = new_name.substr(0, MAX_NAME_LENGTH);
+}
+void Player::set_clan(String new_name) {
+   name = new_name.substr(0, MAX_CLAN_LENGTH);
 }
 void Player::set_team(Ref<Team> new_team) {
    if (new_team.is_null())

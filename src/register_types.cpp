@@ -23,7 +23,7 @@
 
 void Unit::_bind_methods() {
 	// ClassDB::bind_static_method("Unit", D_METHOD("set_warp_visual", "new_warp_visual"), &Unit::set_warp_visual);
-	bind_method(D_METHOD("get_HP"), &Unit::get_HP);
+	bind_method(D_METHOD("get_HP"), &Unit::get_hp);
 	bind_method(D_METHOD("get_radar_signature"), &Unit::get_radar_signature);
 	bind_method(D_METHOD("kill"), &Unit::kill);
 	bind_method(D_METHOD("get_forward_direction"), &Unit::get_forward_direction);
@@ -77,7 +77,6 @@ void Battle::_bind_methods() {
 	bind_method(D_METHOD("get_map"), &Battle::get_map);
 	bind_method(D_METHOD("get_state"), &Battle::get_state);
 	bind_method(D_METHOD("get_winner"), &Battle::get_winner);
-	bind_method(D_METHOD("new_team", "name"), &Battle::new_team);
 	bind_method(D_METHOD("get_seconds_left"), &Battle::get_seconds_left);
 	bind_method(D_METHOD("get_minutes_left"), &Battle::get_minutes_left);
 	bind_method(D_METHOD("get_time_left_sec"), &Battle::get_time_left_sec);
@@ -87,12 +86,32 @@ void Battle::_bind_methods() {
 	bind_method(D_METHOD("set_map", "new_map"), &Battle::set_map);
 	bind_method(D_METHOD("set_duration_sec", "new_duration_sec"), &Battle::set_duration_sec);
 	bind_method(D_METHOD("set_countdown_sec", "new_countdown_sec"), &Battle::set_countdown_sec);
+	bind_method(D_METHOD("new_team", "name"), &Battle::new_team);
+	bind_method(D_METHOD("new_player"), &Battle::new_player);
 	bind_method(D_METHOD("start"), &Battle::start);
 	bind_method(D_METHOD("start_countdown"), &Battle::start_countdown);
 	bind_method(D_METHOD("stop"), &Battle::stop);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "seed"), "set_seed", "get_seed");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration_sec"), "set_duration_sec", "get_duration_sec");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "countdown_sec"), "set_countdown_sec", "get_countdown_sec");
+}
+void Player::_bind_methods() {
+	bind_method(D_METHOD("get_energy"), &Player::get_energy);
+	bind_method(D_METHOD("get_alloy"), &Player::get_alloy);
+	bind_method(D_METHOD("get_color"), &Player::get_color);
+	bind_method(D_METHOD("get_name"), &Player::get_name);
+	bind_method(D_METHOD("get_clan"), &Player::get_clan);
+	bind_method(D_METHOD("get_team"), &Player::get_team);
+	bind_method(D_METHOD("set_color", "new_color"), &Player::set_color);
+	bind_method(D_METHOD("set_name", "new_name"), &Player::set_name);
+	bind_method(D_METHOD("set_clan", "new_clan"), &Player::set_clan);
+	bind_method(D_METHOD("set_team", "new_team"), &Player::set_team);
+	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "name"), "set_name", "get_name");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "clan"), "set_clan", "get_clan");
+}
+void Team::_bind_methods() {
+
 }
 void Orbit::_bind_methods() {
 	ClassDB::bind_static_method("Orbit", D_METHOD("get_time_scale"), &Orbit::get_time_scale);
@@ -129,10 +148,15 @@ void PartData::_bind_methods() {
 	BIND_CONSTANT(PX_PER_GRID_SQUARE);
 	BIND_CONSTANT(MAX_NAME_LENGTH);
 	BIND_CONSTANT(MAX_DESC_LENGTH);
-	BIND_CONSTANT(NUM_CSV_COLUMNS);
 	bind_method(D_METHOD("get_cost"), &PartData::get_cost);
 	bind_method(D_METHOD("get_hp"), &PartData::get_hp);
 	bind_method(D_METHOD("get_mass"), &PartData::get_mass);
+	bind_method(D_METHOD("get_shield"), &PartData::get_shield);
+	bind_method(D_METHOD("get_shield_per_sec"), &PartData::get_shield_per_sec);
+	bind_method(D_METHOD("get_warp"), &PartData::get_warp);
+	bind_method(D_METHOD("get_warp_per_sec"), &PartData::get_warp_per_sec);
+	bind_method(D_METHOD("get_torque"), &PartData::get_torque);
+	bind_method(D_METHOD("get_thrust"), &PartData::get_thrust);
 	bind_method(D_METHOD("get_size"), &PartData::get_size);
 	bind_method(D_METHOD("get_size_px"), &PartData::get_size_px);
 	bind_method(D_METHOD("get_code"), &PartData::get_code);
@@ -146,16 +170,22 @@ void PartData::_bind_methods() {
 	bind_method(D_METHOD("set_size", "new_size"), &PartData::set_size);
 	bind_method(D_METHOD("set_name", "new_name"), &PartData::set_name);
 	bind_method(D_METHOD("set_tab", "new_tab"), &PartData::set_tab);
-	bind_method(D_METHOD("set_texture_path"), &PartData::set_texture_path);
+	bind_method(D_METHOD("set_texture_path", "local_path"), &PartData::set_texture_path);
+	bind_method(D_METHOD("set_desc", "new_desc"), &PartData::set_desc);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "cost"), "set_cost", "get_cost");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "hp"), "set_hp", "get_hp");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "mass"), "set_mass", "get_mass");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2I, "size"), "set_size", "get_size");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "desc"), "set_desc", "get_desc");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "name"), "set_name", "get_name");
 }
 void PartManager::_bind_methods() {
 	BIND_CONSTANT(CODE_LENGTH)
 	bind_method(D_METHOD("count_parts"), &PartManager::count_parts);
 	bind_method(D_METHOD("load_csv", "path"), &PartManager::load_csv);
 	bind_method(D_METHOD("save_csv", "path"), &PartManager::save_csv);
-	bind_method(D_METHOD("load_json", "path"), &PartManager::load_json);
-	bind_method(D_METHOD("save_json", "path"), &PartManager::save_json);
-	bind_method(D_METHOD("copy_defaults", "path", "default_path"), &PartManager::copy_defaults);
+	bind_method(D_METHOD("load_json", "path"), &PartManager::load_unique_data);
+	bind_method(D_METHOD("save_json", "path"), &PartManager::save_unique_data);
 	bind_method(D_METHOD("new_atlas"), &PartManager::new_atlas);
 	bind_method(D_METHOD("remove_part", "part"), &PartManager::remove_part);
 	bind_method(D_METHOD("new_part", "code"), &PartManager::new_part);
@@ -253,6 +283,8 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(MouseCommands);
 	GDREGISTER_CLASS(MouseSelection);
 	GDREGISTER_CLASS(Battle);
+	GDREGISTER_CLASS(Player);
+	GDREGISTER_CLASS(Team)
 	GDREGISTER_CLASS(Celestial);
 	GDREGISTER_CLASS(Orbit);
 	GDREGISTER_CLASS(Star);

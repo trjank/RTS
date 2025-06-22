@@ -1,3 +1,4 @@
+#include <godot_cpp/core/math.hpp>
 #include "part.hpp"
 // needed to use math primitives on visual studio compiler...
 #define _USE_MATH_DEFINES
@@ -6,6 +7,11 @@
 using namespace godot;
 
 constexpr int SQUARE_SIZE = PartData::PX_PER_GRID_SQUARE;
+
+Part* PartData::new_part() {
+	return memnew(Part);
+}
+
 
 Part::Part() {
 	hitbox.instantiate();
@@ -16,20 +22,17 @@ Part::Part() {
 Ref<PartData> Part::get_data() {
 	return data;
 }
-bool Part::keep_as_node() {
-	return false;
-}
-void Part::set_data(Ref<PartData> part_data) {
-	ERR_FAIL_COND(part_data.is_null());
-
-	Vector2i size = part_data->get_size_px();
-	image->set_texture(part_data->get_texture());
-	image->resize_scaled(size);
-	hitbox->set_size(size);
-	data = part_data;
-}
 Rect2 Part::get_global_rect() {
 	return image->get_global_transform().xform(image->get_rect());
+}
+void Part::set_data(Ref<PartData> new_data) {
+	ERR_FAIL_COND(new_data.is_null());
+
+	Vector2i size = new_data->get_size_px();
+	image->set_texture(new_data->get_texture());
+	image->resize_scaled(size);
+	hitbox->set_size(size);
+	data = new_data;
 }
 
 
@@ -64,8 +67,12 @@ void PartGrouping::delete_parts() {
 void PartGrouping::spawn_part(Ref<PartData> part_data) {
 	ERR_FAIL_COND(part_data.is_null());
 
-	Part* part = memnew(Part);
-	get_parent()->add_child(part);
+	Node* parent = get_parent();
+
+	ERR_FAIL_COND( !parent);
+
+	Part* part = part_data->new_part();
+	parent->add_child(part);
 	part->set_data(part_data);
 	part->set_global_position(get_global_mouse_position());
 	select_parts(TypedArray<Node2D>::make(part));
@@ -98,8 +105,8 @@ void PartGrouping::update_region() {
 }
 void PartGrouping::rotate_smoothly(int quarter_turns, float duration) {
 	Ref<Tween> tween = create_tween();
-	float start = Math::snapped(get_rotation(), M_PI_2);
-	float end = start + M_PI_2 * quarter_turns;
+	float start = Math::snapped(get_rotation(), Math_PI / 2);
+	float end = start + (Math_PI / 2) * quarter_turns;
 	tween->tween_property(this, "rotation", end, duration)->from(start);
 	if (mirrored) mirrored->rotate_smoothly(-quarter_turns, duration);
 }

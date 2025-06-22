@@ -31,7 +31,7 @@ func _ready()->void:
 	var moons := System.new()
 	moons.set_radius_range(100, 200)
 	moons.set_mass_range(50, 100)
-	moons.load_textures_from_folder("res://images_planets_jovian")
+	moons.load_textures_from_folder("res://images_planets_terrestrial")
 	moons.names = ["Moon"]
 
 	var planets_layer := MapLayer.new()

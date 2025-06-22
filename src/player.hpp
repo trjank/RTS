@@ -16,18 +16,25 @@ class Player: public Node2D {
    GDCLASS(Player, Node2D)
 public:
    static constexpr int MAX_NAME_LENGTH = 30;
+   static constexpr int MAX_CLAN_LENGTH = 4;
    static constexpr double ALLOY_LIMIT = 1.0e5;
    static constexpr double ENERGY_LIMIT = 1.0e5;
    Player();
    double get_energy();
    double get_alloy();
-   Ref<Team> get_team();
+   Color get_color();
    String get_name();
+   String get_clan();
+   Ref<Team> get_team();
+   void set_color(Color new_color);
    void set_name(String new_name);
+   void set_clan(String new_clan);
    void set_team(Ref<Team> new_team);
    void register_kill(Destructable& kill);
    void register_loss(Destructable& loss);
    void _physics_process(double dt) override;
+protected:
+   static void _bind_methods();
 private:
    int rank = 0;
    double energy = 0.0;
@@ -35,6 +42,7 @@ private:
    double energy_bounty;
    double alloy_bounty;
    String name = "<unnamed>";
+   String clan = "";
    Color color = {0.0, 0.0, 0.0, 1.0};
    Ref<Team> team = nullptr;
 };

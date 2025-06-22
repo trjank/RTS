@@ -33,6 +33,7 @@ public:
       FLIPPED_ROT_270_DEG = 7
    };
    static constexpr int MAX_NAME_LENGTH = 30;
+
    int count_parts();
    State get_state();
    int get_cost();
@@ -61,7 +62,9 @@ private:
    double max_hp = 0.0;
    double max_shield = 0.0;
    double max_energy = 0.0;
+   double thrust = 0.0;
    double turnrate = 0.0;
+   double moment_of_inertia;
    Vector2 mass_offset;
    Vector2 center_of_mass;
    String name = "<unnamed>";
@@ -71,6 +74,7 @@ private:
    PackedVector2Array centers;
    PackedStringArray codes;
    DisjointSets part_clusters;
+
    String get_part_code(int part_id);
    void check_for_adjacent_part(int part_id, Vector2i xy);
    void check_for_adjacent_parts(int part_id, Rect2i rect);
@@ -78,6 +82,7 @@ private:
    void add_part_to_grid(Ref<PartData> part, Vector2 center, RotationState rotation_state);
    void add_part_to_grid(Part* part);
    RotationState encode_rotation(double radians, bool flipped);
+
    friend class ShipManager;
 };
 
@@ -86,9 +91,13 @@ class ShipManager: public RefCounted {
 public:
    static constexpr int MAX_NUM_HOTBAR_SLOTS = 10;
    static constexpr int MAX_NUM_TURRET_SLOTS = 3;
-   const PackedStringArray CSV_COLUMNS = {
-      "code", "x", "y", "rotation_state"
+   enum PropertyOrder: int {
+      CODE, X, Y, ROTATION, NUM_PROPERTIES
    };
+   const PackedStringArray CSV_HEADER = {
+      "code", "x", "y", "rotation"
+   };
+
    ShipManager();
    Ref<PartManager> get_part_manager();
    int get_num_hotbar_slots();
@@ -110,6 +119,7 @@ private:
    Ref<ShipData> capital_ship = nullptr;
    Vector<Ref<ShipData>> hotbar;
    Vector<Ref<ShipData>> turrets;
+
    void load_part_into_ship(Ref<ShipData> ship, PackedStringArray csv_line);
    PackedStringArray to_csv_line(Ref<ShipData> ship, int part_id);
 };
