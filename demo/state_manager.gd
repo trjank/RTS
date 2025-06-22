@@ -6,7 +6,7 @@ extends Node
 @onready var ui = $"../UI"
 
 
-
+const BACKGROUND = "BACKGROUND"
 const NONE      = "NONE"
 const DESIGN    = "DESIGN"
 const BATTLE    = "BATTLE"
@@ -31,13 +31,13 @@ func remove_current_state():
 			$"..".remove_child(design)
 	state = NONE
 
-#NONE can mean multiple things here, major bug but ill fix it later
+
 func change_new_state(new_state):
 	match new_state:
-		NONE:
+		BACKGROUND:
 			battle.hide_overlay()
 			battle.show()
-			state = NONE
+			state = BACKGROUND
 		BATTLE:
 			battle.show_overlay()
 			battle.show()

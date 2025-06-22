@@ -18,9 +18,8 @@ func _ready():
 
 		
 func menu_button_pressed():
-	print("helo")
 	stateManager.change_ui_state("MAIN_MENU")
-	stateManager.change_state("NONE")
+	stateManager.change_state("BACKGROUND")
 
 func chat_button_pressed():
 	chat.visible = not chat.visible
