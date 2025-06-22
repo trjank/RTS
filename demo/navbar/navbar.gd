@@ -7,8 +7,7 @@ extends PanelContainer
 @onready var chat = $"../Chat"
 @onready var stateManager = $"../../state_manager"
 
-enum {NONE, DESIGN, BATTLE}
-enum {NO_UI, NAVBAR, MAIN_MENU}
+
 func _ready():
 	chat_button.pressed.connect(chat_button_pressed)
 	battle_button.pressed.connect(battle_button_pressed)
@@ -20,20 +19,20 @@ func _ready():
 		
 func menu_button_pressed():
 	print("helo")
-	stateManager.change_ui_state(MAIN_MENU)
-	stateManager.change_state(NONE)
+	stateManager.change_ui_state("MAIN_MENU")
+	stateManager.change_state("NONE")
 
 func chat_button_pressed():
 	chat.visible = not chat.visible
 
 
 func battle_button_pressed():
-	stateManager.change_state(BATTLE)
+	stateManager.change_state("BATTLE")
 
 
 
 func design_button_pressed():
-	stateManager.change_state(DESIGN)
+	stateManager.change_state("DESIGN")
 	print("design_button")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

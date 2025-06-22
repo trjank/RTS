@@ -4,11 +4,10 @@ const ship_t := preload('res://battle/Ship.tscn')
 
 @export var battle: Battle
 @onready var state_manager = $state_manager
-enum {NONE, DESIGN, BATTLE}
-enum {NO_UI, NAVBAR, MAIN_MENU }
+
 func _ready():
-	state_manager.change_state(BATTLE)
-	state_manager.change_new_ui_state(NAVBAR)
+	state_manager.change_state("BATTLE")
+	state_manager.change_new_ui_state("NAVBAR")
 	return
 	#var manager := PartManager.new()
 	##var part1 := manager.new_part()

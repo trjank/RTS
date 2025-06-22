@@ -5,9 +5,15 @@ extends Node
 @onready var navbar = preload("res://navbar/navbar.tscn").instantiate()
 @onready var ui = $"../UI"
 
-#should probably use strings instead...
-enum {NONE, DESIGN, BATTLE}
-enum {NO_UI, NAVBAR, MAIN_MENU }
+
+
+const NONE      = "NONE"
+const DESIGN    = "DESIGN"
+const BATTLE    = "BATTLE"
+const NO_UI     = "NO_UI"
+const NAVBAR    = "NAVBAR"
+const MAIN_MENU = "MAIN_MENU"
+
 var state = NONE
 var ui_state = NO_UI
 
