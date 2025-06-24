@@ -7,7 +7,11 @@ extends Control
 
 func _ready():
 	play_button.pressed.connect(play_button_pressed)
+	settings_button.pressed.connect(settings_button_pressed)
 	pass # Replace with function body.
+
+func settings_button_pressed():
+	stateManager.change_ui_state(stateManager.SETTINGS)
 
 func play_button_pressed():
 	stateManager.change_state(stateManager.BATTLE)

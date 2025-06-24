@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnnn7c40rsf6y"]
+
+[ext_resource type="Script" path="res://settings/keybinds_panel.gd" id="1_lrtwl"]
+[ext_resource type="PackedScene" uid="uid://xhpmyx3j2abg" path="res://settings/keybind_row.tscn" id="2_25igy"]
+
+[node name="Keybinds" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_lrtwl")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.025
+anchor_right = 0.975
+anchor_bottom = 0.975
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+
+[node name="keybind_list" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="KeybindRow" parent="MarginContainer/ScrollContainer/keybind_list" instance=ExtResource("2_25igy")]
+visible = false
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="KeybindRow2" parent="MarginContainer/ScrollContainer/keybind_list" instance=ExtResource("2_25igy")]
+visible = false
+layout_mode = 2
