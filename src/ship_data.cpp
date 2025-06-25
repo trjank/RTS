@@ -172,7 +172,7 @@ int ShipData::add_part(Ref<PartData> part, Vector2 center, RotationState rotatio
 
    #if CPU_IMAGE_GENERATION
    // TODO: Maybe cache rotated and flipped variations?
-   Ref<Image> part_image = part->get_texture()->get_image();
+   Ref<Image> part_image = part->get_image()->duplicate();
    switch (rotation_state) {
       case ROT_0_DEG:
          break;

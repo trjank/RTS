@@ -163,6 +163,7 @@ void PartData::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_code"), &PartData::get_code);
 	ClassDB::bind_method(D_METHOD("get_name"), &PartData::get_name);
 	ClassDB::bind_method(D_METHOD("get_tab"), &PartData::get_tab);
+	ClassDB::bind_method(D_METHOD("get_image"), &PartData::get_image);
 	ClassDB::bind_method(D_METHOD("get_texture"), &PartData::get_texture);
 	ClassDB::bind_method(D_METHOD("get_desc"), &PartData::get_desc);
 	ClassDB::bind_method(D_METHOD("set_cost", "new_cost"), &PartData::set_cost);
@@ -171,7 +172,7 @@ void PartData::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_size", "new_size"), &PartData::set_size);
 	ClassDB::bind_method(D_METHOD("set_name", "new_name"), &PartData::set_name);
 	ClassDB::bind_method(D_METHOD("set_tab", "new_tab"), &PartData::set_tab);
-	ClassDB::bind_method(D_METHOD("set_texture_path", "local_path"), &PartData::set_texture_path);
+	ClassDB::bind_method(D_METHOD("set_image_path", "local_path"), &PartData::set_image_path);
 	ClassDB::bind_method(D_METHOD("set_desc", "new_desc"), &PartData::set_desc);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "cost"), "set_cost", "get_cost");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "hp"), "set_hp", "get_hp");

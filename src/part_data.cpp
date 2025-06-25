@@ -81,6 +81,9 @@ String PartData::get_tab() {
 String PartData::get_desc() {
    return desc;
 }
+Ref<Image> PartData::get_image() {
+   return image;
+}
 Ref<Texture2D> PartData::get_texture() {
    return texture;
 }
@@ -111,15 +114,17 @@ void PartData::set_tab(String new_tab) {
 void PartData::set_desc(String new_desc) {
    desc = new_desc.substr(0, MAX_DESC_LENGTH);
 }
-void PartData::set_texture_path(String path) {
+void PartData::set_image_path(String path) {
    Ref<Texture2D> new_texture = ResourceLoader::get_singleton()->load(path);
 
    ERR_FAIL_NULL_MSG(new_texture,
-      "<PartData> Failed to load texture '" + path + "'");
+      "<PartData> Failed to load image '" + path + "'");
    ERR_FAIL_COND_MSG(new_texture->get_size() != get_size_px(),
       "<PartData> Texture '" + path + "' has incorrect size (failed to set texture)");
 
-   texture_path = path;
+   image_path = path;
+   image = new_texture->get_image();
+   image->convert(IMAGE_FORMAT);
    texture = new_texture;
 }
 
@@ -177,7 +182,7 @@ PackedStringArray PartManager::to_csv_line(Ref<PartData> part) {
    line[MASS]    = String::num(part->mass);
    line[WIDTH]   = String::num_int64(part->size.width);
    line[HEIGHT]  = String::num_int64(part->size.height);
-   line[PATH]    = part->texture_path;
+   line[PATH]    = part->image_path;
    line[DESC]    = part->desc;
    return line;
 }
@@ -214,7 +219,7 @@ void PartManager::load_part(PackedStringArray data) {
    part->set_hp(data[HP].to_float());
    part->set_mass(data[MASS].to_float());
    part->set_size( {width, height} );
-   part->set_texture_path(parts_folder_path + data[PATH]);
+   part->set_image_path(parts_folder_path + data[PATH]);
    part->set_desc(data[DESC]);
 }
 void PartManager::remove_part(Ref<PartData> part) {
@@ -260,14 +265,12 @@ void PartManager::create_atlas() {
    Dictionary atlas_data = Geometry2D::get_singleton()->make_atlas(part_sizes);
    Vector2i size = atlas_data["size"];
    atlas_offsets = atlas_data["points"];
-   atlas = Image::create(size.x, size.y, true, IMAGE_FORMAT);
+   atlas = Image::create(size.x, size.y, true, PartData::IMAGE_FORMAT);
 }
 void PartManager::draw_part_on_atlas(Ref<PartData> part) {
    Vector2i size_px = part->get_size_px();
    Vector2& offset  = atlas_offsets[part->atlas_id];
-   Ref<Image> image = part->texture->get_image();
-   image->convert(IMAGE_FORMAT);
-   atlas->blit_rect(image, {{0, 0}, size_px}, offset);
+   atlas->blit_rect(part->image, {{0, 0}, size_px}, offset);
 }
 void PartManager::populate_atlas() {
    ERR_FAIL_COND(atlas_offsets.size() != parts.size());
