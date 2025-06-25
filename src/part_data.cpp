@@ -69,6 +69,9 @@ Vector2i PartData::get_size_px() {
 String PartData::get_code() {
    return code;
 }
+String PartData::get_subtype() {
+   return subtype;
+}
 String PartData::get_name() {
    return name;
 }
@@ -95,6 +98,9 @@ void PartData::set_mass(double new_mass) {
 }
 void PartData::set_size(Vector2i new_size) {
    size = new_size.max( {MIN_WIDTH, MIN_HEIGHT} );
+}
+void PartData::set_subtype(String new_subtype) {
+   subtype = new_subtype;
 }
 void PartData::set_name(String new_name) {
    name = new_name.substr(0, MAX_NAME_LENGTH);
@@ -133,8 +139,14 @@ const PackedVector2Array PartManager::get_atlas_offsets() {
 Dictionary PartManager::get_unique_data(String code) {
    return unique_data.get(code, Dictionary{});
 }
+String PartManager::get_parts_folder_path() {
+   return parts_folder_path;
+}
 void PartManager::set_unique_data(String code, Dictionary new_data) {
    unique_data[code] = new_data;
+}
+void PartManager::set_parts_folder_path(String new_parts_folder_path) {
+   parts_folder_path = new_parts_folder_path;
 }
 void PartManager::load_csv(String path) {
    Ref<FileAccess> file = FileAccess::open(path, FileAccess::READ);
@@ -156,15 +168,17 @@ void PartManager::save_csv(String path) {
 PackedStringArray PartManager::to_csv_line(Ref<PartData> part) {
    PackedStringArray line;
    line.resize(NUM_PROPERTIES);
-   line[CODE]   = part->code;
-   line[NAME]   = part->name;
-   line[TAB]    = part->tab;
-   line[COST]   = String::num_int64(part->cost);
-   line[HP]     = String::num(part->hp);
-   line[WIDTH]  = String::num_int64(part->size.width);
-   line[HEIGHT] = String::num_int64(part->size.height);
-   line[PATH]   = part->texture_path;
-   line[DESC]   = part->desc;
+   line[CODE]    = part->code;
+   line[SUBTYPE] = part->subtype;
+   line[NAME]    = part->name;
+   line[TAB]     = part->tab;
+   line[COST]    = String::num_int64(part->cost);
+   line[HP]      = String::num(part->hp);
+   line[MASS]    = String::num(part->mass);
+   line[WIDTH]   = String::num_int64(part->size.width);
+   line[HEIGHT]  = String::num_int64(part->size.height);
+   line[PATH]    = part->texture_path;
+   line[DESC]    = part->desc;
    return line;
 }
 void PartManager::load_unique_data(String path) {
@@ -186,21 +200,21 @@ void PartManager::save_unique_data(String path) {
 void PartManager::load_part(PackedStringArray data) {
    if (data == PackedStringArray{""}) return;
 
-   ERR_FAIL_COND(data.size() != NUM_PROPERTIES);
+   ERR_FAIL_COND_MSG(data.size() != NUM_PROPERTIES,
+      "<PartManager> Part csv columns differ from header (failed to load part)");
 
-   Ref<PartData> part = new_part(data[CODE]);
-
-   ERR_FAIL_COND(part.is_null());
+   Ref<PartData> part = new_part(data[CODE], data[SUBTYPE]);
 
    int32_t width  = data[WIDTH].to_int();
    int32_t height = data[HEIGHT].to_int();
    part->set_name(data[NAME]);
+   part->set_subtype(data[SUBTYPE]);
    part->set_tab(data[TAB]);
    part->set_cost(data[COST].to_int());
    part->set_hp(data[HP].to_float());
    part->set_mass(data[MASS].to_float());
    part->set_size( {width, height} );
-   part->set_texture_path(parts_folder + data[PATH]);
+   part->set_texture_path(parts_folder_path + data[PATH]);
    part->set_desc(data[DESC]);
 }
 void PartManager::remove_part(Ref<PartData> part) {
