@@ -33,6 +33,7 @@ public:
       FULL_PERIMETER = EDGE_TOP | EDGE_BOTTOM | EDGE_LEFT | EDGE_RIGHT
    };
 
+   static constexpr Image::Format IMAGE_FORMAT = Image::FORMAT_RGBA8;
    static constexpr int MIN_WIDTH = 1;
    static constexpr int MIN_HEIGHT = 1;
    static constexpr int PX_PER_GRID_SQUARE = 32;
@@ -63,18 +64,21 @@ public:
    Vector2i get_size();
    Vector2i get_size_px();
    String get_code();
+   String get_subtype();
    String get_name();
    String get_tab();
    String get_desc();
+   Ref<Image> get_image();
    Ref<Texture2D> get_texture();
    void set_cost(int new_cost);
    void set_hp(double new_hp);
    void set_mass(double new_mass);
    void set_size(Vector2i new_size);
+   void set_subtype(String new_subtype);
    void set_name(String new_name);
    void set_tab(String new_tab);
    void set_desc(String new_desc);
-   void set_texture_path(String local_path);
+   void set_image_path(String local_path);
 protected:
    static void _bind_methods();
 
@@ -97,10 +101,12 @@ private:
    double mass = 0.0;
    Vector2i size = {MIN_WIDTH, MIN_HEIGHT};
    String code = "NULL";
+   String subtype = "";
    String name = "<unnamed>";
    String tab = "<no tab>";
-   String texture_path = "missing.png";
+   String image_path = "missing.png";
    String desc = "<no description>";
+   Ref<Image> image;
    Ref<Texture2D> texture;
 
    friend class PartManager;
@@ -109,18 +115,19 @@ private:
 class PartManager: public RefCounted {
    GDCLASS(PartManager, RefCounted)
 public:
-   static constexpr Image::Format IMAGE_FORMAT = Image::FORMAT_RGBA8;
    static constexpr int CODE_LENGTH = 4;
    enum PropertyOrder: int {
-      CODE, NAME, TAB, COST, HP, MASS, WIDTH, HEIGHT, PATH, DESC, NUM_PROPERTIES
+      CODE, SUBTYPE, NAME, TAB, COST, HP, MASS, WIDTH, HEIGHT, PATH, DESC, NUM_PROPERTIES
    };
    const PackedStringArray CSV_HEADER = {
-      "code", "name", "tab", "cost", "hp", "mass", "width", "height", "path", "desc"
+      "code", "subtype", "name", "tab", "cost", "hp", "mass", "width", "height", "path", "desc"
    };
 
    int count_parts();
    const PackedVector2Array get_atlas_offsets();
+   String get_parts_folder_path();
    Dictionary get_unique_data(String code);
+   void set_parts_folder_path(String new_parts_folder_path);
    void set_unique_data(String code, Dictionary new_data);
    void load_csv(String path);
    void save_csv(String path);
@@ -134,7 +141,7 @@ public:
 protected:
    static void _bind_methods();
 private:
-   String parts_folder = "res://part_images/";
+   String parts_folder_path = "res://part_images/";
    PackedVector2Array atlas_offsets;
    Ref<Image> atlas;
    Dictionary unique_data;
