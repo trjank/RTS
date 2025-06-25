@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
-[ext_resource type="Script" path="res://State_Manager.gd" id="2_ni5sh"]
+[ext_resource type="Script" path="res://state_manager.gd" id="2_l4s7m"]
 [ext_resource type="PackedScene" uid="uid://c8r8u7e7qkegq" path="res://battle/battle.tscn" id="5_rtafa"]
 [ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="7_ep3nq"]
 
@@ -11,7 +11,7 @@ battle = NodePath("Battle")
 
 [node name="state_manager" type="Node" parent="."]
 unique_name_in_owner = true
-script = ExtResource("2_ni5sh")
+script = ExtResource("2_l4s7m")
 
 [node name="UI" type="CanvasLayer" parent="."]
 layer = 3

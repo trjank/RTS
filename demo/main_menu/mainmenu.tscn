@@ -1,11 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://8b0xosmrmilb"]
+[gd_scene load_steps=5 format=3 uid="uid://8b0xosmrmilb"]
 
+[ext_resource type="Shader" uid="uid://bnkcup81amd5o" path="res://main_menu/mainmenu.tres" id="1_7xuea"]
 [ext_resource type="Script" path="res://main_menu/mainmenu.gd" id="1_odr8w"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3m7f1"]
+shader = ExtResource("1_7xuea")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yeq3j"]
-bg_color = Color(0.0862745, 0.0862745, 0.0862745, 0.352941)
+bg_color = Color(0.0862745, 0.0862745, 0.0862745, 0)
 
 [node name="mainmenu" type="Control"]
+material = SubResource("ShaderMaterial_3m7f1")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

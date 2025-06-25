@@ -52,12 +52,12 @@ func _ready()->void:
 	planets.new_layer(moons_layer)
 	set_map(sun)
 	
-	clock.timeout.connect(on_UI_refresh)
+	#clock.timeout.connect(on_UI_refresh)
 	start_countdown()
-	on_UI_refresh()
-	set_duration_sec(360)
-	clock.start(UI_REFRESHES_PER_SEC)
-
-func on_UI_refresh()->void:
-	clock_minutes_label.text = "%d"   % get_minutes_left()
-	clock_seconds_label.text = "%02d" % get_seconds_left()
+	#on_UI_refresh()
+	#set_duration_sec(360)
+	#clock.start(UI_REFRESHES_PER_SEC)
+#
+#func on_UI_refresh()->void:
+	#clock_minutes_label.text = "%d"   % get_minutes_left()
+	#clock_seconds_label.text = "%02d" % get_seconds_left()

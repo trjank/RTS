@@ -2,39 +2,15 @@
 
 [ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" path="res://battle/MouseCommands.gd" id="1_777ku"]
-[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_j65k6"]
+[ext_resource type="PackedScene" uid="uid://ch1gd4si8wgyp" path="res://unit_panel.tscn" id="3_dxl1x"]
+[ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="3_ju74a"]
 [ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
+[ext_resource type="Texture2D" uid="uid://c7mmi3w1sdnxu" path="res://data_defaults/cogwheel_white.png" id="4_jimxv"]
 [ext_resource type="PackedScene" uid="uid://j7rna5tdvxk4" path="res://camera.tscn" id="5_kce6k"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fasl0"]
-bg_color = Color(0, 0, 0, 0.588235)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k4xxy"]
-content_margin_left = 20.0
-content_margin_top = 20.0
-content_margin_right = 20.0
-content_margin_bottom = 20.0
-bg_color = Color(0, 0, 0, 0.588235)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.677157, 0.984528, 1)
-corner_radius_top_left = 25
-corner_radius_top_right = 25
-corner_radius_bottom_right = 25
-corner_radius_bottom_left = 25
-
-[node name="Battle" type="Battle" node_paths=PackedStringArray("clock", "clock_minutes_label", "clock_seconds_label", "overlay")]
+[node name="Battle" type="Battle" node_paths=PackedStringArray("overlay")]
 seed = -1909400080011345178
 script = ExtResource("1_2ostc")
-clock = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/Timer")
-clock_minutes_label = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Minutes")
-clock_seconds_label = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Seconds")
 overlay = NodePath("UI")
 
 [node name="Background" type="CanvasLayer" parent="."]
@@ -46,295 +22,93 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("3_lrxve")
 expand_mode = 3
 stretch_mode = 6
 
 [node name="UI" type="CanvasLayer" parent="."]
 layer = 0
-visible = false
 
-[node name="FleetBar" type="VBoxContainer" parent="UI"]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchor_top = 0.75
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -752.0
-offset_top = -291.0
-offset_right = 752.0
-grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 
-[node name="ResourceBar" type="MarginContainer" parent="UI/FleetBar"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_right = 0.15
+anchor_bottom = 0.925
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Control/MarginContainer"]
 layout_mode = 2
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_bottom = 20
+mouse_filter = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="UI/FleetBar/ResourceBar"]
+[node name="Control2" type="Control" parent="UI/Control/MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+mouse_force_pass_scroll_events = false
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/FleetBar/ResourceBar/CenterContainer"]
+[node name="GridContainer" parent="UI/Control/MarginContainer/VBoxContainer/Control2" instance=ExtResource("3_dxl1x")]
+layout_mode = 1
+
+[node name="Control" type="Control" parent="UI/Control/MarginContainer"]
+visible = false
 layout_mode = 2
-theme_override_constants/separation = 50
+mouse_filter = 1
 
-[node name="Clock" type="PanelContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.05
+
+[node name="Control" type="Control" parent="UI/HBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fasl0")
+size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 15
+[node name="Panel" type="Panel" parent="UI/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.333
+anchor_right = 0.667
+anchor_bottom = 1.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_font_sizes/font_size = 32
-text = "Time: "
-
-[node name="Minutes" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1.30146e-06, 0.930476, 0.55002, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 32
-text = "15"
-
-[node name="Delimeter" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_font_sizes/font_size = 32
-text = ":"
-
-[node name="Seconds" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1.30146e-06, 0.930476, 0.55002, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 32
-text = "32"
-
-[node name="Timer" type="Timer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock"]
-
-[node name="AlloyBar" type="PanelContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fasl0")
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 15
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_font_sizes/font_size = 32
-text = "Alloy:  "
-
-[node name="AlloyValue" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.654622, 0.791916, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 32
-text = "1923"
-
-[node name="Label2" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_font_sizes/font_size = 32
-text = " ("
-
-[node name="AlloyRate" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.654622, 0.791916, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 32
-text = "32"
-
-[node name="Label3" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/AlloyBar/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_font_sizes/font_size = 32
-text = "/sec)"
-
-[node name="EnergyBar" type="PanelContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_fasl0")
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/EnergyBar"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 15
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/EnergyBar/MarginContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/EnergyBar/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_font_sizes/font_size = 32
-text = "Energy: "
-
-[node name="EnergyRate" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/EnergyBar/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 0.431373, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 32
-text = "32"
-
-[node name="Label3" type="Label" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/EnergyBar/MarginContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
-theme_override_font_sizes/font_size = 32
-text = "/sec"
-
-[node name="ShipsBar" type="PanelContainer" parent="UI/FleetBar"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_k4xxy")
-
-[node name="GridContainer" type="GridContainer" parent="UI/FleetBar/ShipsBar"]
-layout_mode = 2
-theme_override_constants/h_separation = 100
-columns = 2
-
-[node name="Hotbar" type="VFlowContainer" parent="UI/FleetBar/ShipsBar/GridContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 20
-
-[node name="Slot1" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar"]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-ignore_texture_size = true
-stretch_mode = 4
-
-[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar/Slot1"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/HBoxContainer/Control"]
 layout_mode = 0
-offset_right = 50.0
-offset_bottom = 50.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 20
-theme_override_font_sizes/font_size = 32
-text = "1"
-horizontal_alignment = 1
-vertical_alignment = 1
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="Slot2" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar"]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-ignore_texture_size = true
-stretch_mode = 4
+[node name="Button" type="Button" parent="UI/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.05
+anchor_right = 0.03
+anchor_bottom = 0.4
+offset_right = 8.0
+offset_bottom = 8.0
+icon = ExtResource("3_ju74a")
+expand_icon = true
 
-[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar/Slot2"]
-layout_mode = 0
-offset_right = 50.0
-offset_bottom = 50.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 20
-theme_override_font_sizes/font_size = 32
-text = "2"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Slot3" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar"]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-ignore_texture_size = true
-stretch_mode = 4
-
-[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar/Slot3"]
-layout_mode = 0
-offset_right = 50.0
-offset_bottom = 50.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 20
-theme_override_font_sizes/font_size = 32
-text = "3"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Turrets" type="VFlowContainer" parent="UI/FleetBar/ShipsBar/GridContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 20
-
-[node name="Slot1" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-ignore_texture_size = true
-stretch_mode = 4
-
-[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot1"]
-layout_mode = 0
-offset_right = 50.0
-offset_bottom = 50.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 20
-theme_override_font_sizes/font_size = 32
-text = "f1"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Slot2" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-ignore_texture_size = true
-stretch_mode = 4
-
-[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot2"]
-layout_mode = 0
-offset_right = 50.0
-offset_bottom = 50.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 20
-theme_override_font_sizes/font_size = 32
-text = "f2"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Slot3" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-ignore_texture_size = true
-stretch_mode = 4
-
-[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot3"]
-layout_mode = 0
-offset_right = 50.0
-offset_bottom = 50.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 20
-theme_override_font_sizes/font_size = 32
-text = "f3"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="Button2" type="Button" parent="UI/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.04
+anchor_top = 0.05
+anchor_right = 0.06
+anchor_bottom = 0.4
+offset_right = 8.0
+offset_bottom = 8.0
+icon = ExtResource("4_jimxv")
+expand_icon = true
 
 [node name="MouseCommands" type="MouseCommands" parent="."]
 script = ExtResource("1_777ku")
