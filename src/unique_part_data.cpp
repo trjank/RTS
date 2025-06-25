@@ -2,18 +2,18 @@
 
 using namespace godot;
 
-bool ProjectileData::exposed_to_design_mode() {
-   return SHOW_PROJECTILES_IN_DESIGN_MODE;
+ProjectileData::ProjectileData() {
+   exposed_to_design_mode = SHOW_PROJECTILES_IN_DESIGN_MODE;
 }
-void ProjectileData::load_unique(Dictionary data) {
-   PartData::load_unique(data);
+void ProjectileData::load_unique_data(Dictionary data) {
+   PartData::load_unique_data(data);
    bool instahit = data.get("hitscan", hitscan);
    Vector2 size  = data.get("hitbox_size", hitbox_size);
    set_hitscan(instahit);
    set_size(size);
 }
 Part* ProjectileData::new_part() {
-   WARN_PRINT_ED("Use _ instead for ProjectileData");
+   WARN_PRINT_ED("<ProjectileData> Use new_projectile instead of new_part");
    return nullptr;
 }
 bool ProjectileData::is_hitscan() {
@@ -30,11 +30,11 @@ void ProjectileData::set_hitbox_size(Vector2 new_hitbox_size) {
 }
 
 
-bool WeaponData::flatten_with_ship() {
-   return false;
+WeaponData::WeaponData() {
+   unique = true;
 }
-void WeaponData::load_unique(Dictionary data) {
-   PartData::load_unique(data);
+void WeaponData::load_unique_data(Dictionary data) {
+   PartData::load_unique_data(data);
    int shots        = data.get("shots_per_burst", shots_per_burst);
    double energy    = data.get("energy_per_shot", energy_per_shot);
    double range     = data.get("base_range", base_range);
@@ -85,11 +85,11 @@ void WeaponData::set_base_range(double new_base_range) {
 void WeaponData::set_spread_angle(double new_spread_angle) {
    spread_angle = Math::abs(new_spread_angle);
 }
-double WeaponData::set_sec_between_shots(double new_sec_between_shots) {
+void WeaponData::set_sec_between_shots(double new_sec_between_shots) {
    sec_between_shots = Math::max(new_sec_between_shots, MIN_SEC_BETWEEN_SHOTS);
    calculate_firerates();
 }
-double WeaponData::set_reload_sec(double new_reload_sec) {
+void WeaponData::set_reload_sec(double new_reload_sec) {
    reload_sec = Math::max(new_reload_sec, MIN_RELOAD_SEC);
    calculate_firerates();
 }
@@ -101,8 +101,8 @@ void WeaponData::calculate_firerates() {
 }
 
 
-void TurretMountData::load_unique(Dictionary data) {
-   PartData::load_unique(data);
+void TurretMountData::load_unique_data(Dictionary data) {
+   PartData::load_unique_data(data);
    double angle = data.get("firing_arc_degrees", firing_arc_degrees);
    double arc   = data.get("angle_degrees", angle_degrees);
    set_firing_arc_degrees(arc);

@@ -2,21 +2,27 @@
 
 using namespace godot;
 
-bool PartData::exposed_to_design_mode() {
-   return true;
+bool PartData::is_exposed_to_design_mode() {
+   return exposed_to_design_mode;
 }
-bool PartData::flatten_with_ship() {
-   return true;
+bool PartData::is_unique() {
+   return unique;
 }
-void PartData::load_unique(Dictionary data) {
+bool PartData::can_rotate() {
+   return rotate_enabled;
+}
+void PartData::load_unique_data(Dictionary data) {
    if (data.is_empty()) return;
 
-   shield         = data.get("shield", shield);
-   shield_per_sec = data.get("shield_per_sec", shield_per_sec);
-   warp           = data.get("warp", warp);
-   warp_per_sec   = data.get("warp_per_sec", warp_per_sec);
-   torque         = data.get("torque", torque);
-   thrust         = data.get("thrust", thrust);
+   WARN_PRINT_ONCE_ED("<PartData> Changes under load_unique_data are temporary");
+   warp             = data.get("warp", warp);
+   shield           = data.get("shield", shield);
+   energy           = data.get("energy", energy);
+   warp_per_sec     = data.get("warp_per_sec", warp_per_sec);
+   shield_per_sec   = data.get("shield_per_sec", shield_per_sec);
+   energy_per_sec   = data.get("energy_per_sec", energy_per_sec);
+   thrust           = data.get("thrust", thrust);
+   turning_momentum = data.get("turning_momentum", turning_momentum);
 }
 int PartData::get_atlas_id() {
    return atlas_id;
@@ -30,23 +36,29 @@ double PartData::get_hp() {
 double PartData::get_mass() {
    return mass;
 }
+double PartData::get_warp() {
+   return warp;
+}
 double PartData::get_shield() {
    return shield;
 }
-double PartData::get_shield_per_sec() {
-   return shield_per_sec;
-}
-double PartData::get_warp() {
-   return warp;
+double PartData::get_energy() {
+   return energy;
 }
 double PartData::get_warp_per_sec() {
    return warp_per_sec;
 }
-double PartData::get_torque() {
-   return torque;
+double PartData::get_shield_per_sec() {
+   return shield_per_sec;
+}
+double PartData::get_energy_per_sec() {
+   return shield_per_sec;
+}
+double PartData::get_turning_momentum() {
+   return turning_momentum;
 }
 double PartData::get_thrust() {
-   return torque;
+   return thrust;
 }
 Vector2i PartData::get_size() {
    return size;
@@ -69,6 +81,9 @@ String PartData::get_desc() {
 Ref<Texture2D> PartData::get_texture() {
    return texture;
 }
+PartData::BoundaryFlag PartData::get_boundary() {
+   return boundary;
+}
 void PartData::set_cost(int new_cost) {
    cost = Math::max(0, new_cost);
 }
@@ -90,14 +105,15 @@ void PartData::set_tab(String new_tab) {
 void PartData::set_desc(String new_desc) {
    desc = new_desc.substr(0, MAX_DESC_LENGTH);
 }
-void PartData::set_texture_path(String local_path) {
-   String absolute_path = PART_IMAGES_FOLDER + local_path;
-   Ref<Texture2D> new_texture = ResourceLoader::get_singleton()->load(absolute_path);
+void PartData::set_texture_path(String path) {
+   Ref<Texture2D> new_texture = ResourceLoader::get_singleton()->load(path);
 
-   ERR_FAIL_COND(new_texture.is_null());
-   ERR_FAIL_COND(new_texture->get_size() != get_size_px());
+   ERR_FAIL_NULL_MSG(new_texture,
+      "<PartData> Failed to load texture '" + path + "'");
+   ERR_FAIL_COND_MSG(new_texture->get_size() != get_size_px(),
+      "<PartData> Texture '" + path + "' has incorrect size (failed to set texture)");
 
-   texture_path = local_path;
+   texture_path = path;
    texture = new_texture;
 }
 
@@ -114,10 +130,10 @@ Ref<PartData> PartManager::lookup_code(String code) {
 const PackedVector2Array PartManager::get_atlas_offsets() {
    return atlas_offsets;
 }
-Dictionary PartManager::get_unique(String code) {
+Dictionary PartManager::get_unique_data(String code) {
    return unique_data.get(code, Dictionary{});
 }
-void PartManager::set_unique(String code, Dictionary new_data) {
+void PartManager::set_unique_data(String code, Dictionary new_data) {
    unique_data[code] = new_data;
 }
 void PartManager::load_csv(String path) {
@@ -152,14 +168,15 @@ PackedStringArray PartManager::to_csv_line(Ref<PartData> part) {
    return line;
 }
 void PartManager::load_unique_data(String path) {
-   ERR_FAIL_COND( !path.ends_with(".json"));
+   ERR_FAIL_COND_MSG( !path.ends_with(".json"),
+      "<PartManager> Unique data '" + path + "' must be a .json file (failed to load)");
 
    String raw_text = FileAccess::get_file_as_string(path);
    unique_data = JSON::parse_string(raw_text);
    Array codes = unique_data.keys();
    for (int n = 0; n < codes.size(); ++n) {
       String code = codes[n];
-      lookup_code(code)->load_unique(unique_data[code]);
+      lookup_code(code)->load_unique_data(unique_data[code]);
    }
 }
 void PartManager::save_unique_data(String path) {
@@ -183,13 +200,18 @@ void PartManager::load_part(PackedStringArray data) {
    part->set_hp(data[HP].to_float());
    part->set_mass(data[MASS].to_float());
    part->set_size( {width, height} );
-   part->set_texture_path(data[PATH]);
+   part->set_texture_path(parts_folder + data[PATH]);
    part->set_desc(data[DESC]);
 }
 void PartManager::remove_part(Ref<PartData> part) {
-   ERR_FAIL_COND( !code_to_id.has(part->code));
+   ERR_FAIL_COND_MSG( !code_to_id.has(part->code),
+      "<PartManager> Part with code '" + part->code + "' not found (failed to remove)");
 
-   // Swap with the last element to avoid shifting the entire vector down
+   /*------------------------------------------------------*
+   | Swap with the last element and delete from the back.  |
+   | This prevents us from shifting the entire vector      |
+   | down, which would require us to fix more atlas ids.   |
+   *------------------------------------------------------*/
    int largest_id = parts.size() - 1;
    Ref<PartData> last_part = lookup_id(largest_id);
    code_to_id[last_part->code] = part->atlas_id;
@@ -211,7 +233,7 @@ Ref<PartData> PartManager::new_part(String code, String subtype) {
    return part;
 }
 void PartManager::new_atlas(String save_path) {
-   WARN_PRINT_ED("Atlas generation is CPU-based and may take several seconds");
+   WARN_PRINT_ONCE_ED("<PartManager> Atlas generation is CPU-based and may take several seconds");
    create_atlas();
    populate_atlas();
    atlas->save_png(save_path);
@@ -227,12 +249,11 @@ void PartManager::create_atlas() {
    atlas = Image::create(size.x, size.y, true, IMAGE_FORMAT);
 }
 void PartManager::draw_part_on_atlas(Ref<PartData> part) {
-   const Vector2i TOP_LEFT_CORNER = {0, 0};
    Vector2i size_px = part->get_size_px();
    Vector2& offset  = atlas_offsets[part->atlas_id];
    Ref<Image> image = part->texture->get_image();
    image->convert(IMAGE_FORMAT);
-   atlas->blit_rect(image, {TOP_LEFT_CORNER, size_px}, offset);
+   atlas->blit_rect(image, {{0, 0}, size_px}, offset);
 }
 void PartManager::populate_atlas() {
    ERR_FAIL_COND(atlas_offsets.size() != parts.size());

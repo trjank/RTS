@@ -19,14 +19,15 @@ Ref<ShipData> Ship::get_data() {
    return stats;
 }
 void Ship::set_data(Ref<ShipData> new_data) {
-   ERR_FAIL_COND(new_data.is_null());
+   ERR_FAIL_COND_MSG(new_data.is_null(),
+      "<Ship> ShipData is null (failed to set data)");
 
-   stats = new_data;
-   hp = stats->get_max_hp();
-   shield = stats->get_max_shield();
-   energy = stats->get_max_energy();
+   stats    = new_data;
+   hp       = stats->get_max_hp();
+   shield   = stats->get_max_shield();
+   energy   = stats->get_max_energy();
    turnrate = stats->get_turnrate();
-   // image->set_texture(stats->get_texture());
+   image->set_texture(stats->get_image());
 }
 float Ship::hit_shield(float damage) {
    shield -= damage;
@@ -57,7 +58,7 @@ void Ship::fire() {
 void Ship::_physics_process(double dt) {
    Unit::_physics_process(dt);
    // TODO: update shield regen rate based on energy
-	// energy = MIN(energy + energy_per_sec * dt, max_energy);
-   // shield = MIN(shield + shield_per_sec * dt, max_shield);
-   // warp = MIN(warp + warp_per_sec * dt, max_warp);
+	energy = MIN(energy + stats->get_energy_per_sec() * dt, stats->get_max_energy());
+   shield = MIN(shield + stats->get_shield_per_sec() * dt, stats->get_max_shield());
+   warp   = MIN(warp + stats->get_warp_per_sec() * dt, stats->get_max_warp());
 }

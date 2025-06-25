@@ -18,8 +18,6 @@
 #include <godot_cpp/classes/node.hpp>
 #include "part_data.hpp"
 
-#define PART_IMAGES_FOLDER "res://part_images/"
-
 namespace godot {
 
 class Part;
@@ -27,6 +25,14 @@ class Part;
 class PartData: public RefCounted {
    GDCLASS(PartData, RefCounted)
 public:
+   enum BoundaryFlag: int {
+      EDGE_TOP = 1,
+      EDGE_BOTTOM = 2,
+      EDGE_LEFT = 4,
+      EDGE_RIGHT = 8,
+      FULL_PERIMETER = EDGE_TOP | EDGE_BOTTOM | EDGE_LEFT | EDGE_RIGHT
+   };
+
    static constexpr int MIN_WIDTH = 1;
    static constexpr int MIN_HEIGHT = 1;
    static constexpr int PX_PER_GRID_SQUARE = 32;
@@ -36,20 +42,24 @@ public:
 
    static Ref<PartData> create_correct_subtype(String subtype);
 
-   virtual bool exposed_to_design_mode();
-   virtual bool flatten_with_ship();
-   virtual void load_unique(Dictionary data);
+   bool is_exposed_to_design_mode();
+   bool can_rotate();
+   bool is_unique();
+   virtual void load_unique_data(Dictionary data);
    virtual Part* new_part();
    int get_atlas_id();
    int get_cost();
    double get_hp();
    double get_mass();
-   double get_shield();
-   double get_shield_per_sec();
    double get_warp();
+   double get_shield();
+   double get_energy();
    double get_warp_per_sec();
-   double get_torque();
+   double get_shield_per_sec();
+   double get_energy_per_sec();
    double get_thrust();
+   double get_turning_momentum();
+   BoundaryFlag get_boundary();
    Vector2i get_size();
    Vector2i get_size_px();
    String get_code();
@@ -68,12 +78,18 @@ public:
 protected:
    static void _bind_methods();
 
-   double shield = 0.0;
-   double shield_per_sec = 0.0;
+   bool exposed_to_design_mode = true;
+   bool rotate_enabled = true;
+   bool unique = false;
    double warp = 0.0;
+   double shield = 0.0;
+   double energy = 0.0;
    double warp_per_sec = 0.0;
-   double torque = 0.0;
+   double shield_per_sec = 0.0;
+   double energy_per_sec = 0.0;
    double thrust = 0.0;
+   double turning_momentum = 0.0;
+   BoundaryFlag boundary = FULL_PERIMETER;
 private:
    int atlas_id = -1;
    int cost = 0;
@@ -104,8 +120,8 @@ public:
 
    int count_parts();
    const PackedVector2Array get_atlas_offsets();
-   Dictionary get_unique(String code);
-   void set_unique(String code, Dictionary new_data);
+   Dictionary get_unique_data(String code);
+   void set_unique_data(String code, Dictionary new_data);
    void load_csv(String path);
    void save_csv(String path);
    void load_unique_data(String path);
@@ -118,6 +134,7 @@ public:
 protected:
    static void _bind_methods();
 private:
+   String parts_folder = "res://part_images/";
    PackedVector2Array atlas_offsets;
    Ref<Image> atlas;
    Dictionary unique_data;
@@ -132,5 +149,7 @@ private:
 };
 
 }
+
+VARIANT_ENUM_CAST(PartData::BoundaryFlag);
 
 #endif // PART_DATA_HPP

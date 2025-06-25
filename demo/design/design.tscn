@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
 [ext_resource type="Script" path="res://design/fleet_selector.gd" id="4_nwsnp"]
-[ext_resource type="Texture2D" uid="uid://dt71s811b4uqw" path="res://icons/fleet_rename.png" id="5_e2e55"]
+[ext_resource type="Texture2D" uid="uid://blwjohdbu8pgf" path="res://icons/fleet_rename.png" id="5_8hx7x"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="5_q73th"]
 [ext_resource type="Texture2D" uid="uid://inbrq5b8ia5x" path="res://icons/fleet_delete.png" id="5_tfe8n"]
 [ext_resource type="Texture2D" uid="uid://wq8ei1nlxqqq" path="res://icons/fleet_new.png" id="5_tiyvg"]
@@ -25,7 +25,7 @@ content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
-bg_color = Color(0.262745, 0.305882, 0.368627, 0.588235)
+bg_color = Color(0.262745, 0.305882, 0.368627, 0.392157)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o6k85"]
 content_margin_left = 40.0
@@ -141,7 +141,7 @@ popup/item_0/text = "NEW FLEET"
 popup/item_0/icon = ExtResource("5_tiyvg")
 popup/item_0/id = 0
 popup/item_1/text = "RENAME FLEET"
-popup/item_1/icon = ExtResource("5_e2e55")
+popup/item_1/icon = ExtResource("5_8hx7x")
 popup/item_1/id = 1
 popup/item_1/disabled = true
 popup/item_2/text = "DELETE FLEET"
@@ -294,7 +294,6 @@ region_enabled = true
 region_rect = Rect2(2.08165e-12, 2.08165e-12, 256, 256)
 
 [node name="PartGrouping" type="PartGrouping" parent="Grid"]
-mirroring = true
 z_index = 1
 texture_filter = 1
 texture_repeat = 2

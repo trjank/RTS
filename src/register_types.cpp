@@ -148,6 +148,11 @@ void PartData::_bind_methods() {
 	BIND_CONSTANT(PX_PER_GRID_SQUARE);
 	BIND_CONSTANT(MAX_NAME_LENGTH);
 	BIND_CONSTANT(MAX_DESC_LENGTH);
+	BIND_ENUM_CONSTANT(BoundaryFlag::EDGE_BOTTOM);
+	BIND_ENUM_CONSTANT(BoundaryFlag::EDGE_TOP);
+	BIND_ENUM_CONSTANT(BoundaryFlag::EDGE_LEFT);
+	BIND_ENUM_CONSTANT(BoundaryFlag::EDGE_RIGHT);
+	BIND_ENUM_CONSTANT(BoundaryFlag::FULL_PERIMETER);
 	bind_method(D_METHOD("get_cost"), &PartData::get_cost);
 	bind_method(D_METHOD("get_hp"), &PartData::get_hp);
 	bind_method(D_METHOD("get_mass"), &PartData::get_mass);
@@ -155,7 +160,7 @@ void PartData::_bind_methods() {
 	bind_method(D_METHOD("get_shield_per_sec"), &PartData::get_shield_per_sec);
 	bind_method(D_METHOD("get_warp"), &PartData::get_warp);
 	bind_method(D_METHOD("get_warp_per_sec"), &PartData::get_warp_per_sec);
-	bind_method(D_METHOD("get_torque"), &PartData::get_torque);
+	bind_method(D_METHOD("get_torque"), &PartData::get_turning_momentum);
 	bind_method(D_METHOD("get_thrust"), &PartData::get_thrust);
 	bind_method(D_METHOD("get_size"), &PartData::get_size);
 	bind_method(D_METHOD("get_size_px"), &PartData::get_size_px);
@@ -191,8 +196,8 @@ void PartManager::_bind_methods() {
 	bind_method(D_METHOD("new_part", "code"), &PartManager::new_part);
 	bind_method(D_METHOD("lookup_id", "atlas_id"), &PartManager::lookup_id);
 	bind_method(D_METHOD("lookup_code", "code"), &PartManager::lookup_code);
-	bind_method(D_METHOD("get_unique", "code"), &PartManager::get_unique);
-	bind_method(D_METHOD("set_unique", "code", "new_data"), &PartManager::set_unique);
+	bind_method(D_METHOD("get_unique", "code"), &PartManager::get_unique_data);
+	bind_method(D_METHOD("set_unique", "code", "new_data"), &PartManager::set_unique_data);
 }
 void ResizableSprite2D::_bind_methods() {
 	bind_method(D_METHOD("resize_scaled", "new_size"), &ResizableSprite2D::resize_scaled);
@@ -216,10 +221,53 @@ void PartGrouping::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("dragging_ended"));
 }
 void ShipData::_bind_methods() {
-
+	BIND_CONSTANT(NULL_PART_ID);
+	BIND_ENUM_CONSTANT(PartError::OKAY);
+	BIND_ENUM_CONSTANT(PartError::OVERLAP);
+	BIND_ENUM_CONSTANT(PartError::OUT_OF_BOUNDS);
+	BIND_ENUM_CONSTANT(PartError::IS_NULL);
+	BIND_ENUM_CONSTANT(RotationState::ROT_0_DEG);
+	BIND_ENUM_CONSTANT(RotationState::ROT_90_DEG);
+	BIND_ENUM_CONSTANT(RotationState::ROT_180_DEG);
+	BIND_ENUM_CONSTANT(RotationState::ROT_270_DEG);
+	BIND_ENUM_CONSTANT(RotationState::FLIPPED_ROT_0_DEG);
+	BIND_ENUM_CONSTANT(RotationState::FLIPPED_ROT_90_DEG);
+	BIND_ENUM_CONSTANT(RotationState::FLIPPED_ROT_180_DEG);
+	BIND_ENUM_CONSTANT(RotationState::FLIPPED_ROT_270_DEG);
+	ClassDB::bind_static_method("ShipData", D_METHOD("get_grid_padding"), &ShipData::get_grid_padding);
+	ClassDB::bind_static_method("ShipData", D_METHOD("assemble", "grid_size", "parts"), &ShipData::assemble);
+	bind_method(D_METHOD("count_parts"), &ShipData::count_parts);
+	bind_method(D_METHOD("is_empty"), &ShipData::is_empty);
+	bind_method(D_METHOD("is_connected"), &ShipData::is_connected);
+	bind_method(D_METHOD("get_error"), &ShipData::get_error);
+	bind_method(D_METHOD("get_cost"), &ShipData::get_cost);
+	bind_method(D_METHOD("get_size"), &ShipData::get_size);
+	bind_method(D_METHOD("get_size_px"), &ShipData::get_size_px);
+	bind_method(D_METHOD("get_max_warp"), &ShipData::get_max_warp);
+	bind_method(D_METHOD("get_max_hp"), &ShipData::get_max_hp);
+	bind_method(D_METHOD("get_max_shield"), &ShipData::get_max_shield);
+	bind_method(D_METHOD("get_max_energy"), &ShipData::get_max_energy);
+	bind_method(D_METHOD("get_warp_per_sec"), &ShipData::get_warp_per_sec);
+	bind_method(D_METHOD("get_shield_per_sec"), &ShipData::get_shield_per_sec);
+	bind_method(D_METHOD("get_energy_per_sec"), &ShipData::get_energy_per_sec);
+	bind_method(D_METHOD("get_thrust"), &ShipData::get_thrust);
+	bind_method(D_METHOD("get_turnrate"), &ShipData::get_turnrate);
+	bind_method(D_METHOD("get_center_of_mass"), &ShipData::get_center_of_mass);
+	bind_method(D_METHOD("get_part_data"), &ShipData::get_part_data);
+	bind_method(D_METHOD("get_image"), &ShipData::get_image);
+	bind_method(D_METHOD("set_image", "new_image"), &ShipData::set_image);
+	bind_method(D_METHOD("has_part", "part_id"), &ShipData::has_part);
+	bind_method(D_METHOD("add_part", "part", "center", "rotation_state"), &ShipData::add_part);
+	bind_method(D_METHOD("add_part_node", "part"), &ShipData::add_part_node);
+	bind_method(D_METHOD("collision_check", "point"), &ShipData::add_part_node);
+	bind_method(D_METHOD("find_neighbors", "part_id", "flags"), &ShipData::find_neighbors);
 }
 void ShipManager::_bind_methods() {
-
+   BIND_CONSTANT(NULL_PART_ATLAS_ID);
+	bind_method(D_METHOD("save_ship_image", "ship", "path"), &ShipManager::save_ship_image);
+	bind_method(D_METHOD("save_ship_csv", "ship", "path"), &ShipManager::save_ship_csv);
+	bind_method(D_METHOD("load_ship_image", "path"), &ShipManager::load_ship_image);
+	bind_method(D_METHOD("load_ship_csv", "path"), &ShipManager::load_ship_csv);
 }
 void Star::_bind_methods() {
 	ClassDB::bind_static_method("Star", D_METHOD("set_star_shader", "shader"), &Star::set_star_shader);

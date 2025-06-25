@@ -10,9 +10,9 @@ namespace godot {
 class ProjectileData: public PartData {
    GDCLASS(ProjectileData, PartData)
 public:
+   ProjectileData();
    Part* new_part() override;
-   bool exposed_to_design_mode() override;
-   void load_unique(Dictionary data) override;
+   void load_unique_data(Dictionary data) override;
    bool is_hitscan();
    Vector2 get_hitbox_size();
    void set_hitscan(bool make_hitscan);
@@ -27,8 +27,9 @@ class WeaponData: public PartData {
 public:
    static constexpr double MIN_SEC_BETWEEN_SHOTS = 0.1;
    static constexpr double MIN_RELOAD_SEC = 0.1;
-   bool flatten_with_ship() override;
-   void load_unique(Dictionary data) override;
+
+   WeaponData();
+   void load_unique_data(Dictionary data) override;
    Part* new_part() override;
    int get_shots_per_burst();
    double get_energy_per_shot();
@@ -42,8 +43,8 @@ public:
    void set_energy_per_shot(double new_energy_per_shot);
    void set_base_range(double new_base_range);
    void set_spread_angle(double new_spread_angle);
-   double set_sec_between_shots(double new_sec_between_shots);
-   double set_reload_sec(double new_reload_sec);
+   void set_sec_between_shots(double new_sec_between_shots);
+   void set_reload_sec(double new_reload_sec);
 protected:
    static void _bind_methods();
 private:
@@ -63,7 +64,7 @@ private:
 class TurretMountData: public PartData {
    GDCLASS(TurretMountData, PartData)
 public:
-   void load_unique(Dictionary data) override;
+   void load_unique_data(Dictionary data) override;
    Part* new_part() override;
    bool is_compatible_with(Ref<WeaponData> weapon);
    double get_min_angle();

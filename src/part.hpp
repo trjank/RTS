@@ -25,13 +25,17 @@ public:
    Ref<PartData> get_data();
    Rect2 get_global_rect();
    virtual void set_data(Ref<PartData> new_data);
+   // virtual void copy_adjacency_data(Part* part);
 protected:
    static void _bind_methods();
 private:
+   int ship_data_part_id = -1;
    Ref<PartData> data = get_default<PartData>();
    Ref<RectangleShape2D> hitbox;
    CollisionShape2D* shape = nullptr;
    ResizableSprite2D* image = nullptr;
+
+   friend class ShipData;
 };
 
 class PartGrouping: public ResizableSprite2D {

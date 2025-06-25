@@ -17,11 +17,13 @@ int DisjointSets::find_root(int set) {
    return set == parents[set] ? set : find_root(parents[set]);
 }
 void DisjointSets::merge(int A, int B) {
-   --num_sets;
    A = find_root(A);
    B = find_root(B);
+
    if (A == B) return;
+
    int net_size = sizes[A] + sizes[B];
+   --num_sets;
    // Keep the larger set as the root
    if (sizes[A] < sizes[B]) {
       parents.set(A, B);
