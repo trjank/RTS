@@ -13,6 +13,8 @@ func hide_overlay()->void:
 func show_overlay()->void:
 	overlay.show()
 
+
+
 func _ready()->void:
 	Orbit.set_time_scale(100)
 	

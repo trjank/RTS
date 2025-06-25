@@ -16,11 +16,22 @@ func set_grid_size(size: Vector2)->void:
 	grid.region_rect.size = PartData.PX_PER_GRID_SQUARE * size
 	info_text.position.y = -0.5 * grid.region_rect.size.y - 200
 
+func _input(event):
+	if (event.is_action_pressed("save")):
+		# Testing some shipbuilding
+		print("saving...")
+		part_grouping.clear_parts() # <-- This is VERY important
+		var ship_manager := ShipManager.new()
+		var ship := ShipData.assemble(Vector2i(64, 64), grid.get_children())
+		ship_manager.save_ship_image(ship, "user://ship.png")
+		ship_manager.save_ship_csv(ship, "user://ship.csv")
+		print("IS CONNECTED: ", ship.is_connected())
+
 func _ready():
 	set_grid_size(Vector2(64, 64))
 	var manager := PartManager.new()
 	manager.load_csv("user://parts.csv")
-	manager.new_atlas("res://test_atlas2.png")
+	#manager.new_atlas("res://test_atlas.png")
 	PartButton.part_container = part_grouping
 	for atlas_id in range(manager.count_parts()):
 		

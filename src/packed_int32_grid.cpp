@@ -2,40 +2,59 @@
 
 using namespace godot;
 
-const PackedByteArray PackedInt32Grid::to_byte_array() {
-   return grid.to_byte_array();
+PackedInt32Grid PackedInt32Grid::create(int width, int height) {
+   PackedInt32Grid new_grid;
+   /*------------------------------------------------------*
+   | FORMAT_RF stores a single 32-bit float channel (red). |
+   | Note that we are really storing 32-bit integers, and  |
+   | the 32-bit floats are just placeholder types.         |
+   *------------------------------------------------------*/
+   new_grid.grid = Image::create(width, height, true, Image::FORMAT_RF);
+   return new_grid;
 }
-int PackedInt32Grid::calculate_area() {
-   return region.size.width * region.size.height;
+PackedInt32Grid PackedInt32Grid::createv(Vector2i size) {
+   return create(size.width, size.height);
 }
-bool PackedInt32Grid::encloses(Vector2i point) {
-   return region.has_point(point);
+void PackedInt32Grid::fill(int32_t integer) {
+   grid->fill(encode(integer));
 }
-Vector2i PackedInt32Grid::get_size() {
-   return region.size;
+void PackedInt32Grid::fill_rect(Rect2i rect, int32_t integer) {
+   grid->fill_rect(rect, encode(integer));
 }
-void PackedInt32Grid::set_size(Vector2i new_size) {
-   ERR_FAIL_COND(new_size.width < 0 || new_size.height < 0);
-   region.size = new_size;
-   grid.resize(calculate_area());
+PackedByteArray PackedInt32Grid::to_byte_buffer() {
+   return grid->get_data();
 }
-int32_t& PackedInt32Grid::operator[](Vector2i xy) {
-   return grid[xy.x + xy.y * region.size.width];
+int32_t PackedInt32Grid::get(int x, int y) {
+   return decode(grid->get_pixel(x, y));
 }
-void PackedInt32Grid::fill(int32_t new_value) {
-   grid.fill(new_value);
+int32_t PackedInt32Grid::getv(Vector2i point) {
+   return decode(grid->get_pixelv(point));
 }
-bool PackedInt32Grid::fill_rect(Rect2i rect, int32_t new_value, int32_t null_value) {
-   rect = rect.intersection(region);
-   Vector2i min = rect.position;
-   Vector2i max = min + rect.size;
-   bool overlapped = false;
+void PackedInt32Grid::set(Vector2i point, int32_t integer) {
+   grid->set_pixelv(point, encode(integer));
+}
+int32_t PackedInt32Grid::decode(Color color) {
+   return *(int32_t*) &(color.r);
+}
+Color PackedInt32Grid::encode(int32_t integer) {
+   float red_channel = *(float*) &integer;
+   return {red_channel, 0.0f, 0.0f, 1.0f};
+}
+bool PackedInt32Grid::is_empty() {
+   return grid->is_empty();
+}
+bool PackedInt32Grid::is_empty_region(Rect2i region, int32_t _null_value) {
+   Vector2i min = region.position;
+   Vector2i max = region.get_end();
+   /*------------------------------------------------------*
+   | The Image class has the is_invisible() method, but    |
+   | since this is not FORMAT_RF compatible (no alpha      |
+   | channel), we have to define our own.                  |
+   *------------------------------------------------------*/
    for (int x = min.x; x < max.x; ++x) {
       for (int y = min.y; y < max.y; ++y) {
-         int& cell = operator[]( {x, y} );
-         overlapped |= (cell != null_value);
-         cell = new_value;
+         if (unlikely( get(x, y) != _null_value )) return false;
       }
    }
-   return overlapped;
+   return true;
 }
