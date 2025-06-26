@@ -35,7 +35,7 @@ Ref<ShipData> ShipData::assemble(Vector2i size, TypedArray<Node> parts) {
       ship->add_part_node( Object::cast_to<Part>( parts[n] ) );
       UtilityFunctions::print("ERROR: ", ship->get_error());
    }
-
+   //UtilityFunctions::print("bro plz ", ship->get_ship_bounds());
    return ship;
 }
 int ShipData::count_parts() {
@@ -129,6 +129,35 @@ PackedInt32Array ShipData::find_neighbors(int part_id, PartData::BoundaryFlag fl
    }
    return neighbors;
 }
+
+void ShipData::set_bounds(Vector2 bounds){
+   if(bounds.x > ship_bounds_x.x){
+      ship_bounds_x.x = bounds.x;
+   }
+   if(bounds.x < ship_bounds_x.y){
+      ship_bounds_x.y = bounds.x;
+   }
+
+   if(bounds.y > ship_bounds_y.x){
+      ship_bounds_y.x = bounds.y;
+   }
+
+   if(bounds.y < ship_bounds_y.y){
+      ship_bounds_y.y = bounds.y;
+   }
+
+}
+
+Vector2 ShipData::get_ship_bounds_x()
+{
+   return ship_bounds_x;
+}
+
+Vector2 ShipData::get_ship_bounds_y()
+{
+   return ship_bounds_y;
+}
+
 int ShipData::add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state) {
    if (part.is_null()) {
       error = IS_NULL;
@@ -148,7 +177,7 @@ int ShipData::add_part(Ref<PartData> part, Vector2 center, RotationState rotatio
    rect = rect.intersection(grid_region);
    part_regions.push_back(rect);
    part_centers.push_back(center);
-
+   set_bounds(center);
    if (rect.size != size) {
       error = OUT_OF_BOUNDS;
       return NULL_PART_ID;

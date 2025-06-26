@@ -60,6 +60,8 @@ public:
    double get_energy_per_sec();
    double get_thrust();
    double get_turnrate();
+   Vector2 get_ship_bounds_x();
+   Vector2 get_ship_bounds_y();
    Vector2 get_center_of_mass();
    Ref<PartData> get_part_data(int part_id);
    Ref<Image> get_image();
@@ -85,6 +87,8 @@ private:
    double thrust = 0.0;
    double turnrate = 0.0;
    Vector2 mass_offset = {0.0f, 0.0f};
+   Vector2 ship_bounds_x = {-100000.0f,100000.0f};
+   Vector2 ship_bounds_y = {-100000.0f,100000.0f};
    String name = "<unnamed>";
    Ref<Image> image;
    Vector<Ref<PartData>> parts = {nullptr};
@@ -101,7 +105,7 @@ private:
    *------------------------------------------------------*/
    PackedInt32Grid grid;
    DisjointSets part_clusters;
-
+   void set_bounds(Vector2 bounds);
    void add_stats(Ref<PartData> part, Vector2 center);
    RotationState encode_rotation(double radians, bool flipped);
 

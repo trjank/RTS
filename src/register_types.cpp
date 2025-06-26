@@ -259,6 +259,8 @@ void ShipData::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_part_data"), &ShipData::get_part_data);
 	ClassDB::bind_method(D_METHOD("get_image"), &ShipData::get_image);
 	ClassDB::bind_method(D_METHOD("set_image", "new_image"), &ShipData::set_image);
+	ClassDB::bind_method(D_METHOD("get_ship_bounds_x"), &ShipData::get_ship_bounds_x);
+	ClassDB::bind_method(D_METHOD("get_ship_bounds_y"), &ShipData::get_ship_bounds_y);
 	ClassDB::bind_method(D_METHOD("has_part", "part_id"), &ShipData::has_part);
 	ClassDB::bind_method(D_METHOD("add_part", "part", "center", "rotation_state"), &ShipData::add_part);
 	ClassDB::bind_method(D_METHOD("add_part_node", "part"), &ShipData::add_part_node);

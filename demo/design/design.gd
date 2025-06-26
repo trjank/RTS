@@ -26,6 +26,18 @@ func _input(event):
 		ship_manager.save_ship_image(ship, "user://ship.png")
 		ship_manager.save_ship_csv(ship, "user://ship.csv")
 		print("IS CONNECTED: ", ship.is_connected())
+		var bounds_x = ship.get_ship_bounds_x()
+		var bounds_y = ship.get_ship_bounds_y()
+		var bounds = Vector2(bounds_x.x - bounds_x.y, bounds_y.x - bounds_y.y)
+		var square_size = max(bounds.x, bounds.y)+1
+		var padding = 64
+		print(bounds_x)
+		print(bounds_y)
+		
+		var img = Image.load_from_file("user://ship.png").get_region(Rect2i(bounds_x.y*32 - 32 -padding/2 ,bounds_y.y*32 - 32 -padding/2, square_size*32 + 32 + padding, square_size*32 + 32 + padding))
+		img.save_png("user://ship2.png")
+		
+		#print(bounds)
 
 func _ready():
 	set_grid_size(Vector2(64, 64))
