@@ -5,6 +5,9 @@ using namespace godot;
 
 // Ref<PackedScene> Unit::warp_visual = nullptr;
 
+// void Unit::set_warp_visual(Ref<PackedScene> new_warp_visual) {
+//    warp_visual = new_warp_visual;
+// }
 Unit::Unit() {
    radar_signature.instantiate();
    radar_signature->unit = this;
@@ -18,14 +21,35 @@ Unit::~Unit() {
    radar_signature->unit = nullptr;
    radar_signature->state = DEAD;
 }
-float Unit::get_hp() {
+double Unit::get_hp() {
    return hp;
+}
+int Unit::get_num_commands() {
+   return commands.size();
+}
+Vector2 Unit::get_forward_direction() {
+   return -get_transform().columns[1];
+}
+Ref<Unit::Command> Unit::get_current_command() {
+   return commands.front()->get();
 }
 Ref<Unit::RadarSignature> Unit::get_radar_signature() {
    return radar_signature;
 }
-void Unit::kill() {
-   queue_free();
+void Unit::set_target(Ref<Unit::Command> new_target) {
+   target = new_target;
+}
+bool Unit::queue_move(Ref<Unit::Command> new_command, bool clear_queue) {
+   if (clear_queue) commands.clear();
+
+   if (commands.size() >= MAX_NUM_COMMANDS) return false;
+
+   can_warp = false;
+   commands.push_back(new_command);
+   return true;
+}
+void Unit::order_attack(Ref<Command> command) {
+   // TODO
 }
 void Unit::stop_moving() {
    commands.clear();
@@ -33,26 +57,14 @@ void Unit::stop_moving() {
 void Unit::stop_targeting() {
    target.unref();
 }
-void Unit::queue_move(Ref<Unit::Command> new_command, bool clear_queue) {
-   if (clear_queue) commands.clear();
-   if (commands.size() >= MAX_N_COMMANDS) return;
-   can_warp = false;
-   commands.push_back(new_command);
-}
-void Unit::set_target(Ref<Unit::Command> new_target) {
-   target = new_target;
-}
-// void Unit::set_warp_visual(Ref<PackedScene> new_warp_visual) {
-//    warp_visual = new_warp_visual;
-// }
-Vector2 Unit::get_forward_direction() {
-   return -get_transform().columns[1];
-}
 void Unit::cloak() {
    radar_signature->state = CLOAKED;
 }
 void Unit::decloak() {
    radar_signature->state = ALIVE;
+}
+void Unit::kill() {
+   queue_free();
 }
 void Unit::update_radar_signature() {
    if (radar_signature->state == CLOAKED) return;
@@ -60,15 +72,8 @@ void Unit::update_radar_signature() {
    radar_signature->velocity = get_linear_velocity();
    radar_signature->position = get_global_position();
 }
-void Unit::hit(float damage) {
-   hp -= damage;
-   if (hp <= 0) kill();
-}
-Ref<Unit::Command> Unit::get_current_command() {
-   return commands.front()->get();
-}
-int Unit::get_num_commands() {
-   return commands.size();
+void Unit::hit(double damage) {
+   if ( (hp -= damage) <= 0) kill();
 }
 void Unit::move_to_target() {
    if (commands.is_empty()) return;
@@ -76,21 +81,19 @@ void Unit::move_to_target() {
    Ref<Command> command = get_current_command();
    if ( !command->is_valid()) return commands.pop_front();
    
-   Vector2 separation = command->get_position() - get_global_position();
-   distance_to_target = separation.length();
-   angle_to_target    = get_forward_direction().angle_to(separation);
-   stop_distance      = get_linear_velocity().dot(separation.normalized());
-   speed              = get_linear_velocity().length();
-   float time_to_move = distance_to_target / speed;
-   float time_to_turn = abs(angle_to_target) / turnrate;
-   applying_thrust    = can_move && time_to_turn <= path_arcing * time_to_move;
-   can_warp           = get_num_commands() == 1 && distance_to_target <= warp;
+   Vector2 separation  = command->get_position() - get_global_position();
+   distance_to_target  = separation.length();
+   angle_to_target     = get_forward_direction().angle_to(separation);
+   stop_distance       = get_linear_velocity().dot(separation.normalized());
+   speed               = get_linear_velocity().length();
+
+   double time_to_move = distance_to_target / speed;
+   double time_to_turn = abs(angle_to_target) / turnrate;
+   applying_thrust     = can_move && time_to_turn <= path_arcing * time_to_move;
+   can_warp            = get_num_commands() == 1 && distance_to_target <= warp;
    
    if (command->is_controlled_by(this)) order_attack(command);
    if (distance_to_target <= stop_distance) commands.pop_front();
-}
-void Unit::order_attack(Ref<Command> command) {
-
 }
 void Unit::try_to_use_thrusters(PhysicsDirectBodyState2D& state) {
    if ( !applying_thrust) return;
@@ -110,8 +113,8 @@ void Unit::try_to_warp(PhysicsDirectBodyState2D& state) {
    if ( !can_warp) return;
    
    Ref<Command> command = get_current_command();
-   Vector2 warp_start = get_global_position();
-   Vector2 warp_end = command->get_position();
+   Vector2 warp_start   = get_global_position();
+   Vector2 warp_end     = command->get_position();
    // make_warp_visual(warp_start, warp_end);
    
    warp -= distance_to_target;
@@ -125,7 +128,9 @@ void Unit::_physics_process(double dt) {
    update_radar_signature();
 }
 void Unit::_integrate_forces(PhysicsDirectBodyState2D* state) {
-   ERR_FAIL_COND(state == nullptr);
+   ERR_FAIL_COND_MSG( !state,
+      "<Unit> Internal engine failure: PhysicsDirectBodyState2D is null");
+
    state->apply_central_force( -drag * get_linear_velocity());
    
    if (commands.is_empty()) return state->set_angular_velocity(0.0);
@@ -152,7 +157,7 @@ void Unit::_draw() {
    draw_line(path_start, path_end, PATH_COLOR, 1.0, true);
 }
 
-float Unit::RadarSignature::get_hp() {
+double Unit::RadarSignature::get_hp() {
    return hp;
 }
 Unit* Unit::RadarSignature::as_unit() {
@@ -198,28 +203,28 @@ void Unit::Command::ram() {
    move_to(prey->get_position());
 }
 void Unit::Command::track() {
-   Vector2 pred_pos    = predator->get_global_position();
-   Vector2 radial      = pred_pos - prey->position;
-   float v_r           = prey->velocity.dot(radial);
-   float pred_speed_sq = predator->get_linear_velocity().length_squared();
-   float prey_speed_sq = prey->velocity.length_squared();
-   float d_speed_sq    = pred_speed_sq - prey_speed_sq;
-   float discriminant  = v_r * v_r + d_speed_sq * radial.length_squared();
+   Vector2 pred_pos     = predator->get_global_position();
+   Vector2 radial       = pred_pos - prey->position;
+   double v_r           = prey->velocity.dot(radial);
+   double pred_speed_sq = predator->get_linear_velocity().length_squared();
+   double prey_speed_sq = prey->velocity.length_squared();
+   double d_speed_sq    = pred_speed_sq - prey_speed_sq;
+   double discriminant  = v_r * v_r + d_speed_sq * radial.length_squared();
    
    // Ram if the target is unreachable
    if (discriminant < 0) return ram();
    
-   float time_intersect = (v_r + sqrt(discriminant)) / d_speed_sq;
-   Vector2 intersection = prey->position + time_intersect * prey->velocity;
+   double time_intersect = (v_r + sqrt(discriminant)) / d_speed_sq;
+   Vector2 intersection  = prey->position + time_intersect * prey->velocity;
    move_to(intersection);
 }
-void Unit::Command::flee(float safe_distance) {
+void Unit::Command::flee(double safe_distance) {
    Vector2 pred_pos = predator->get_global_position();
    Vector2 radial   = pred_pos - prey->position;
    Vector2 safe_pos = pred_pos - safe_distance * radial.normalized();
    move_to(safe_pos);
 }
-void Unit::Command::kite(float min_distance, float max_distance) {
+void Unit::Command::kite(double min_distance, double max_distance) {
    bool too_close = predator->distance_to_target < min_distance;
    bool too_far   = predator->distance_to_target > max_distance;
    predator->can_move = too_close || too_far;

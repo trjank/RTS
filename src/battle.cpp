@@ -34,7 +34,8 @@ double Battle::get_countdown_sec() {
    return countdown_sec;
 }
 void Battle::set_map(Ref<Map> new_map) {
-   ERR_FAIL_COND(new_map.is_null());
+   ERR_FAIL_NULL_MSG(new_map,
+      "<Battle> Map is null (failed to set map)");
 
    map = new_map;
 }
@@ -64,7 +65,8 @@ Player* Battle::new_player() {
    return player;
 }
 void Battle::generate_map() {
-   ERR_FAIL_COND(map.is_null());
+   ERR_FAIL_NULL_MSG(map,
+      "<Battle> Map is null (failed to generate map)");
 
    if (map_root) map_root->queue_free();
    map_root = memnew(Node2D);

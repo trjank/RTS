@@ -2,11 +2,9 @@
 
 using namespace godot;
 
-ProjectileData::ProjectileData() {
-   exposed_to_design_mode = SHOW_PROJECTILES_IN_DESIGN_MODE;
-}
 void ProjectileData::load_unique_data(Dictionary data) {
    PartData::load_unique_data(data);
+
    bool instahit = data.get("hitscan", hitscan);
    Vector2 size  = data.get("hitbox_size", hitbox_size);
    set_hitscan(instahit);
@@ -26,27 +24,22 @@ void ProjectileData::set_hitscan(bool make_hitscan) {
    hitscan = make_hitscan;
 }
 void ProjectileData::set_hitbox_size(Vector2 new_hitbox_size) {
-   hitbox_size = new_hitbox_size.min( {0.0F, 0.0F} );
+   hitbox_size = new_hitbox_size.min( {0.0f, 0.0f} );
 }
 
 
 WeaponData::WeaponData() {
-   unique = true;
+   behavior = PartData::UNIQUE_DISCONNECTED;
 }
 void WeaponData::load_unique_data(Dictionary data) {
    PartData::load_unique_data(data);
-   int shots        = data.get("shots_per_burst", shots_per_burst);
-   double energy    = data.get("energy_per_shot", energy_per_shot);
-   double range     = data.get("base_range", base_range);
-   double spread    = data.get("spread_angle", spread_angle);
-   double sec_shots = data.get("sec_between_shots", sec_between_shots);
-   double reload    = data.get("reload_sec", reload_sec);
-   set_shots_per_burst(shots);
-   set_energy_per_shot(energy);
-   set_base_range(range);
-   set_spread_angle(spread);
-   set_sec_between_shots(sec_shots);
-   set_reload_sec(reload);
+
+   set_shots_per_burst( data.get("shots_per_burst", shots_per_burst) );
+   set_energy_per_shot( data.get("energy_per_shot", energy_per_shot) );
+   set_base_range( data.get("base_range", base_range) );
+   set_spread_angle( data.get("spread_angle", spread_angle) );
+   set_sec_between_shots( data.get("sec_between_shots", sec_between_shots) );
+   set_reload_sec( data.get("reload_sec", reload_sec) );
 }
 int WeaponData::get_shots_per_burst() {
    return shots_per_burst;
@@ -103,13 +96,14 @@ void WeaponData::calculate_firerates() {
 
 void TurretMountData::load_unique_data(Dictionary data) {
    PartData::load_unique_data(data);
+
    double angle = data.get("firing_arc_degrees", firing_arc_degrees);
    double arc   = data.get("angle_degrees", angle_degrees);
    set_firing_arc_degrees(arc);
    set_angle_degrees(angle);
 }
 bool TurretMountData::is_compatible_with(Ref<WeaponData> weapon) {
-   return weapon.is_valid() && get_size() == weapon->get_size();
+   return weapon.is_valid() && get_size().width == weapon->get_size().width;
 }
 double TurretMountData::get_min_angle() {
    return min_angle;

@@ -2,11 +2,8 @@
 
 using namespace godot;
 
-bool PartData::is_exposed_to_design_mode() {
-   return exposed_to_design_mode;
-}
-bool PartData::is_unique() {
-   return unique;
+PartData::Behavior PartData::get_behavior() {
+   return behavior;
 }
 bool PartData::can_rotate() {
    return rotate_enabled;
@@ -86,9 +83,6 @@ Ref<Image> PartData::get_image() {
 }
 Ref<Texture2D> PartData::get_texture() {
    return texture;
-}
-PartData::BoundaryFlag PartData::get_boundary() {
-   return boundary;
 }
 void PartData::set_cost(int new_cost) {
    cost = Math::max(0, new_cost);

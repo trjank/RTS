@@ -3,7 +3,7 @@
 
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
-#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/core/math.hpp>
 #include "resizable_sprite_2d.hpp"
 #include "unit.hpp"
 #include "battle.hpp"
@@ -16,31 +16,51 @@ namespace godot {
 class Ship: public Unit, public Destructable {
    GDCLASS(Ship, Unit)
 public:
-   static constexpr float ENERGY_PER_WARP = 0.0;
-   static constexpr int MAX_N_TURRETS = 100;
+   /*------------------------------------------------------|
+   | Dropoffs can be any positive number: 1.0 means a      |
+   | linear dropoff of regeneration with energy; a number  |
+   | less than 1.0 means a very gradual dropoff; a number  |
+   | greater than 1.0 means a very steep dropoff.          |
+   |------------------------------------------------------*/
+   static constexpr double WARP_RECHARGE_DROPOFF = 1.0;
+   static constexpr double SHIELD_RECHARGE_DROPOFF = 1.0;
+   static constexpr double WARP_ENERGY_USE = 0.0;
+   static constexpr double SHIELD_ENERGY_USE = 0.0;
+   static constexpr double STUNLOCK_ENERGY_LIMIT = 1.0;
+   static constexpr double STUNLOCK_DRAIN = 1.0;
 
    Ship();
-   int get_cost() override;
-   float get_energy() override;
-   float get_shield();
-   Ref<ShipData> get_data();
-   void set_data(Ref<ShipData> new_data);
-   float hit_shield(float damage);
-   void hit(float damage, float shield_penetration = 0.0);
+   bool is_stunlocked();
    void fire();
    void kill() override;
+   Player* get_owner();
+   int get_cost() override;
+   double get_energy() override;
+   double get_shield();
+   Ref<ShipData> get_data();
+   void set_owner(Player* new_owner);
+   void set_data(Ref<ShipData> new_data);
+   void copy_data_from(const Ship* other_ship);
+   double hit_shield(double damage);
+   void hit(double damage, double shield_penetration = 0.0);
    void _physics_process(double dt) override;
 protected:
    static void _bind_methods();
 private:
-   float shield = 0.0;
-   float energy = 0.0;
-   float warp = 0.0;
-   Ref<ShipData> stats;
+   double shield = 0.0;
+   double energy = 0.0;
+   double ratio_reserve_energy = 0.0;
+   double ratio_recharge_warp = 0.0;
+   double ratio_recharge_shield = 0.0;
+   Ref<ShipData> data;
+   Vector<Part*> unique_parts;
+   Vector<Vector<Part*>> action_groups;
    ResizableSprite2D* image;
    bool selected = false;
    Player* owner = nullptr;
-   // Vector<TurretMount*> turrets;
+
+   Part* create_unique_part(int part_id);
+   void calculate_reserve_ratios();
 };
 
 }

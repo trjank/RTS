@@ -25,13 +25,7 @@ class Part;
 class PartData: public RefCounted {
    GDCLASS(PartData, RefCounted)
 public:
-   enum BoundaryFlag: int {
-      EDGE_TOP = 1,
-      EDGE_BOTTOM = 2,
-      EDGE_LEFT = 4,
-      EDGE_RIGHT = 8,
-      FULL_PERIMETER = EDGE_TOP | EDGE_BOTTOM | EDGE_LEFT | EDGE_RIGHT
-   };
+   enum Behavior {STATIC, UNIQUE_CONNECTED, UNIQUE_DISCONNECTED};
 
    static constexpr Image::Format IMAGE_FORMAT = Image::FORMAT_RGBA8;
    static constexpr int MIN_WIDTH = 1;
@@ -43,9 +37,8 @@ public:
 
    static Ref<PartData> create_correct_subtype(String subtype);
 
-   bool is_exposed_to_design_mode();
    bool can_rotate();
-   bool is_unique();
+   Behavior get_behavior();
    virtual void load_unique_data(Dictionary data);
    virtual Part* new_part();
    int get_atlas_id();
@@ -60,7 +53,6 @@ public:
    double get_energy_per_sec();
    double get_thrust();
    double get_turning_momentum();
-   BoundaryFlag get_boundary();
    Vector2i get_size();
    Vector2i get_size_px();
    String get_code();
@@ -84,7 +76,6 @@ protected:
 
    bool exposed_to_design_mode = true;
    bool rotate_enabled = true;
-   bool unique = false;
    double warp = 0.0;
    double shield = 0.0;
    double energy = 0.0;
@@ -93,7 +84,7 @@ protected:
    double energy_per_sec = 0.0;
    double thrust = 0.0;
    double turning_momentum = 0.0;
-   BoundaryFlag boundary = FULL_PERIMETER;
+   Behavior behavior = STATIC;
 private:
    int atlas_id = -1;
    int cost = 0;
@@ -156,7 +147,5 @@ private:
 };
 
 }
-
-VARIANT_ENUM_CAST(PartData::BoundaryFlag);
 
 #endif // PART_DATA_HPP

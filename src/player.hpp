@@ -7,6 +7,7 @@
 #include <godot_cpp/templates/vector.hpp>
 #include "capturable.hpp"
 #include "destructable.hpp"
+#include "defaults.hpp"
 
 namespace godot {
 
@@ -44,7 +45,7 @@ private:
    String name = "<unnamed>";
    String clan = "";
    Color color = {0.0, 0.0, 0.0, 1.0};
-   Ref<Team> team = nullptr;
+   NEVER_NULL Ref<Team> team;
 };
 
 class Team: public RefCounted {

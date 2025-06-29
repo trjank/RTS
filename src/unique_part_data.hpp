@@ -3,14 +3,11 @@
 
 #include "part_data.hpp"
 
-#define SHOW_PROJECTILES_IN_DESIGN_MODE false
-
 namespace godot {
 
 class ProjectileData: public PartData {
    GDCLASS(ProjectileData, PartData)
 public:
-   ProjectileData();
    Part* new_part() override;
    void load_unique_data(Dictionary data) override;
    bool is_hitscan();
@@ -65,7 +62,6 @@ class TurretMountData: public PartData {
    GDCLASS(TurretMountData, PartData)
 public:
    void load_unique_data(Dictionary data) override;
-   Part* new_part() override;
    bool is_compatible_with(Ref<WeaponData> weapon);
    double get_min_angle();
    double get_max_angle();

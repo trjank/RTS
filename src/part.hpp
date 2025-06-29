@@ -18,24 +18,26 @@
 
 namespace godot {
 
+class Ship;
+
 class Part: public StaticBody2D {
    GDCLASS(Part, StaticBody2D)
 public:
    Part();
    Ref<PartData> get_data();
    Rect2 get_global_rect();
+   Vector2 get_grid_position();
    virtual void set_data(Ref<PartData> new_data);
-   // virtual void copy_adjacency_data(Part* part);
+   void set_grid_position(Vector2i new_grid_position);
+   virtual void copy_unique_data_from(const Part& other_part);
+   virtual void _ship_init(const Ship& parent_ship, int part_id);
 protected:
    static void _bind_methods();
 private:
-   int ship_data_part_id = -1;
-   Ref<PartData> data = get_default<PartData>();
-   Ref<RectangleShape2D> hitbox;
-   CollisionShape2D* shape = nullptr;
    ResizableSprite2D* image = nullptr;
-
-   friend class ShipData;
+   CollisionShape2D* shape = nullptr;
+   Ref<RectangleShape2D> hitbox;
+   NEVER_NULL Ref<PartData> data = get_default<PartData>();
 };
 
 class PartGrouping: public ResizableSprite2D {

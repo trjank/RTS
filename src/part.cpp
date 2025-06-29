@@ -3,6 +3,7 @@
 
 using namespace godot;
 
+constexpr double PI_2 = 0.5 * Math_PI;
 constexpr int SQUARE_SIZE = PartData::PX_PER_GRID_SQUARE;
 
 Part* PartData::new_part() {
@@ -22,14 +23,27 @@ Ref<PartData> Part::get_data() {
 Rect2 Part::get_global_rect() {
 	return image->get_global_transform().xform(image->get_rect());
 }
+Vector2 Part::get_grid_position() {
+	return get_position() / PartData::PX_PER_GRID_SQUARE;
+}
 void Part::set_data(Ref<PartData> new_data) {
-	ERR_FAIL_COND(new_data.is_null());
+	ERR_FAIL_NULL_MSG(new_data,
+		"<Part> Part data is null (failed to set data)");
 
 	Vector2i size = new_data->get_size_px();
 	image->set_texture(new_data->get_texture());
 	image->resize_scaled(size);
 	hitbox->set_size(size);
 	data = new_data;
+}
+void Part::set_grid_position(Vector2i new_grid_position) {
+	set_position(new_grid_position * PartData::PX_PER_GRID_SQUARE);
+}
+void Part::copy_unique_data_from(const Part& other_part) {
+	// Nothing to do
+}
+void Part::_ship_init(const Ship& parent_ship, int part_id) {
+	// Nothing to do, since parts are PartData::Behavior::STATIC by default
 }
 
 
@@ -62,11 +76,13 @@ void PartGrouping::delete_parts() {
 	if (mirrored) mirrored->delete_parts();
 }
 void PartGrouping::spawn_part(Ref<PartData> part_data) {
-	ERR_FAIL_COND(part_data.is_null());
+	ERR_FAIL_NULL_MSG(part_data,
+		"<PartGrouping> Part data is null (failed to spawn part)");
 
 	Node* parent = get_parent();
 
-	ERR_FAIL_COND( !parent);
+	ERR_FAIL_NULL_MSG(parent,
+		"<PartGrouping> PartGrouping node needs a parent (failed to spawn part)");
 
 	Part* part = part_data->new_part();
 	parent->add_child(part);
@@ -102,8 +118,8 @@ void PartGrouping::update_region() {
 }
 void PartGrouping::rotate_smoothly(int quarter_turns, float duration) {
 	Ref<Tween> tween = create_tween();
-	float start = Math::snapped(get_rotation(), Math_PI / 2);
-	float end = start + (Math_PI / 2) * quarter_turns;
+	float start = Math::snapped(get_rotation(), PI_2);
+	float end = start + PI_2 * quarter_turns;
 	tween->tween_property(this, "rotation", end, duration)->from(start);
 	if (mirrored) mirrored->rotate_smoothly(-quarter_turns, duration);
 }

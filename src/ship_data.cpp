@@ -2,37 +2,46 @@
 
 using namespace godot;
 
-#include <godot_cpp/variant/utility_functions.hpp>
+constexpr double PI_2 = 0.5 * Math_PI;
 
 Vector2i ShipData::get_grid_padding() {
-   /*------------------------------------------------------*
+   /*------------------------------------------------------|
    | Grid padding serves two purposes:                     |
    |                                                       |
    | 1. We can avoid error handling at the grid boundary,  |
    |    which simplifies searches for neighboring parts.   |
    | 2. We can use outline shaders on the padded image,    |
    |    since the borders are guaranteed to be empty.      |
-   *------------------------------------------------------*/
+   |------------------------------------------------------*/
    return {1, 1};
 }
 Ref<ShipData> ShipData::assemble(Vector2i size, TypedArray<Node> parts) {
-   Ref<ShipData> ship = memnew(ShipData);
+   Ref<ShipData> ship  = memnew(ShipData);
    Vector2 padded_size = size + 2 * get_grid_padding();
-   ship->part_clusters.new_set(); // NULL part
-   ship->grid_region = {get_grid_padding(), size};
+
+   ship->grid_region.size = size;
    ship->grid = PackedInt32Grid::createv(padded_size);
 
    #if CPU_IMAGE_GENERATION
    padded_size *= PartData::PX_PER_GRID_SQUARE;
-   ship->image = Image::create(padded_size.width, padded_size.height, true, Image::FORMAT_RGBA8);
+   ship->image  = Image::create(padded_size.width, padded_size.height, true, Image::FORMAT_RGBA8);
    #endif // CPU_IMAGE_GENERATION
 
    for (int n = 0; n < parts.size(); ++n) {
-      ship->add_part_node( Object::cast_to<Part>( parts[n] ) );
-      UtilityFunctions::print("ERROR: ", ship->get_error());
+      PartError error = ship->add_part_node( Object::cast_to<Part>( parts[n] ) );
    }
-
    return ship;
+}
+ShipData::ShipData() {
+   grid_region.position = get_grid_padding();
+   grid_region.size = {0, 0};
+
+   // Create some placeholders for the null part
+   parts = {nullptr};
+   rotation_states = {ROT_0_DEG};
+   part_centers = { {0.0F, 0.0F} };
+   part_regions = { {0, 0, 0, 0} };
+   part_clusters.new_set();
 }
 int ShipData::count_parts() {
    return parts.size() - NUM_NULL_PARTS;
@@ -43,8 +52,8 @@ bool ShipData::is_empty() {
 bool ShipData::is_connected() {
    return part_clusters.count_num_sets() == NUM_NULL_PARTS + 1;
 }
-ShipData::PartError ShipData::get_error() {
-   return error;
+bool ShipData::has_part(int part_id) {
+   return part_id > NULL_PART_ID && part_id < parts.size();
 }
 int ShipData::get_cost() {
    return cost;
@@ -83,10 +92,22 @@ Vector2i ShipData::get_size() {
    return grid_region.size;
 }
 Vector2i ShipData::get_size_px() {
-   return PartData::PX_PER_GRID_SQUARE * grid_region.size;
+   return grid_region.size * PartData::PX_PER_GRID_SQUARE;
 }
 Ref<Image> ShipData::get_image() {
    return image;
+}
+PackedInt32Array ShipData::get_unique_parts() {
+   return unique_parts;
+}
+Vector2 ShipData::get_part_center(int part_id) {
+   return part_centers[part_id];
+}
+Vector2 ShipData::get_part_center_px(int part_id) {
+   return part_centers[part_id] * PartData::PX_PER_GRID_SQUARE;
+}
+Rect2i ShipData::get_part_region(int part_id) {
+   return part_regions[part_id];
 }
 Ref<PartData> ShipData::get_part_data(int part_id) {
    return parts[part_id];
@@ -94,84 +115,68 @@ Ref<PartData> ShipData::get_part_data(int part_id) {
 void ShipData::set_image(Ref<Image> new_image) {
    ERR_FAIL_COND_MSG(CPU_IMAGE_GENERATION
       && new_image.is_valid()
-      && new_image->get_size() < get_size_px(),
+      && new_image->get_size() != get_size_px(),
       "<ShipData> Image size is too small (failed to set image)");
 
    image = new_image;
 }
-bool ShipData::has_part(int part_id) {
-   return part_id > NULL_PART_ID && part_id < parts.size();
-}
-PackedInt32Array ShipData::find_neighbors(int part_id, PartData::BoundaryFlag flags) {
+PackedInt32Array ShipData::find_neighbors(int part_id, BoundaryFlag boundary_flags) {
    PackedInt32Array neighbors;
    Vector2i min = part_regions[part_id].position;
    Vector2i max = part_regions[part_id].get_end();
 
-   if (flags & PartData::EDGE_TOP)
+   if (boundary_flags & EDGE_TOP)
    for (int x = min.x; x < max.x; ++x) {
-      neighbors.push_back(grid.get(x, min.y - 1));
+      neighbors.push_back( grid.get(x, min.y - 1) );
    }
-   if (flags & PartData::EDGE_BOTTOM)
+   if (boundary_flags & EDGE_BOTTOM)
    for (int x = min.x; x < max.x; ++x) {
-      neighbors.push_back(grid.get(x, max.y));
+      neighbors.push_back( grid.get(x, max.y) );
    }
-   if (flags & PartData::EDGE_LEFT)
+   if (boundary_flags & EDGE_LEFT)
    for (int y = min.y; y < max.y; ++y) {
-      neighbors.push_back(grid.get(min.x - 1, y));
+      neighbors.push_back( grid.get(min.x - 1, y) );
    }
-   if (flags & PartData::EDGE_RIGHT)
+   if (boundary_flags & EDGE_RIGHT)
    for (int y = min.y; y < max.y; ++y) {
-      neighbors.push_back(grid.get(max.x, y));
+      neighbors.push_back( grid.get(max.x, y) );
    }
    return neighbors;
 }
-int ShipData::add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state) {
-   if (part.is_null()) {
-      error = IS_NULL;
-      return NULL_PART_ID;
-   }
+ShipData::PartError ShipData::add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state) {
+   if (part.is_null()) return IS_NULL;
 
-   // I'll clean this up later...
-   center /= PartData::PX_PER_GRID_SQUARE;
-   center += get_grid_padding() + grid_region.get_center();
-   UtilityFunctions::print(center);
-
-   Vector2i size = part->get_size();
-   if (rotation_state % 2 == 1)
-      size = {size.height, size.width};
-
-   Rect2i rect(center - 0.5 * (Vector2) size, size);
+   Vector2i size = get_grid_size(part->get_size(), rotation_state);
+   center += get_grid_padding();
+   Rect2i rect(center - 0.5 * static_cast<Vector2>(size), size);
    rect = rect.intersection(grid_region);
-   part_regions.push_back(rect);
-   part_centers.push_back(center);
 
-   if (rect.size != size) {
-      error = OUT_OF_BOUNDS;
-      return NULL_PART_ID;
-   }
-
-   #if CHECK_FOR_PART_OVERLAP
-   if ( !grid.is_empty_region(rect, NULL_PART_ID)) {
-      error = OVERLAP;
-      return NULL_PART_ID;
-   }
-   #endif // CHECK_FOR_PART_OVERLAP
+   if (rect.size != size) return OUT_OF_BOUNDS;
 
    int part_id = part_clusters.new_set();
-   UtilityFunctions::print("STARTING SEARCH: ", part_id);
-   UtilityFunctions::print("(BEFORE): ", part_clusters.count_num_sets());
-   for (int neighbor_id: find_neighbors(part_id, part->get_boundary())) {
-      UtilityFunctions::print("part_id: ", part_id, " | neighbor_id: ", neighbor_id);
-      if (neighbor_id != NULL_PART_ID) part_clusters.merge(part_id, neighbor_id);
-   }
-   UtilityFunctions::print("(AFTER): ", part_clusters.count_num_sets());
    parts.push_back(part);
+   part_regions.push_back(rect);
+   part_centers.push_back(center);
    rotation_states.push_back(rotation_state);
-   grid.fill_rect(rect, part_id);
    add_stats(part, center);
 
+   switch (part->get_behavior()) {
+      case PartData::UNIQUE_DISCONNECTED:
+         part_clusters.merge(part_id, NULL_PART_ID);
+         unique_parts.push_back(part_id);
+         return OKAY;
+      case PartData::UNIQUE_CONNECTED:
+         unique_parts.push_back(part_id);
+      case PartData::STATIC:
+         if ( !grid.is_empty_region(rect, NULL_PART_ID)) return OVERLAP;
+   }
+
+   grid.fill_rect(rect, part_id);
+   for (int id: find_neighbors(part_id, FULL_PERIMETER)) {
+      if (id != NULL_PART_ID) part_clusters.merge(part_id, id);
+   }
+
    #if CPU_IMAGE_GENERATION
-   // TODO: Maybe cache rotated and flipped variations?
    Ref<Image> part_image = part->get_image()->duplicate();
    switch (rotation_state) {
       case ROT_0_DEG:
@@ -193,36 +198,22 @@ int ShipData::add_part(Ref<PartData> part, Vector2 center, RotationState rotatio
          part_image->flip_x();
       case ROT_270_DEG:
          part_image->rotate_90(ClockDirection::COUNTERCLOCKWISE);
-         break;
    }
-   rect.size     *= PartData::PX_PER_GRID_SQUARE;
    rect.position *= PartData::PX_PER_GRID_SQUARE;
-   UtilityFunctions::print("BEFORE: ", image->is_invisible());
+   rect.size     *= PartData::PX_PER_GRID_SQUARE;
    image->blit_rect(part_image, {{0, 0}, rect.size}, rect.position);
-   UtilityFunctions::print("AFTER: ", image->is_invisible());
    #endif // CPU_IMAGE_GENERATION
 
-   error = OKAY;
-   return part_id;
+   return OKAY;
 }
-int ShipData::add_part_node(Part* part) {
-   if ( !part) {
-      error = IS_NULL;
-      return NULL_PART_ID;
-   }
+ShipData::PartError ShipData::add_part_node(Part* part) {
+   if ( !part) return IS_NULL;
+
    Ref<PartData> data = part->get_data();
-   Vector2 position   = part->get_position();
+   Vector2 position   = part->get_grid_position();
    double rotation    = part->get_rotation();
    bool flipped       = part->get_scale().x < 0;
-   return part->ship_data_part_id = add_part(data, position, encode_rotation(rotation, flipped));
-}
-Ref<PartData> ShipData::collision_check(Vector2 point) {
-   Vector2i coords = point + get_center_of_mass();
-
-   if ( !grid_region.has_point(coords)) return nullptr;
-
-   int part_id = grid.getv(coords);
-   return parts[part_id];
+   return add_part(data, position, encode_rotation(rotation, flipped));
 }
 void ShipData::add_stats(Ref<PartData> part, Vector2 center) {
    cost           += part->get_cost();
@@ -233,15 +224,16 @@ void ShipData::add_stats(Ref<PartData> part, Vector2 center) {
    warp_per_sec   += part->get_warp_per_sec();
    shield_per_sec += part->get_shield_per_sec();
    energy_per_sec += part->get_energy_per_sec();
+   thrust         += part->get_thrust();
    mass_offset    += part->get_mass() * center;
 }
+Vector2i ShipData::get_grid_size(Vector2i size, RotationState rotation_state) {
+   return rotation_state % 2 == 0 ? size : Vector2i(size.height, size.width);
+}
 ShipData::RotationState ShipData::encode_rotation(double radians, bool flipped) {
-   // I'll clean this up later...
-   radians = Math::fmod(radians, 2 * Math_PI);
-   if (radians < 0) radians += 2 * Math_PI;
-
-   int quadrant = Math::snapped(radians, PI_2) / PI_2;
-   int encoding = quadrant + NUM_ROTATION_INCREMENTS * flipped;
+   radians = Math::snapped(radians, PI_2);
+   int quadrant = Math::wrapi(radians / PI_2, 0, 4);
+   int encoding = quadrant + 4 * flipped;
    return static_cast<RotationState>(encoding);
 }
 

@@ -38,9 +38,19 @@ void Unit::Command::_bind_methods() {
 	// Nothing to bind
 }
 void Ship::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_shield"), &Ship::get_shield);
+	ClassDB::bind_method(D_METHOD("is_stunlocked"), &Ship::is_stunlocked);
+	ClassDB::bind_method(D_METHOD("fire"), &Ship::fire);
+	ClassDB::bind_method(D_METHOD("get_owner"), &Ship::get_owner);
+	ClassDB::bind_method(D_METHOD("get_cost"), &Ship::get_cost);
 	ClassDB::bind_method(D_METHOD("get_energy"), &Ship::get_energy);
+	ClassDB::bind_method(D_METHOD("get_shield"), &Ship::get_shield);
+	ClassDB::bind_method(D_METHOD("get_data"), &Ship::get_data);
+	ClassDB::bind_method(D_METHOD("set_owner", "new_owner"), &Ship::set_owner);
+	ClassDB::bind_method(D_METHOD("set_data", "new_data"), &Ship::set_data);
+	ClassDB::bind_method(D_METHOD("copy_data_from", "other_ship"), &Ship::copy_data_from);
+	ClassDB::bind_method(D_METHOD("hit_shield", "damage"), &Ship::hit_shield);
 	ClassDB::bind_method(D_METHOD("hit", "damage", "shield_penetration"), &Ship::hit);
+	ADD_SIGNAL(MethodInfo("fire"));
 }
 void MouseCommands::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_action"), &MouseCommands::get_action);
@@ -144,11 +154,6 @@ void PartData::_bind_methods() {
 	BIND_CONSTANT(PX_PER_GRID_SQUARE);
 	BIND_CONSTANT(MAX_NAME_LENGTH);
 	BIND_CONSTANT(MAX_DESC_LENGTH);
-	BIND_ENUM_CONSTANT(EDGE_BOTTOM);
-	BIND_ENUM_CONSTANT(EDGE_TOP);
-	BIND_ENUM_CONSTANT(EDGE_LEFT);
-	BIND_ENUM_CONSTANT(EDGE_RIGHT);
-	BIND_ENUM_CONSTANT(FULL_PERIMETER);
 	ClassDB::bind_method(D_METHOD("get_cost"), &PartData::get_cost);
 	ClassDB::bind_method(D_METHOD("get_hp"), &PartData::get_hp);
 	ClassDB::bind_method(D_METHOD("get_mass"), &PartData::get_mass);
@@ -225,10 +230,11 @@ void PartGrouping::_bind_methods() {
 }
 void ShipData::_bind_methods() {
 	BIND_CONSTANT(NULL_PART_ID);
-	BIND_ENUM_CONSTANT(OKAY);
-	BIND_ENUM_CONSTANT(OVERLAP);
-	BIND_ENUM_CONSTANT(OUT_OF_BOUNDS);
-	BIND_ENUM_CONSTANT(IS_NULL);
+	BIND_ENUM_CONSTANT(EDGE_BOTTOM);
+	BIND_ENUM_CONSTANT(EDGE_TOP);
+	BIND_ENUM_CONSTANT(EDGE_LEFT);
+	BIND_ENUM_CONSTANT(EDGE_RIGHT);
+	BIND_ENUM_CONSTANT(FULL_PERIMETER);
 	BIND_ENUM_CONSTANT(ROT_0_DEG);
 	BIND_ENUM_CONSTANT(ROT_90_DEG);
 	BIND_ENUM_CONSTANT(ROT_180_DEG);
@@ -237,12 +243,15 @@ void ShipData::_bind_methods() {
 	BIND_ENUM_CONSTANT(FLIPPED_ROT_90_DEG);
 	BIND_ENUM_CONSTANT(FLIPPED_ROT_180_DEG);
 	BIND_ENUM_CONSTANT(FLIPPED_ROT_270_DEG);
+	BIND_ENUM_CONSTANT(OKAY);
+	BIND_ENUM_CONSTANT(OVERLAP);
+	BIND_ENUM_CONSTANT(OUT_OF_BOUNDS);
+	BIND_ENUM_CONSTANT(IS_NULL);
 	ClassDB::bind_static_method("ShipData", D_METHOD("get_grid_padding"), &ShipData::get_grid_padding);
 	ClassDB::bind_static_method("ShipData", D_METHOD("assemble", "grid_size", "parts"), &ShipData::assemble);
 	ClassDB::bind_method(D_METHOD("count_parts"), &ShipData::count_parts);
 	ClassDB::bind_method(D_METHOD("is_empty"), &ShipData::is_empty);
 	ClassDB::bind_method(D_METHOD("is_connected"), &ShipData::is_connected);
-	ClassDB::bind_method(D_METHOD("get_error"), &ShipData::get_error);
 	ClassDB::bind_method(D_METHOD("get_cost"), &ShipData::get_cost);
 	ClassDB::bind_method(D_METHOD("get_size"), &ShipData::get_size);
 	ClassDB::bind_method(D_METHOD("get_size_px"), &ShipData::get_size_px);
@@ -256,14 +265,17 @@ void ShipData::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_thrust"), &ShipData::get_thrust);
 	ClassDB::bind_method(D_METHOD("get_turnrate"), &ShipData::get_turnrate);
 	ClassDB::bind_method(D_METHOD("get_center_of_mass"), &ShipData::get_center_of_mass);
-	ClassDB::bind_method(D_METHOD("get_part_data"), &ShipData::get_part_data);
 	ClassDB::bind_method(D_METHOD("get_image"), &ShipData::get_image);
+	ClassDB::bind_method(D_METHOD("get_unique_parts"), &ShipData::get_unique_parts);
+	ClassDB::bind_method(D_METHOD("get_part_data", "part_id"), &ShipData::get_part_data);
+	ClassDB::bind_method(D_METHOD("get_part_center", "part_id"), &ShipData::get_part_center);
+	ClassDB::bind_method(D_METHOD("get_part_region", "part_id"), &ShipData::get_part_region);
 	ClassDB::bind_method(D_METHOD("set_image", "new_image"), &ShipData::set_image);
 	ClassDB::bind_method(D_METHOD("has_part", "part_id"), &ShipData::has_part);
 	ClassDB::bind_method(D_METHOD("add_part", "part", "center", "rotation_state"), &ShipData::add_part);
 	ClassDB::bind_method(D_METHOD("add_part_node", "part"), &ShipData::add_part_node);
 	ClassDB::bind_method(D_METHOD("collision_check", "point"), &ShipData::add_part_node);
-	ClassDB::bind_method(D_METHOD("find_neighbors", "part_id", "flags"), &ShipData::find_neighbors);
+	ClassDB::bind_method(D_METHOD("find_neighbors", "part_id", "boundary_flags"), &ShipData::find_neighbors);
 }
 void ShipManager::_bind_methods() {
    BIND_CONSTANT(NULL_PART_ATLAS_ID);

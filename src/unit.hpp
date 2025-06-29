@@ -19,28 +19,29 @@ public:
    class RadarSignature;
    class Command;
    static constexpr double TURN_JERKINESS = 10.0;
-   static constexpr int MAX_N_COMMANDS = 3;
+   static constexpr int MAX_NUM_COMMANDS = 3;
    // static inline Color path_color = Color(1.0, 1.0, 1.0, 0.2);
    // static inline Color warp_color = Color(0.8, 0.6, 0.9, 0.5);
    // static Ref<PackedScene> warp_visual;
 
+   // static void set_warp_visual(Ref<PackedScene> new_warp_visual);
+
    Unit();
    ~Unit();
-   // static void set_warp_visual(Ref<PackedScene> new_warp_visual);
-   float get_hp();
+   double get_hp();
    int get_num_commands();
    Vector2 get_forward_direction();
    Ref<Command> get_current_command();
    Ref<RadarSignature> get_radar_signature();
-   void cloak();
-   void decloak();
-   void hit(float damage);
-   virtual void kill();
+   void set_target(Ref<Command> new_target);
+   bool queue_move(Ref<Command> new_command, bool clear_queue = false);
+   virtual void order_attack(Ref<Command> command);
    void stop_moving();
    void stop_targeting();
-   void queue_move(Ref<Command> new_command, bool clear_queue = false);
-   void set_target(Ref<Command> new_target);
-   virtual void order_attack(Ref<Command> command);
+   void cloak();
+   void decloak();
+   void hit(double damage);
+   virtual void kill();
    void _draw() override;
    void _process(double _dt) override;
    void _physics_process(double dt) override;
@@ -57,7 +58,7 @@ protected:
    | distance more difficult. Use the drag value below     |
    | instead of setting linear_damp or angular_damp.       |
    *------------------------------------------------------*/
-   float drag = 1.0;
+   double drag = 1.0;
    /*------------------------------------------------------*
    | NOTE: path_arcing should not be set exactly to zero   |
    | because the angle to the target will not always be    |
@@ -68,14 +69,14 @@ protected:
    | circle the destination depending on the initial       |
    | conditions.                                           |
    *------------------------------------------------------*/
-   float hp = 0.0;
-   float path_arcing = 0.1;
-   float warp = 100.0;
-   float thrust = 500.0;
-   float speed = 0.0;
-   float angle_to_target = 0.0;
-   float stop_distance = 0.0;
-   float distance_to_target = 0.0;
+   double hp = 0.0;
+   double path_arcing = 0.1;
+   double warp = 100.0;
+   double thrust = 500.0;
+   double speed = 0.0;
+   double angle_to_target = 0.0;
+   double stop_distance = 0.0;
+   double distance_to_target = 0.0;
    double turnrate = 1.0;
 private:
    Ref<Command> target;
@@ -92,7 +93,7 @@ private:
 class Unit::RadarSignature: public RefCounted {
    GDCLASS(RadarSignature, RefCounted)
 public:
-   float get_hp();
+   double get_hp();
    Unit* as_unit();
    State get_state();
    bool is_valid();
@@ -101,7 +102,7 @@ public:
 protected:
    static void _bind_methods();
 private:
-   float hp;
+   double hp;
    State state;
    Vector2 position;
    Vector2 velocity;
@@ -128,8 +129,8 @@ protected:
 
    void ram();
    void track();
-   void flee(float safe_distance);
-   void kite(float min_distance, float max_distance);
+   void flee(double safe_distance);
+   void kite(double min_distance, double max_distance);
 private:
    bool valid;
    Sprite2D* icon;

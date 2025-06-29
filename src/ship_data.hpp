@@ -17,14 +17,19 @@
 #include "packed_int32_grid.hpp"
 
 #define CPU_IMAGE_GENERATION true
-#define CHECK_FOR_PART_OVERLAP true
 
 namespace godot {
 
 class ShipData: public RefCounted {
    GDCLASS(ShipData, RefCounted)
 public:
-   enum PartError {OKAY, OVERLAP, OUT_OF_BOUNDS, IS_NULL};
+   enum BoundaryFlag: int {
+      EDGE_TOP = 1,
+      EDGE_BOTTOM = 2,
+      EDGE_LEFT = 4,
+      EDGE_RIGHT = 8,
+      FULL_PERIMETER = EDGE_TOP | EDGE_BOTTOM | EDGE_LEFT | EDGE_RIGHT
+   };
    enum RotationState: int {
       ROT_0_DEG = 0,
       ROT_90_DEG = 1,
@@ -35,19 +40,20 @@ public:
       FLIPPED_ROT_180_DEG = 6,
       FLIPPED_ROT_270_DEG = 7
    };
+   enum PartError {OKAY, OVERLAP, OUT_OF_BOUNDS, IS_NULL};
+
    static constexpr int NUM_NULL_PARTS = 1;
    static constexpr int NULL_PART_ID = 0;
    static constexpr int MAX_NAME_LENGTH = 30;
-   static constexpr int NUM_ROTATION_INCREMENTS = 4;
-   static constexpr double PI_2 = 0.5 * Math_PI;
 
    static Vector2i get_grid_padding();
    static Ref<ShipData> assemble(Vector2i grid_size, TypedArray<Node> parts);
 
+   ShipData();
    int count_parts();
    bool is_empty();
    bool is_connected();
-   PartError get_error();
+   bool has_part(int part_id);
    int get_cost();
    Vector2i get_size();
    Vector2i get_size_px();
@@ -61,14 +67,16 @@ public:
    double get_thrust();
    double get_turnrate();
    Vector2 get_center_of_mass();
-   Ref<PartData> get_part_data(int part_id);
    Ref<Image> get_image();
+   PackedInt32Array get_unique_parts();
+   Ref<PartData> get_part_data(int part_id);
+   Vector2 get_part_center(int part_id);
+   Vector2 get_part_center_px(int part_id);
+   Rect2i get_part_region(int part_id);
    void set_image(Ref<Image> new_image);
-   bool has_part(int part_id);
-   int add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state);
-   int add_part_node(Part* part);
-   Ref<PartData> collision_check(Vector2 point);
-   PackedInt32Array find_neighbors(int part_id, PartData::BoundaryFlag flags);
+   PartError add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state);
+   PartError add_part_node(Part* part);
+   PackedInt32Array find_neighbors(int part_id, BoundaryFlag boundary_flags);
 protected:
    static void _bind_methods();
 private:
@@ -87,22 +95,22 @@ private:
    Vector2 mass_offset = {0.0f, 0.0f};
    String name = "<unnamed>";
    Ref<Image> image;
-   Vector<Ref<PartData>> parts = {nullptr};
-   Vector<Rect2i> part_regions = {{0, 0, 0, 0}};
-   PackedVector2Array part_centers = {{0.0f, 0.0f}};
-   PackedInt32Array rotation_states = {ROT_0_DEG};
-   Rect2i grid_region = {0, 0, 0, 0};
+   Vector<Ref<PartData>> parts;
+   PackedInt32Array unique_parts;
+   Vector<Rect2i> part_regions;
+   PackedVector2Array part_centers;
+   PackedInt32Array rotation_states;
+   Rect2i grid_region;
    /*------------------------------------------------------*
    | PackedInt32Grid and DisjointSets are both custom data |
-   | structures. PackedInt32Grid allows for fast lookup to |
-   | parts while maintaining compatibility with compute    |
-   | shaders. DisjointSets can quickly determine if the    |
-   | parts are connected.                                  |
+   | structures. See their respective header files for     |
+   | more information.                                     |
    *------------------------------------------------------*/
    PackedInt32Grid grid;
    DisjointSets part_clusters;
 
    void add_stats(Ref<PartData> part, Vector2 center);
+   Vector2i get_grid_size(Vector2i size, RotationState rotation_state);
    RotationState encode_rotation(double radians, bool flipped);
 
    friend class ShipManager;
@@ -131,7 +139,8 @@ private:
 
 }
 
-VARIANT_ENUM_CAST(ShipData::PartError);
+VARIANT_ENUM_CAST(ShipData::BoundaryFlag);
 VARIANT_ENUM_CAST(ShipData::RotationState);
+VARIANT_ENUM_CAST(ShipData::PartError);
 
 #endif // SHIP_DATA_HPP
