@@ -121,6 +121,7 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_o6k85")
 
 [node name="FleetDropdown" type="OptionButton" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer" node_paths=PackedStringArray("rename_fleet_popup", "delete_fleet_popup")]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_leno0")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -325,6 +326,7 @@ width = 5.0
 default_color = Color(1, 0, 0, 1)
 
 [node name="RenameFleetPopup" type="AcceptDialog" parent="." node_paths=PackedStringArray("warning_label", "name_edit")]
+unique_name_in_owner = true
 title = "RENAME FLEET"
 initial_position = 2
 size = Vector2i(648, 364)
@@ -374,6 +376,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_fkia0")
 placeholder_text = "*Unnamed"
 
 [node name="DeleteFleetPopup" type="AcceptDialog" parent="."]
+unique_name_in_owner = true
 title = "DELETE FLEET"
 initial_position = 2
 size = Vector2i(643, 278)

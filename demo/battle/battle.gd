@@ -4,6 +4,9 @@ extends Battle
 @export var clock_minutes_label: Label
 @export var clock_seconds_label: Label
 @export var overlay: CanvasLayer
+@onready var statemanager = $"../state_manager"
+@onready var menubutton = %MenuButton 
+@onready var designbutton = %DesignButton
 
 const UI_REFRESHES_PER_SEC := 1.0
 
@@ -59,7 +62,17 @@ func _ready()->void:
 	#on_UI_refresh()
 	#set_duration_sec(360)
 	#clock.start(UI_REFRESHES_PER_SEC)
+	designbutton.pressed.connect(design_button_pressed)
+	menubutton.pressed.connect(menu_button_pressed)
 #
 #func on_UI_refresh()->void:
 	#clock_minutes_label.text = "%d"   % get_minutes_left()
 	#clock_seconds_label.text = "%02d" % get_seconds_left()
+
+func design_button_pressed():
+	statemanager.change_state(statemanager.DESIGN)
+
+func menu_button_pressed():
+	statemanager.change_state(statemanager.BACKGROUND)
+	statemanager.change_ui_state(statemanager.MAIN_MENU)
+	

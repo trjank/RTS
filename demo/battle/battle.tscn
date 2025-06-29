@@ -1,12 +1,27 @@
-[gd_scene load_steps=8 format=3 uid="uid://c8r8u7e7qkegq"]
+[gd_scene load_steps=10 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" path="res://battle/MouseCommands.gd" id="1_777ku"]
+[ext_resource type="StyleBox" uid="uid://cbte42yvegwcv" path="res://ships_bar.tres" id="3_448be"]
 [ext_resource type="PackedScene" uid="uid://ch1gd4si8wgyp" path="res://unit_panel.tscn" id="3_dxl1x"]
-[ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="3_ju74a"]
 [ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
-[ext_resource type="Texture2D" uid="uid://c7mmi3w1sdnxu" path="res://data_defaults/cogwheel_white.png" id="4_jimxv"]
 [ext_resource type="PackedScene" uid="uid://j7rna5tdvxk4" path="res://camera.tscn" id="5_kce6k"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_to5dj"]
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.878431, 0.0235294, 1, 1)
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="Gradient" id="Gradient_lt5l7"]
+colors = PackedColorArray(0.301961, 0.301961, 0.301961, 0.313726, 0.364706, 0.364706, 0.364706, 0.356863)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_olvk1"]
+gradient = SubResource("Gradient_lt5l7")
+fill_to = Vector2(1, 1)
 
 [node name="Battle" type="Battle" node_paths=PackedStringArray("overlay")]
 seed = -1909400080011345178
@@ -39,76 +54,96 @@ anchor_bottom = 1.0
 grow_vertical = 0
 mouse_filter = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/Control"]
+[node name="panel" type="PanelContainer" parent="UI/Control"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.01
-anchor_right = 0.15
-anchor_bottom = 0.925
-mouse_filter = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -150.0
+offset_right = 300.0
+grow_vertical = 0
+theme_override_styles/panel = ExtResource("3_448be")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Control/MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/Control/panel"]
 layout_mode = 2
-mouse_filter = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="Control2" type="Control" parent="UI/Control/MarginContainer/VBoxContainer"]
+[node name="GridContainer" parent="UI/Control/panel/MarginContainer" instance=ExtResource("3_dxl1x")]
 layout_mode = 2
 size_flags_vertical = 3
-mouse_filter = 2
-mouse_force_pass_scroll_events = false
-
-[node name="GridContainer" parent="UI/Control/MarginContainer/VBoxContainer/Control2" instance=ExtResource("3_dxl1x")]
-layout_mode = 1
-
-[node name="Control" type="Control" parent="UI/Control/MarginContainer"]
-visible = false
-layout_mode = 2
-mouse_filter = 1
+size_flags_stretch_ratio = 20.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI"]
-anchors_preset = -1
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 0.05
+offset_bottom = 35.0
 
 [node name="Control" type="Control" parent="UI/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Panel" type="Panel" parent="UI/HBoxContainer/Control"]
+clip_children = 1
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.333
 anchor_right = 0.667
 anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_to5dj")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/HBoxContainer/Control"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="Button" type="Button" parent="UI/HBoxContainer/Control"]
+[node name="TextureRect" type="TextureRect" parent="UI/HBoxContainer/Control/Panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.01
-anchor_top = 0.05
-anchor_right = 0.03
-anchor_bottom = 0.4
-offset_right = 8.0
-offset_bottom = 8.0
-icon = ExtResource("3_ju74a")
-expand_icon = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource("GradientTexture2D_olvk1")
+expand_mode = 2
+flip_h = true
+flip_v = true
 
-[node name="Button2" type="Button" parent="UI/HBoxContainer/Control"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/HBoxContainer/Control/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/HBoxContainer/Control/Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/HBoxContainer/Control/Panel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0.654902, 0.792157, 1, 1)
+text = "Alloy"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="UI/HBoxContainer/Control/Panel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(1, 1, 0.431373, 1)
+text = "Energy"
+fit_content = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/HBoxContainer/Control"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.04
-anchor_top = 0.05
-anchor_right = 0.06
-anchor_bottom = 0.4
-offset_right = 8.0
-offset_bottom = 8.0
-icon = ExtResource("4_jimxv")
-expand_icon = true
+anchor_right = 0.2
+anchor_bottom = 1.0
+
+[node name="DesignButton" type="Button" parent="UI/HBoxContainer/Control/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Design"
+
+[node name="MenuButton" type="Button" parent="UI/HBoxContainer/Control/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Menu"
 
 [node name="MouseCommands" type="MouseCommands" parent="."]
 script = ExtResource("1_777ku")

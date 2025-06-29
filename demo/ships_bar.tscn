@@ -1,26 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://brljyfotbk8le"]
 
+[ext_resource type="StyleBox" uid="uid://cbte42yvegwcv" path="res://ships_bar.tres" id="1_n6wp2"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="1_xejf7"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k4xxy"]
-content_margin_left = 20.0
-content_margin_top = 20.0
-content_margin_right = 20.0
-content_margin_bottom = 20.0
-bg_color = Color(0, 0, 0, 0.588235)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.677157, 0.984528, 1)
-corner_radius_top_left = 25
-corner_radius_top_right = 25
-corner_radius_bottom_right = 25
-corner_radius_bottom_left = 25
 
 [node name="ShipsBar" type="PanelContainer"]
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_k4xxy")
+theme_override_styles/panel = ExtResource("1_n6wp2")
 
 [node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 2

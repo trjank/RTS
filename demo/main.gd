@@ -6,7 +6,7 @@ const cursor := preload("res://icons/cursor_default.png")
 @onready var state_manager = $state_manager
 
 func _ready():
-	Input.set_custom_mouse_cursor(cursor)
+	#Input.set_custom_mouse_cursor(cursor)
 	state_manager.change_state(state_manager.BACKGROUND)
 	state_manager.change_new_ui_state(state_manager.MAIN_MENU)
 	return

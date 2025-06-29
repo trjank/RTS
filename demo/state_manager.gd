@@ -42,10 +42,13 @@ func change_new_state(new_state):
 			battle.show()
 			state = BACKGROUND
 		BATTLE:
+			#this feels really scuffed
+			remove_current_ui_state()
 			battle.show_overlay()
 			battle.show()
 			state = BATTLE
 		DESIGN:
+			change_new_ui_state(NAVBAR)
 			$"..".add_child(design)
 			state = DESIGN
 		_:

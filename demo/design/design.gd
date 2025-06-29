@@ -5,6 +5,17 @@ extends Node2D
 @export var part_grouping: PartGrouping
 @export var grid: Sprite2D
 @export var info_text: Label
+var fleet:Fleet
+@onready var fleet_dropdown = %FleetDropdown
+@onready var rename_fleet_popup = %RenameFleetPopup
+var fleet_manager := FleetManager.new()
+var rename:String = "*default"
+var unsaved:bool = false
+@onready var fleet_folder = DirAccess.open("user://fleets")
+
+#how im thinking the flow should be:
+	#load some default fleet (defined in settings) (or load last worked on fleet)
+	#fleets are just saved ship by ship
 
 func show_overlay()->void:
 	overlay.show()
@@ -21,10 +32,13 @@ func _input(event):
 		# Testing some shipbuilding
 		print("saving...")
 		part_grouping.clear_parts() # <-- This is VERY important
-		var ship_manager := ShipManager.new()
+		#var ship_manager := ShipManager.new()
 		var ship := ShipData.assemble(Vector2i(64, 64), grid.get_children())
-		ship_manager.save_ship_image(ship, "user://ship.png")
-		ship_manager.save_ship_csv(ship, "user://ship.csv")
+		print(fleet.get_name())
+		print(fleet.get_num_slots(Fleet.CAPITAL_SHIP))
+		fleet.set_slot(Fleet.CAPITAL_SHIP,0, ship)
+
+		fleet_manager.save_fleet_slot(fleet, Fleet.CAPITAL_SHIP,0)
 		print("IS CONNECTED: ", ship.is_connected())
 		var bounds_x = ship.get_ship_bounds_x()
 		var bounds_y = ship.get_ship_bounds_y()
@@ -34,15 +48,24 @@ func _input(event):
 		print(bounds_x)
 		print(bounds_y)
 		
-		var img = Image.load_from_file("user://ship.png").get_region(Rect2i(bounds_x.y*32 - 32 -padding/2 ,bounds_y.y*32 - 32 -padding/2, square_size*32 + 32 + padding, square_size*32 + 32 + padding))
-		img.save_png("user://ship2.png")
-		
+		#var img = Image.load_from_file("user://ship.png").get_region(Rect2i(bounds_x.y*32 - 32 -padding/2 ,bounds_y.y*32 - 32 -padding/2, square_size*32 + 32 + padding, square_size*32 + 32 + padding))
+		#img.save_png("user://ship2.png")
 		#print(bounds)
+
+
+
 
 func _ready():
 	set_grid_size(Vector2(64, 64))
 	var manager := PartManager.new()
 	manager.load_csv("user://parts.csv")
+	fleet_manager.set_fleet_folder()
+	print(fleet_manager.fleet_exists("default"))
+	fleet = Fleet.new()
+	fleet.set_name("default")
+	fleet_dropdown.item_selected.connect(selected_fleet)
+	rename_fleet_popup.valid_rename.connect(on_valid_rename)
+	#fleet.resize()
 	#manager.new_atlas("res://test_atlas.png")
 	PartButton.part_container = part_grouping
 	for atlas_id in range(manager.count_parts()):
@@ -57,3 +80,24 @@ func _ready():
 			push_warning("Tab '%s' does not exist" % part_container)
 		else:
 			part_container.add_child(part_display)
+
+
+
+func selected_fleet(option):
+	match option: 
+		fleet_dropdown.NEW_FLEET_OPTION:
+			unsaved = true
+
+
+
+func on_valid_rename(new_rename):
+	if unsaved:
+		if(!fleet_manager.fleet_exists(new_rename)):
+			fleet = Fleet.new()
+			fleet.set_name(new_rename)
+			fleet_folder.make_dir(new_rename)
+			unsaved = false
+
+
+
+			
