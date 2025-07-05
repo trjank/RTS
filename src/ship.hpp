@@ -6,10 +6,11 @@
 #include <godot_cpp/core/math.hpp>
 #include "resizable_sprite_2d.hpp"
 #include "unit.hpp"
-#include "battle.hpp"
 #include "destructable.hpp"
 #include "ship_data.hpp"
+#include "defaults.hpp"
 #include "part.hpp"
+#include "player.hpp"
 
 namespace godot {
 
@@ -26,40 +27,44 @@ public:
    static constexpr double SHIELD_RECHARGE_DROPOFF = 1.0;
    static constexpr double WARP_ENERGY_USE = 0.0;
    static constexpr double SHIELD_ENERGY_USE = 0.0;
-   static constexpr double STUNLOCK_ENERGY_LIMIT = 1.0;
+   static constexpr double RATIO_MIN_ENERGY = -1.0;
    static constexpr double STUNLOCK_DRAIN = 1.0;
 
-   Ship();
-   bool is_stunlocked();
+   static Ship* create_from(Ref<ShipData> ship_data);
+
+   bool is_stunlocked() const;
+   bool is_owned_by(Ref<Player> player) const;
    void fire();
+   int get_cost() const override;
+   double get_energy() const override;
+   double get_shield() const;
+   double get_ratio_reserve_energy() const;
+   double get_ratio_recharge_warp() const;
+   double get_ratio_recharge_shield() const;
+   Ref<ShipData> get_data() const;
+   Ref<Player> get_owner() const;
+   void set_owner(Ref<Player> new_owner);
+   void reset_stats();
    void kill() override;
-   Player* get_owner();
-   int get_cost() override;
-   double get_energy() override;
-   double get_shield();
-   Ref<ShipData> get_data();
-   void set_owner(Player* new_owner);
-   void set_data(Ref<ShipData> new_data);
-   void copy_data_from(const Ship* other_ship);
    double hit_shield(double damage);
    void hit(double damage, double shield_penetration = 0.0);
+   Ship* clone() const;
    void _physics_process(double dt) override;
 protected:
    static void _bind_methods();
 private:
+   bool selected = false;
    double shield = 0.0;
    double energy = 0.0;
    double ratio_reserve_energy = 0.0;
    double ratio_recharge_warp = 0.0;
    double ratio_recharge_shield = 0.0;
-   Ref<ShipData> data;
-   Vector<Part*> unique_parts;
-   Vector<Vector<Part*>> action_groups;
-   ResizableSprite2D* image;
-   bool selected = false;
-   Player* owner = nullptr;
+   double min_energy = 0.0;
+   NEVER_NULL Ref<Player> owner = get_default<Player>();
+   NEVER_NULL Ref<ShipData> data = get_default<ShipData>();
 
    Part* create_unique_part(int part_id);
+   void create_image();
    void calculate_reserve_ratios();
 };
 

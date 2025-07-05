@@ -3,17 +3,10 @@
 
 using namespace godot;
 
-// Ref<PackedScene> Unit::warp_visual = nullptr;
-
-// void Unit::set_warp_visual(Ref<PackedScene> new_warp_visual) {
-//    warp_visual = new_warp_visual;
-// }
 Unit::Unit() {
    radar_signature.instantiate();
    radar_signature->unit = this;
    radar_signature->state = ALIVE;
-   applying_thrust = false;
-   can_move = true;
    set_linear_damp(0.0);
    set_angular_damp(0.0);
 }
@@ -21,41 +14,23 @@ Unit::~Unit() {
    radar_signature->unit = nullptr;
    radar_signature->state = DEAD;
 }
-double Unit::get_hp() {
+double Unit::get_hp() const {
    return hp;
 }
-int Unit::get_num_commands() {
+int Unit::get_num_commands() const {
    return commands.size();
 }
-Vector2 Unit::get_forward_direction() {
+Vector2 Unit::get_forward_direction() const {
    return -get_transform().columns[1];
 }
-Ref<Unit::Command> Unit::get_current_command() {
+Ref<Unit::Command> Unit::get_current_command() const {
    return commands.front()->get();
 }
-Ref<Unit::RadarSignature> Unit::get_radar_signature() {
+Ref<Unit::RadarSignature> Unit::get_radar_signature() const {
    return radar_signature;
 }
 void Unit::set_target(Ref<Unit::Command> new_target) {
    target = new_target;
-}
-bool Unit::queue_move(Ref<Unit::Command> new_command, bool clear_queue) {
-   if (clear_queue) commands.clear();
-
-   if (commands.size() >= MAX_NUM_COMMANDS) return false;
-
-   can_warp = false;
-   commands.push_back(new_command);
-   return true;
-}
-void Unit::order_attack(Ref<Command> command) {
-   // TODO
-}
-void Unit::stop_moving() {
-   commands.clear();
-}
-void Unit::stop_targeting() {
-   target.unref();
 }
 void Unit::cloak() {
    radar_signature->state = CLOAKED;
@@ -66,8 +41,28 @@ void Unit::decloak() {
 void Unit::kill() {
    queue_free();
 }
+void Unit::stop_moving() {
+   commands.clear();
+}
+void Unit::stop_targeting() {
+   target.unref();
+}
+void Unit::clear_movement_queue() {
+   commands.clear();
+}
+bool Unit::queue_move(Ref<Unit::Command> new_command) {
+   if (commands.size() >= MAX_NUM_COMMANDS) return false;
+
+   can_warp = false;
+   commands.push_back(new_command);
+   return true;
+}
+void Unit::order_attack(Ref<Command> command) {
+   // TODO
+}
 void Unit::update_radar_signature() {
    if (radar_signature->state == CLOAKED) return;
+
    radar_signature->hp = hp;
    radar_signature->velocity = get_linear_velocity();
    radar_signature->position = get_global_position();
@@ -86,7 +81,6 @@ void Unit::move_to_target() {
    angle_to_target     = get_forward_direction().angle_to(separation);
    stop_distance       = get_linear_velocity().dot(separation.normalized());
    speed               = get_linear_velocity().length();
-
    double time_to_move = distance_to_target / speed;
    double time_to_turn = abs(angle_to_target) / turnrate;
    applying_thrust     = can_move && time_to_turn <= path_arcing * time_to_move;
@@ -96,40 +90,31 @@ void Unit::move_to_target() {
    if (distance_to_target <= stop_distance) commands.pop_front();
 }
 void Unit::try_to_use_thrusters(PhysicsDirectBodyState2D& state) {
-   if ( !applying_thrust) return;
-   
-   Vector2 thrust_vector = thrust * get_forward_direction();
-   state.apply_central_force(thrust_vector);
+   if (applying_thrust)
+      state.apply_central_force(thrust * get_forward_direction());
 }
-// void Unit::make_warp_visual(Vector2 warp_start, Vector2 warp_end) {
-//    if (warp_visual.is_null()) return;
-   
-//    Node* warp_visual_node = warp_visual->instantiate();
-//    get_parent()->add_child(warp_visual_node);
-//    warp_visual_node->call("set_start", warp_start);
-//    warp_visual_node->call("set_end", warp_end);
-// }
 void Unit::try_to_warp(PhysicsDirectBodyState2D& state) {
    if ( !can_warp) return;
    
    Ref<Command> command = get_current_command();
    Vector2 warp_start   = get_global_position();
    Vector2 warp_end     = command->get_position();
-   // make_warp_visual(warp_start, warp_end);
-   
+
    warp -= distance_to_target;
-   state.set_linear_velocity( {0.0, 0.0} );
-   set_global_position(warp_end);
-   rotate(angle_to_target);
+
    commands.pop_front();
+   rotate(angle_to_target);
+   set_global_position(warp_end);
+   state.set_linear_velocity( {0.0F, 0.0F} );
+   emit_signal("warped", warp_start, warp_end);
 }
 void Unit::_physics_process(double dt) {
    move_to_target();
    update_radar_signature();
 }
 void Unit::_integrate_forces(PhysicsDirectBodyState2D* state) {
-   ERR_FAIL_COND_MSG( !state,
-      "<Unit> Internal engine failure: PhysicsDirectBodyState2D is null");
+   ERR_FAIL_NULL_MSG(state,
+   "<Unit> Internal engine failure: PhysicsDirectBodyState2D is null");
 
    state->apply_central_force( -drag * get_linear_velocity());
    
@@ -137,15 +122,15 @@ void Unit::_integrate_forces(PhysicsDirectBodyState2D* state) {
    
    double turn_direction = Math::clamp(TURN_JERKINESS * angle_to_target, -1.0, 1.0);
    state->set_angular_velocity(turnrate * turn_direction);
-   try_to_use_thrusters(*state);
-   try_to_warp(*state);
+   try_to_use_thrusters( *state);
+   try_to_warp( *state);
 }
 void Unit::_process(double _dt) {
    queue_redraw();
 }
 void Unit::_draw() {
-   static const Color PATH_COLOR = Color(1.0, 1.0, 1.0, 0.2);
-   static const Color WARP_COLOR = Color(0.8, 0.6, 0.9, 0.5);
+   const Color PATH_COLOR(1.0, 1.0, 1.0, 0.2);
+   const Color WARP_COLOR(0.8, 0.6, 0.9, 0.5);
 
    draw_arc( {0.0, 0.0}, warp, 0.0, Math_TAU, 100, WARP_COLOR, 1.0, true);
    
@@ -156,6 +141,7 @@ void Unit::_draw() {
    Vector2 path_end = to_local(command->get_position());
    draw_line(path_start, path_end, PATH_COLOR, 1.0, true);
 }
+
 
 double Unit::RadarSignature::get_hp() {
    return hp;
@@ -200,7 +186,7 @@ void Unit::Command::move_to(Vector2 new_position) {
    icon->set_global_position(new_position);
 }
 void Unit::Command::ram() {
-   move_to(prey->get_position());
+   move_to( prey->get_position() );
 }
 void Unit::Command::track() {
    Vector2 pred_pos     = predator->get_global_position();

@@ -11,94 +11,91 @@ double Orbit::get_time_scale() {
 void Orbit::set_time_scale(double new_scale) {
    time_scale = Math::clamp(new_scale, MIN_TIME_SCALE, MAX_TIME_SCALE);
 }
-double Orbit::get_distance() {
+double Orbit::get_distance() const {
    return distance;
 }
-double Orbit::get_angular_velocity() {
-   if ( !orbiting) return 0.0;
-
-   double linear_speed = Math::sqrt(GRAVITATIONAL_CONSTANT * orbiting->mass / distance);
-   return linear_speed / distance;
+double Orbit::get_linear_velocity() const {
+   return !orbiting ? 0.0 : Math::sqrt(GRAVITATIONAL_CONSTANT * orbiting->mass / distance);
+}
+double Orbit::get_angular_velocity() const {
+   return get_linear_velocity() / distance;
+}
+void Orbit::set_path_visibility(bool visible) {
+   path_visible = visible;
+   queue_redraw();
 }
 void Orbit::set_angle(Node2D* orbiter, double angle) {
-   ERR_FAIL_COND( !orbiter);
+   ERR_FAIL_NULL_MSG(orbiter,
+   "<Orbit> Orbiter is null (failed to set angle)");
+   ERR_FAIL_COND_MSG(orbiter->get_parent() != this,
+   "<Orbit> Node2D is not in orbit (failed to set angle)");
 
    orbiter->set_position(distance * Vector2::from_angle(angle));
-}
-void Orbit::fix_distance(Node2D* orbiter) {
-   ERR_FAIL_COND( !orbiter);
-
-   Vector2 direction = orbiter->get_position().normalized();
-   orbiter->set_position(distance * direction);
 }
 void Orbit::set_distance(double new_distance) {
    distance = Math::max(new_distance, MIN_DISTANCE);
    queue_redraw();
    TypedArray<Node2D> children = get_children();
    for (int n = 0; n < children.size(); ++n) {
-      fix_distance( Object::cast_to<Node2D>(children[n]) );
+      fix_distance( Object::cast_to<Node2D>( children[n] ) );
    }
 }
-void Orbit::set_path_visibility(bool visible) {
-   path_visible = visible;
-   queue_redraw();
-}
 void Orbit::orbit(Celestial* celestial) {
-   ERR_FAIL_COND( !celestial);
+   ERR_FAIL_NULL_MSG(celestial,
+   "<Orbit> Celestial is null (failed to orbit)");
 
    reparent(celestial);
    orbiting = celestial;
 }
-void Orbit::add(Node2D* orbiter, double angle) {
-   if ( !orbiter) return;
+void Orbit::fix_distance(Node2D* orbiter) {
+   ERR_FAIL_NULL_MSG(orbiter,
+   "<Orbit> Non-Node2D found in orbit (failed to fix distance)");
 
-   add_child(orbiter);
-   set_angle(orbiter, angle);
-}
-void Orbit::_physics_process(double dt) {
-   rotate(get_angular_velocity() * time_scale * dt);
+   Vector2 direction = orbiter->get_position().normalized();
+   orbiter->set_position(distance * direction);
 }
 void Orbit::_draw() {
-   if (path_visible)
-      draw_arc({0.0, 0.0}, distance, 0.0, Math_TAU, NUM_SEGMENTS, COLOR, THICKNESS, true);
+   if (orbiting && path_visible)
+      draw_arc( {0.0F, 0.0F}, distance, 0.0, Math_TAU, NUM_SEGMENTS, COLOR, THICKNESS, true);
+}
+void Orbit::_physics_process(double dt) {
+   rotate(time_scale * get_angular_velocity() * dt);
 }
 
-
-double Celestial::alloy_abundance = 1.0;
-double Celestial::energy_abundance = 1.0;
 
 Celestial::Celestial() {
    CollisionShape2D* shape = memnew(CollisionShape2D);
    add_child(capture_zone = memnew(Area2D));
    add_child(image = memnew(ResizableSprite2D));
    add_child(label = memnew(Label));
-   capture_zone->add_child(shape);
+
    hitbox.instantiate();
    shape->set_shape(hitbox);
+   capture_zone->add_child(shape);
    label->add_theme_font_size_override("font_size", TEXT_SIZE);
 }
-bool Celestial::can_capture() {
+bool Celestial::can_capture() const {
    return true;
 }
-double Celestial::get_mass() {
+double Celestial::get_mass() const {
    return mass;
 }
-double Celestial::get_radius() {
+double Celestial::get_radius() const {
    return radius;
 }
-double Celestial::get_angular_velocity() {
+double Celestial::get_angular_velocity() const {
    return angular_velocity;
 }
-double Celestial::get_alloy_per_sec() {
-   return surface_area * alloy_density * alloy_abundance;
+double Celestial::get_alloy_per_sec() const {
+   return surface_area * alloy_density;
 }
-double Celestial::get_energy_per_sec() {
-   return surface_area * energy_density * energy_abundance;
+double Celestial::get_energy_per_sec() const {
+   return surface_area * energy_density;
 }
-String Celestial::get_custom_name() {
+String Celestial::get_custom_name() const {
    return custom_name;
 }
-Ref<Texture2D> Celestial::get_texture() {
+Ref<Texture2D> Celestial::get_texture() const {
    return image->get_texture();
 }
 void Celestial::set_alloy_density(double density) {
@@ -120,11 +117,12 @@ void Celestial::set_mass(double new_mass) {
    mass = Math::max(0.0, new_mass);
 }
 void Celestial::set_radius(double new_radius) {
-   radius = Math::max(new_radius, 0.0);
-   hitbox->set_radius(radius);
+   radius         = Math::max(new_radius, 0.0);
+   surface_area   = 4 * Math_PI * radius * radius;
    float diameter = 2 * radius;
+
+   hitbox->set_radius(radius);
    image->resize_scaled( {diameter, diameter} );
-   surface_area = M_PI * diameter * diameter;
    update_label_text();
 }
 void Celestial::set_custom_name(String new_custom_name) {
@@ -136,17 +134,19 @@ void Celestial::set_texture(Ref<Texture2D> new_texture) {
 }
 void Celestial::reposition_label() {
    Vector2 position;
-   position.x = -0.5 * label->get_size().x;
+   position.x = -0.5 * label->get_size().width;
    position.y = -radius - LABEL_OFFSET;
    label->set_position(position);
-   label->set_pivot_offset(-position);
+   label->set_pivot_offset( -position);
 }
 void Celestial::update_label_text() {
    String text = custom_name;
    if (can_capture()) {
       text += " | ";
-      text += String::num(get_alloy_per_sec(), DISPLAY_DECIMAL_PLACES) + "aps | ";
-      text += String::num(get_energy_per_sec(), DISPLAY_DECIMAL_PLACES) + "eps";
+      text += String::num(get_alloy_per_sec(), DISPLAY_DECIMAL_PLACES);
+      text += "aps | ";
+      text += String::num(get_energy_per_sec(), DISPLAY_DECIMAL_PLACES);
+      text += "eps";
    }
    label->set_text(text);
    reposition_label();
@@ -156,11 +156,11 @@ void Celestial::_ready() {
 }
 void Celestial::_physics_process(double dt) {
    rotate(angular_velocity * Orbit::get_time_scale() * dt);
-   label->set_rotation(-get_global_rotation());
+   label->set_rotation( -get_global_rotation());
 }
 void Celestial::_draw() {
    if (owner.is_valid())
-      draw_arc({0.0, 0.0}, radius, 0.0, Math_TAU, NUM_SEGMENTS, owner->get_color(), THICKNESS, true);
+      draw_arc( {0.0F, 0.0F}, radius, 0.0, Math_TAU, NUM_SEGMENTS, owner->get_color(), THICKNESS, true);
    if (contestor.is_valid())
-      draw_arc({0.0, 0.0}, radius, 0.0, Math_TAU * capture_progress, NUM_SEGMENTS, contestor->get_color(), THICKNESS, true);
+      draw_arc( {0.0F, 0.0F}, radius, 0.0, Math_TAU * capture_progress, NUM_SEGMENTS, contestor->get_color(), THICKNESS, true);
 }

@@ -28,7 +28,7 @@ Ref<ShipData> ShipData::assemble(Vector2i size, TypedArray<Node> parts) {
    #endif // CPU_IMAGE_GENERATION
 
    for (int n = 0; n < parts.size(); ++n) {
-      PartError error = ship->add_part_node( Object::cast_to<Part>( parts[n] ) );
+      ship->add_part_node( Object::cast_to<Part>( parts[n] ) );
    }
    return ship;
 }
@@ -38,89 +38,95 @@ ShipData::ShipData() {
 
    // Create some placeholders for the null part
    parts = {nullptr};
-   rotation_states = {ROT_0_DEG};
+   part_rotation_states = {ROT_0_DEG};
    part_centers = { {0.0F, 0.0F} };
    part_regions = { {0, 0, 0, 0} };
    part_clusters.new_set();
 }
-int ShipData::count_parts() {
+int ShipData::count_parts() const {
    return parts.size() - NUM_NULL_PARTS;
 }
-bool ShipData::is_empty() {
+bool ShipData::is_empty() const {
    return parts.is_empty();
 }
-bool ShipData::is_connected() {
+bool ShipData::is_connected() const {
    return part_clusters.count_num_sets() == NUM_NULL_PARTS + 1;
 }
-bool ShipData::has_part(int part_id) {
+bool ShipData::has_part(int part_id) const {
    return part_id > NULL_PART_ID && part_id < parts.size();
 }
-int ShipData::get_cost() {
+int ShipData::get_cost() const {
    return cost;
 }
-double ShipData::get_max_hp() {
+double ShipData::get_max_hp() const {
    return max_hp;
 }
-double ShipData::get_max_warp() {
+double ShipData::get_max_warp() const {
    return max_warp;
 }
-double ShipData::get_max_shield() {
+double ShipData::get_max_shield() const {
    return max_shield;
 }
-double ShipData::get_max_energy() {
+double ShipData::get_max_energy() const {
    return max_energy;
 }
-double ShipData::get_warp_per_sec() {
+double ShipData::get_warp_per_sec() const {
    return warp_per_sec;
 }
-double ShipData::get_shield_per_sec() {
+double ShipData::get_shield_per_sec() const {
    return shield_per_sec;
 }
-double ShipData::get_energy_per_sec() {
+double ShipData::get_energy_per_sec() const {
    return energy_per_sec;
 }
-double ShipData::get_thrust() {
+double ShipData::get_thrust() const {
    return thrust;
 }
-double ShipData::get_turnrate() {
+double ShipData::get_turnrate() const {
    return turnrate;
 }
-Vector2 ShipData::get_center_of_mass() {
+Vector2 ShipData::get_center_of_mass() const {
    return mass_offset / mass;
 }
-Vector2i ShipData::get_size() {
+Vector2i ShipData::get_size() const {
    return grid_region.size;
 }
-Vector2i ShipData::get_size_px() {
+Vector2i ShipData::get_size_px() const {
    return grid_region.size * PartData::PX_PER_GRID_SQUARE;
 }
-Ref<Image> ShipData::get_image() {
+Ref<Image> ShipData::get_image() const {
    return image;
 }
 PackedInt32Array ShipData::get_unique_parts() {
    return unique_parts;
 }
-Vector2 ShipData::get_part_center(int part_id) {
+int ShipData::get_part_at(Vector2 location) const {
+   return grid.getv(location);
+}
+ShipData::RotationState ShipData::get_part_rotation_state(int part_id) const {
+   return part_rotation_states[part_id];
+}
+Vector2 ShipData::get_part_center(int part_id) const {
    return part_centers[part_id];
 }
-Vector2 ShipData::get_part_center_px(int part_id) {
+Vector2 ShipData::get_part_center_px(int part_id) const {
    return part_centers[part_id] * PartData::PX_PER_GRID_SQUARE;
 }
-Rect2i ShipData::get_part_region(int part_id) {
+Rect2i ShipData::get_part_region(int part_id) const {
    return part_regions[part_id];
 }
-Ref<PartData> ShipData::get_part_data(int part_id) {
+Ref<PartData> ShipData::get_part_data(int part_id) const {
    return parts[part_id];
 }
 void ShipData::set_image(Ref<Image> new_image) {
-   ERR_FAIL_COND_MSG(CPU_IMAGE_GENERATION
-      && new_image.is_valid()
-      && new_image->get_size() != get_size_px(),
-      "<ShipData> Image size is too small (failed to set image)");
+   #if CPU_IMAGE_GENERATION
+   ERR_FAIL_COND_MSG(new_image.is_valid() && new_image->get_size() != get_size_px(),
+   "<ShipData> Image size is too small (failed to set image)");
+   #endif // CPU_IMAGE_GENERATION
 
    image = new_image;
 }
-PackedInt32Array ShipData::find_neighbors(int part_id, BoundaryFlag boundary_flags) {
+PackedInt32Array ShipData::find_neighbors(int part_id, int boundary_flags) const {
    PackedInt32Array neighbors;
    Vector2i min = part_regions[part_id].position;
    Vector2i max = part_regions[part_id].get_end();
@@ -157,7 +163,7 @@ ShipData::PartError ShipData::add_part(Ref<PartData> part, Vector2 center, Rotat
    parts.push_back(part);
    part_regions.push_back(rect);
    part_centers.push_back(center);
-   rotation_states.push_back(rotation_state);
+   part_rotation_states.push_back(rotation_state);
    add_stats(part, center);
 
    switch (part->get_behavior()) {
@@ -210,9 +216,9 @@ ShipData::PartError ShipData::add_part_node(Part* part) {
    if ( !part) return IS_NULL;
 
    Ref<PartData> data = part->get_data();
-   Vector2 position   = part->get_grid_position();
    double rotation    = part->get_rotation();
    bool flipped       = part->get_scale().x < 0;
+   Vector2 position   = part->get_position() / PartData::PX_PER_GRID_SQUARE;
    return add_part(data, position, encode_rotation(rotation, flipped));
 }
 void ShipData::add_stats(Ref<PartData> part, Vector2 center) {
@@ -257,9 +263,9 @@ Ref<ShipData> ShipManager::load_ship_csv(String path) {
    Ref<FileAccess> file = FileAccess::open(path, FileAccess::READ);
 
    ERR_FAIL_COND_V_MSG(file.is_null(), ship,
-      "<ShipData> Ship csv file not found (failed to load csv)");
+   "<ShipData> Ship csv file not found (failed to load csv)");
    ERR_FAIL_COND_V_MSG(file->get_csv_line() != CSV_HEADER, ship,
-      "<ShipData> Ship csv header is incorrect (failed to load csv)");
+   "<ShipData> Ship csv header is incorrect (failed to load csv)");
 
    while ( !file->eof_reached()) {
       load_part_into_ship(ship, file->get_csv_line());
@@ -272,24 +278,24 @@ PackedStringArray ShipManager::to_csv_line(Ref<ShipData> ship, int part_id) {
    line[CODE]           = ship->parts[part_id]->get_code();
    line[X]              = String::num(ship->part_centers[part_id].x);
    line[Y]              = String::num(ship->part_centers[part_id].y);
-   line[ROTATION_STATE] = String::num_int64(ship->rotation_states[part_id]);
+   line[ROTATION_STATE] = String::num_int64(ship->part_rotation_states[part_id]);
    return line;
 }
 void ShipManager::save_ship_image(Ref<ShipData> ship, String path) {
    ERR_FAIL_NULL_MSG(ship,
-      "<ShipManager> Ship is null (failed to save image)");
+   "<ShipManager> Ship is null (failed to save image)");
    ERR_FAIL_NULL_MSG(ship->get_image(),
-      "<ShipManager> Ship has no image (failed to save image)");
+   "<ShipManager> Ship has no image (failed to save image)");
    ERR_FAIL_COND_MSG( !path.ends_with(".png"),
-      "<ShipManager> Ship images can only be saved as .png (failed to save image)");
+   "<ShipManager> Ship images can only be saved as .png (failed to save image)");
 
    ship->get_image()->save_png(path);
 }
 void ShipManager::save_ship_csv(Ref<ShipData> ship, String path) {
    ERR_FAIL_NULL_MSG(ship,
-      "<ShipManager> Ship is null (failed to save csv)");
+   "<ShipManager> Ship is null (failed to save csv)");
    ERR_FAIL_COND_MSG( !path.ends_with(".csv"),
-      "<ShipManager> Ships can only be saved as a .csv file (failed to save csv)");
+   "<ShipManager> Ships can only be saved as a .csv file (failed to save csv)");
 
    Ref<FileAccess> csv = FileAccess::open(path, FileAccess::WRITE);
    csv->store_csv_line(CSV_HEADER);

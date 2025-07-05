@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://c8r8u7e7qkegq"]
+[gd_scene load_steps=8 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" path="res://battle/MouseCommands.gd" id="1_777ku"]
+[ext_resource type="Script" path="res://battle/RoundTimer.gd" id="2_gr1rv"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_j65k6"]
 [ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
 
@@ -28,13 +29,20 @@ corner_radius_top_right = 25
 corner_radius_bottom_right = 25
 corner_radius_bottom_left = 25
 
-[node name="Battle" type="Battle" node_paths=PackedStringArray("clock", "clock_minutes_label", "clock_seconds_label", "overlay")]
-seed = -1909400080011345178
+[node name="Battle" type="Battle" node_paths=PackedStringArray("countdown_timer", "round_timer", "overlay")]
 script = ExtResource("1_2ostc")
-clock = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/Timer")
-clock_minutes_label = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Minutes")
-clock_seconds_label = NodePath("UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Seconds")
+countdown_timer = NodePath("CountdownTimer")
+round_timer = NodePath("RoundTimer")
 overlay = NodePath("UI")
+
+[node name="RoundTimer" type="Timer" parent="." node_paths=PackedStringArray("clock_minutes_label", "clock_seconds_label")]
+one_shot = true
+script = ExtResource("2_gr1rv")
+clock_minutes_label = NodePath("../UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Minutes")
+clock_seconds_label = NodePath("../UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock/MarginContainer/HBoxContainer/Seconds")
+
+[node name="CountdownTimer" type="Timer" parent="."]
+one_shot = true
 
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
@@ -117,8 +125,6 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.588235)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 32
 text = "32"
-
-[node name="Timer" type="Timer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer/Clock"]
 
 [node name="AlloyBar" type="PanelContainer" parent="UI/FleetBar/ResourceBar/CenterContainer/HBoxContainer"]
 layout_mode = 2

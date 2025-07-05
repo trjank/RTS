@@ -2,13 +2,14 @@
 #define UNIQUE_PART_DATA_HPP
 
 #include "part_data.hpp"
+#include "ship_data.hpp"
+#include "defaults.hpp"
 
 namespace godot {
 
 class ProjectileData: public PartData {
    GDCLASS(ProjectileData, PartData)
 public:
-   Part* new_part() override;
    void load_unique_data(Dictionary data) override;
    bool is_hitscan();
    Vector2 get_hitbox_size();
@@ -19,6 +20,36 @@ private:
    Vector2 hitbox_size = {1.0F, 1.0F};
 };
 
+
+struct WeaponModifiers {
+   double multiplier_range = 1.0;
+   double multiplier_energy = 1.0;
+   double multiplier_speed = 1.0;
+   double multiplier_cooldown = 1.0;
+
+   void combine(const WeaponModifiers& other_modifiers);
+};
+
+
+class WeaponModifierData: public PartData {
+   GDCLASS(WeaponModifierData, PartData)
+public:
+   void load_unique_data(Dictionary data) override;
+   double get_multiplier_range() const;
+   double get_multiplier_energy() const;
+   double get_multiplier_speed() const;
+   double get_multiplier_cooldown() const;
+   void set_multiplier_range(double new_multiplier_range);
+   void set_multiplier_energy(double new_multiplier_energy);
+   void set_multiplier_speed(double new_multiplier_speed);
+   void set_multiplier_cooldown(double new_multiplier_cooldown);
+protected:
+   static void _bind_methods();
+private:
+   WeaponModifiers modifiers;
+};
+
+
 class WeaponData: public PartData {
    GDCLASS(WeaponData, PartData)
 public:
@@ -27,7 +58,7 @@ public:
 
    WeaponData();
    void load_unique_data(Dictionary data) override;
-   Part* new_part() override;
+   bool is_burst_weapon();
    int get_shots_per_burst();
    double get_energy_per_shot();
    double get_firerate();
@@ -42,6 +73,8 @@ public:
    void set_spread_angle(double new_spread_angle);
    void set_sec_between_shots(double new_sec_between_shots);
    void set_reload_sec(double new_reload_sec);
+   // See unique_part_data.cpp for the new_blank_part function definition
+   Part* new_blank_part() override;
 protected:
    static void _bind_methods();
 private:
@@ -53,27 +86,29 @@ private:
    double spread_angle = 0.0;
    double sec_between_shots = 0.0;
    double reload_sec = 1.0;
-   Ref<ProjectileData> projectile;
+   NEVER_NULL Ref<ProjectileData> projectile = get_default<ProjectileData>();
 
    void calculate_firerates();
 };
 
-class TurretMountData: public PartData {
-   GDCLASS(TurretMountData, PartData)
+
+class WeaponMountData: public WeaponModifierData {
+   GDCLASS(WeaponMountData, WeaponModifierData)
 public:
-   void load_unique_data(Dictionary data) override;
    bool is_compatible_with(Ref<WeaponData> weapon);
+   ShipData::BoundaryFlag get_mod_boundary(ShipData::RotationState _rotation);
    double get_min_angle();
    double get_max_angle();
    int get_firing_arc_degrees();
    int get_angle_degrees();
-   void set_firing_arc_degrees(int new_firing_arc_degrees);
-   void set_angle_degrees(int new_angle_degrees);
+   void set_firing_arc_degrees(double new_firing_arc_degrees);
+   void set_angle_degrees(double new_angle_degrees);
+   void load_unique_data(Dictionary data) override;
 protected:
    static void _bind_methods();
 private:
-   int firing_arc_degrees = 0;
-   int angle_degrees = 0;
+   double firing_arc_degrees = 0;
+   double angle_degrees = 0;
    double min_angle = 0.0;
    double max_angle = 0.0;
 

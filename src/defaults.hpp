@@ -3,12 +3,14 @@
 
 #include <godot_cpp/classes/ref.hpp>
 
-// This is just a decorator to tell you that pointers are safe to use
+// These are decorators to tell you about a variable's or function's safety
 #define NEVER_NULL
+#define NEVER_EMPTY
+#define NO_ERROR_CHECK
 
 namespace godot {
 
-// Data defaults ensure data is never null (no need to check null case)
+// This can help avoid the need for null checks
 template<typename T>
 NEVER_NULL Ref<T> get_default() {
 	static Ref<T> default_data = memnew(T);

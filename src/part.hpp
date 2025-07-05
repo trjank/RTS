@@ -23,29 +23,29 @@ class Ship;
 class Part: public StaticBody2D {
    GDCLASS(Part, StaticBody2D)
 public:
-   Part();
-   Ref<PartData> get_data();
-   Rect2 get_global_rect();
-   Vector2 get_grid_position();
-   virtual void set_data(Ref<PartData> new_data);
-   void set_grid_position(Vector2i new_grid_position);
-   virtual void copy_unique_data_from(const Part& other_part);
+   static Part* create_from(Ref<PartData> part_data);
+
+   Ref<PartData> get_data() const;
+   Rect2 get_rect() const;
+   Rect2 get_global_rect() const;
    virtual void _ship_init(const Ship& parent_ship, int part_id);
 protected:
    static void _bind_methods();
 private:
-   ResizableSprite2D* image = nullptr;
-   CollisionShape2D* shape = nullptr;
-   Ref<RectangleShape2D> hitbox;
+   NEVER_NULL Ref<RectangleShape2D> hitbox = memnew(RectangleShape2D);
    NEVER_NULL Ref<PartData> data = get_default<PartData>();
+
+   void create_hitbox(Vector2 size);
+   void create_image(Vector2 size, Ref<Texture2D> texture);
 };
+
 
 class PartGrouping: public ResizableSprite2D {
    GDCLASS(PartGrouping, Sprite2D)
 public:
-   void set_mirroring(bool mirroring);
-   bool get_mirroring();
-   bool is_dragging();
+   bool is_dragging() const;
+   bool get_mirroring() const;
+   void set_mirroring(bool new_mirroring);
    void clear_parts();
    void delete_parts();
    void spawn_part(Ref<PartData> part_data);
@@ -64,7 +64,7 @@ private:
    bool mirroring = false;
    Vector<Part*> parts;
    Rect2 region = {0.0, 0.0, 0.0, 0.0};
-   Vector2 mouse_offset;
+   Vector2 mouse_offset = {0.0F, 0.0F};
    PartGrouping* mirrored = nullptr;
 
    void update_region();
@@ -72,7 +72,7 @@ private:
    void reposition_mirrored();
    void add_part(Part* part);
    void rotate_smoothly(int quarter_turns, float duration = 0.15);
-   bool contains_mouse();
+   bool contains_mouse() const;
 };
 
 }

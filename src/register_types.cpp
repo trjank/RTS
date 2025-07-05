@@ -16,9 +16,9 @@
 #include "celestial.hpp"
 #include "star.hpp"
 #include "map.hpp"
+#include "unique_part.hpp"
 
 void Unit::_bind_methods() {
-	// ClassDB::bind_static_method("Unit", D_METHOD("set_warp_visual", "new_warp_visual"), &Unit::set_warp_visual);
 	ClassDB::bind_method(D_METHOD("get_HP"), &Unit::get_hp);
 	ClassDB::bind_method(D_METHOD("get_radar_signature"), &Unit::get_radar_signature);
 	ClassDB::bind_method(D_METHOD("kill"), &Unit::kill);
@@ -27,9 +27,11 @@ void Unit::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("decloak"), &Unit::decloak);
 	ClassDB::bind_method(D_METHOD("stop_moving"), &Unit::stop_moving);
 	ClassDB::bind_method(D_METHOD("stop_targeting"), &Unit::stop_targeting);
+	ClassDB::bind_method(D_METHOD("clear_movement_queue"), &Unit::clear_movement_queue);
 	ClassDB::bind_method(D_METHOD("queue_move", "command"), &Unit::queue_move);
 	ClassDB::bind_method(D_METHOD("set_target"), &Unit::set_target);
 	ClassDB::bind_method(D_METHOD("hit", "damage"), &Unit::hit);
+	ADD_SIGNAL(MethodInfo("warped", PropertyInfo(Variant::VECTOR2, "from"), PropertyInfo(Variant::VECTOR2, "to")));
 }
 void Unit::RadarSignature::_bind_methods() {
 	// Nothing to bind
@@ -38,16 +40,21 @@ void Unit::Command::_bind_methods() {
 	// Nothing to bind
 }
 void Ship::_bind_methods() {
+	ClassDB::bind_static_method("Ship", D_METHOD("create_from", "ship_data"), &Ship::create_from);
+	ClassDB::bind_method(D_METHOD("clone"), &Ship::clone);
 	ClassDB::bind_method(D_METHOD("is_stunlocked"), &Ship::is_stunlocked);
 	ClassDB::bind_method(D_METHOD("fire"), &Ship::fire);
+	ClassDB::bind_method(D_METHOD("kill"), &Ship::kill);
 	ClassDB::bind_method(D_METHOD("get_owner"), &Ship::get_owner);
 	ClassDB::bind_method(D_METHOD("get_cost"), &Ship::get_cost);
 	ClassDB::bind_method(D_METHOD("get_energy"), &Ship::get_energy);
 	ClassDB::bind_method(D_METHOD("get_shield"), &Ship::get_shield);
+	ClassDB::bind_method(D_METHOD("get_ratio_reserve_energy"), &Ship::get_ratio_reserve_energy);
+	ClassDB::bind_method(D_METHOD("get_ratio_recharge_warp"), &Ship::get_ratio_recharge_warp);
+	ClassDB::bind_method(D_METHOD("get_ratio_recharge_shield"), &Ship::get_ratio_recharge_shield);
 	ClassDB::bind_method(D_METHOD("get_data"), &Ship::get_data);
 	ClassDB::bind_method(D_METHOD("set_owner", "new_owner"), &Ship::set_owner);
-	ClassDB::bind_method(D_METHOD("set_data", "new_data"), &Ship::set_data);
-	ClassDB::bind_method(D_METHOD("copy_data_from", "other_ship"), &Ship::copy_data_from);
+	ClassDB::bind_method(D_METHOD("reset_stats"), &Ship::reset_stats);
 	ClassDB::bind_method(D_METHOD("hit_shield", "damage"), &Ship::hit_shield);
 	ClassDB::bind_method(D_METHOD("hit", "damage", "shield_penetration"), &Ship::hit);
 	ADD_SIGNAL(MethodInfo("fire"));
@@ -65,6 +72,7 @@ void MouseCommands::_bind_methods() {
 	BIND_ENUM_CONSTANT(NONE);
 	BIND_ENUM_CONSTANT(MOVE);
 	BIND_ENUM_CONSTANT(TARGET);
+	BIND_ENUM_CONSTANT(NUM_OF_ACTIONS);
 }
 void MouseSelection::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_enabled"), &MouseSelection::is_enabled);
@@ -79,54 +87,122 @@ void MouseSelection::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("selection_ended", PropertyInfo(Variant::ARRAY, "selected")));
 }
 void Battle::_bind_methods() {
+	BIND_ENUM_CONSTANT(STOPPED);
+	BIND_ENUM_CONSTANT(STARTING);
+	BIND_ENUM_CONSTANT(RUNNING);
+	BIND_ENUM_CONSTANT(OKAY);
+	BIND_ENUM_CONSTANT(TEAM_NOT_FOUND);
+	BIND_ENUM_CONSTANT(PLAYER_NOT_FOUND);
+	BIND_ENUM_CONSTANT(WRONG_STATE);
+	BIND_ENUM_CONSTANT(UNBALANCED_TEAMS);
+	BIND_CONSTANT(SPECTATORS_ID);
+	BIND_CONSTANT(NUM_SPECTATOR_TEAMS);
+	ClassDB::bind_method(D_METHOD("is_map_generated"), &Battle::is_map_generated);
+	ClassDB::bind_method(D_METHOD("is_team_balanced", "team"), &Battle::is_team_balanced);
+	ClassDB::bind_method(D_METHOD("has_player_id", "player_id"), &Battle::has_player_id);
+	ClassDB::bind_method(D_METHOD("has_team_id", "team_id"), &Battle::has_team_id);
+	ClassDB::bind_method(D_METHOD("has_player", "player"), &Battle::has_player);
+	ClassDB::bind_method(D_METHOD("has_team", "team"), &Battle::has_team);
+	ClassDB::bind_method(D_METHOD("count_unbalanced_teams"), &Battle::count_unbalanced_teams);
+	ClassDB::bind_method(D_METHOD("count_capturables"), &Battle::count_capturables);
+	ClassDB::bind_method(D_METHOD("get_num_capturables_to_win"), &Battle::get_num_capturables_to_win);
+	ClassDB::bind_method(D_METHOD("count_players"), &Battle::count_players);
+	ClassDB::bind_method(D_METHOD("count_teams"), &Battle::count_teams);
+	ClassDB::bind_method(D_METHOD("count_teams_left"), &Battle::count_teams_left);
 	ClassDB::bind_method(D_METHOD("get_seed"), &Battle::get_seed);
 	ClassDB::bind_method(D_METHOD("get_map"), &Battle::get_map);
-	ClassDB::bind_method(D_METHOD("get_state"), &Battle::get_state);
 	ClassDB::bind_method(D_METHOD("get_winner"), &Battle::get_winner);
-	ClassDB::bind_method(D_METHOD("get_seconds_left"), &Battle::get_seconds_left);
-	ClassDB::bind_method(D_METHOD("get_minutes_left"), &Battle::get_minutes_left);
-	ClassDB::bind_method(D_METHOD("get_time_left_sec"), &Battle::get_time_left_sec);
-	ClassDB::bind_method(D_METHOD("get_duration_sec"), &Battle::get_duration_sec);
-	ClassDB::bind_method(D_METHOD("get_countdown_sec"), &Battle::get_countdown_sec);
-	ClassDB::bind_method(D_METHOD("set_seed", "new_seed"), &Battle::set_seed);
+	ClassDB::bind_method(D_METHOD("get_spectators"), &Battle::get_spectators);
+	ClassDB::bind_method(D_METHOD("get_team", "team_id"), &Battle::get_team);
+	ClassDB::bind_method(D_METHOD("get_player", "player_id"), &Battle::get_player);
+	ClassDB::bind_method(D_METHOD("get_starting_alloy"), &Battle::get_starting_alloy);
+	ClassDB::bind_method(D_METHOD("get_starting_energy"), &Battle::get_starting_energy);
+	ClassDB::bind_method(D_METHOD("get_starting_alloy_per_sec"), &Battle::get_starting_alloy_per_sec);
+	ClassDB::bind_method(D_METHOD("get_starting_energy_per_sec"), &Battle::get_starting_energy_per_sec);
+	ClassDB::bind_method(D_METHOD("set_num_capturables_to_win", "new_num_capturables_to_win"), &Battle::set_num_capturables_to_win);
+	ClassDB::bind_method(D_METHOD("set_domination_victory_ratio", "new_domination_victory_ratio"), &Battle::set_domination_victory_ratio);
+	ClassDB::bind_method(D_METHOD("set_starting_alloy", "new_starting_alloy"), &Battle::set_starting_alloy);
+	ClassDB::bind_method(D_METHOD("set_starting_energy", "new_starting_energy"), &Battle::set_starting_energy);
+	ClassDB::bind_method(D_METHOD("set_starting_alloy_per_sec", "new_starting_alloy_per_sec"), &Battle::set_starting_alloy_per_sec);
+	ClassDB::bind_method(D_METHOD("set_starting_energy_per_sec", "new_starting_energy_per_sec"), &Battle::set_starting_energy_per_sec);
 	ClassDB::bind_method(D_METHOD("set_map", "new_map"), &Battle::set_map);
-	ClassDB::bind_method(D_METHOD("set_duration_sec", "new_duration_sec"), &Battle::set_duration_sec);
-	ClassDB::bind_method(D_METHOD("set_countdown_sec", "new_countdown_sec"), &Battle::set_countdown_sec);
-	ClassDB::bind_method(D_METHOD("new_team", "name"), &Battle::new_team);
-	ClassDB::bind_method(D_METHOD("new_player"), &Battle::new_player);
-	ClassDB::bind_method(D_METHOD("start"), &Battle::start);
+	ClassDB::bind_method(D_METHOD("set_seed", "new_seed"), &Battle::set_seed);
+	ClassDB::bind_method(D_METHOD("set_team", "player", "new_team"), &Battle::set_team);
 	ClassDB::bind_method(D_METHOD("start_countdown"), &Battle::start_countdown);
+	ClassDB::bind_method(D_METHOD("start"), &Battle::start);
 	ClassDB::bind_method(D_METHOD("stop"), &Battle::stop);
+	ClassDB::bind_method(D_METHOD("declare_winner"), &Battle::declare_winner);
+	ClassDB::bind_method(D_METHOD("declare_winning_team", "team"), &Battle::declare_winning_team);
+	ClassDB::bind_method(D_METHOD("autobalance", "team", "other_team"), &Battle::autobalance);
+	ClassDB::bind_method(D_METHOD("reset_autobalance"), &Battle::reset_autobalance);
+	ClassDB::bind_method(D_METHOD("connect_player", "player_name", "color"), &Battle::connect_player);
+	ClassDB::bind_method(D_METHOD("disconnect_player", "player"), &Battle::disconnect_player);
+	ClassDB::bind_method(D_METHOD("disconnect_all_players"), &Battle::disconnect_all_players);
+	ClassDB::bind_method(D_METHOD("kill_player", "player"), &Battle::kill_player);
+	ClassDB::bind_method(D_METHOD("kill_team", "team"), &Battle::kill_team);
+	ClassDB::bind_method(D_METHOD("add_team", "team_name"), &Battle::add_team);
+	ClassDB::bind_method(D_METHOD("reset_teams"), &Battle::reset_teams);
+	ClassDB::bind_method(D_METHOD("spawn_ship", "player", "ship_data", "spawnpoint"), &Battle::spawn_ship);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "seed"), "set_seed", "get_seed");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration_sec"), "set_duration_sec", "get_duration_sec");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "countdown_sec"), "set_countdown_sec", "get_countdown_sec");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "starting_alloy"), "set_starting_alloy", "get_starting_alloy");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "starting_energy"), "set_starting_energy", "get_starting_energy");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "starting_alloy_per_sec"), "set_starting_alloy_per_sec", "get_starting_alloy_per_sec");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "starting_energy_per_sec"), "set_starting_energy_per_sec", "get_starting_energy_per_sec");
+	ADD_SIGNAL(MethodInfo("spawned_ship", PropertyInfo(Variant::OBJECT, "ship")));
+	ADD_SIGNAL(MethodInfo("started_countdown"));
+	ADD_SIGNAL(MethodInfo("started"));
+	ADD_SIGNAL(MethodInfo("stopped"));
 }
 void Player::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_energy"), &Player::get_energy);
+	BIND_CONSTANT(MAX_NAME_LENGTH);
 	ClassDB::bind_method(D_METHOD("get_alloy"), &Player::get_alloy);
-	ClassDB::bind_method(D_METHOD("get_color"), &Player::get_color);
+	ClassDB::bind_method(D_METHOD("get_energy"), &Player::get_energy);
+	ClassDB::bind_method(D_METHOD("get_alloy_bounty"), &Player::get_alloy_bounty);
+	ClassDB::bind_method(D_METHOD("get_energy_bounty"), &Player::get_energy_bounty);
 	ClassDB::bind_method(D_METHOD("get_name"), &Player::get_name);
-	ClassDB::bind_method(D_METHOD("get_clan"), &Player::get_clan);
+	ClassDB::bind_method(D_METHOD("get_color"), &Player::get_color);
 	ClassDB::bind_method(D_METHOD("get_team"), &Player::get_team);
-	ClassDB::bind_method(D_METHOD("set_color", "new_color"), &Player::set_color);
+	ClassDB::bind_method(D_METHOD("set_alloy_bounty", "new_alloy_bounty"), &Player::set_alloy_bounty);
+	ClassDB::bind_method(D_METHOD("set_energy_bounty", "new_energy_bounty"), &Player::set_energy_bounty);
 	ClassDB::bind_method(D_METHOD("set_name", "new_name"), &Player::set_name);
-	ClassDB::bind_method(D_METHOD("set_clan", "new_clan"), &Player::set_clan);
-	ClassDB::bind_method(D_METHOD("set_team", "new_team"), &Player::set_team);
+	ClassDB::bind_method(D_METHOD("set_color", "new_team"), &Player::set_color);
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "alloy_bounty"), "set_alloy_bounty", "get_alloy_bounty");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "energy_bounty"), "set_energy_bounty", "get_energy_bounty");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "name"), "set_name", "get_name");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "clan"), "set_clan", "get_clan");
+	ADD_SIGNAL(MethodInfo("changed_name", PropertyInfo(Variant::STRING, "name")));
+	ADD_SIGNAL(MethodInfo("changed_color", PropertyInfo(Variant::COLOR, "color")));
 }
 void Team::_bind_methods() {
-
+	BIND_CONSTANT(MAX_NAME_LENGTH);
+	ClassDB::bind_method(D_METHOD("is_sudden_death"), &Team::is_sudden_death);
+	ClassDB::bind_method(D_METHOD("count_players"), &Team::count_players);
+	ClassDB::bind_method(D_METHOD("count_players_alive"), &Team::count_players_alive);
+	ClassDB::bind_method(D_METHOD("count_celestials_owned"), &Team::count_celestials_owned);
+	ClassDB::bind_method(D_METHOD("count_kills"), &Team::count_kills);
+	ClassDB::bind_method(D_METHOD("count_losses"), &Team::count_losses);
+	ClassDB::bind_method(D_METHOD("get_value_killed"), &Team::get_value_killed);
+	ClassDB::bind_method(D_METHOD("get_value_lost"), &Team::get_value_lost);
+	ClassDB::bind_method(D_METHOD("get_net_value"), &Team::get_net_value);
+	ClassDB::bind_method(D_METHOD("get_alloy_per_sec"), &Team::get_alloy_per_sec);
+	ClassDB::bind_method(D_METHOD("get_energy_per_sec"), &Team::get_energy_per_sec);
+	ClassDB::bind_method(D_METHOD("get_name"), &Team::get_name);
+	ClassDB::bind_method(D_METHOD("get_color"), &Team::get_color);
+	ClassDB::bind_method(D_METHOD("set_sudden_death"), &Team::set_sudden_death);
+	ClassDB::bind_method(D_METHOD("set_name", "new_name"), &Team::set_name);
+	ClassDB::bind_method(D_METHOD("set_color", "new_color"), &Team::set_color);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "sudden_death"), "set_sudden_death", "is_sudden_death");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "name"), "set_name", "get_name");
+	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 }
 void Orbit::_bind_methods() {
 	ClassDB::bind_static_method("Orbit", D_METHOD("get_time_scale"), &Orbit::get_time_scale);
 	ClassDB::bind_static_method("Orbit", D_METHOD("set_time_scale", "new_time_scale"), &Orbit::set_time_scale);
+	ClassDB::bind_method(D_METHOD("get_linear_velocity"), &Orbit::get_linear_velocity);
 	ClassDB::bind_method(D_METHOD("get_angular_velocity"), &Orbit::get_angular_velocity);
 	ClassDB::bind_method(D_METHOD("get_distance"), &Orbit::get_distance);
 	ClassDB::bind_method(D_METHOD("set_distance", "new_distance"), &Orbit::set_distance);
 	ClassDB::bind_method(D_METHOD("orbit", "celestial"), &Orbit::orbit);
-	ClassDB::bind_method(D_METHOD("add", "orbiter", "angle"), &Orbit::add);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "distance"), "set_distance", "get_distance");
 }
 void Celestial::_bind_methods() {
@@ -204,7 +280,16 @@ void PartManager::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_parts_folder_path", "new_parts_folder_path"), &PartManager::set_parts_folder_path);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "parts_folder_path"), "set_parts_folder_path", "get_parts_folder_path");
 }
-void TurretMountData::_bind_methods() {
+void WeaponData::_bind_methods() {
+
+}
+void WeaponModifierData::_bind_methods() {
+
+}
+void WeaponMountData::_bind_methods() {
+
+}
+void Weapon::_bind_methods() {
 
 }
 void ResizableSprite2D::_bind_methods() {
@@ -212,8 +297,10 @@ void ResizableSprite2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("resize_region", "new_size"), &ResizableSprite2D::resize_region);
 }
 void Part::_bind_methods() {
+	ClassDB::bind_static_method("Part", D_METHOD("create_from", "part_data"), &Part::create_from);
 	ClassDB::bind_method(D_METHOD("get_data"), &Part::get_data);
-	ClassDB::bind_method(D_METHOD("set_data", "new_data"), &Part::set_data);
+	ClassDB::bind_method(D_METHOD("get_rect"), &Part::get_rect);
+	ClassDB::bind_method(D_METHOD("get_global_rect"), &Part::get_global_rect);
 }
 void PartGrouping::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_dragging"), &PartGrouping::is_dragging);
@@ -234,6 +321,8 @@ void ShipData::_bind_methods() {
 	BIND_ENUM_CONSTANT(EDGE_TOP);
 	BIND_ENUM_CONSTANT(EDGE_LEFT);
 	BIND_ENUM_CONSTANT(EDGE_RIGHT);
+	BIND_ENUM_CONSTANT(EDGES_TOP_BOTTOM);
+	BIND_ENUM_CONSTANT(EDGES_LEFT_RIGHT);
 	BIND_ENUM_CONSTANT(FULL_PERIMETER);
 	BIND_ENUM_CONSTANT(ROT_0_DEG);
 	BIND_ENUM_CONSTANT(ROT_90_DEG);
@@ -292,15 +381,17 @@ void Star::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_radius", "new_radius"), &Star::set_radius);
 }
 void Map::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_distance"), &Map::get_distance);
+	// Nothing to bind
 }
 void MapLayer::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_preset"), &MapLayer::get_preset);
+	BIND_CONSTANT(SECTOR_LIMIT);
+	BIND_CONSTANT(ORBIT_LIMIT);
+	ClassDB::bind_method(D_METHOD("get_submap"), &MapLayer::get_submap);
 	ClassDB::bind_method(D_METHOD("get_num_orbits"), &MapLayer::get_num_orbits);
 	ClassDB::bind_method(D_METHOD("get_num_sectors"), &MapLayer::get_num_sectors);
 	ClassDB::bind_method(D_METHOD("get_orbit_spacing"), &MapLayer::get_orbit_spacing);
 	ClassDB::bind_method(D_METHOD("get_start_distance"), &MapLayer::get_start_distance);
-	ClassDB::bind_method(D_METHOD("set_preset", "new_preset"), &MapLayer::set_preset);
+	ClassDB::bind_method(D_METHOD("set_submap", "new_submap"), &MapLayer::set_submap);
 	ClassDB::bind_method(D_METHOD("set_num_orbits", "new_num_orbits"), &MapLayer::set_num_orbits);
 	ClassDB::bind_method(D_METHOD("set_num_sectors", "new_num_sectors"), &MapLayer::set_num_sectors);
 	ClassDB::bind_method(D_METHOD("set_orbit_spacing", "new_orbit_spacing"), &MapLayer::set_orbit_spacing);
@@ -309,10 +400,10 @@ void MapLayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "num_sectors"), "set_num_sectors", "get_num_sectors");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "orbit_spacing"), "set_orbit_spacing", "get_orbit_spacing");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "start_distance"), "set_start_distance", "get_start_distance");
-	BIND_CONSTANT(SECTOR_LIMIT);
-	BIND_CONSTANT(ORBIT_LIMIT);
 }
 void System::_bind_methods() {
+	ClassDB::bind_static_method("System", D_METHOD("set_default_name", "new_default_name"), &System::set_default_name);
+	ClassDB::bind_static_method("System", D_METHOD("set_default_texture", "new_default_texture"), &System::set_default_texture);
 	ClassDB::bind_method(D_METHOD("get_energy_density"), &System::get_energy_density);
 	ClassDB::bind_method(D_METHOD("get_alloy_density"), &System::get_alloy_density);
 	ClassDB::bind_method(D_METHOD("get_names"), &System::get_names);
@@ -324,12 +415,11 @@ void System::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_alloy_density", "new_alloy_density"), &System::set_alloy_density);
 	ClassDB::bind_method(D_METHOD("set_names", "new_names"), &System::set_names);
 	ClassDB::bind_method(D_METHOD("set_textures", "new_textures"), &System::set_textures);
-	ClassDB::bind_method(D_METHOD("load_names_from_file", "path"), &System::load_names_from_file);
-	ClassDB::bind_method(D_METHOD("load_textures_from_folder", "path"), &System::load_textures_from_folder);
 	ClassDB::bind_method(D_METHOD("new_layer", "layer"), &System::new_layer);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "alloy_density"), "set_alloy_density", "get_alloy_density");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "energy_density"), "set_energy_density", "get_energy_density");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "names"), "set_names", "get_names");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "textures"), "set_textures", "get_textures");
 }
 void StarSystem::_bind_methods() {
 	// Nothing to bind
@@ -337,6 +427,7 @@ void StarSystem::_bind_methods() {
 
 void initialize_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) return;
+
 	GDREGISTER_CLASS(Unit);
 	GDREGISTER_CLASS(Unit::Command);
 	GDREGISTER_CLASS(Unit::RadarSignature);
@@ -353,7 +444,6 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(Star);
 	GDREGISTER_CLASS(PartData);
 	GDREGISTER_CLASS(PartManager);
-	GDREGISTER_CLASS(TurretMountData);
 	GDREGISTER_CLASS(Part);
 	GDREGISTER_CLASS(PartGrouping);
 	GDREGISTER_CLASS(ShipData);
@@ -362,6 +452,12 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(MapLayer);
 	GDREGISTER_CLASS(System);
 	GDREGISTER_CLASS(StarSystem);
+
+	GDREGISTER_CLASS(Weapon);
+	GDREGISTER_CLASS(WeaponData);
+	GDREGISTER_CLASS(WeaponModifierData);
+	GDREGISTER_CLASS(WeaponMountData);
+
 	UtilityFunctions::print("Loaded Unit from unit.cpp");
 	UtilityFunctions::print("Loaded Command from unit.cpp");
 	UtilityFunctions::print("Loaded RadarSignature from unit.cpp");

@@ -35,33 +35,32 @@ public:
    static constexpr int MAX_DESC_LENGTH = 400;
    static constexpr int NUM_CSV_HEADER = 10;
 
+   // See unique_part_data.cpp for the create_correct_subtype function definition
    static Ref<PartData> create_correct_subtype(String subtype);
 
-   bool can_rotate();
    Behavior get_behavior();
    virtual void load_unique_data(Dictionary data);
-   virtual Part* new_part();
-   int get_atlas_id();
-   int get_cost();
-   double get_hp();
-   double get_mass();
-   double get_warp();
-   double get_shield();
-   double get_energy();
-   double get_warp_per_sec();
-   double get_shield_per_sec();
-   double get_energy_per_sec();
-   double get_thrust();
-   double get_turning_momentum();
-   Vector2i get_size();
-   Vector2i get_size_px();
-   String get_code();
-   String get_subtype();
-   String get_name();
-   String get_tab();
-   String get_desc();
-   Ref<Image> get_image();
-   Ref<Texture2D> get_texture();
+   int get_atlas_id() const;
+   int get_cost() const;
+   double get_hp() const;
+   double get_mass() const;
+   double get_warp() const;
+   double get_shield() const;
+   double get_energy() const;
+   double get_warp_per_sec() const;
+   double get_shield_per_sec() const;
+   double get_energy_per_sec() const;
+   double get_thrust() const;
+   double get_turning_momentum() const;
+   Vector2i get_size() const;
+   Vector2i get_size_px() const;
+   String get_code() const;
+   String get_subtype() const;
+   String get_name() const;
+   String get_tab() const;
+   String get_desc() const;
+   Ref<Image> get_image() const;
+   Ref<Texture2D> get_texture() const;
    void set_cost(int new_cost);
    void set_hp(double new_hp);
    void set_mass(double new_mass);
@@ -71,11 +70,11 @@ public:
    void set_tab(String new_tab);
    void set_desc(String new_desc);
    void set_image_path(String local_path);
+   // See part.cpp for the new_blank_part function definition
+   virtual Part* new_blank_part();
 protected:
    static void _bind_methods();
 
-   bool exposed_to_design_mode = true;
-   bool rotate_enabled = true;
    double warp = 0.0;
    double shield = 0.0;
    double energy = 0.0;
@@ -106,13 +105,14 @@ private:
 class PartManager: public RefCounted {
    GDCLASS(PartManager, RefCounted)
 public:
-   static constexpr int CODE_LENGTH = 4;
    enum PropertyOrder: int {
       CODE, SUBTYPE, NAME, TAB, COST, HP, MASS, WIDTH, HEIGHT, PATH, DESC, NUM_PROPERTIES
    };
    const PackedStringArray CSV_HEADER = {
       "code", "subtype", "name", "tab", "cost", "hp", "mass", "width", "height", "path", "desc"
    };
+
+   static constexpr int CODE_LENGTH = 4;
 
    int count_parts();
    const PackedVector2Array get_atlas_offsets();

@@ -83,13 +83,13 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[node name="Design" type="Node2D" node_paths=PackedStringArray("overlay", "container", "part_grouping", "grid", "info_text")]
+[node name="Design" type="Node2D" node_paths=PackedStringArray("overlay", "container", "part_grouping", "mirror_axis", "grid")]
 script = ExtResource("1_wctwy")
 overlay = NodePath("UI")
 container = NodePath("UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer")
 part_grouping = NodePath("Grid/PartGrouping")
+mirror_axis = NodePath("MirrorAxis")
 grid = NodePath("Grid")
-info_text = NodePath("InfoText")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -290,6 +290,7 @@ script = ExtResource("11_541lb")
 texture_filter = 1
 texture_repeat = 2
 texture = ExtResource("15_ha1ne")
+centered = false
 region_enabled = true
 region_rect = Rect2(2.08165e-12, 2.08165e-12, 256, 256)
 
@@ -301,26 +302,7 @@ texture = ExtResource("7_1reeb")
 region_enabled = true
 script = ExtResource("10_6vk6i")
 
-[node name="InfoText" type="Label" parent="."]
-custom_minimum_size = Vector2(1000, 2.08165e-12)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -499.0
-offset_top = -22.0
-offset_right = 501.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 30
-text = "Drag parts from the sidebar to begin building a ship!"
-horizontal_alignment = 1
-autowrap_mode = 3
-
 [node name="MirrorAxis" type="Line2D" parent="."]
-position = Vector2(2.08165e-12, -1000)
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
 default_color = Color(1, 0, 0, 1)
