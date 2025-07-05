@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cxyn26sy7uyyr"]
 
-[ext_resource type="Script" path="res://settings/settings_menu.gd" id="1_17m10"]
+[ext_resource type="Script" uid="uid://ocul6wdp2fmr" path="res://settings/settings_menu.gd" id="1_17m10"]
 [ext_resource type="PackedScene" uid="uid://bfjk4a5p0r345" path="res://settings/settings_panel.tscn" id="1_dq6we"]
 [ext_resource type="PackedScene" uid="uid://bnnn7c40rsf6y" path="res://settings/keybinds_panel.tscn" id="1_u45p5"]
 
@@ -53,10 +53,13 @@ anchor_bottom = 0.95
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
+current_tab = 0
 
 [node name="Keybinds" parent="MarginContainer/HBoxContainer/Control/TabContainer" instance=ExtResource("1_u45p5")]
 layout_mode = 2
+metadata/_tab_index = 0
 
 [node name="Settings" parent="MarginContainer/HBoxContainer/Control/TabContainer" instance=ExtResource("1_dq6we")]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 1

@@ -293,6 +293,9 @@ void ShipManager::load_part_into_ship(Ref<ShipData> ship, PackedStringArray csv_
 Ref<ImageTexture> ShipManager::load_ship_image(String path) {
    return ResourceLoader::get_singleton()->load(path);
 }
+
+
+
 Ref<ShipData> ShipManager::load_ship_csv(String path) {
    Ref<ShipData> ship = memnew(ShipData);
    Ref<FileAccess> file = FileAccess::open(path, FileAccess::READ);
@@ -337,4 +340,16 @@ void ShipManager::save_ship_csv(Ref<ShipData> ship, String path) {
    for (int id = ShipData::NULL_PART_ID + 1; id <= ship->count_parts(); ++id) {
       csv->store_csv_line( to_csv_line(ship, id) );
    }
+}
+
+String ShipManager::save_ship_string(Ref<ShipData>ship){
+
+      String str = "NULL";
+      if(ship==nullptr){return str;}
+      str = "";
+      String delim = ",";
+   for (int id = ShipData::NULL_PART_ID + 1; id <= ship->count_parts(); ++id) {
+     str += delim.join(to_csv_line(ship, id))+"\n";
+   }
+   return str; 
 }

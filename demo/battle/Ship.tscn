@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://bb6bj8b6mhosi"]
 
-[ext_resource type="Script" path="res://battle/Ship.gd" id="1_7vtla"]
+[ext_resource type="Script" uid="uid://bu8anae5g1vpa" path="res://battle/Ship.gd" id="1_7vtla"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_dupo0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tm37y"]

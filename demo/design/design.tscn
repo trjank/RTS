@@ -1,8 +1,8 @@
-[gd_scene load_steps=29 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=30 format=3 uid="uid://coexpo0l4q1vv"]
 
-[ext_resource type="Script" path="res://design/design.gd" id="1_wctwy"]
+[ext_resource type="Script" uid="uid://drja8rt2q5lro" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
-[ext_resource type="Script" path="res://design/fleet_selector.gd" id="4_nwsnp"]
+[ext_resource type="Script" uid="uid://v8mawr11ryf" path="res://design/fleet_selector.gd" id="4_nwsnp"]
 [ext_resource type="Texture2D" uid="uid://blwjohdbu8pgf" path="res://icons/fleet_rename.png" id="5_8hx7x"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="5_q73th"]
 [ext_resource type="Texture2D" uid="uid://inbrq5b8ia5x" path="res://icons/fleet_delete.png" id="5_tfe8n"]
@@ -11,14 +11,15 @@
 [ext_resource type="Texture2D" uid="uid://c14cadhha1ghj" path="res://icons/parts_container_background.png" id="7_1reeb"]
 [ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="7_5fbpj"]
 [ext_resource type="Theme" uid="uid://dgs1qnc6a3qos" path="res://design/dropdown_theme.tres" id="7_leno0"]
-[ext_resource type="Script" path="res://design/OptionButton.gd" id="8_s4sq3"]
+[ext_resource type="PackedScene" uid="uid://x7hwc0lotf28" path="res://fleet_button.tscn" id="8_on51i"]
+[ext_resource type="Script" uid="uid://dkg1ykinhcaoh" path="res://design/OptionButton.gd" id="8_s4sq3"]
 [ext_resource type="Texture2D" uid="uid://b1q6iuiq8kne0" path="res://icons/mirror_mode_disabled.png" id="9_neots"]
-[ext_resource type="Script" path="res://design/PartGrouping.gd" id="10_6vk6i"]
-[ext_resource type="Script" path="res://design/MirrorButton.gd" id="10_u7s8c"]
-[ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
+[ext_resource type="Script" uid="uid://cece57hcyjahr" path="res://design/PartGrouping.gd" id="10_6vk6i"]
+[ext_resource type="Script" uid="uid://dtcemeptgnqng" path="res://design/MirrorButton.gd" id="10_u7s8c"]
+[ext_resource type="Script" uid="uid://boh5ns12auhcx" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://icons/grid_background_5x5.png" id="15_ha1ne"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popup_menu.tres" id="18_01mpa"]
-[ext_resource type="Script" path="res://design/RenameFleetPopup.gd" id="19_ract4"]
+[ext_resource type="Script" uid="uid://dke6yo2bmh8v3" path="res://design/RenameFleetPopup.gd" id="19_ract4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bomom"]
 content_margin_left = 0.0
@@ -35,8 +36,6 @@ content_margin_bottom = 20.0
 bg_color = Color(0.261579, 0.30508, 0.367227, 1)
 border_color = Color(1, 0.678431, 0.984314, 1)
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgale"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jti52"]
 content_margin_left = 20.0
 content_margin_top = 15.0
@@ -45,6 +44,8 @@ content_margin_bottom = 15.0
 bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgale"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w8n0p"]
 texture = ExtResource("7_1reeb")
@@ -124,19 +125,19 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_o6k85")
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("7_leno0")
+theme_override_colors/font_hover_color = Color(1, 0.572419, 0.617748, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.572549, 0.619608, 1)
-theme_override_colors/font_hover_color = Color(1, 0.572419, 0.617748, 1)
 theme_override_constants/h_separation = 15
-theme_override_constants/arrow_margin = 15
 theme_override_font_sizes/font_size = 28
-theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
 theme_override_styles/focus = ExtResource("2_wxr8y")
-theme_override_styles/normal = ExtResource("2_wxr8y")
 theme_override_styles/hover = ExtResource("2_wxr8y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_jti52")
-item_count = 5
+theme_override_styles/normal = ExtResource("2_wxr8y")
+theme_override_constants/arrow_margin = 15
+theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
 selected = 3
+item_count = 5
 popup/item_0/text = "NEW FLEET"
 popup/item_0/icon = ExtResource("5_tiyvg")
 popup/item_0/id = 0
@@ -163,6 +164,19 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ship_buttons" type="VBoxContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/ScrollContainer/ship_buttons" instance=ExtResource("8_on51i")]
+layout_mode = 2
 
 [node name="PartsContainer" type="PanelContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer"]
 layout_mode = 2
@@ -198,15 +212,15 @@ layout_mode = 2
 theme = ExtResource("7_leno0")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/h_separation = 15
-theme_override_constants/arrow_margin = 15
 theme_override_font_sizes/font_size = 28
-theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
 theme_override_styles/focus = ExtResource("2_wxr8y")
-theme_override_styles/normal = ExtResource("2_wxr8y")
 theme_override_styles/hover = ExtResource("2_wxr8y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_epnfi")
-item_count = 4
+theme_override_styles/normal = ExtResource("2_wxr8y")
+theme_override_constants/arrow_margin = 15
+theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
 selected = 0
+item_count = 4
 popup/item_0/text = "Energy"
 popup/item_0/icon = ExtResource("5_q73th")
 popup/item_0/id = 0
@@ -245,30 +259,35 @@ theme_override_constants/margin_bottom = 20
 [node name="TabContainer" type="TabContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_f44sc")
+current_tab = 0
 tabs_visible = false
 
 [node name="Energy" type="FlowContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
+metadata/_tab_index = 0
 
 [node name="Armor" type="FlowContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
+metadata/_tab_index = 1
 
 [node name="Weapons" type="FlowContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
+metadata/_tab_index = 2
 
 [node name="Utility" type="FlowContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
+metadata/_tab_index = 3
 
 [node name="RightSidebar" type="HSplitContainer" parent="UI/NavigatorOffset/HSplitContainer"]
 layout_mode = 2
@@ -287,6 +306,7 @@ z_index = 1
 script = ExtResource("11_541lb")
 
 [node name="Grid" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 texture_filter = 1
 texture_repeat = 2
 texture = ExtResource("15_ha1ne")
@@ -369,8 +389,8 @@ text = "No name provided!"
 [node name="NewName" type="LineEdit" parent="RenameFleetPopup/VBoxContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 70)
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_placeholder_color = Color(0.489622, 0.489622, 0.489622, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 26
 theme_override_styles/normal = SubResource("StyleBoxFlat_fkia0")
 placeholder_text = "*Unnamed"

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://xhpmyx3j2abg"]
 
-[ext_resource type="Script" path="res://settings/keybind_row.gd" id="1_2ka5g"]
+[ext_resource type="Script" uid="uid://1h214f0yjmxj" path="res://settings/keybind_row.gd" id="1_2ka5g"]
 
 [node name="KeybindRow" type="MarginContainer"]
 anchors_preset = 15

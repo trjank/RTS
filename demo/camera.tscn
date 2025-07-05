@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://j7rna5tdvxk4"]
 
-[ext_resource type="Script" path="res://Camera.gd" id="1_a05ur"]
+[ext_resource type="Script" uid="uid://bygy8g6kv5kvx" path="res://Camera.gd" id="1_a05ur"]
 
 [node name="Camera" type="RigidBody2D" node_paths=PackedStringArray("camera_node")]
 gravity_scale = 1.66533e-16

@@ -29,6 +29,9 @@ var parts := {
 
 var gravity := 1.0
 
+var defaultFleetName = "default"
+var defaultFleetID = 0
+
 # var jovian_config := {
 # 	"min_mass": 50.0,
 # 	"max_mass": 100.0,

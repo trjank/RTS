@@ -267,6 +267,7 @@ void ShipData::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_part_node", "part"), &ShipData::add_part_node);
 	ClassDB::bind_method(D_METHOD("collision_check", "point"), &ShipData::add_part_node);
 	ClassDB::bind_method(D_METHOD("find_neighbors", "part_id", "flags"), &ShipData::find_neighbors);
+	//ClassDB::bind_method(D_METHOD("get_parts"),&ShipData::get_parts);
 }
 void ShipManager::_bind_methods() {
    BIND_CONSTANT(NULL_PART_ATLAS_ID);
@@ -274,6 +275,7 @@ void ShipManager::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("save_ship_csv", "ship", "path"), &ShipManager::save_ship_csv);
 	ClassDB::bind_method(D_METHOD("load_ship_image", "path"), &ShipManager::load_ship_image);
 	ClassDB::bind_method(D_METHOD("load_ship_csv", "path"), &ShipManager::load_ship_csv);
+	ClassDB::bind_method(D_METHOD("save_ship_string"), &ShipManager::save_ship_string);
 }
 void Star::_bind_methods() {
 	ClassDB::bind_static_method("Star", D_METHOD("set_star_shader", "shader"), &Star::set_star_shader);

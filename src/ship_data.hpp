@@ -65,6 +65,7 @@ public:
    Vector2 get_center_of_mass();
    Ref<PartData> get_part_data(int part_id);
    Ref<Image> get_image();
+   Vector<Ref<PartData>> get_parts();
    void set_image(Ref<Image> new_image);
    bool has_part(int part_id);
    int add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state);
@@ -122,8 +123,10 @@ public:
    ShipManager();
    void save_ship_image(Ref<ShipData> ship, String path);
    void save_ship_csv(Ref<ShipData> ship, String path);
+   String save_ship_string(Ref<ShipData>ship);
    Ref<ImageTexture> load_ship_image(String path);
    Ref<ShipData> load_ship_csv(String path);
+   
 protected:
    static void _bind_methods();
 private:
