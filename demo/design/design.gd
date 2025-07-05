@@ -1,6 +1,6 @@
 extends Node2D
 
-enum {MIRROR_AXIS_START_POINT = 0, MIRROR_AXIS_END_POINT = 1}
+enum {MIRROR_AXIS_START_POINT, MIRROR_AXIS_END_POINT}
 
 @export var overlay: CanvasLayer
 @export var container: TabContainer
@@ -17,6 +17,7 @@ func hide_overlay()->void:
 func resize(size: Vector2)->void:
 	size *= PartData.PX_PER_GRID_SQUARE
 	grid.region_rect.size = size
+	mirror_axis.position.x = 0.5 * size.x
 	mirror_axis.points[MIRROR_AXIS_END_POINT].y = size.y
 
 func _input(event):

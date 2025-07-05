@@ -149,7 +149,7 @@ void System::create_layer(Ref<RandomNumberGenerator> rng, Celestial& parent, Ref
    }
 }
 Map::Result System::generate(Ref<RandomNumberGenerator> rng, Node2D& parent, int max_depth) {
-   Result result = {0, 0.0, nullptr};
+   Result result = {1, 0.0, nullptr};
 
    /*------------------------------------------------------|
    | max_depth helps prevent infinite recursions, which    |

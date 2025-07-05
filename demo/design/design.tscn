@@ -88,7 +88,7 @@ script = ExtResource("1_wctwy")
 overlay = NodePath("UI")
 container = NodePath("UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer")
 part_grouping = NodePath("Grid/PartGrouping")
-mirror_axis = NodePath("MirrorAxis")
+mirror_axis = NodePath("Grid/MirrorAxis")
 grid = NodePath("Grid")
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -232,7 +232,7 @@ texture_normal = ExtResource("9_neots")
 ignore_texture_size = true
 stretch_mode = 4
 script = ExtResource("10_u7s8c")
-mirror_axis = NodePath("../../../../../../../../../../../MirrorAxis")
+mirror_axis = NodePath("../../../../../../../../../../../Grid/MirrorAxis")
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer"]
 layout_mode = 2
@@ -302,7 +302,7 @@ texture = ExtResource("7_1reeb")
 region_enabled = true
 script = ExtResource("10_6vk6i")
 
-[node name="MirrorAxis" type="Line2D" parent="."]
+[node name="MirrorAxis" type="Line2D" parent="Grid"]
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
 default_color = Color(1, 0, 0, 1)

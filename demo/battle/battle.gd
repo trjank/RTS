@@ -22,15 +22,15 @@ func _ready()->void:
 	make_map()
 	round_timer.wait_time = 360.0
 	countdown_timer.wait_time = 5.0
-	start_countdown()
+	start()
 
 func make_map()->void:
+	System.set_default_texture(preload("res://images_planets_terrestrial/unloaded_celestial.tres"))
 	Orbit.set_time_scale(100)
 	
 	var sun := StarSystem.new()
 	sun.set_radius_range(300, 500)
 	sun.set_mass_range(100, 200)
-	#sun.load_textures_from_folder("res://images_stars")
 	sun.names = ["Star"]
 	sun.textures = [preload("res://images_stars/blue.png")]
 	
@@ -39,16 +39,13 @@ func make_map()->void:
 	planets.set_mass_range(100, 200)
 	planets.alloy_density = 1
 	planets.energy_density = 1
-	#planets.load_textures_from_folder("res://images_planets_jovian")
 	planets.names = ["Planet"]
 	planets.textures = [preload("res://images_planets_jovian/blue.png")]
 	
 	var moons := System.new()
 	moons.set_radius_range(100, 200)
 	moons.set_mass_range(50, 100)
-	#moons.load_textures_from_folder("res://images_planets_terrestrial")
 	moons.names = ["Moon"]
-	moons.textures = [preload("res://images_planets_terrestrial/unloaded_celestial.tres")]
 
 	var planets_layer := MapLayer.new()
 	planets_layer.set_submap(planets)
