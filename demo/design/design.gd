@@ -13,14 +13,19 @@ var fleet:Fleet
 @onready var manager := PartManager.new()
 @onready var ship_button = preload("res://fleet_button.tscn")
 const UNSAVED_SHIP_ID = -1
-const UNSAVED_SHIP_NAME = "Untitled"
+const UNSAVED_SHIP_NAME = " "
 const UNSAVED_FLEET_NAME = "*Unsaved"
 const UNSAVED_FLEET_ID  = -1
+const DEFAULT_SLOT = 0
+const FLEET_SIZE = 10
 
 #var fleet_manager := FleetManager.new()
 var rename:String = "*Unsaved"
 var ship_name = UNSAVED_SHIP_NAME
-var current_ship_id = UNSAVED_SHIP_ID
+var current_ship_slot = DEFAULT_SLOT
+
+var slots = {}
+enum {SHIP_ID, SHIP_SLOT, SHIP_BUTTON}
 var unsaved:bool = false
 #@onready var fleet_folder = DirAccess.open("user://fleets")
 var db:DB
@@ -35,7 +40,6 @@ HAF1,36.5,36.5,0"
 
 
 """
-
 schizo notes
 sortof a stateful things happening..
 
@@ -49,7 +53,7 @@ sortof a stateful things happening..
 
 
 state transitions: 
-	- clicking a ship button with an empty ship will turn into SHIP state
+	- clicking a ship button with an empty ship will turn into NO_SHIP state
 
 	- picking an existing fleet will turn into FLEET state
 
@@ -89,15 +93,20 @@ func set_grid_size(size: Vector2)->void:
 
 func save_ship(ship:ShipData, ship_manager:ShipManager):
 	var ship_stats = ship_manager.save_ship_string(ship)
-	if current_ship_id != -1:
-		db.update_ship_stats(current_ship_id,ship_stats)
+	var cur_slot = slots[current_ship_slot]
+	var cur_id = cur_slot[SHIP_ID]
+	if cur_id > -1:
+		db.update_ship_stats(cur_id ,ship_stats)
 		return
 	var results = db.create_ship(ship_name, ship_stats)
 	if results.size() > 0:
-		current_ship_id = results[0]["id"]
+		cur_slot[SHIP_ID] = results[0]["id"]
+		cur_slot[SHIP_BUTTON].button.text = "Untitled"
+		cur_slot[SHIP_BUTTON].delete_button.visible = true
+
+
+	
 		
-
-
 func save_ship_img(ship:ShipData):
 		var bounds_x = ship.get_ship_bounds_x()
 		var bounds_y = ship.get_ship_bounds_y()
@@ -120,12 +129,63 @@ func _input(event):
 		save_ship(ship,ship_manager)
 		save_ship_img(ship)
 
+func clear_grid():
+	part_grouping.clear_parts()
+	for part in grid.get_children():
+		grid.remove_child(part)
+	grid.add_child(part_grouping)
+
+func change_slot(slot):
+	slots[current_ship_slot][SHIP_BUTTON].delete_button.visible = false
+	current_ship_slot = slot
+	
+	var data = slots[slot]
+	clear_grid()
+	if data[SHIP_ID] < 0:
+		return
+	var shipdata = db.get_ship(data[SHIP_ID])
+	if not shipdata:
+		return
+	load_ship(shipdata[0]["stats"])
+	data[SHIP_BUTTON].delete_button.visible = true
+	#data[SHIP_BUTTON].delete_button.connect(clear_current_slot)
+
+
+func create_ship_button(button_name, method, del_method):
+	var new_button = ship_button.instantiate()
+	new_button.method = method
+	new_button.delete_method = del_method
+	new_button.button_name = button_name
+	return new_button
+
+func clear_current_slot():
+	clear_grid()
+
+	slots[current_ship_slot][SHIP_ID] = UNSAVED_SHIP_ID
+	slots[current_ship_slot][SHIP_BUTTON] = UNSAVED_SHIP_NAME
+
+
 func setup_ship_buttons(ships):
-	for ship in ships:
-		var new_button = ship_button.instantiate()
-		new_button.button_name = "Untitled "+str(ship["id"])
-		new_button.method = load_ship.bind(ship["stats"])
-		ship_buttons.add_child(new_button)
+	ships.resize(FLEET_SIZE)
+	for num in range(FLEET_SIZE):
+		var cur_ship = ships[num]
+		var btn_name = UNSAVED_SHIP_NAME
+		var btn_id = -1
+		if cur_ship:
+			btn_name = cur_ship["name"]
+			btn_id = cur_ship["id"]
+
+
+	
+		var button = create_ship_button(btn_name,change_slot.bind(num),clear_current_slot)
+		var data = {}
+		data[SHIP_ID] = btn_id
+		data[SHIP_SLOT] = num
+		data[SHIP_BUTTON] = button
+		slots[num] = data
+		ship_buttons.add_child(button)
+		
+
 
 func _ready():
 	set_grid_size(Vector2(64, 64))

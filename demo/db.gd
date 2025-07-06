@@ -2,6 +2,7 @@ class_name DB extends Node
 
 var database:SQLite
 var db_path = "user://shipdb.db"
+#i just manually made a db LOL
 
 
 
@@ -24,15 +25,13 @@ func get_ships(limit):
 		return database.query_result
 	return []
 
-
-
 func get_fleet(fleet_id):
 	if database.query_with_bindings("SELECT * FROM Ships WHERE Ships.id == ?;",[fleet_id]):
 		return database.query_result
 	return []
 
 func get_ships_in_fleet(fleet_id):
-	if database.query_with_bindings("SELECT * FROM Ships WHERE Ships.id == ShipFleet.id AND ShipFleet.fleetid == ?;",[fleet_id]):
+	if database.query_with_bindings("SELECT Ships.id, Ships.stats, Ships.name FROM Ships, ShipFleet WHERE Ships.id == ShipFleet.shipid AND ShipFleet.fleetid == ?;",[fleet_id]):
 		return database.query_result
 	return []
 
