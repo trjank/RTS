@@ -84,7 +84,7 @@ private:
    double starting_alloy_per_sec = 10.0;
    double starting_energy_per_sec = 10.0;
    NEVER_NULL Ref<Team> winner;
-   NEVER_NULL Ref<RandomNumberGenerator> rng;
+   NEVER_NULL Ref<RandomNumberGenerator> rng = memnew(RandomNumberGenerator);
    NEVER_NULL Ref<Map> map = get_default<Map>();
    Vector<Ref<Player>> players;
    Vector<Ref<Team>> teams;

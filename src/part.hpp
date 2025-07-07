@@ -63,11 +63,13 @@ private:
    bool dragging = false;
    Vector2 mouse_offset = {0.0, 0.0};
    const Vector2 TEXTURE_OFFSET = {0.0, 0.0};
+   const Vector2 GRID_SQUARE = {PartData::PX_PER_GRID_SQUARE, PartData::PX_PER_GRID_SQUARE};
 
    void stop_dragging();
    void begin_dragging();
    void add_part(Part* part);
-   void snap_vector_to_grid(Vector2& vector);
+   Vector2 grid_snap_floor(Vector2 vector);
+   Vector2 grid_snap_ceil(Vector2 vector);
 };
 
 }

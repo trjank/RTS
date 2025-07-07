@@ -309,7 +309,7 @@ mirror_button = NodePath("../../UI/NavigatorOffset/HSplitContainer/HBoxContainer
 visible = false
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
-default_color = Color(1, 0, 0, 1)
+default_color = Color(0.0666667, 0.176471, 0.337255, 1)
 
 [node name="RenameFleetPopup" type="AcceptDialog" parent="." node_paths=PackedStringArray("warning_label", "name_edit")]
 title = "RENAME FLEET"

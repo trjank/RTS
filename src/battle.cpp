@@ -9,7 +9,6 @@ Battle::Battle() {
    teams_left = {spectators};
    team_balance.new_set();
    set_physics_process(false);
-   rng.instantiate();
 }
 Battle::~Battle() {
    destroy_map();

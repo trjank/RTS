@@ -31,14 +31,14 @@ void Part::_ship_init(const Ship& parent_ship, int part_id) {
 void Part::create_image() {
 	ResizableSprite2D* image = memnew(ResizableSprite2D);
 
-	add_child(image);
+	add_child(image, false, INTERNAL_MODE_FRONT);
 	image->set_texture( data->get_texture() );
 	image->resize( data->get_size_px() );
 }
 void Part::create_hitbox() {
 	CollisionShape2D* shape = memnew(CollisionShape2D);
 
-	add_child(shape);
+	add_child(shape, false, INTERNAL_MODE_FRONT);
 	hitbox->set_size( data->get_size_px() );
 	shape->set_shape(hitbox);
 }
@@ -105,8 +105,8 @@ bool PartGrouping::spawn_part(Ref<PartData> part_data) {
 void PartGrouping::select_parts(TypedArray<Node2D> selection, Rect2 region) {
 	clear_parts();
 
-	snap_vector_to_grid(region.position);
-	snap_vector_to_grid(region.size);
+	region.expand_to( grid_snap_floor(region.position) );
+	region.expand_to( grid_snap_ceil( region.get_end() ) );
 
 	set_global_position( region.get_center() );
 	set_global_rotation(0.0);
@@ -120,8 +120,8 @@ void PartGrouping::select_parts(TypedArray<Node2D> selection, Rect2 region) {
 	}
 }
 void PartGrouping::snap_to_grid() {
-	Rect2 rect = get_transform().xform( get_rect() );
-	snap_vector_to_grid(rect.position);
+	Rect2 rect    = get_transform().xform( get_rect() );
+	rect.position = rect.position.snapped(GRID_SQUARE);
 	set_position( rect.get_center() );
 }
 void PartGrouping::_process(double _dt) {
@@ -130,7 +130,7 @@ void PartGrouping::_process(double _dt) {
 void PartGrouping::_input(const Ref<InputEvent>& event) {
 	if (event->is_action_released("delete"))
 		delete_parts();
-	if (event->is_action_pressed("select") && contains_mouse())
+	if (event->is_action_pressed("select") && contains_mouse() && get_child_count() > 0)
 		begin_dragging();
 
 	if ( !dragging) return;
@@ -161,6 +161,9 @@ void PartGrouping::stop_dragging() {
 void PartGrouping::add_part(Part* part) {
 	if (part) part->reparent(this);
 }
-void PartGrouping::snap_vector_to_grid(Vector2& vector) {
-	vector = vector.snapped( {PartData::PX_PER_GRID_SQUARE, PartData::PX_PER_GRID_SQUARE} );
+Vector2 PartGrouping::grid_snap_floor(Vector2 vector) {
+	return vector - vector.posmod(PartData::PX_PER_GRID_SQUARE);
+}
+Vector2 PartGrouping::grid_snap_ceil(Vector2 vector) {
+	return grid_snap_floor(vector) + GRID_SQUARE;
 }

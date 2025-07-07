@@ -113,7 +113,7 @@ Part* Ship::create_unique_part(int part_id) {
 void Ship::create_image() {
    ResizableSprite2D* image = memnew(ResizableSprite2D);
 
-   add_child(image);
+   add_child(image, false, INTERNAL_MODE_FRONT);
    image->set_texture( data->get_image() );
    image->resize( data->get_size_px() );
 }
