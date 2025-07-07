@@ -111,6 +111,7 @@ layer = 2
 visible = false
 
 [node name="Battle" parent="." instance=ExtResource("5_rtafa")]
+seed = -2691266858627287251
 
 [node name="Design" parent="." instance=ExtResource("7_873ts")]
 

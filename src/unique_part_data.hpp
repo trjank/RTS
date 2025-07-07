@@ -15,6 +15,8 @@ public:
    Vector2 get_hitbox_size();
    void set_hitscan(bool make_hitscan);
    void set_hitbox_size(Vector2 new_hitbox_size);
+protected:
+   static void _bind_methods();
 private:
    bool hitscan = false;
    Vector2 hitbox_size = {1.0F, 1.0F};

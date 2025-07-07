@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=30 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://inbrq5b8ia5x" path="res://icons/fleet_delete.png" id="5_tfe8n"]
 [ext_resource type="Texture2D" uid="uid://wq8ei1nlxqqq" path="res://icons/fleet_new.png" id="5_tiyvg"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="6_0y3e0"]
-[ext_resource type="Texture2D" uid="uid://c14cadhha1ghj" path="res://icons/parts_container_background.png" id="7_1reeb"]
+[ext_resource type="Texture2D" uid="uid://ogk3gdxrpgi4" path="res://icons/parts_container_background.png" id="7_1reeb"]
 [ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="7_5fbpj"]
 [ext_resource type="Theme" uid="uid://dgs1qnc6a3qos" path="res://design/dropdown_theme.tres" id="7_leno0"]
 [ext_resource type="Script" path="res://design/OptionButton.gd" id="8_s4sq3"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://design/MirrorButton.gd" id="10_u7s8c"]
 [ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://icons/grid_background_5x5.png" id="15_ha1ne"]
+[ext_resource type="Texture2D" uid="uid://cvcfx8expolen" path="res://icons/parts_selection_background.png" id="17_qupps"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popup_menu.tres" id="18_01mpa"]
 [ext_resource type="Script" path="res://design/RenameFleetPopup.gd" id="19_ract4"]
 
@@ -294,15 +295,18 @@ centered = false
 region_enabled = true
 region_rect = Rect2(2.08165e-12, 2.08165e-12, 256, 256)
 
-[node name="PartGrouping" type="PartGrouping" parent="Grid"]
+[node name="PartGrouping" type="PartGrouping" parent="Grid" node_paths=PackedStringArray("mirror_axis", "mirror_button")]
 z_index = 1
 texture_filter = 1
 texture_repeat = 2
-texture = ExtResource("7_1reeb")
+texture = ExtResource("17_qupps")
 region_enabled = true
 script = ExtResource("10_6vk6i")
+mirror_axis = NodePath("../MirrorAxis")
+mirror_button = NodePath("../../UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton")
 
 [node name="MirrorAxis" type="Line2D" parent="Grid"]
+visible = false
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
 default_color = Color(1, 0, 0, 1)
@@ -396,7 +400,10 @@ text = "This action cannot be undone!"
 [connection signal="button_down" from="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" method="_on_button_down"]
 [connection signal="selection_ended" from="MouseSelection" to="Grid/PartGrouping" method="_on_mouse_selection_selection_ended"]
 [connection signal="dragging_ended" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_ended"]
+[connection signal="dragging_ended" from="Grid/PartGrouping" to="Grid/PartGrouping" method="_on_dragging_ended"]
 [connection signal="dragging_started" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_started"]
+[connection signal="dragging_started" from="Grid/PartGrouping" to="Grid/PartGrouping" method="_on_dragging_started"]
+[connection signal="parts_rotated" from="Grid/PartGrouping" to="Grid/PartGrouping" method="_on_parts_rotated"]
 [connection signal="confirmed" from="RenameFleetPopup" to="RenameFleetPopup" method="_on_confirmed"]
 [connection signal="valid_rename" from="RenameFleetPopup" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_rename_fleet_popup_valid_rename"]
 [connection signal="confirmed" from="DeleteFleetPopup" to="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_delete_fleet_popup_confirmed"]

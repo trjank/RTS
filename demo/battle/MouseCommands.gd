@@ -7,5 +7,5 @@ func _ready():
 	bind_cursor_to_action(preload("res://icons/cursor_move.png"), MOVE)
 	bind_cursor_to_action(preload("res://icons/cursor_target.png"), TARGET)
 
-func _on_mouse_selection_selection_ended(selected):
+func _on_mouse_selection_selection_ended(selected: Array[Node2D], _rect: Rect2):
 	select_units(selected)

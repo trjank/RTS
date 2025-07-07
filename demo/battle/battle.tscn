@@ -34,6 +34,7 @@ corner_radius_bottom_right = 25
 corner_radius_bottom_left = 25
 
 [node name="Battle" type="Battle" node_paths=PackedStringArray("countdown_timer", "round_timer", "overlay")]
+seed = 3508627170063674437
 script = ExtResource("1_2ostc")
 countdown_timer = NodePath("CountdownTimer")
 round_timer = NodePath("RoundTimer")
@@ -264,5 +265,3 @@ script = ExtResource("1_777ku")
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
 enabled = false
-
-[connection signal="selection_ended" from="MouseSelection" to="MouseCommands" method="_on_mouse_selection_selection_ended"]

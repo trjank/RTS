@@ -76,15 +76,16 @@ void MouseCommands::_bind_methods() {
 }
 void MouseSelection::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_enabled"), &MouseSelection::is_enabled);
+	ClassDB::bind_method(D_METHOD("is_selecting"), &MouseSelection::is_enabled);
 	ClassDB::bind_method(D_METHOD("get_color"), &MouseSelection::get_color);
+	ClassDB::bind_method(D_METHOD("get_region"), &MouseSelection::get_region);
 	ClassDB::bind_method(D_METHOD("get_selected"), &MouseSelection::get_selected);
 	ClassDB::bind_method(D_METHOD("set_enabled", "enable"), &MouseSelection::set_enabled);
 	ClassDB::bind_method(D_METHOD("set_color", "new_color"), &MouseSelection::set_color);
-	ClassDB::bind_method(D_METHOD("set_visibility", "visibility"), &MouseSelection::set_visibility);
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enabled"), "set_enabled", "is_enabled");
 	ADD_SIGNAL(MethodInfo("selection_started"));
-	ADD_SIGNAL(MethodInfo("selection_ended", PropertyInfo(Variant::ARRAY, "selected")));
+	ADD_SIGNAL(MethodInfo("selection_ended", PropertyInfo(Variant::ARRAY, "selected"), PropertyInfo(Variant::RECT2, "region")));
 }
 void Battle::_bind_methods() {
 	BIND_ENUM_CONSTANT(STOPPED);
@@ -293,27 +294,29 @@ void Weapon::_bind_methods() {
 
 }
 void ResizableSprite2D::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("resize_scaled", "new_size"), &ResizableSprite2D::resize_scaled);
-	ClassDB::bind_method(D_METHOD("resize_region", "new_size"), &ResizableSprite2D::resize_region);
+	ClassDB::bind_method(D_METHOD("resize", "new_size"), &ResizableSprite2D::resize);
 }
 void Part::_bind_methods() {
 	ClassDB::bind_static_method("Part", D_METHOD("create_from", "part_data"), &Part::create_from);
 	ClassDB::bind_method(D_METHOD("get_data"), &Part::get_data);
-	ClassDB::bind_method(D_METHOD("get_rect"), &Part::get_rect);
-	ClassDB::bind_method(D_METHOD("get_global_rect"), &Part::get_global_rect);
 }
 void PartGrouping::_bind_methods() {
+	BIND_CONSTANT(CLOCKWISE);
+	BIND_CONSTANT(COUNTER_CLOCKWISE);
+	ClassDB::bind_method(D_METHOD("clone"), &PartGrouping::clone);
 	ClassDB::bind_method(D_METHOD("is_dragging"), &PartGrouping::is_dragging);
+	ClassDB::bind_method(D_METHOD("flip_parts"), &PartGrouping::flip_parts);
+	ClassDB::bind_method(D_METHOD("rotate_parts", "quarter_turns", "duration"), &PartGrouping::rotate_parts);
 	ClassDB::bind_method(D_METHOD("spawn_part", "part_data"), &PartGrouping::spawn_part);
 	ClassDB::bind_method(D_METHOD("select_parts", "parts"), &PartGrouping::select_parts);
 	ClassDB::bind_method(D_METHOD("clear_parts"), &PartGrouping::clear_parts);
 	ClassDB::bind_method(D_METHOD("delete_parts"), &PartGrouping::delete_parts);
-	ClassDB::bind_method(D_METHOD("get_mirroring"), &PartGrouping::get_mirroring);
-	ClassDB::bind_method(D_METHOD("set_mirroring"), &PartGrouping::set_mirroring);
 	ClassDB::bind_method(D_METHOD("snap_to_grid"), &PartGrouping::snap_to_grid);
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "mirroring"), "set_mirroring", "get_mirroring");
+	ADD_SIGNAL(MethodInfo("parts_deleted"));
+	ADD_SIGNAL(MethodInfo("parts_rotated", PropertyInfo(Variant::INT, "quarter_turns"), PropertyInfo(Variant::FLOAT, "duration")));
+	ADD_SIGNAL(MethodInfo("parts_flipped"));
 	ADD_SIGNAL(MethodInfo("dragging_started"));
-	ADD_SIGNAL(MethodInfo("dragging_ended"));
+	ADD_SIGNAL(MethodInfo("dragging_ended", PropertyInfo(Variant::ARRAY, "selected"), PropertyInfo(Variant::RECT2, "region")));
 }
 void ShipData::_bind_methods() {
 	BIND_CONSTANT(NULL_PART_ID);
@@ -424,6 +427,9 @@ void System::_bind_methods() {
 void StarSystem::_bind_methods() {
 	// Nothing to bind
 }
+void ProjectileData::_bind_methods() {
+
+}
 
 void initialize_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) return;
@@ -454,6 +460,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(StarSystem);
 
 	GDREGISTER_CLASS(Weapon);
+	GDREGISTER_CLASS(ProjectileData);
 	GDREGISTER_CLASS(WeaponData);
 	GDREGISTER_CLASS(WeaponModifierData);
 	GDREGISTER_CLASS(WeaponMountData);

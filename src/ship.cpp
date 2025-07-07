@@ -115,7 +115,7 @@ void Ship::create_image() {
 
    add_child(image);
    image->set_texture( data->get_image() );
-   image->resize_scaled( data->get_size_px() );
+   image->resize( data->get_size_px() );
 }
 void Ship::calculate_reserve_ratios() {
    /*------------------------------------------------------|

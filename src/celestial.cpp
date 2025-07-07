@@ -56,7 +56,7 @@ void Orbit::fix_distance(Node2D* orbiter) {
 }
 void Orbit::_draw() {
    if (orbiting && path_visible)
-      draw_arc( {0.0F, 0.0F}, distance, 0.0, Math_TAU, NUM_SEGMENTS, COLOR, THICKNESS, true);
+      draw_arc( {0.0, 0.0}, distance, 0.0, Math_TAU, NUM_SEGMENTS, COLOR, THICKNESS, true);
 }
 void Orbit::_physics_process(double dt) {
    rotate(time_scale * get_angular_velocity() * dt);
@@ -122,7 +122,7 @@ void Celestial::set_radius(double new_radius) {
    float diameter = 2 * radius;
 
    hitbox->set_radius(radius);
-   image->resize_scaled( {diameter, diameter} );
+   image->resize( {diameter, diameter} );
    update_label_text();
 }
 void Celestial::set_custom_name(String new_custom_name) {
@@ -160,7 +160,7 @@ void Celestial::_physics_process(double dt) {
 }
 void Celestial::_draw() {
    if (owner.is_valid())
-      draw_arc( {0.0F, 0.0F}, radius, 0.0, Math_TAU, NUM_SEGMENTS, owner->get_color(), THICKNESS, true);
+      draw_arc( {0.0, 0.0}, radius, 0.0, Math_TAU, NUM_SEGMENTS, owner->get_color(), THICKNESS, true);
    if (contestor.is_valid())
-      draw_arc( {0.0F, 0.0F}, radius, 0.0, Math_TAU * capture_progress, NUM_SEGMENTS, contestor->get_color(), THICKNESS, true);
+      draw_arc( {0.0, 0.0}, radius, 0.0, Math_TAU * capture_progress, NUM_SEGMENTS, contestor->get_color(), THICKNESS, true);
 }
