@@ -2,19 +2,26 @@
 
 using namespace godot;
 
-ProjectileData::ProjectileData() {
-   exposed_to_design_mode = SHOW_PROJECTILES_IN_DESIGN_MODE;
+Ref<PartData> PartData::create_correct_subtype(String subtype) {
+   if (subtype == "weapon")
+      return memnew(WeaponData);
+   if (subtype == "weapon_modifier")
+      return memnew(WeaponModifierData);
+   if (subtype == "weapon_mount")
+      return memnew(WeaponMountData);
+   if (subtype == "projectile")
+      return memnew(ProjectileData);
+   if (subtype != "")
+      WARN_PRINT_ED("<PartData> Subtype '" + subtype + "' not recognized");
+   return memnew(PartData);
 }
+
+
 void ProjectileData::load_unique_data(Dictionary data) {
    PartData::load_unique_data(data);
-   bool instahit = data.get("hitscan", hitscan);
-   Vector2 size  = data.get("hitbox_size", hitbox_size);
-   set_hitscan(instahit);
-   set_size(size);
-}
-Part* ProjectileData::new_part() {
-   WARN_PRINT_ED("<ProjectileData> Use new_projectile instead of new_part");
-   return nullptr;
+
+   set_hitscan( data.get("hitscan", hitscan) );
+   set_size( data.get("hitbox_size", hitbox_size) );
 }
 bool ProjectileData::is_hitscan() {
    return hitscan;
@@ -30,23 +37,69 @@ void ProjectileData::set_hitbox_size(Vector2 new_hitbox_size) {
 }
 
 
+void WeaponModifiers::combine(const WeaponModifiers& other_modifiers) {
+   /*------------------------------------------------------|
+   | Modifiers stack exponentially. If you want to impose  |
+   | limits, do so here. However, we recommend you         |
+   | change the size of the mods instead. This simplifies  |
+   | the logic and serves as a visual cue to players.      |
+   |------------------------------------------------------*/
+   multiplier_range    *= other_modifiers.multiplier_range;
+   multiplier_energy   *= other_modifiers.multiplier_energy;
+   multiplier_speed    *= other_modifiers.multiplier_speed;
+   multiplier_cooldown *= other_modifiers.multiplier_cooldown;
+}
+
+
+double WeaponModifierData::get_multiplier_range() const {
+   return modifiers.multiplier_range;
+}
+double WeaponModifierData::get_multiplier_energy() const {
+   return modifiers.multiplier_energy;
+}
+double WeaponModifierData::get_multiplier_speed() const {
+   return modifiers.multiplier_speed;
+}
+double WeaponModifierData::get_multiplier_cooldown() const {
+   return modifiers.multiplier_cooldown;
+}
+void WeaponModifierData::set_multiplier_range(double new_multiplier_range) {
+   modifiers.multiplier_range = Math::max(new_multiplier_range, 0.0);
+}
+void WeaponModifierData::set_multiplier_energy(double new_multiplier_energy) {
+   modifiers.multiplier_energy = Math::max(new_multiplier_energy, 0.0);
+}
+void WeaponModifierData::set_multiplier_speed(double new_multiplier_speed) {
+   modifiers.multiplier_speed = Math::max(new_multiplier_speed, 0.0);
+}
+void WeaponModifierData::set_multiplier_cooldown(double new_multiplier_cooldown) {
+   modifiers.multiplier_cooldown = Math::max(new_multiplier_cooldown, 0.0);
+}
+void WeaponModifierData::load_unique_data(Dictionary data) {
+   PartData::load_unique_data(data);
+
+   set_multiplier_range( data.get("multiplier_range", modifiers.multiplier_range) );
+   set_multiplier_energy( data.get("multiplier_energy", modifiers.multiplier_energy) );
+   set_multiplier_speed( data.get("multiplier_speed", modifiers.multiplier_speed) );
+   set_multiplier_cooldown( data.get("multiplier_cooldown", modifiers.multiplier_cooldown) );
+}
+
+
 WeaponData::WeaponData() {
-   unique = true;
+   behavior = PartData::UNIQUE_DISCONNECTED;
 }
 void WeaponData::load_unique_data(Dictionary data) {
    PartData::load_unique_data(data);
-   int shots        = data.get("shots_per_burst", shots_per_burst);
-   double energy    = data.get("energy_per_shot", energy_per_shot);
-   double range     = data.get("base_range", base_range);
-   double spread    = data.get("spread_angle", spread_angle);
-   double sec_shots = data.get("sec_between_shots", sec_between_shots);
-   double reload    = data.get("reload_sec", reload_sec);
-   set_shots_per_burst(shots);
-   set_energy_per_shot(energy);
-   set_base_range(range);
-   set_spread_angle(spread);
-   set_sec_between_shots(sec_shots);
-   set_reload_sec(reload);
+
+   set_shots_per_burst( data.get("shots_per_burst", shots_per_burst) );
+   set_energy_per_shot( data.get("energy_per_shot", energy_per_shot) );
+   set_base_range( data.get("base_range", base_range) );
+   set_spread_angle( data.get("spread_angle", spread_angle) );
+   set_sec_between_shots( data.get("sec_between_shots", sec_between_shots) );
+   set_reload_sec( data.get("reload_sec", reload_sec) );
+}
+bool WeaponData::is_burst_weapon() {
+   return shots_per_burst == 1;
 }
 int WeaponData::get_shots_per_burst() {
    return shots_per_burst;
@@ -95,58 +148,47 @@ void WeaponData::set_reload_sec(double new_reload_sec) {
 }
 void WeaponData::calculate_firerates() {
    double burst_sec = sec_between_shots * (shots_per_burst - 1);
-   bool div_by_zero = shots_per_burst == 1;
-   firerate         = shots_per_burst / (burst_sec + reload_sec);
-   burst_firerate   = div_by_zero ? firerate : (shots_per_burst / burst_sec);
+   double cycle_sec = burst_sec + reload_sec;
+   firerate         = shots_per_burst / cycle_sec;
+   burst_firerate   = shots_per_burst / burst_sec;
 }
 
 
-void TurretMountData::load_unique_data(Dictionary data) {
-   PartData::load_unique_data(data);
-   double angle = data.get("firing_arc_degrees", firing_arc_degrees);
-   double arc   = data.get("angle_degrees", angle_degrees);
-   set_firing_arc_degrees(arc);
-   set_angle_degrees(angle);
+ShipData::BoundaryFlag WeaponMountData::get_mod_boundary(ShipData::RotationState _rotation) {
+   return ShipData::FULL_PERIMETER;
 }
-bool TurretMountData::is_compatible_with(Ref<WeaponData> weapon) {
-   return weapon.is_valid() && get_size() == weapon->get_size();
+bool WeaponMountData::is_compatible_with(Ref<WeaponData> weapon) {
+   return weapon.is_valid() && get_size().width == weapon->get_size().width;
 }
-double TurretMountData::get_min_angle() {
+double WeaponMountData::get_min_angle() {
    return min_angle;
 }
-double TurretMountData::get_max_angle() {
+double WeaponMountData::get_max_angle() {
    return max_angle;
 }
-int TurretMountData::get_firing_arc_degrees() {
+int WeaponMountData::get_firing_arc_degrees() {
    return firing_arc_degrees;
 }
-int TurretMountData::get_angle_degrees() {
+int WeaponMountData::get_angle_degrees() {
    return angle_degrees;
 }
-void TurretMountData::set_firing_arc_degrees(int new_firing_arc_degrees) {
+void WeaponMountData::set_firing_arc_degrees(double new_firing_arc_degrees) {
    firing_arc_degrees = new_firing_arc_degrees;
    calculate_min_max();
 }
-void TurretMountData::set_angle_degrees(int new_angle_degrees) {
+void WeaponMountData::set_angle_degrees(double new_angle_degrees) {
    angle_degrees = new_angle_degrees;
    calculate_min_max();
 }
-void TurretMountData::calculate_min_max() {
-   double angle = Math::deg_to_rad(static_cast<float>(angle_degrees));
-   double arc   = Math::deg_to_rad(static_cast<float>(firing_arc_degrees));
-   min_angle = angle - 0.5 * arc;
-   max_angle = angle + 0.5 * arc;
+void WeaponMountData::load_unique_data(Dictionary data) {
+   WeaponModifierData::load_unique_data(data);
+
+   set_angle_degrees( data.get("angle_degrees", angle_degrees) );
+   set_firing_arc_degrees( data.get("firing_arc_degrees", firing_arc_degrees) );
 }
-
-
-Ref<PartData> PartData::create_correct_subtype(String subtype) {
-   if (subtype == "weapon")
-      return memnew(WeaponData);
-   if (subtype == "turret_mount")
-      return memnew(TurretMountData);
-   if (subtype == "projectile")
-      return memnew(ProjectileData);
-   if (subtype != "")
-      WARN_PRINT_ED("Part subtype '" + subtype + "' not recognized");
-   return memnew(PartData);
+void WeaponMountData::calculate_min_max() {
+   double angle = Math::deg_to_rad(angle_degrees);
+   double arc   = Math::deg_to_rad(firing_arc_degrees);
+   min_angle    = angle - 0.5 * arc;
+   max_angle    = angle + 0.5 * arc;
 }

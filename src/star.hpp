@@ -13,7 +13,7 @@ public:
    static void set_star_shader(Ref<ShaderMaterial> shader);
    static void set_black_hole_shader(Ref<ShaderMaterial> shader);
    bool is_black_hole();
-   bool can_capture() override;
+   bool can_capture() const override;
    void set_mass(double new_mass) override;
    void set_radius(double new_radius) override;
 protected:

@@ -28,6 +28,14 @@ seed = -1909400080011345178
 script = ExtResource("1_2ostc")
 overlay = NodePath("UI")
 
+[node name="RoundTimer" type="Timer" parent="." node_paths=PackedStringArray("clock_label")]
+one_shot = true
+script = ExtResource("2_gr1rv")
+clock_label = NodePath("../UI/FleetBar/ResourceBar/HBoxContainer/TimeLeft")
+
+[node name="CountdownTimer" type="Timer" parent="."]
+one_shot = true
+
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
 
@@ -115,6 +123,17 @@ theme_override_constants/margin_left = 20
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/HBoxContainer/Control/Panel/MarginContainer"]
 layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
+bbcode_enabled = true
+text = "Time | [color=\"00ed8c\"]0[/color]:[color=\"00ed8c\"]00[/color]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="UI/HBoxContainer/Control/Panel/MarginContainer/HBoxContainer"]
 layout_mode = 2

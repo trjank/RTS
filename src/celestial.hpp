@@ -27,17 +27,19 @@ public:
    static constexpr double MIN_TIME_SCALE = 0.0;
    static constexpr double MAX_TIME_SCALE = 5.0;
    static inline Color COLOR = {1.0, 1.0, 1.0, 0.3};
+
    static double get_time_scale();
    static void set_time_scale(double new_scale);
-   double get_angular_velocity();
-   double get_distance();
-   void set_distance(double new_distance);
+
+   double get_linear_velocity() const;
+   double get_angular_velocity() const;
+   double get_distance() const;
    void set_path_visibility(bool visible);
+   void set_distance(double new_distance);
    void set_angle(Node2D* orbiter, double angle);
    void orbit(Celestial* celestial);
-   void add(Node2D* orbiter, double angle = 0.0);
-   void _physics_process(double dt) override;
    void _draw() override;
+   void _physics_process(double dt) override;
 protected:
    static void _bind_methods();
 private:
@@ -45,8 +47,10 @@ private:
    bool path_visible = true;
    double distance = MIN_DISTANCE;
    Celestial* orbiting = nullptr;
+
    void fix_distance(Node2D* orbiter);
 };
+
 
 class Celestial: public Node2D, public Capturable {
    GDCLASS(Celestial, Node2D)
@@ -54,15 +58,16 @@ public:
    static constexpr int TEXT_SIZE = 50;
    static constexpr int DISPLAY_DECIMAL_PLACES = 1;
    static constexpr float LABEL_OFFSET = 100.0;
+
    Celestial();
-   bool can_capture() override;
-   double get_mass();
-   double get_radius();
-   double get_angular_velocity();
-   double get_alloy_per_sec() override;
-   double get_energy_per_sec() override;
-   String get_custom_name();
-   Ref<Texture2D> get_texture();
+   bool can_capture() const override;
+   double get_mass() const;
+   double get_radius() const;
+   double get_angular_velocity() const;
+   double get_alloy_per_sec() const override;
+   double get_energy_per_sec() const override;
+   String get_custom_name() const;
+   Ref<Texture2D> get_texture() const;
    void set_alloy_density(double density);
    void set_energy_density(double density);
    virtual void set_mass(double new_mass);
@@ -79,8 +84,7 @@ protected:
 private:
    static constexpr int NUM_SEGMENTS = 100;
    static constexpr double THICKNESS = 10.0;
-   static double alloy_abundance;
-   static double energy_abundance;
+
    double alloy_density = 0.0;
    double energy_density = 0.0;
    double mass = 0.0;
@@ -95,8 +99,10 @@ private:
    Ref<Team> contestor;
    Ref<Team> owner;
    String custom_name;
+
    void reposition_label();
    void update_label_text();
+
    friend class Orbit;
 };
 

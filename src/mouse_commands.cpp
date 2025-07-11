@@ -5,6 +5,7 @@ using namespace godot;
 
 MouseCommands::MouseCommands() {
    target.instantiate();
+   cursor_bindings.resize(NUM_OF_ACTIONS);
 }
 MouseCommands::Action MouseCommands::get_action() {
    return action;
@@ -28,8 +29,7 @@ void MouseCommands::update_target() {
 }
 void MouseCommands::select_unit(Variant unit) {
    Unit* selected = Object::cast_to<Unit>(unit);
-   bool is_a_unit = selected != nullptr;
-   if (is_a_unit) units.append(selected->get_radar_signature());
+   if (selected) units.append( selected->get_radar_signature() );
 }
 void MouseCommands::select_units(TypedArray<Node2D> selection) {
    units.clear();
@@ -38,14 +38,16 @@ void MouseCommands::select_units(TypedArray<Node2D> selection) {
       select_unit(selection[n]);
    }
 }
-void MouseCommands::order_unit_to_move(Ref<Unit::RadarSignature> unit,
-                                       Ref<Unit::Command> command) {
-   if (unit->get_state() == Unit::DEAD) return;
-   Unit* alive_unit = unit->as_unit();
-   alive_unit->queue_move(command, !queue_move);
+void MouseCommands::order_unit_to_move(Ref<Unit::RadarSignature> unit_signature, Ref<Unit::Command> command) {
+   if (unit_signature->get_state() == Unit::DEAD) return;
+
+   Unit* unit = unit_signature->as_unit();
+   if ( !queue_move) unit->clear_movement_queue();
+   unit->queue_move(command);
 }
 void MouseCommands::order_units_to_move() {
-   ERR_FAIL_COND(commands.size() > units.size());
+   ERR_FAIL_COND_MSG(commands.size() > units.size(),
+   "<MouseCommands> Too many commands for units (failed to order units to move)");
 
    Vector2 comms_center = CommandMoveOrder::get_center(commands);
    Vector2 units_center = UnitMoveOrder::get_center(units);
@@ -58,12 +60,12 @@ void MouseCommands::order_units_to_move() {
    }
    commands.clear();
 }
-void MouseCommands::stop_unit(Ref<Unit::RadarSignature> signature) {
-   ERR_FAIL_COND(signature.is_null());
+void MouseCommands::stop_unit(Ref<Unit::RadarSignature> unit_signature) {
+   ERR_FAIL_NULL_MSG(unit_signature,
+   "<MouseCommands> Radar signature is null (failed to stop unit)");
    
-   if ( !signature->is_valid()) return;
-   Unit* alive_unit = signature->as_unit();
-   alive_unit->stop_moving();
+   if (unit_signature->is_valid())
+      unit_signature->as_unit()->stop_moving();
 }
 void MouseCommands::stop_all_units() {
    for (Ref<Unit::RadarSignature> unit: units) {
@@ -82,7 +84,8 @@ Vector2 MouseCommands::get_point(float parametric_dist) {
 void MouseCommands::begin_path() {
    int num_waypoints = static_cast<int>(formation);
    
-   ERR_FAIL_COND(num_waypoints <= 1);
+   ERR_FAIL_COND_MSG(num_waypoints <= 1,
+   "<MouseCommands> Too few waypoints (failed to begin path)");
    
    Vector2 path_start = get_global_mouse_position();
    path_length = 0.0;
@@ -94,14 +97,13 @@ void MouseCommands::begin_path() {
    }
 }
 void MouseCommands::update_path() {
-   constexpr float UNSTABLE_PATH_LENGTH = 0.1;
    int end_index   = waypoints.size() - 1;
    Vector2 old_end = waypoints[end_index];
    Vector2 new_end = get_global_mouse_position();
    float stretch   = old_end.distance_to(new_end);
    waypoints.set(end_index, new_end);
    
-   if ((path_length += stretch) <= UNSTABLE_PATH_LENGTH) return;
+   if ( (path_length += stretch) <= UNSTABLE_PATH_LENGTH) return;
    
    float step_dist = DIST_BETWEEN_WAYPOINTS + stretch / path_length;
    for (int n = 1; n < end_index; ++n) {
@@ -119,18 +121,18 @@ void MouseCommands::update_commands() {
    }
 }
 void MouseCommands::set_action_with_cursor(Action new_action) {
-   ERR_FAIL_COND(new_action < 0 || NUM_OF_ACTIONS <= new_action);
+   ERR_FAIL_COND_MSG(new_action < 0 || NUM_OF_ACTIONS <= new_action,
+   "<MouseCommands> Invalid action (failed to set action with cursor)");
    
    action = new_action;
-   Input* input = Input::get_singleton();
    Ref<Texture2D> cursor = cursor_bindings[action];
-   input->set_custom_mouse_cursor(cursor, Input::CURSOR_ARROW, Vector2i(16, 16));
+   Input::get_singleton()->set_custom_mouse_cursor(cursor, Input::CURSOR_ARROW, Vector2i(16, 16));
 }
 void MouseCommands::bind_cursor_to_action(Ref<Texture2D> image, Action action) {
-   ERR_FAIL_COND(action < 0 || action >= NUM_OF_ACTIONS);
-   ERR_FAIL_COND(image.is_valid() && image->get_size() != Vector2i(32, 32));
+   ERR_FAIL_COND_MSG(image.is_valid() && image->get_size() != Vector2i(32, 32),
+   "<MouseCommands> Invalid cursor image size (failed to bind action to cursor)");
    
-   cursor_bindings[action] = image;
+   cursor_bindings.set(action, image);
 }
 void MouseCommands::_process(double _dt) {
    if (action != NONE) update_path();

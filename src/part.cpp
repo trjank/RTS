@@ -1,4 +1,3 @@
-#include <godot_cpp/core/math.hpp>
 #include "part.hpp"
 // needed to use math primitives on visual studio compiler...
 #define _USE_MATH_DEFINES
@@ -6,158 +5,168 @@
 #include <math.h>
 using namespace godot;
 
-constexpr int SQUARE_SIZE = PartData::PX_PER_GRID_SQUARE;
+constexpr double PI_2 = 0.5 * Math_PI;
 
-Part* PartData::new_part() {
+Part* PartData::new_blank_part() {
 	return memnew(Part);
 }
 
 
-Part::Part() {
-	hitbox.instantiate();
-	add_child(shape = memnew(CollisionShape2D));
-	add_child(image = memnew(ResizableSprite2D));
-	shape->set_shape(hitbox);
+Part* Part::create_from(Ref<PartData> part_data) {
+	if (part_data.is_null()) return nullptr;
+
+	Part* part = part_data->new_blank_part();
+
+	part->data = part_data;
+	part->create_hitbox();
+	part->create_image();
+	return part;
 }
-Ref<PartData> Part::get_data() {
+Ref<PartData> Part::get_data() const {
 	return data;
 }
-Rect2 Part::get_global_rect() {
-	return image->get_global_transform().xform(image->get_rect());
+void Part::_ship_init(const Ship& parent_ship, int part_id) {
+	/*------------------------------------------------------|
+	| This will never run for static parts. This is for     |
+	| unique parts, which become actual nodes on the ship.  |
+	|------------------------------------------------------*/
 }
-void Part::set_data(Ref<PartData> new_data) {
-	ERR_FAIL_COND(new_data.is_null());
+void Part::create_image() {
+	ResizableSprite2D* image = memnew(ResizableSprite2D);
 
-	Vector2i size = new_data->get_size_px();
-	image->set_texture(new_data->get_texture());
-	image->resize_scaled(size);
-	hitbox->set_size(size);
-	data = new_data;
+	add_child(image, false, INTERNAL_MODE_FRONT);
+	image->set_texture( data->get_texture() );
+	image->resize( data->get_size_px() );
+}
+void Part::create_hitbox() {
+	CollisionShape2D* shape = memnew(CollisionShape2D);
+
+	add_child(shape, false, INTERNAL_MODE_FRONT);
+	hitbox->set_size( data->get_size_px() );
+	shape->set_shape(hitbox);
 }
 
 
-void PartGrouping::set_mirroring(bool mirroring) {
-	this->mirroring = mirroring;
+PartGrouping* PartGrouping::clone() const {
+	return Object::cast_to<PartGrouping>( duplicate(0) );
 }
-bool PartGrouping::get_mirroring() {
-	return mirroring;
-}
-bool PartGrouping::is_dragging() {
+bool PartGrouping::is_dragging() const {
 	return dragging;
 }
-bool PartGrouping::contains_mouse() {
-	return get_rect().has_point(get_local_mouse_position());
+bool PartGrouping::contains_mouse() const {
+	return get_rect().has_point( get_local_mouse_position() );
+}
+void PartGrouping::flip_parts() {
+	set_scale( { -get_scale().x, 1.0} );
+	emit_signal("parts_flipped");
+}
+void PartGrouping::rotate_parts(int quarter_turns, float duration) {
+	Ref<Tween> tween = create_tween();
+
+	double start = Math::snapped(get_rotation(), PI_2);
+	double end   = start + PI_2 * quarter_turns;
+	tween->tween_property(this, "rotation", end, duration)->from(start);
+	emit_signal("parts_rotated", quarter_turns, duration);
 }
 void PartGrouping::clear_parts() {
 	Node* parent = get_parent();
-	for (Part* part: parts) {
-		part->reparent(parent);
+
+	ERR_FAIL_NULL_MSG(parent,
+	"<PartGrouping> PartGrouping has no parent (failed to clear parts)");
+
+	set_region_rect( {0.0, 0.0, 0.0, 0.0} );
+	/*------------------------------------------------------|
+	| Iterate backwards through the children because we are |
+	| removing them. We will miss parts otherwise.          |
+	|------------------------------------------------------*/
+	for (int n = get_child_count() - 1; 0 <= n; --n) {
+		get_child(n)->reparent(parent, true);
 	}
-	parts.clear();
 }
 void PartGrouping::delete_parts() {
-	for (Part* part: parts) {
-		part->queue_free();
+	set_region_rect( {0.0, 0.0, 0.0, 0.0} );
+	for (int n = 0; n < get_child_count(); ++n) {
+		get_child(n)->queue_free();
 	}
-	parts.clear();
-	region = {0.0, 0.0, 0.0, 0.0};
-	update_region();
-	if (mirrored) mirrored->delete_parts();
+	emit_signal("parts_deleted");
 }
-void PartGrouping::spawn_part(Ref<PartData> part_data) {
-	ERR_FAIL_COND(part_data.is_null());
+bool PartGrouping::spawn_part(Ref<PartData> part_data) {
+	Part* part = Part::create_from(part_data);
 
-	Node* parent = get_parent();
+	if ( !part) return false;
 
-	ERR_FAIL_COND( !parent);
-
-	Part* part = part_data->new_part();
-	parent->add_child(part);
-	part->set_data(part_data);
-	part->set_global_position(get_global_mouse_position());
-	select_parts(TypedArray<Node2D>::make(part));
-	begin_dragging();
-}
-void PartGrouping::select_parts(TypedArray<Node2D> selection) {
 	clear_parts();
-	region = {0.0, 0.0, 0.0, 0.0};
+	add_child(part);
+
+	set_global_position( get_global_mouse_position() );
+	set_global_rotation(0.0);
+	set_region_rect( {TEXTURE_OFFSET, part_data->get_size_px()} );
+
+	begin_dragging();
+	return true;
+}
+void PartGrouping::select_parts(TypedArray<Node2D> selection, Rect2 region) {
+	clear_parts();
+
+	region.expand_to( grid_snap_floor(region.position) );
+	region.expand_to( grid_snap_ceil( region.get_end() ) );
+
+	set_global_position( region.get_center() );
+	set_global_rotation(0.0);
+	set_region_rect( {TEXTURE_OFFSET, region.size} );
+	/*------------------------------------------------------|
+	| Non-parts get casted to nullptr. We can easily filter |
+	| out nodes that are not parts.                         |
+	|------------------------------------------------------*/
 	for (int n = 0; n < selection.size(); ++n) {
-		add_part(Object::cast_to<Part>( selection[n] ));
+		add_part( Object::cast_to<Part>( selection[n] ) );
 	}
-	set_rotation(0.0);
-	update_region();
-	for (Part* part: parts) {
-		part->reparent(this);
-	}
-}
-void PartGrouping::add_part(Part* part) {
-	if (part == nullptr) return;
-
-	Rect2 part_bounding_box = part->get_global_rect();
-	region = parts.is_empty()
-	       ? part_bounding_box
-	       : region.merge(part_bounding_box);
-	parts.push_back(part);
-}
-void PartGrouping::update_region() {
-	resize_region(region.size);
-	set_global_position(region.get_center());
-}
-void PartGrouping::rotate_smoothly(int quarter_turns, float duration) {
-	Ref<Tween> tween = create_tween();
-	float start = Math::snapped(get_rotation(), Math_PI / 2);
-	float end = start + (Math_PI / 2) * quarter_turns;
-	tween->tween_property(this, "rotation", end, duration)->from(start);
-	if (mirrored) mirrored->rotate_smoothly(-quarter_turns, duration);
-}
-void PartGrouping::create_mirrored() {
-	if ( !mirroring) return;
-
-	if (mirrored) mirrored->queue_free();
-	mirrored = Object::cast_to<PartGrouping>(duplicate());
-	mirrored->set_scale( {-1.0, 1.0} );
-	get_parent()->add_child(mirrored);
-	reposition_mirrored();
-}
-void PartGrouping::reposition_mirrored() {
-	if ( !mirrored) return;
-
-	Vector2 position = get_position();
-	position.x = -position.x;
-	mirrored->set_position(position);
 }
 void PartGrouping::snap_to_grid() {
-	Rect2 rect = get_transform().xform(get_rect());
-	rect.position = rect.position.snapped( {SQUARE_SIZE, SQUARE_SIZE} );
-	set_position(rect.get_center());
-
-	dragging = false;
-	if (mirrored) mirrored->snap_to_grid();
-	emit_signal("dragging_ended");
-}
-void PartGrouping::begin_dragging() {
-	mouse_offset = get_global_mouse_position() - get_global_position();
-	create_mirrored();
-
-	dragging = true;
-	emit_signal("dragging_started");
+	Rect2 rect    = get_transform().xform( get_rect() );
+	rect.position = rect.position.snapped(GRID_SQUARE);
+	set_position( rect.get_center() );
 }
 void PartGrouping::_process(double _dt) {
-	if ( !dragging) return;
-
-	set_global_position(get_global_mouse_position() - mouse_offset);
-	reposition_mirrored();
+	if (dragging) set_global_position(get_global_mouse_position() - mouse_offset);
 }
 void PartGrouping::_input(const Ref<InputEvent>& event) {
 	if (event->is_action_released("delete"))
 		delete_parts();
-	if (event->is_action_pressed("select") && contains_mouse())
+	if (event->is_action_pressed("select") && contains_mouse() && get_child_count() > 0)
 		begin_dragging();
+
 	if ( !dragging) return;
+
 	if (event->is_action_released("select"))
-		snap_to_grid();
+		stop_dragging();
+	if (event->is_action_pressed("flip"))
+		flip_parts();
 	if (event->is_action_pressed("rotate cw"))
-		rotate_smoothly(CLOCKWISE);
+		rotate_parts(CLOCKWISE);
 	if (event->is_action_pressed("rotate ccw"))
-		rotate_smoothly(COUNTER_CLOCKWISE);
+		rotate_parts(COUNTER_CLOCKWISE);
+}
+void PartGrouping::begin_dragging() {
+	dragging = true;
+
+	mouse_offset = get_global_mouse_position() - get_global_position();
+	emit_signal("dragging_started");
+	Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_HIDDEN);
+}
+void PartGrouping::stop_dragging() {
+	dragging = false;
+
+	snap_to_grid();
+	emit_signal("dragging_ended");
+	Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_VISIBLE);
+}
+void PartGrouping::add_part(Part* part) {
+	if (part) part->reparent(this);
+}
+Vector2 PartGrouping::grid_snap_floor(Vector2 vector) {
+	return vector - vector.posmod(PartData::PX_PER_GRID_SQUARE);
+}
+Vector2 PartGrouping::grid_snap_ceil(Vector2 vector) {
+	return grid_snap_floor(vector) + GRID_SQUARE;
 }

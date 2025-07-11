@@ -1,39 +1,31 @@
 #include "unique_part.hpp"
+#include "ship.hpp"
 
 using namespace godot;
 
-Part* WeaponData::new_part() {
+Part* WeaponData::new_blank_part() {
    return memnew(Weapon);
 }
-Part* TurretMountData::new_part() {
-   return memnew(TurretMount);
+
+
+void Weapon::turn_to(double new_angle) {
+
 }
+void Weapon::fire() {
 
-
-void Weapon::set_data(Ref<PartData> new_data) {
-   Ref<WeaponData> weapon_cast = new_data;
-
-   ERR_FAIL_COND_MSG(weapon_cast.is_null(), "Weapon requires type WeaponData");
-
-   Part::set_data(new_data);
-   weapon_data = weapon_cast;
 }
+void Weapon::_ship_init(const Ship& parent_ship, int part_id) {
+   Ref<ShipData> ship = parent_ship.get_data();
+   int mount_id = ship->get_part_at( ship->get_part_center(part_id) );
+   Ref<WeaponMountData> mount_underneath = ship->get_part_data(mount_id);
 
+   ERR_FAIL_NULL_MSG(mount_underneath,
+   "<Weapon> Weapon has no mount!");
 
-const Weapon* TurretMount::get_weapon() {
-   return weapon;
-}
-const Weapon* TurretMount::new_weapon(Ref<WeaponData> weapon_type) {
-   if (weapon) weapon->queue_free();
-   add_child(weapon = memnew(Weapon));
-   weapon->set_data(weapon_type);
-   return weapon;
-}
-void TurretMount::set_data(Ref<PartData> new_data) {
-   Ref<TurretMountData> mount_cast = new_data;
-
-   ERR_FAIL_COND_MSG(mount_cast.is_null(), "TurretMount requires type TurretMountData");
-
-   Part::set_data(new_data);
-   mount_data = mount_cast;
+   mount = mount_underneath;
+   ShipData::RotationState rotation = ship->get_part_rotation_state(mount_id);
+   for (int id: ship->find_neighbors(mount_id, mount->get_mod_boundary(rotation) ) ) {
+      Ref<WeaponModifierData> mod = ship->get_part_data(id);
+      // if (mod.is_valid()) modifiers.combine(mod->modifiers);
+   }
 }

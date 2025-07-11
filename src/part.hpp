@@ -11,6 +11,7 @@
 #include <godot_cpp/classes/property_tweener.hpp>
 #include <godot_cpp/classes/collision_shape2d.hpp>
 #include <godot_cpp/classes/rectangle_shape2d.hpp>
+#include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/core/math.hpp>
 #include "part_data.hpp"
 #include "resizable_sprite_2d.hpp"
@@ -18,59 +19,57 @@
 
 namespace godot {
 
+class Ship;
+
 class Part: public StaticBody2D {
    GDCLASS(Part, StaticBody2D)
 public:
-   Part();
-   Ref<PartData> get_data();
-   Rect2 get_global_rect();
-   virtual void set_data(Ref<PartData> new_data);
-   // virtual void copy_adjacency_data(Part* part);
+   static Part* create_from(Ref<PartData> part_data);
+
+   Ref<PartData> get_data() const;
+   virtual void _ship_init(const Ship& parent_ship, int part_id);
 protected:
    static void _bind_methods();
 private:
-   int ship_data_part_id = -1;
-   Ref<PartData> data = get_default<PartData>();
-   Ref<RectangleShape2D> hitbox;
-   CollisionShape2D* shape = nullptr;
-   ResizableSprite2D* image = nullptr;
+   NEVER_NULL Ref<RectangleShape2D> hitbox = memnew(RectangleShape2D);
+   NEVER_NULL Ref<PartData> data = get_default<PartData>();
 
-   friend class ShipData;
+   void create_image();
+   void create_hitbox();
 };
 
-class PartGrouping: public ResizableSprite2D {
+
+class PartGrouping: public Sprite2D {
    GDCLASS(PartGrouping, Sprite2D)
 public:
-   void set_mirroring(bool mirroring);
-   bool get_mirroring();
-   bool is_dragging();
+   static constexpr int CLOCKWISE = 1;
+   static constexpr int COUNTER_CLOCKWISE = -1;
+
+   PartGrouping* clone() const;
+   bool is_dragging() const;
+   bool contains_mouse() const;
+   void flip_parts();
+   void rotate_parts(int quarter_turns, float duration = 0.15);
    void clear_parts();
    void delete_parts();
-   void spawn_part(Ref<PartData> part_data);
-   void select_parts(TypedArray<Node2D> selection);
+   bool spawn_part(Ref<PartData> part_data);
+   void select_parts(TypedArray<Node2D> selection, Rect2 region);
    void snap_to_grid();
-   void begin_dragging();
    void _input(const Ref<InputEvent>& event) override;
    void _process(double _dt) override;
 protected:
    static void _bind_methods();
 private:
-   static constexpr int CLOCKWISE = 1;
-   static constexpr int COUNTER_CLOCKWISE = -1;
-
    bool dragging = false;
-   bool mirroring = false;
-   Vector<Part*> parts;
-   Rect2 region = {0.0, 0.0, 0.0, 0.0};
-   Vector2 mouse_offset;
-   PartGrouping* mirrored = nullptr;
+   Vector2 mouse_offset = {0.0, 0.0};
+   const Vector2 TEXTURE_OFFSET = {0.0, 0.0};
+   const Vector2 GRID_SQUARE = {PartData::PX_PER_GRID_SQUARE, PartData::PX_PER_GRID_SQUARE};
 
-   void update_region();
-   void create_mirrored();
-   void reposition_mirrored();
+   void stop_dragging();
+   void begin_dragging();
    void add_part(Part* part);
-   void rotate_smoothly(int quarter_turns, float duration = 0.15);
-   bool contains_mouse();
+   Vector2 grid_snap_floor(Vector2 vector);
+   Vector2 grid_snap_ceil(Vector2 vector);
 };
 
 }

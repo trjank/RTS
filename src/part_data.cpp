@@ -2,14 +2,8 @@
 
 using namespace godot;
 
-bool PartData::is_exposed_to_design_mode() {
-   return exposed_to_design_mode;
-}
-bool PartData::is_unique() {
-   return unique;
-}
-bool PartData::can_rotate() {
-   return rotate_enabled;
+PartData::Behavior PartData::get_behavior() {
+   return behavior;
 }
 void PartData::load_unique_data(Dictionary data) {
    if (data.is_empty()) return;
@@ -24,71 +18,68 @@ void PartData::load_unique_data(Dictionary data) {
    thrust           = data.get("thrust", thrust);
    turning_momentum = data.get("turning_momentum", turning_momentum);
 }
-int PartData::get_atlas_id() {
+int PartData::get_atlas_id() const {
    return atlas_id;
 }
-int PartData::get_cost() {
+int PartData::get_cost() const {
    return cost;
 }
-double PartData::get_hp() {
+double PartData::get_hp() const {
    return hp;
 }
-double PartData::get_mass() {
+double PartData::get_mass() const {
    return mass;
 }
-double PartData::get_warp() {
+double PartData::get_warp() const {
    return warp;
 }
-double PartData::get_shield() {
+double PartData::get_shield() const {
    return shield;
 }
-double PartData::get_energy() {
+double PartData::get_energy() const {
    return energy;
 }
-double PartData::get_warp_per_sec() {
+double PartData::get_warp_per_sec() const {
    return warp_per_sec;
 }
-double PartData::get_shield_per_sec() {
+double PartData::get_shield_per_sec() const {
    return shield_per_sec;
 }
-double PartData::get_energy_per_sec() {
+double PartData::get_energy_per_sec() const {
    return shield_per_sec;
 }
-double PartData::get_turning_momentum() {
+double PartData::get_turning_momentum() const {
    return turning_momentum;
 }
-double PartData::get_thrust() {
+double PartData::get_thrust() const {
    return thrust;
 }
-Vector2i PartData::get_size() {
+Vector2i PartData::get_size() const {
    return size;
 }
-Vector2i PartData::get_size_px() {
+Vector2i PartData::get_size_px() const {
    return PX_PER_GRID_SQUARE * size;
 }
-String PartData::get_code() {
+String PartData::get_code() const {
    return code;
 }
-String PartData::get_subtype() {
+String PartData::get_subtype() const {
    return subtype;
 }
-String PartData::get_name() {
+String PartData::get_name() const {
    return name;
 }
-String PartData::get_tab() {
+String PartData::get_tab() const {
    return tab;
 }
-String PartData::get_desc() {
+String PartData::get_desc() const {
    return desc;
 }
-Ref<Image> PartData::get_image() {
+Ref<Image> PartData::get_image() const {
    return image;
 }
-Ref<Texture2D> PartData::get_texture() {
+Ref<Texture2D> PartData::get_texture() const {
    return texture;
-}
-PartData::BoundaryFlag PartData::get_boundary() {
-   return boundary;
 }
 void PartData::set_cost(int new_cost) {
    cost = Math::max(0, new_cost);
@@ -118,14 +109,14 @@ void PartData::set_image_path(String path) {
    Ref<Texture2D> new_texture = ResourceLoader::get_singleton()->load(path);
 
    ERR_FAIL_NULL_MSG(new_texture,
-      "<PartData> Failed to load image '" + path + "'");
+   "<PartData> Failed to load image '" + path + "'");
    ERR_FAIL_COND_MSG(new_texture->get_size() != get_size_px(),
-      "<PartData> Texture '" + path + "' has incorrect size (failed to set texture)");
+   "<PartData> Texture '" + path + "' has incorrect size (failed to set texture)");
 
+   texture = new_texture;
    image_path = path;
    image = new_texture->get_image();
    image->convert(IMAGE_FORMAT);
-   texture = new_texture;
 }
 
 
@@ -156,18 +147,19 @@ void PartManager::set_parts_folder_path(String new_parts_folder_path) {
 void PartManager::load_csv(String path) {
    Ref<FileAccess> file = FileAccess::open(path, FileAccess::READ);
 
-   ERR_FAIL_COND(file->get_csv_line() != CSV_HEADER);
+   ERR_FAIL_COND_MSG(file->get_csv_line() != CSV_HEADER,
+   "<PartManager> Part csv header is wrong (failed to load csv)");
 
    parts.clear();
    while ( !file->eof_reached()) {
-      load_part(file->get_csv_line());
+      load_part( file->get_csv_line() );
    }
 }
 void PartManager::save_csv(String path) {
    Ref<FileAccess> file = FileAccess::open(path, FileAccess::WRITE);
    file->store_csv_line(CSV_HEADER);
    for (Ref<PartData> part: parts) {
-      file->store_csv_line(to_csv_line(part));
+      file->store_csv_line( to_csv_line(part) );
    }
 }
 PackedStringArray PartManager::to_csv_line(Ref<PartData> part) {
@@ -188,14 +180,14 @@ PackedStringArray PartManager::to_csv_line(Ref<PartData> part) {
 }
 void PartManager::load_unique_data(String path) {
    ERR_FAIL_COND_MSG( !path.ends_with(".json"),
-      "<PartManager> Unique data '" + path + "' must be a .json file (failed to load)");
+   "<PartManager> Unique data '" + path + "' must be a .json file (failed to load)");
 
    String raw_text = FileAccess::get_file_as_string(path);
    unique_data = JSON::parse_string(raw_text);
    Array codes = unique_data.keys();
    for (int n = 0; n < codes.size(); ++n) {
       String code = codes[n];
-      lookup_code(code)->load_unique_data(unique_data[code]);
+      lookup_code(code)->load_unique_data( unique_data[code] );
    }
 }
 void PartManager::save_unique_data(String path) {
@@ -206,7 +198,7 @@ void PartManager::load_part(PackedStringArray data) {
    if (data == PackedStringArray{""}) return;
 
    ERR_FAIL_COND_MSG(data.size() != NUM_PROPERTIES,
-      "<PartManager> Part csv columns differ from header (failed to load part)");
+   "<PartManager> Part csv columns differ from header (failed to load part)");
 
    Ref<PartData> part = new_part(data[CODE], data[SUBTYPE]);
 
@@ -224,7 +216,7 @@ void PartManager::load_part(PackedStringArray data) {
 }
 void PartManager::remove_part(Ref<PartData> part) {
    ERR_FAIL_COND_MSG( !code_to_id.has(part->code),
-      "<PartManager> Part with code '" + part->code + "' not found (failed to remove)");
+   "<PartManager> Part with code '" + part->code + "' not found (failed to remove)");
 
    /*------------------------------------------------------*
    | Swap with the last element and delete from the back.  |
@@ -242,7 +234,10 @@ void PartManager::remove_part(Ref<PartData> part) {
    code_to_id.erase(part->code);
 }
 Ref<PartData> PartManager::new_part(String code, String subtype) {
-   if (code.length() != CODE_LENGTH || code_to_id.has(code)) return nullptr;
+   ERR_FAIL_COND_V_MSG(code.length() != CODE_LENGTH, nullptr,
+   "<PartManager> Wrong code length (failed to make new part)");
+   ERR_FAIL_COND_V_MSG(code_to_id.has(code), nullptr,
+   "<PartManager> Part with code '" + code + "' already exists (failed to make new part)");
 
    Ref<PartData> part = PartData::create_correct_subtype(subtype);
    part->code = code;
@@ -260,7 +255,7 @@ void PartManager::new_atlas(String save_path) {
 void PartManager::create_atlas() {
    PackedVector2Array part_sizes;
    for (Ref<PartData> part: parts) {
-      part_sizes.push_back(part->get_size_px());
+      part_sizes.push_back( part->get_size_px() );
    }
    Dictionary atlas_data = Geometry2D::get_singleton()->make_atlas(part_sizes);
    Vector2i size = atlas_data["size"];
@@ -273,7 +268,8 @@ void PartManager::draw_part_on_atlas(Ref<PartData> part) {
    atlas->blit_rect(part->image, {{0, 0}, size_px}, offset);
 }
 void PartManager::populate_atlas() {
-   ERR_FAIL_COND(atlas_offsets.size() != parts.size());
+   ERR_FAIL_COND_MSG(atlas_offsets.size() != parts.size(),
+   "<PartManager> Atlas offsets not updated (failed to populate atlas)");
 
    for (Ref<PartData> part: parts) {
       draw_part_on_atlas(part);
