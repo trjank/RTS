@@ -51,27 +51,6 @@ public:
    static Vector2i get_grid_padding();
    static Ref<ShipData> assemble(Vector2i grid_size, TypedArray<Node> parts);
 
-   int count_parts();
-   bool is_empty();
-   bool is_connected();
-   PartError get_error();
-   int get_cost();
-   Vector2i get_size();
-   Vector2i get_size_px();
-   double get_max_warp();
-   double get_max_hp();
-   double get_max_shield();
-   double get_max_energy();
-   double get_warp_per_sec();
-   double get_shield_per_sec();
-   double get_energy_per_sec();
-   double get_thrust();
-   double get_turnrate();
-   Vector2 get_ship_bounds_x();
-   Vector2 get_ship_bounds_y();
-   Vector2 get_center_of_mass();
-   Ref<PartData> get_part_data(int part_id);
-   Ref<Image> get_image();
    ShipData();
    int count_parts() const;
    bool is_empty() const;

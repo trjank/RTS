@@ -14,17 +14,18 @@ func show_overlay()->void:
 	overlay.show()
 
 func _ready()->void:
-	started.connect(round_timer.start)
-	started_countdown.connect(countdown_timer.start)
-	stopped.connect(round_timer.stop)
-	stopped.connect(countdown_timer.stop)
-	round_timer.timeout.connect(stop)
-	countdown_timer.timeout.connect(start)
+	
+	#started.connect(round_timer.start)
+	#started_countdown.connect(countdown_timer.start)
+	#stopped.connect(round_timer.stop)
+	#stopped.connect(countdown_timer.stop)
+	#round_timer.timeout.connect(stop)
+	#countdown_timer.timeout.connect(start)
 
 	# For testing
 	make_map()
-	round_timer.wait_time = 360.0
-	countdown_timer.wait_time = 5.0
+	#round_timer.wait_time = 360.0
+	#countdown_timer.wait_time = 5.0
 	start()
 
 func make_map()->void:

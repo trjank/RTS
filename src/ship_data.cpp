@@ -173,21 +173,6 @@ void ShipData::set_bounds(Vector2 bounds){
 
 }
 
-Vector2 ShipData::get_ship_bounds_x()
-{
-   return ship_bounds_x;
-}
-
-Vector2 ShipData::get_ship_bounds_y()
-{
-   return ship_bounds_y;
-}
-
-int ShipData::add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state) {
-   if (part.is_null()) {
-      error = IS_NULL;
-      return NULL_PART_ID;
-   }
 ShipData::PartError ShipData::add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state) {
    if (part.is_null()) return IS_NULL;
 
@@ -198,11 +183,6 @@ ShipData::PartError ShipData::add_part(Ref<PartData> part, Vector2 center, Rotat
    part_regions.push_back(rect);
    part_centers.push_back(center);
    set_bounds(center);
-   if (rect.size != size) {
-      error = OUT_OF_BOUNDS;
-      return NULL_PART_ID;
-   }
-
    #if CHECK_FOR_PART_OVERLAP
    if ( !grid.is_empty_region(rect, NULL_PART_ID)) {
       error = OVERLAP;

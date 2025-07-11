@@ -364,8 +364,6 @@ void ShipData::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_part_center", "part_id"), &ShipData::get_part_center);
 	ClassDB::bind_method(D_METHOD("get_part_region", "part_id"), &ShipData::get_part_region);
 	ClassDB::bind_method(D_METHOD("set_image", "new_image"), &ShipData::set_image);
-	ClassDB::bind_method(D_METHOD("get_ship_bounds_x"), &ShipData::get_ship_bounds_x);
-	ClassDB::bind_method(D_METHOD("get_ship_bounds_y"), &ShipData::get_ship_bounds_y);
 	ClassDB::bind_method(D_METHOD("has_part", "part_id"), &ShipData::has_part);
 	ClassDB::bind_method(D_METHOD("add_part", "part", "center", "rotation_state"), &ShipData::add_part);
 	ClassDB::bind_method(D_METHOD("add_part_node", "part"), &ShipData::add_part_node);
@@ -458,6 +456,7 @@ void FleetManager::_bind_methods() {
     ClassDB::bind_method(D_METHOD("delete_fleet", "fleet"), &FleetManager::delete_fleet);
     ClassDB::bind_method(D_METHOD("delete_fleet_type", "fleet", "type"), &FleetManager::delete_fleet_type);
     ClassDB::bind_method(D_METHOD("delete_fleet_slot", "fleet", "type", "slot"), &FleetManager::delete_fleet_slot);
+}
 void ProjectileData::_bind_methods() {
 
 }
