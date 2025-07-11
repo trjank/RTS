@@ -2,13 +2,12 @@
 
 using namespace godot;
 
-void ResizableSprite2D::resize_scaled(Vector2 new_size) {
+bool ResizableSprite2D::resize(Vector2 new_size) {
    Ref<Texture2D> texture = get_texture();
-   if (texture.is_valid())
-      set_scale(new_size / texture->get_size());
-}
-void ResizableSprite2D::resize_region(Vector2 new_size) {
-   Rect2 region = get_region_rect();
-   region.set_size(new_size);
-   set_region_rect(region);
+
+   if (texture.is_null()) return false;
+
+   WARN_PRINT_ONCE_ED("<ResizeableSprite2D> Note that resize only rescales sprites");
+   set_scale(new_size / texture->get_size() );
+   return true;
 }

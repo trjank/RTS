@@ -3,73 +3,74 @@
 using namespace godot;
 
 MouseSelection::MouseSelection() {
-   CollisionShape2D* selection_rect = memnew(CollisionShape2D);
-   shape.instantiate();
-   selection_rect->set_shape(shape);
-   add_child(selection_rect);
+   CollisionShape2D* collision_shape = memnew(CollisionShape2D);
+
+   collision_shape->set_shape(shape);
+   add_child(collision_shape, false, INTERNAL_MODE_FRONT);
 }
-bool MouseSelection::is_enabled() {
+bool MouseSelection::is_enabled() const {
    return enabled;
 }
-Color MouseSelection::get_color() {
+bool MouseSelection::is_selecting() const {
+   return selecting;
+}
+Color MouseSelection::get_color() const {
    return color;
+}
+Rect2 MouseSelection::get_region() const {
+   return region.abs();
 }
 TypedArray<Node2D> MouseSelection::get_selected() {
    return selected;
 }
 void MouseSelection::set_enabled(bool enable) {
    enabled = enable;
-   if ( !enabled) stop_selection();
+   if ( !enable) stop_selection();
 }
 void MouseSelection::set_color(Color new_color) {
    color = new_color;
-   color.a = OPACITY;
-}
-void MouseSelection::set_visibility(Input::MouseMode visibility) {
-   Input::get_singleton()->set_mouse_mode(visibility);
-}
-void MouseSelection::begin_selection() {
-   for (int n = 0; n < selected.size(); ++n) {
-      selected[n].call("on_deselect");
-   }
-   selected.clear();
-   selecting = true;
-   resize( {0.0, 0.0} );
-   start_pos = get_global_mouse_position();
-   set_visibility(Input::MOUSE_MODE_HIDDEN);
-   emit_signal("selection_started");
-}
-void MouseSelection::stop_selection() {
-   resize( {0.0, 0.0} );
-   selecting = false;
-   set_visibility(Input::MOUSE_MODE_VISIBLE);
-}
-void MouseSelection::finish_selection() {
-   selected = get_overlapping_bodies();
-   for (int n = 0; n < selected.size(); ++n) {
-      selected[n].call("on_select");
-   }
-   stop_selection();
-   emit_signal("selection_ended", selected);
-}
-void MouseSelection::resize(Vector2 new_size) {
-   shape->set_size(new_size);
-   queue_redraw();
 }
 void MouseSelection::_draw() {
    draw_rect(shape->get_rect(), color);
 }
+void MouseSelection::_process(double _dt) {
+   if ( !enabled || !selecting) return;
+
+   region.set_end( get_global_mouse_position() );
+   set_global_position( region.get_center() );
+   resize_hitbox();
+}
 void MouseSelection::_unhandled_input(const Ref<InputEvent>& event) {
    if ( !enabled) return;
+
    if (event->is_action_pressed("select"))
       begin_selection();
    if (event->is_action_released("select") && selecting)
       finish_selection();
 }
-void MouseSelection::_process(double _dt) {
-   if ( !enabled || !selecting) return;
+void MouseSelection::resize_hitbox() {
+   shape->set_size( region.size.abs() );
+   queue_redraw();
+}
+void MouseSelection::begin_selection() {
+   selecting = true;
 
-   Vector2 end_pos = get_global_mouse_position();
-   set_global_position(0.5 * (start_pos + end_pos));
-   resize((end_pos - start_pos).abs());
+   region.position = get_global_mouse_position();
+   selected.clear();
+   resize_hitbox();
+   emit_signal("selection_started");
+   Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_HIDDEN);
+}
+void MouseSelection::stop_selection() {
+   selecting = false;
+
+   region.size = {0.0, 0.0};
+   resize_hitbox();
+   Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_VISIBLE);
+}
+void MouseSelection::finish_selection() {
+   Rect2 final_region = region.abs();
+   selected = get_overlapping_bodies();
+   stop_selection();
+   emit_signal("selection_ended", selected, final_region);
 }

@@ -28,6 +28,12 @@ seed = -1909400080011345178
 script = ExtResource("1_2ostc")
 overlay = NodePath("UI")
 
+[node name="RoundTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="CountdownTimer" type="Timer" parent="."]
+one_shot = true
+
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
 

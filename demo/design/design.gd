@@ -3,6 +3,8 @@ extends Node2D
 @export var overlay: CanvasLayer
 @export var container: TabContainer
 @export var part_grouping: PartGrouping
+@export var mirror_mode_button: TextureButton
+@export var mirror_axis: Line2D
 @export var grid: Sprite2D
 @export var info_text: Label
 var fleet:Fleet
@@ -87,9 +89,11 @@ func show_overlay()->void:
 func hide_overlay()->void:
 	overlay.hide()
 
-func set_grid_size(size: Vector2)->void:
-	grid.region_rect.size = PartData.PX_PER_GRID_SQUARE * size
-	info_text.position.y = -0.5 * grid.region_rect.size.y - 200
+func resize(size: Vector2)->void:
+	size *= PartData.PX_PER_GRID_SQUARE
+	grid.region_rect.size   = size
+	mirror_axis.position.x  = size.x * 0.5
+	mirror_axis.points[1].y = size.y
 
 func save_ship(ship:ShipData, ship_manager:ShipManager):
 	var ship_stats = ship_manager.save_ship_string(ship)
@@ -188,8 +192,8 @@ func setup_ship_buttons(ships):
 
 
 func _ready():
-	set_grid_size(Vector2(64, 64))
 	db = DB.new()
+	resize(Vector2i(64, 64))
 	manager.load_csv("user://parts.csv")
 	var ships = db.get_ships_in_fleet(1)
 	setup_ship_buttons(ships)

@@ -28,7 +28,6 @@ shield_bar = NodePath("ShieldBar")
 energy_bar = NodePath("EnergyBar")
 
 [node name="HPBar" type="ProgressBar" parent="."]
-visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -42,7 +41,6 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_loikl")
 value = 50.0
 
 [node name="ShieldBar" type="ProgressBar" parent="."]
-visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -53,7 +51,6 @@ offset_bottom = -70.0
 grow_horizontal = 2
 
 [node name="EnergyBar" type="ProgressBar" parent="."]
-visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -67,7 +64,6 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_kyic8")
 value = 50.0
 
 [node name="Image" type="Sprite2D" parent="."]
-visible = false
 texture = ExtResource("2_dupo0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

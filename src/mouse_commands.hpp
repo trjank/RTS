@@ -15,22 +15,15 @@ class MouseCommands: public Node2D {
    GDCLASS(MouseCommands, Node2D)
 public:
    /*------------------------------------------------------*
-   | NOTE: Do NOT set custom values for the Action enum;   |
-   | the Action enum is used to index an array (see        |
-   | cursor_bindings below).                               |
-   |                                                       |
-   | NOTE: NUM_OF_ACTIONS is not exposed to the editor and |
-   | should not be passed as an argument to any of the     |
-   | functions here.                                       |
-   |                                                       |
-   | NOTE: The Formation enum values correspond to the     |
-   | number of waypoints used to construct a path from     |
-   | mouse movement. You can add more or modify SMOOTH and |
+   | The Formation enum values correspond to the number of |
+   | waypoints used to construct a path from mouse         |
+   | movement. You can add more or modify SMOOTH and       |
    | PRECISE so long as the value is greater than 1.       |
    *------------------------------------------------------*/
    enum Action {NONE, MOVE, TARGET, NUM_OF_ACTIONS};
    enum Formation: int {LINE = 2, V = 3, SMOOTH = 10, PRECISE = 30};
    static constexpr float DIST_BETWEEN_WAYPOINTS = 1.0;
+   static constexpr float UNSTABLE_PATH_LENGTH = 0.1;
    static constexpr int MAX_UNITS_SELECTED = 10;
    
    MouseCommands();
@@ -54,7 +47,7 @@ private:
    Vector<Ref<Unit::Command>> commands;
    Vector<Ref<Unit::RadarSignature>> units;
    Ref<Texture2D> move_icon_image;
-   Ref<Texture2D> cursor_bindings[NUM_OF_ACTIONS];
+   Vector<Ref<Texture2D>> cursor_bindings;
    
    template<typename T> struct MoveOrder;
    typedef MoveOrder<Ref<Unit::RadarSignature>> UnitMoveOrder;
@@ -66,9 +59,9 @@ private:
    void update_target();
    void update_commands();
    void select_unit(Variant unit);
-   void order_unit_to_move(Ref<Unit::RadarSignature> unit, Ref<Unit::Command> command);
+   void order_unit_to_move(Ref<Unit::RadarSignature> unit_signature, Ref<Unit::Command> command);
    void order_units_to_move();
-   void stop_unit(Ref<Unit::RadarSignature> signature);
+   void stop_unit(Ref<Unit::RadarSignature> unit_signature);
    void stop_all_units();
    void set_action_with_cursor(Action new_action);
 };

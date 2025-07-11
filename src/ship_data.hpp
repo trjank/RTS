@@ -17,14 +17,21 @@
 #include "packed_int32_grid.hpp"
 
 #define CPU_IMAGE_GENERATION true
-#define CHECK_FOR_PART_OVERLAP true
 
 namespace godot {
 
 class ShipData: public RefCounted {
    GDCLASS(ShipData, RefCounted)
 public:
-   enum PartError {OKAY, OVERLAP, OUT_OF_BOUNDS, IS_NULL};
+   enum BoundaryFlag: int {
+      EDGE_TOP = 1,
+      EDGE_BOTTOM = 2,
+      EDGE_LEFT = 4,
+      EDGE_RIGHT = 8,
+      EDGES_TOP_BOTTOM = EDGE_TOP | EDGE_BOTTOM,
+      EDGES_LEFT_RIGHT = EDGE_LEFT | EDGE_RIGHT,
+      FULL_PERIMETER = EDGE_TOP | EDGE_BOTTOM | EDGE_LEFT | EDGE_RIGHT
+   };
    enum RotationState: int {
       ROT_0_DEG = 0,
       ROT_90_DEG = 1,
@@ -35,43 +42,45 @@ public:
       FLIPPED_ROT_180_DEG = 6,
       FLIPPED_ROT_270_DEG = 7
    };
+   enum PartError {OKAY, OVERLAP, OUT_OF_BOUNDS, IS_NULL};
+
    static constexpr int NUM_NULL_PARTS = 1;
    static constexpr int NULL_PART_ID = 0;
    static constexpr int MAX_NAME_LENGTH = 30;
-   static constexpr int NUM_ROTATION_INCREMENTS = 4;
-   static constexpr double PI_2 = 0.5 * Math_PI;
 
    static Vector2i get_grid_padding();
    static Ref<ShipData> assemble(Vector2i grid_size, TypedArray<Node> parts);
 
-   int count_parts();
-   bool is_empty();
-   bool is_connected();
-   PartError get_error();
-   int get_cost();
-   Vector2i get_size();
-   Vector2i get_size_px();
-   double get_max_warp();
-   double get_max_hp();
-   double get_max_shield();
-   double get_max_energy();
-   double get_warp_per_sec();
-   double get_shield_per_sec();
-   double get_energy_per_sec();
-   double get_thrust();
-   double get_turnrate();
-   Vector2 get_ship_bounds_x();
-   Vector2 get_ship_bounds_y();
-   Vector2 get_center_of_mass();
-   Ref<PartData> get_part_data(int part_id);
-   Ref<Image> get_image();
-   Vector<Ref<PartData>> get_parts();
+   ShipData();
+   int count_parts() const;
+   bool is_empty() const;
+   bool is_connected() const;
+   bool has_part(int part_id) const;
+   int get_cost() const;
+   Vector2i get_size() const;
+   Vector2i get_size_px() const;
+   double get_max_warp() const;
+   double get_max_hp() const;
+   double get_max_shield() const;
+   double get_max_energy() const;
+   double get_warp_per_sec() const;
+   double get_shield_per_sec() const;
+   double get_energy_per_sec() const;
+   double get_thrust() const;
+   double get_turnrate() const;
+   Vector2 get_center_of_mass() const;
+   Ref<Image> get_image() const;
+   PackedInt32Array get_unique_parts();
+   int get_part_at(Vector2 location) const;
+   RotationState get_part_rotation_state(int part_id) const;
+   Ref<PartData> get_part_data(int part_id) const;
+   Vector2 get_part_center(int part_id) const;
+   Vector2 get_part_center_px(int part_id) const;
+   Rect2i get_part_region(int part_id) const;
    void set_image(Ref<Image> new_image);
-   bool has_part(int part_id);
-   int add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state);
-   int add_part_node(Part* part);
-   Ref<PartData> collision_check(Vector2 point);
-   PackedInt32Array find_neighbors(int part_id, PartData::BoundaryFlag flags);
+   PartError add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state);
+   PartError add_part_node(Part* part);
+   PackedInt32Array find_neighbors(int part_id, int boundary_flags) const;
 protected:
    static void _bind_methods();
 private:
@@ -92,22 +101,22 @@ private:
    Vector2 ship_bounds_y = {-100000.0f,100000.0f};
    String name = "<unnamed>";
    Ref<Image> image;
-   Vector<Ref<PartData>> parts = {nullptr};
-   Vector<Rect2i> part_regions = {{0, 0, 0, 0}};
-   PackedVector2Array part_centers = {{0.0f, 0.0f}};
-   PackedInt32Array rotation_states = {ROT_0_DEG};
-   Rect2i grid_region = {0, 0, 0, 0};
-   /*------------------------------------------------------*
+   Vector<Ref<PartData>> parts;
+   PackedInt32Array unique_parts;
+   Vector<Rect2i> part_regions;
+   Vector<Vector2> part_centers;
+   Vector<RotationState> part_rotation_states;
+   Rect2i grid_region;
+   /*------------------------------------------------------|
    | PackedInt32Grid and DisjointSets are both custom data |
-   | structures. PackedInt32Grid allows for fast lookup to |
-   | parts while maintaining compatibility with compute    |
-   | shaders. DisjointSets can quickly determine if the    |
-   | parts are connected.                                  |
-   *------------------------------------------------------*/
+   | structures. See their respective header files for     |
+   | more information.                                     |
+   |------------------------------------------------------*/
    PackedInt32Grid grid;
    DisjointSets part_clusters;
    void set_bounds(Vector2 bounds);
    void add_stats(Ref<PartData> part, Vector2 center);
+   Vector2i get_grid_size(Vector2i size, RotationState rotation_state);
    RotationState encode_rotation(double radians, bool flipped);
 
    friend class ShipManager;
@@ -138,7 +147,8 @@ private:
 
 }
 
-VARIANT_ENUM_CAST(ShipData::PartError);
+VARIANT_ENUM_CAST(ShipData::BoundaryFlag);
 VARIANT_ENUM_CAST(ShipData::RotationState);
+VARIANT_ENUM_CAST(ShipData::PartError);
 
 #endif // SHIP_DATA_HPP

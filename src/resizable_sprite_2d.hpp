@@ -8,8 +8,7 @@ namespace godot {
 class ResizableSprite2D : public Sprite2D {
    GDCLASS(ResizableSprite2D, Sprite2D)
 public:
-   void resize_scaled(Vector2 new_size);
-   void resize_region(Vector2 new_size);
+   bool resize(Vector2 new_size);
 protected:
    static void _bind_methods();
 };

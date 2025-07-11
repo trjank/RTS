@@ -23,17 +23,16 @@ struct PackedInt32Grid {
 
    void fill(int32_t integer);
    void fill_rect(Rect2i rect, int32_t integer);
-   PackedByteArray to_byte_buffer();
-   int32_t get(int x, int y);
-   int32_t getv(Vector2i point);
+   int32_t get(int x, int y) const;
+   int32_t getv(Vector2i point) const;
    void set(Vector2i coords, int32_t integer);
-   bool is_empty();
-   bool is_empty_region(Rect2i region, int32_t _null_value = 0);
+   bool is_empty() const;
+   bool is_empty_region(Rect2i region, int32_t _null_value = 0) const;
 private:
    Ref<Image> grid;
 
-   _FORCE_INLINE_ int32_t decode(Color color);
-   _FORCE_INLINE_ Color encode(int32_t integer);
+   _FORCE_INLINE_ int32_t decode(Color color) const;
+   _FORCE_INLINE_ Color encode(int32_t integer) const;
 };
 
 }
