@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=31 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://drja8rt2q5lro" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]

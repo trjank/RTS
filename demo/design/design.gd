@@ -73,8 +73,7 @@ func load_ship(stats:String):
 		var partPosition = Vector2(float(line[1]),float(line[2]))
 		var partRotation = int(line[3])
 		var mirrored = (int(line[3]) > 3)
-		var newPart = Part.new()
-		newPart.set_data(part)
+		var newPart = Part.create_from(part)
 		grid.add_child(newPart)
 		#need knowledge of 
 		partPosition = partPosition- Vector2(Rect2i(Vector2(1,1),Vector2(64,64)).get_center() + Vector2i(1,1))
@@ -131,7 +130,7 @@ func _input(event):
 		var ship_manager := ShipManager.new()
 		var ship := ShipData.assemble(Vector2i(64, 64), grid.get_children())
 		save_ship(ship,ship_manager)
-		save_ship_img(ship)
+		#save_ship_img(ship)
 
 func clear_grid():
 	part_grouping.clear_parts()
