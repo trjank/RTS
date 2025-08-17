@@ -35,6 +35,6 @@ func _ready():
 
 func _process(_dt):
 	queue_redraw()
-	HP_bar.value = get_HP()
+	HP_bar.value = get_hp()
 	shield_bar.value = get_shield()
 	energy_bar.value = get_energy()

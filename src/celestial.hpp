@@ -16,6 +16,21 @@ namespace godot {
 
 constexpr double GRAVITATIONAL_CONSTANT = 1000.0;
 
+class Constants: public RefCounted {
+   GDCLASS(Constants, RefCounted)
+public:
+   double get_time_scale() const;
+   double get_gravitational_constant() const;
+   void set_time_scale(double new_time_scale);
+   void set_gravitational_constant(double new_gravitational_constant);
+protected:
+   static void _bind_methods();
+private:
+   double time_scale = 1.0;
+   double gravitational_constant = 1.0;
+};
+
+
 class Celestial;
 
 class Orbit: public Node2D {
