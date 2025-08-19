@@ -160,7 +160,11 @@ func _input(event):
 		print("saving...")
 		part_grouping.clear_parts() # <-- This is VERY important
 		var ship_manager := ShipManager.new()
-		var ship := ShipData.assemble(Vector2i(64, 64), grid.get_children())
+		var ship := ShipData.create(64, 64)
+		for part in grid.get_children():
+			ship.add_part_node(part)
+			print("->", part.rotation, " | ", part.scale.x < 0, " | ", part.get_class())
+		print(ship.count_parts())
 		save_ship(ship,ship_manager)
 		#save_ship_img(ship)
 

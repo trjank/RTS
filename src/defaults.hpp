@@ -7,6 +7,8 @@
 #define NEVER_NULL
 #define NEVER_EMPTY
 #define NO_ERROR_CHECK
+#define SAFE_PTR
+#define UNSAFE_PTR
 
 namespace godot {
 

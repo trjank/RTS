@@ -25,7 +25,7 @@ protected:
 struct Map::Result {
    int num_capturables;
    double distance;
-   Node2D* map_root;
+   UNSAFE_PTR Node2D* map_root;
 };
 
 
@@ -36,8 +36,8 @@ public:
    static constexpr int ORBIT_LIMIT = 50;
 
    Ref<Map> get_submap() const;
-   int get_num_orbits() const;
-   int get_num_sectors() const;
+   int count_orbits() const;
+   int count_sectors() const;
    double get_orbit_spacing() const;
    double get_start_distance() const;
    double get_sector_size_radians() const;

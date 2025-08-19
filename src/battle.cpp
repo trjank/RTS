@@ -245,7 +245,7 @@ Ship* Battle::spawn_ship(Ref<Player> player, Ref<ShipData> ship_data, Vector2 sp
    if (unlikely( !ship)) return nullptr;
 
    generated_map.map_root->add_child(ship);
-   ship->set_owner(player);
+   ship->set_player_owner(player);
    ship->set_position(spawnpoint);
    emit_signal("spawned_ship", ship);
    return ship;
@@ -263,6 +263,7 @@ void Battle::destroy_map() {
 }
 void Battle::calculate_team_balance() {
    num_unbalanced_teams = 0;
+
    for (const Ref<Team> team: teams) {
       num_unbalanced_teams += !is_team_balanced(team);
    }
@@ -284,6 +285,7 @@ void Battle::reset_team(Ref<Team> team) {
 }
 void Battle::reset_players_and_teams() {
    teams_left = teams.duplicate();
+
    for (Ref<Player> player: players) {
       reset_player(player);
    }

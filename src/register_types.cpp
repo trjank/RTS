@@ -6,7 +6,7 @@
 #include "unit.hpp"
 #include "ship.hpp"
 #include "projectile.hpp"
-#include "mouse_commands.hpp"
+#include "unit_formation.hpp"
 #include "mouse_selection.hpp"
 #include "battle.hpp"
 #include "part_data.hpp"
@@ -18,35 +18,62 @@
 #include "map.hpp"
 #include "fleet.hpp"
 #include "unique_part.hpp"
+#include "target.hpp"
 
 void Unit::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_HP"), &Unit::get_hp);
-	ClassDB::bind_method(D_METHOD("get_radar_signature"), &Unit::get_radar_signature);
-	ClassDB::bind_method(D_METHOD("kill"), &Unit::kill);
+	ClassDB::bind_method(D_METHOD("is_selected"), &Unit::is_selected);
+	ClassDB::bind_method(D_METHOD("is_queue_empty"), &Unit::is_queue_empty);
+	ClassDB::bind_method(D_METHOD("is_applying_thrust"), &Unit::is_applying_thrust);
+	ClassDB::bind_method(D_METHOD("is_movement_locked"), &Unit::is_movement_locked);
+	ClassDB::bind_method(D_METHOD("count_waypoints"), &Unit::count_waypoints);
+	ClassDB::bind_method(D_METHOD("get_hp"), &Unit::get_hp);
+	ClassDB::bind_method(D_METHOD("get_warp"), &Unit::get_warp);
+	ClassDB::bind_method(D_METHOD("get_distance_to_target"), &Unit::get_distance_to_target);
+	ClassDB::bind_method(D_METHOD("get_angle_to_target"), &Unit::get_angle_to_target);
+	ClassDB::bind_method(D_METHOD("get_stop_distance"), &Unit::get_stop_distance);
+	ClassDB::bind_method(D_METHOD("get_speed"), &Unit::get_speed);
+	ClassDB::bind_method(D_METHOD("get_approx_time_to_move"), &Unit::get_approx_time_to_move);
+	ClassDB::bind_method(D_METHOD("get_approx_time_to_turn"), &Unit::get_approx_time_to_turn);
+	ClassDB::bind_method(D_METHOD("get_path_texture"), &Unit::get_path_texture);
+	ClassDB::bind_method(D_METHOD("get_path_width"), &Unit::get_path_width);
 	ClassDB::bind_method(D_METHOD("get_forward_direction"), &Unit::get_forward_direction);
+	ClassDB::bind_method(D_METHOD("get_selected_color"), &Unit::get_selected_color);
+	ClassDB::bind_method(D_METHOD("get_cloak_color"), &Unit::get_cloak_color);
+	ClassDB::bind_method(D_METHOD("get_waypoint", "waypoint_num"), &Unit::get_waypoint);
+	ClassDB::bind_method(D_METHOD("get_attack_position"), &Unit::get_attack_position);
+	ClassDB::bind_method(D_METHOD("get_radar_signature"), &Unit::get_radar_signature);
+	ClassDB::bind_method(D_METHOD("get_player_owner"), &Unit::get_player_owner);
+	ClassDB::bind_method(D_METHOD("get_texture"), &Unit::get_texture);
+	ClassDB::bind_method(D_METHOD("set_selected_color", "new_selected_color"), &Unit::set_selected_color);
+	ClassDB::bind_method(D_METHOD("set_cloak_color", "new_cloak_color"), &Unit::set_cloak_color);
+	ClassDB::bind_method(D_METHOD("set_selected", "select"), &Unit::set_selected);
+	ClassDB::bind_method(D_METHOD("set_movement_lock", "lock_movement"), &Unit::set_movement_lock);
+	ClassDB::bind_method(D_METHOD("set_player_owner", "new_owner"), &Unit::set_player_owner);
+	ClassDB::bind_method(D_METHOD("set_texture", "new_texture"), &Unit::set_texture);
+	ClassDB::bind_method(D_METHOD("set_image_offset", "new_offset"), &Unit::set_image_offset);
+	ClassDB::bind_method(D_METHOD("set_path_texture", "new_path_texture"), &Unit::set_path_texture);
+	ClassDB::bind_method(D_METHOD("set_path_width", "new_path_width"), &Unit::set_path_width);
+	ClassDB::bind_method(D_METHOD("resize_image", "new_size"), &Unit::resize_image);
 	ClassDB::bind_method(D_METHOD("cloak"), &Unit::cloak);
 	ClassDB::bind_method(D_METHOD("decloak"), &Unit::decloak);
-	ClassDB::bind_method(D_METHOD("stop_moving"), &Unit::stop_moving);
-	ClassDB::bind_method(D_METHOD("stop_targeting"), &Unit::stop_targeting);
+	ClassDB::bind_method(D_METHOD("kill"), &Unit::kill);
 	ClassDB::bind_method(D_METHOD("clear_movement_queue"), &Unit::clear_movement_queue);
-	ClassDB::bind_method(D_METHOD("queue_move", "command"), &Unit::queue_move);
-	ClassDB::bind_method(D_METHOD("set_target"), &Unit::set_target);
+	ClassDB::bind_method(D_METHOD("queue_waypoint", "new_waypoint"), &Unit::queue_waypoint);
+	ClassDB::bind_method(D_METHOD("target", "new_target"), &Unit::target);
 	ClassDB::bind_method(D_METHOD("hit", "damage"), &Unit::hit);
-	ADD_SIGNAL(MethodInfo("warped", PropertyInfo(Variant::VECTOR2, "from"), PropertyInfo(Variant::VECTOR2, "to")));
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "selected"), "set_selected", "is_selected");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "movement_lock"), "set_movement_lock", "is_movement_locked");
+	ADD_SIGNAL(MethodInfo("warped", PropertyInfo(Variant::VECTOR2, "warp_start"), PropertyInfo(Variant::VECTOR2, "warp_end")));
 }
 void Unit::RadarSignature::_bind_methods() {
-	// Nothing to bind
-}
-void Unit::Command::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_future_position"), &Unit::RadarSignature::get_future_position);
 	// Nothing to bind
 }
 void Ship::_bind_methods() {
 	ClassDB::bind_static_method("Ship", D_METHOD("create_from", "ship_data"), &Ship::create_from);
 	ClassDB::bind_method(D_METHOD("clone"), &Ship::clone);
 	ClassDB::bind_method(D_METHOD("is_stunlocked"), &Ship::is_stunlocked);
-	ClassDB::bind_method(D_METHOD("fire"), &Ship::fire);
 	ClassDB::bind_method(D_METHOD("kill"), &Ship::kill);
-	ClassDB::bind_method(D_METHOD("get_owner"), &Ship::get_owner);
 	ClassDB::bind_method(D_METHOD("get_cost"), &Ship::get_cost);
 	ClassDB::bind_method(D_METHOD("get_energy"), &Ship::get_energy);
 	ClassDB::bind_method(D_METHOD("get_shield"), &Ship::get_shield);
@@ -54,26 +81,42 @@ void Ship::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_ratio_recharge_warp"), &Ship::get_ratio_recharge_warp);
 	ClassDB::bind_method(D_METHOD("get_ratio_recharge_shield"), &Ship::get_ratio_recharge_shield);
 	ClassDB::bind_method(D_METHOD("get_data"), &Ship::get_data);
-	ClassDB::bind_method(D_METHOD("set_owner", "new_owner"), &Ship::set_owner);
 	ClassDB::bind_method(D_METHOD("reset_stats"), &Ship::reset_stats);
 	ClassDB::bind_method(D_METHOD("hit_shield", "damage"), &Ship::hit_shield);
 	ClassDB::bind_method(D_METHOD("hit", "damage", "shield_penetration"), &Ship::hit);
 	ADD_SIGNAL(MethodInfo("fire"));
 }
-void MouseCommands::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_action"), &MouseCommands::get_action);
-	ClassDB::bind_method(D_METHOD("get_formation"), &MouseCommands::get_formation);
-	ClassDB::bind_method(D_METHOD("bind_cursor_to_action", "image", "action"), &MouseCommands::bind_cursor_to_action);
-	ClassDB::bind_method(D_METHOD("set_command_icon", "image"), &MouseCommands::set_command_icon);
-	ClassDB::bind_method(D_METHOD("select_units", "selection"), &MouseCommands::select_units);
+void UnitFormation::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("is_curve_active"), &UnitFormation::is_curve_active);
+	ClassDB::bind_method(D_METHOD("count_units"), &UnitFormation::count_units);
+	ClassDB::bind_method(D_METHOD("count_targets"), &UnitFormation::count_targets);
+	ClassDB::bind_method(D_METHOD("get_collision_mask"), &UnitFormation::get_collision_mask);
+	ClassDB::bind_method(D_METHOD("get_formation"), &UnitFormation::get_formation);
+	ClassDB::bind_method(D_METHOD("get_player"), &UnitFormation::get_player);
+	ClassDB::bind_method(D_METHOD("get_unit", "unit_num"), &UnitFormation::get_unit);
+	ClassDB::bind_method(D_METHOD("get_target", "target_num"), &UnitFormation::get_target);
+	ClassDB::bind_method(D_METHOD("set_collision_mask", "new_collision_mask"), &UnitFormation::set_collision_mask);
+	ClassDB::bind_method(D_METHOD("set_formation", "new_formation"), &UnitFormation::set_formation);
+	ClassDB::bind_method(D_METHOD("set_player"), &UnitFormation::set_player);
+	ClassDB::bind_method(D_METHOD("set_units_selected", "selected"), &UnitFormation::set_units_selected);
+	ClassDB::bind_method(D_METHOD("select_closest_unit_to", "position", "search_radius"), &UnitFormation::select_closest_unit_to);
+	ClassDB::bind_method(D_METHOD("select_region", "position", "shape"), &UnitFormation::select_region);
+	ClassDB::bind_method(D_METHOD("select_units", "selection"), &UnitFormation::select_units);
+	ClassDB::bind_method(D_METHOD("order_units_to_target"), &UnitFormation::order_units_to_target);
+	ClassDB::bind_method(D_METHOD("order_units_to_stop"), &UnitFormation::order_units_to_stop);
+	ClassDB::bind_method(D_METHOD("order_units_to_toggle_lock", "threshold"), &UnitFormation::order_units_to_toggle_lock);
+	ClassDB::bind_method(D_METHOD("order_units_to_lock"), &UnitFormation::order_units_to_lock);
+	ClassDB::bind_method(D_METHOD("order_units_to_move"), &UnitFormation::order_units_to_move);
+	ClassDB::bind_method(D_METHOD("begin_curve_at", "path_start"), &UnitFormation::begin_curve_at);
+	ClassDB::bind_method(D_METHOD("move_curve_to", "new_endpoint"), &UnitFormation::move_curve_to);
+	ClassDB::bind_method(D_METHOD("end_curve"), &UnitFormation::end_curve);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "formation"), "set_formation", "get_formation");
+	ADD_SIGNAL(MethodInfo("path_started"));
+	ADD_SIGNAL(MethodInfo("path_ended"));
 	BIND_ENUM_CONSTANT(LINE);
 	BIND_ENUM_CONSTANT(V);
 	BIND_ENUM_CONSTANT(SMOOTH);
 	BIND_ENUM_CONSTANT(PRECISE);
-	BIND_ENUM_CONSTANT(NONE);
-	BIND_ENUM_CONSTANT(MOVE);
-	BIND_ENUM_CONSTANT(TARGET);
-	BIND_ENUM_CONSTANT(NUM_OF_ACTIONS);
 }
 void MouseSelection::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_enabled"), &MouseSelection::is_enabled);
@@ -273,7 +316,7 @@ void PartManager::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("save_json", "path"), &PartManager::save_unique_data);
 	ClassDB::bind_method(D_METHOD("new_atlas"), &PartManager::new_atlas);
 	ClassDB::bind_method(D_METHOD("remove_part", "part"), &PartManager::remove_part);
-	ClassDB::bind_method(D_METHOD("new_part", "code"), &PartManager::new_part);
+	ClassDB::bind_method(D_METHOD("new_part", "code", "subtype"), &PartManager::new_part);
 	ClassDB::bind_method(D_METHOD("lookup_id", "atlas_id"), &PartManager::lookup_id);
 	ClassDB::bind_method(D_METHOD("lookup_code", "code"), &PartManager::lookup_code);
 	ClassDB::bind_method(D_METHOD("get_unique", "code"), &PartManager::get_unique_data);
@@ -320,13 +363,14 @@ void PartGrouping::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("dragging_ended", PropertyInfo(Variant::ARRAY, "selected"), PropertyInfo(Variant::RECT2, "region")));
 }
 void ShipData::_bind_methods() {
+	BIND_CONSTANT(GRID_PADDING);
 	BIND_CONSTANT(NULL_PART_ID);
+	BIND_CONSTANT(NUM_NULL_PARTS);
+	BIND_CONSTANT(MAX_NAME_LENGTH);
 	BIND_ENUM_CONSTANT(EDGE_BOTTOM);
 	BIND_ENUM_CONSTANT(EDGE_TOP);
 	BIND_ENUM_CONSTANT(EDGE_LEFT);
 	BIND_ENUM_CONSTANT(EDGE_RIGHT);
-	BIND_ENUM_CONSTANT(EDGES_TOP_BOTTOM);
-	BIND_ENUM_CONSTANT(EDGES_LEFT_RIGHT);
 	BIND_ENUM_CONSTANT(FULL_PERIMETER);
 	BIND_ENUM_CONSTANT(ROT_0_DEG);
 	BIND_ENUM_CONSTANT(ROT_90_DEG);
@@ -340,14 +384,14 @@ void ShipData::_bind_methods() {
 	BIND_ENUM_CONSTANT(OVERLAP);
 	BIND_ENUM_CONSTANT(OUT_OF_BOUNDS);
 	BIND_ENUM_CONSTANT(IS_NULL);
-	ClassDB::bind_static_method("ShipData", D_METHOD("get_grid_padding"), &ShipData::get_grid_padding);
-	ClassDB::bind_static_method("ShipData", D_METHOD("assemble", "grid_size", "parts"), &ShipData::assemble);
+	ClassDB::bind_static_method("ShipData", D_METHOD("create", "width", "height"), &ShipData::create);
+	ClassDB::bind_static_method("ShipData", D_METHOD("encode_rotation", "radians", "flipped"), &ShipData::encode_rotation);
 	ClassDB::bind_method(D_METHOD("count_parts"), &ShipData::count_parts);
 	ClassDB::bind_method(D_METHOD("is_empty"), &ShipData::is_empty);
 	ClassDB::bind_method(D_METHOD("is_connected"), &ShipData::is_connected);
 	ClassDB::bind_method(D_METHOD("get_cost"), &ShipData::get_cost);
-	ClassDB::bind_method(D_METHOD("get_size"), &ShipData::get_size);
-	ClassDB::bind_method(D_METHOD("get_size_px"), &ShipData::get_size_px);
+	ClassDB::bind_method(D_METHOD("get_grid_region"), &ShipData::get_grid_region);
+	ClassDB::bind_method(D_METHOD("get_ship_region"), &ShipData::get_ship_region);
 	ClassDB::bind_method(D_METHOD("get_max_warp"), &ShipData::get_max_warp);
 	ClassDB::bind_method(D_METHOD("get_max_hp"), &ShipData::get_max_hp);
 	ClassDB::bind_method(D_METHOD("get_max_shield"), &ShipData::get_max_shield);
@@ -372,10 +416,12 @@ void ShipData::_bind_methods() {
 }
 void ShipManager::_bind_methods() {
    BIND_CONSTANT(NULL_PART_ATLAS_ID);
+	ClassDB::bind_method(D_METHOD("set_part_manager", "new_parts_manager"), &ShipManager::set_part_manager);
+
 	ClassDB::bind_method(D_METHOD("save_ship_image", "ship", "path"), &ShipManager::save_ship_image);
 	ClassDB::bind_method(D_METHOD("save_ship_csv", "ship", "path"), &ShipManager::save_ship_csv);
 	ClassDB::bind_method(D_METHOD("load_ship_image", "path"), &ShipManager::load_ship_image);
-	ClassDB::bind_method(D_METHOD("load_ship_csv", "path"), &ShipManager::load_ship_csv);
+	ClassDB::bind_method(D_METHOD("load_ship_csv", "size", "path"), &ShipManager::load_ship_csv);
 	ClassDB::bind_method(D_METHOD("save_ship_string"), &ShipManager::save_ship_string);
 }
 void Star::_bind_methods() {
@@ -392,8 +438,8 @@ void MapLayer::_bind_methods() {
 	BIND_CONSTANT(SECTOR_LIMIT);
 	BIND_CONSTANT(ORBIT_LIMIT);
 	ClassDB::bind_method(D_METHOD("get_submap"), &MapLayer::get_submap);
-	ClassDB::bind_method(D_METHOD("get_num_orbits"), &MapLayer::get_num_orbits);
-	ClassDB::bind_method(D_METHOD("get_num_sectors"), &MapLayer::get_num_sectors);
+	ClassDB::bind_method(D_METHOD("count_orbits"), &MapLayer::count_orbits);
+	ClassDB::bind_method(D_METHOD("count_sectors"), &MapLayer::count_sectors);
 	ClassDB::bind_method(D_METHOD("get_orbit_spacing"), &MapLayer::get_orbit_spacing);
 	ClassDB::bind_method(D_METHOD("get_start_distance"), &MapLayer::get_start_distance);
 	ClassDB::bind_method(D_METHOD("set_submap", "new_submap"), &MapLayer::set_submap);
@@ -401,8 +447,8 @@ void MapLayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_num_sectors", "new_num_sectors"), &MapLayer::set_num_sectors);
 	ClassDB::bind_method(D_METHOD("set_orbit_spacing", "new_orbit_spacing"), &MapLayer::set_orbit_spacing);
 	ClassDB::bind_method(D_METHOD("set_start_distance", "new_start_distance"), &MapLayer::set_start_distance);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "num_orbits"), "set_num_orbits", "get_num_orbits");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "num_sectors"), "set_num_sectors", "get_num_sectors");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "num_orbits"), "set_num_orbits", "count_orbits");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "num_sectors"), "set_num_sectors", "count_sectors");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "orbit_spacing"), "set_orbit_spacing", "get_orbit_spacing");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "start_distance"), "set_start_distance", "get_start_distance");
 }
@@ -461,18 +507,33 @@ void FleetManager::_bind_methods() {
 void ProjectileData::_bind_methods() {
 
 }
+void Target::_bind_methods() {
+
+}
+void StaticTarget::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_speed"), &StaticTarget::get_speed);
+	ClassDB::bind_method(D_METHOD("get_position"), &StaticTarget::get_position);
+	ClassDB::bind_method(D_METHOD("get_velocity"), &StaticTarget::get_velocity);
+	ClassDB::bind_method(D_METHOD("get_future_position"), &StaticTarget::get_future_position);
+	ClassDB::bind_method(D_METHOD("set_position", "new_position"), &StaticTarget::set_position);
+}
+void Detection::_bind_methods() {
+
+}
 
 void initialize_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) return;
 
 	GDREGISTER_CLASS(Unit);
-	GDREGISTER_CLASS(Unit::Command);
+	GDREGISTER_ABSTRACT_CLASS(Target);
+	GDREGISTER_CLASS(StaticTarget);
+	GDREGISTER_CLASS(Detection);
 	GDREGISTER_CLASS(Unit::RadarSignature);
 	GDREGISTER_CLASS(ResizableSprite2D);
 	
 	// GDREGISTER_CLASS(Projectile);
 	GDREGISTER_CLASS(Ship);
-	GDREGISTER_CLASS(MouseCommands);
+	GDREGISTER_CLASS(UnitFormation);
 	GDREGISTER_CLASS(MouseSelection);
 	GDREGISTER_CLASS(Battle);
 	GDREGISTER_CLASS(Player);
@@ -504,7 +565,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	UtilityFunctions::print("Loaded RadarSignature from unit.cpp");
 	UtilityFunctions::print("Loaded Projectile from projectile.cpp");
 	UtilityFunctions::print("Loaded Ship from ship.cpp");
-	UtilityFunctions::print("Loaded MouseCommands from mouse_commands.cpp");
+	UtilityFunctions::print("Loaded UnitFormation from mouse_commands.cpp");
 	UtilityFunctions::print("Loaded MouseSelection from mouse_selection.cpp");
 	UtilityFunctions::print("Loaded Battle from battle.cpp");
 	UtilityFunctions::print("Loaded Celestial from celestial.cpp");

@@ -19,8 +19,8 @@ namespace godot {
 *------------------------------------------------------*/
 struct PackedInt32Grid {
    static PackedInt32Grid create(int width, int height);
-   static PackedInt32Grid createv(Vector2i size);
 
+   Vector2i get_size() const;
    void fill(int32_t integer);
    void fill_rect(Rect2i rect, int32_t integer);
    int32_t get(int x, int y) const;

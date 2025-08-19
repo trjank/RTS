@@ -10,10 +10,10 @@ Map::Result Map::generate(Ref<RandomNumberGenerator> rng, Node2D& parent, int ma
 Ref<Map> MapLayer::get_submap() const {
    return submap;
 }
-int MapLayer::get_num_orbits() const {
+int MapLayer::count_orbits() const {
    return num_orbits;
 }
-int MapLayer::get_num_sectors() const {
+int MapLayer::count_sectors() const {
    return num_sectors;
 }
 double MapLayer::get_orbit_spacing() const {
@@ -124,17 +124,18 @@ void System::create_sector(Ref<RandomNumberGenerator> rng, Orbit& orbit, Ref<Map
    |------------------------------------------------------*/
    Result submap = layer->get_submap()->generate(rng, orbit, max_depth);
    double angle  = layer->get_sector_size_radians() * sector_num;
+
    orbit.set_angle(submap.map_root, angle);
    out_result.num_capturables += submap.num_capturables;
 }
 void System::create_orbit(Ref<RandomNumberGenerator> rng, Celestial& parent, Ref<MapLayer> layer, Result& out_result, int max_depth) {
-   Orbit& orbit = *memnew(Orbit);
-   parent.add_child( &orbit);
-   orbit.set_distance(out_result.distance);
-   orbit.orbit( &parent);
+   Orbit* orbit = memnew(Orbit);
+   parent.add_child(orbit);
+   orbit->set_distance(out_result.distance);
+   orbit->orbit( &parent);
 
-   for (int sector_num = 0; sector_num < layer->get_num_sectors(); ++sector_num) {
-      create_sector(rng, orbit, layer, sector_num, out_result, max_depth);
+   for (int sector_num = 0; sector_num < layer->count_sectors(); ++sector_num) {
+      create_sector(rng, *orbit, layer, sector_num, out_result, max_depth);
    }
    /*------------------------------------------------------|
    | Make sure orbit_spacing is large enough to prevent    |
@@ -144,7 +145,8 @@ void System::create_orbit(Ref<RandomNumberGenerator> rng, Celestial& parent, Ref
 }
 void System::create_layer(Ref<RandomNumberGenerator> rng, Celestial& parent, Ref<MapLayer> layer, Result& out_result, int max_depth) {
    out_result.distance += layer->get_start_distance();
-   for (int n = 0; n < layer->get_num_orbits(); ++n) {
+
+   for (int n = 0; n < layer->count_orbits(); ++n) {
       create_orbit(rng, parent, layer, out_result, max_depth);
    }
 }
@@ -159,6 +161,7 @@ Map::Result System::generate(Ref<RandomNumberGenerator> rng, Node2D& parent, int
    
    Celestial* map_root = create_celestial(rng);
    parent.add_child(result.map_root = map_root);
+
    for (const Ref<MapLayer> layer: layers) {
       create_layer(rng, *map_root, layer, result, max_depth);
    }
