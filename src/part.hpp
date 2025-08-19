@@ -24,10 +24,12 @@ class Ship;
 class Part: public StaticBody2D {
    GDCLASS(Part, StaticBody2D)
 public:
+   enum InitStatus {OKAY_KEEP_PART, FAILURE_NO_MOUNT};
+
    static Part* create_from(Ref<PartData> part_data);
 
    Ref<PartData> get_data() const;
-   virtual void _ship_init(const Ship& parent_ship, int part_id);
+   virtual InitStatus _ship_init(const Ship& parent_ship, int part_id);
 protected:
    static void _bind_methods();
 private:

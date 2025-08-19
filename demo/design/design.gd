@@ -37,12 +37,17 @@ func _input(event):
 		print("saving...")
 		part_grouping.clear_parts() # <-- This is VERY important
 		#var ship_manager := ShipManager.new()
-		var ship := ShipData.assemble(Vector2i(64, 64), grid.get_children())
+		var ship := ShipData.create(64, 64)
+		for part in grid.get_children():
+			ship.add_part_node(part)
+			print("->", part.rotation, " | ", part.scale.x < 0, " | ", part.get_class())
+		print(ship.count_parts())
 		print(fleet.get_name())
 		print(fleet.get_num_slots(Fleet.CAPITAL_SHIP))
 		fleet.set_slot(Fleet.CAPITAL_SHIP,0, ship)
 
 		fleet_manager.save_fleet_slot(fleet, Fleet.CAPITAL_SHIP,0)
+		
 		print("IS CONNECTED: ", ship.is_connected())
 		var bounds_x = ship.get_ship_bounds_x()
 		var bounds_y = ship.get_ship_bounds_y()

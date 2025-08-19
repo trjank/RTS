@@ -121,10 +121,10 @@ void FleetManager::load_fleet_type(Ref<Fleet> fleet, Fleet::ShipType type) {
    }
 }
 void FleetManager::load_fleet_slot(Ref<Fleet> fleet, Fleet::ShipType type, int slot) {
-   String path = get_ship_local_path(fleet, type, slot);
-   Ref<ShipData> ship = load_ship_csv(path + ".csv");
-   // ship->set_texture_path(path + ".png");
-   fleet->set_slot(type, slot, ship);
+   // String path = get_ship_local_path(fleet, type, slot);
+   // Ref<ShipData> ship = load_ship_csv(path + ".csv");
+   // // ship->set_texture_path(path + ".png");
+   // fleet->set_slot(type, slot, ship);
 }
 
 Error FleetManager::delete_fleet(Ref<Fleet> fleet) {

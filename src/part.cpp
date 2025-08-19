@@ -25,7 +25,7 @@ Part* Part::create_from(Ref<PartData> part_data) {
 Ref<PartData> Part::get_data() const {
 	return data;
 }
-void Part::_ship_init(const Ship& parent_ship, int part_id) {
+Part::InitStatus Part::_ship_init(const Ship& parent_ship, int part_id) {
 	/*------------------------------------------------------|
 	| This will never run for static parts. This is for     |
 	| unique parts, which become actual nodes on the ship.  |

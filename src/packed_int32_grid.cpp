@@ -12,8 +12,8 @@ PackedInt32Grid PackedInt32Grid::create(int width, int height) {
    new_grid.grid = Image::create(width, height, true, Image::FORMAT_RF);
    return new_grid;
 }
-PackedInt32Grid PackedInt32Grid::createv(Vector2i size) {
-   return create(size.width, size.height);
+Vector2i PackedInt32Grid::get_size() const {
+   return grid->get_size();
 }
 void PackedInt32Grid::fill(int32_t integer) {
    grid->fill(encode(integer));
