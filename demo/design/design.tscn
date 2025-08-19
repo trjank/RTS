@@ -138,23 +138,19 @@ theme_override_styles/normal = ExtResource("2_wxr8y")
 theme_override_constants/arrow_margin = 15
 theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
 selected = 3
-item_count = 5
+item_count = 4
 popup/item_0/text = "NEW FLEET"
 popup/item_0/icon = ExtResource("5_tiyvg")
 popup/item_0/id = 0
 popup/item_1/text = "RENAME FLEET"
 popup/item_1/icon = ExtResource("5_8hx7x")
 popup/item_1/id = 1
-popup/item_1/disabled = true
 popup/item_2/text = "DELETE FLEET"
 popup/item_2/icon = ExtResource("5_tfe8n")
 popup/item_2/id = 2
-popup/item_2/disabled = true
 popup/item_3/text = "Fleets"
 popup/item_3/id = 3
 popup/item_3/separator = true
-popup/item_4/text = "Starter Fleet"
-popup/item_4/id = 4
 script = ExtResource("4_nwsnp")
 rename_fleet_popup = NodePath("../../../../../../../../RenameFleetPopup")
 delete_fleet_popup = NodePath("../../../../../../../../DeleteFleetPopup")
@@ -177,6 +173,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="MarginContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer/FleetContainer/VBoxContainer/ScrollContainer/ship_buttons" instance=ExtResource("8_on51i")]
+visible = false
 layout_mode = 2
 
 [node name="PartsContainer" type="PanelContainer" parent="UI/NavigatorOffset/HSplitContainer/HBoxContainer"]

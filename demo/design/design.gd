@@ -15,7 +15,8 @@ var fleet:Fleet
 @onready var manager := PartManager.new()
 @onready var ship_button = preload("res://fleet_button.tscn")
 const UNSAVED_SHIP_ID = -1
-const UNSAVED_SHIP_NAME = " "
+const UNSAVED_SHIP_NAME = "Untitled"
+const EMPTY_SLOT_NAME = " "
 const UNSAVED_FLEET_NAME = "*Unsaved"
 const UNSAVED_FLEET_ID  = -1
 const DEFAULT_SLOT = 0
@@ -23,14 +24,14 @@ const FLEET_SIZE = 10
 
 #var fleet_manager := FleetManager.new()
 var rename:String = "*Unsaved"
-var ship_name = UNSAVED_SHIP_NAME
+var ship_name = EMPTY_SLOT_NAME
 var current_ship_slot = DEFAULT_SLOT
-
+var current_fleet = 1
 var ship_slots = {}
 var slot_buttons = {}
 var unsaved:bool = false
 #@onready var fleet_folder = DirAccess.open("user://fleets")
-var db:DB
+@onready var  db = $"../modules".db
 
 var testStr = "ENT2,35.0,33.0,0
 ENT2,35.0,35.0,0
@@ -131,9 +132,12 @@ func save_ship(ship:ShipData, ship_manager:ShipManager):
 		db.update_ship_stats(current_id ,ship_stats)
 		return
 	var results = db.create_ship(ship_name, ship_stats)
+
 	if results.size() > 0:
 		print("created new ship with id: %d" % results[0]["id"])
-		ship_slots[current_ship_slot] = results[0]["id"]
+		var newShip = results[0]
+		db.add_ship_to_fleet(current_fleet, newShip["id"])
+		ship_slots[current_ship_slot] = newShip["id"]
 		print(ship)
 		slot_buttons[current_ship_slot].button.text = "Untitled"
 		slot_buttons[current_ship_slot].delete_button.visible = true
@@ -204,28 +208,31 @@ func clear_current_slot():
 	slot_buttons[current_ship_slot].delete_button.visible = false
 
 
-func setup_ship_buttons(ships):
+func create_ship_buttons():
+	var btn_name = EMPTY_SLOT_NAME
+	for num in range(FLEET_SIZE):
+		var button = create_ship_button(btn_name,change_slot.bind(num),clear_current_slot)
+		slot_buttons[num] = button
+		ship_buttons.add_child(button)
+
+func set_ships(ships):
 	ships.resize(FLEET_SIZE)
+	
 	for num in range(FLEET_SIZE):
 		var cur_ship = ships[num]
-		var btn_name = UNSAVED_SHIP_NAME
+		var btn_name = EMPTY_SLOT_NAME
 		var ship_id = -1
 		if cur_ship:
 			btn_name = cur_ship["name"]
 			ship_id = cur_ship["id"]
-		ship_slots[num] = ship_id
-		var button = create_ship_button(btn_name,change_slot.bind(num),clear_current_slot)
-		slot_buttons[num] = button
-		ship_buttons.add_child(button)
 		
+		slot_buttons[num].button.text = btn_name
+		ship_slots[num] = ship_id
 
 
-func _ready():
-	db = DB.new()
-	resize(Vector2i(64, 64))
+
+func setup_part_buttons():
 	manager.load_csv("user://parts.csv")
-	var ships = db.get_ships_in_fleet(1)
-	setup_ship_buttons(ships)
 	PartButton.part_container = part_grouping
 	for atlas_id in range(manager.count_parts()):
 		var part := manager.lookup_id(atlas_id)
@@ -239,13 +246,83 @@ func _ready():
 		else:
 			part_container.add_child(part_display)
 
-func selected_fleet(option):
-	match option: 
-		fleet_dropdown.NEW_FLEET_OPTION:
-			unsaved = true
+func setup_fleet_buttons():
+	var fleets = db.get_fleets()
+	if not fleets:
+		print("No fleets found in database.")
+		return
+	print(fleets)
+	fleet_dropdown.set_fleets(fleets)
+	fleet_dropdown.item_selected.connect(on_selected_fleet)
+	rename_fleet_popup.valid_rename.connect(on_valid_rename)
+	
+
+func _ready():
+	#setup global db connection?
+	resize(Vector2i(64, 64))
+	var ships = db.get_ships_in_fleet(current_fleet)
+	print(ships)
+	create_ship_buttons()
+	setup_part_buttons()
+	setup_fleet_buttons()
+	#set_fleet(1)
+
+
+func set_fleet(new_fleet):
+	var ships = db.get_ships_in_fleet(new_fleet)
+	current_fleet = new_fleet
+	set_ships(ships)
+
+	
+const NEW_FLEET_OPTION := 0
+const RENAME_FLEET_OPTION := 1
+const DELETE_FLEET_OPTION := 2
+const NO_OPTION := 3
+
+func update_fleet_dropdown():
+	var fleets = db.get_fleets()
+	fleet_dropdown.clear()
+	fleet_dropdown.add_item("New Fleet")
+	fleet_dropdown.add_item("Rename Fleet")
+	fleet_dropdown.add_item("Delete Fleet")
+	fleet_dropdown.add_item(" ")
+	fleet_dropdown.set_fleets(fleets)
+
+func on_selected_fleet(option):
+	match option:
+		RENAME_FLEET_OPTION:
+			# Open a popup window with a textbox
+			#select(previous_option)
+			#option_to_rename = selected
+			rename_fleet_popup.show()
+		DELETE_FLEET_OPTION:
+			fleet_dropdown.remove_item(option)
+			db.remove_fleet_and_ships(current_fleet)
+		NEW_FLEET_OPTION:
+			var new_fleet = db.create_fleet("Untitled Fleet")
+			fleet_dropdown.fleets.append(new_fleet)
+			fleet_dropdown.add_item("Untitled Fleet", true)
+			fleet_dropdown.select(fleet_dropdown.item_count - 1)
+			
+			#add_item(NO_NAME, 0)
+			#select(item_count - 1)
+			#option_to_rename = selected
+			rename_fleet_popup.show()
+		_:
+			if(option < 4):
+				return
+			
+			var fleet_index = option - 4
+			var fleet_selected = fleet_dropdown.fleets[fleet_index]
+			print("Selected fleet:")
+			print(fleet_selected)
+			set_fleet(fleet_selected["id"])
+
+
 
 func on_valid_rename(new_rename):
-	pass
+	db.rename_fleet(current_fleet,new_rename)
+	update_fleet_dropdown()
 	# if unsaved:
 	# 	if(!fleet_manager.fleet_exists(new_rename)):
 	# 		fleet = Fleet.new()

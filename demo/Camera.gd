@@ -6,7 +6,7 @@ var speed_xy := 10000
 var speed_z := 1.0
 var min_z := 0.2
 var max_z := 10.0
-var z := 1.0
+var z := 2.0
 
 @export var camera_node: Camera2D
 
