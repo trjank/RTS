@@ -30,6 +30,8 @@ public:
    static constexpr double PATH_WIDTH = 1.0;
    static constexpr double MOVE_LAZINESS = 1.0;
 
+   static_assert(0.0 < MOVE_LAZINESS && MOVE_LAZINESS <= 1.0);
+
    Unit();
    ~Unit();
    bool is_selected() const;

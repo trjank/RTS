@@ -48,7 +48,7 @@ void Team::set_name(String new_name) {
    name = new_name.substr(0, MAX_NAME_LENGTH);
 }
 void Team::set_color(Color new_color) {
-   new_color.a = 1.0F;
+   new_color.a = 1.0;
    color = new_color;
 }
 /*------------------------------------------------------|
@@ -67,11 +67,13 @@ void Team::register_loss(const Destructable& loss) {
 }
 void Team::register_capture(const Capturable& capturable) {
    ++celestials_owned;
+
    alloy_per_sec  += capturable.get_alloy_per_sec();
    energy_per_sec += capturable.get_energy_per_sec();
 }
 void Team::register_forfeit(const Capturable& capturable) {
    --celestials_owned;
+
    alloy_per_sec  -= capturable.get_alloy_per_sec();
    energy_per_sec -= capturable.get_energy_per_sec();
 }
@@ -119,6 +121,7 @@ void Player::set_name(String new_name) {
 |------------------------------------------------------*/
 void Player::register_kill(const Destructable& kill) {
    team->register_kill(kill);
+
    alloy  += kill.get_cost() * alloy_bounty;
    energy += kill.get_energy() * energy_bounty;
 }
@@ -128,6 +131,7 @@ void Player::register_loss(const Destructable& loss) {
 void Player::_tick_resources(double dt) {
    double alloy_gain  = dt * team->get_alloy_per_sec();
    double energy_gain = dt * team->get_energy_per_sec();
+
    alloy  = Math::clamp(alloy + alloy_gain, MIN_ALLOY, MAX_ALLOY);
    energy = Math::clamp(energy + energy_gain, MIN_ENERGY, MAX_ENERGY);
 }

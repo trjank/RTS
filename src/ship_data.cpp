@@ -2,35 +2,19 @@
 
 using namespace godot;
 
-constexpr double PI_2 = 0.5 * Math_PI;
-
 Ref<ShipData> ShipData::create(int grid_width, int grid_height) {
    Ref<ShipData> ship = memnew(ShipData);
 
-   /*------------------------------------------------------|
-   | Because of the padding, the top left corner is really |
-   | (1, 1). Keep this in mind for the functions below.    |
-   |------------------------------------------------------*/
-   int padded_width  = 2 * GRID_PADDING + grid_width;
-   int padded_height = 2 * GRID_PADDING + grid_height;
-   ship->grid_region = {GRID_PADDING, GRID_PADDING, grid_width, grid_height};
-   ship->grid        = PackedInt32Grid::create(padded_width, padded_height);
-
-   #if CPU_IMAGE_GENERATION
-   padded_width  *= PartData::PX_PER_GRID_SQUARE;
-   padded_height *= PartData::PX_PER_GRID_SQUARE;
-   ship->image    = Image::create(padded_width, padded_height, true, Image::FORMAT_RGBA8);
-   #endif // CPU_IMAGE_GENERATION
+   ship->id_grid = Grid::create(grid_width, grid_height);
+   ship->id_grid.fill(NULL_PART_ID);
 
    return ship;
 }
-ShipData::RotationState ShipData::encode_rotation(double radians, bool flipped) {
-   int quadrant = Math::posmod(0.5 + radians / PI_2, 4);
-   int encoding = quadrant + FLIPPED_ROT_0_DEG * flipped;
-   return static_cast<RotationState>(encoding);
-}
 ShipData::ShipData() {
+   PackedPart null_part;
+
    part_clusters.new_set();
+   parts.push_back(null_part);
 }
 int ShipData::count_parts() const {
    return parts.size() - NUM_NULL_PARTS;
@@ -39,16 +23,16 @@ bool ShipData::is_empty() const {
    return count_parts() == 0;
 }
 bool ShipData::is_connected() const {
-   return part_clusters.count_num_sets() == NUM_NULL_PARTS + 1;
+   return part_clusters.count_sets() == NUM_NULL_PARTS + 1;
 }
 bool ShipData::has_part(int part_id) const {
    return NULL_PART_ID < part_id && part_id < parts.size();
 }
-Rect2i ShipData::get_grid_region() const {
-   return grid_region;
+Rect2i ShipData::get_grid_rect() const {
+   return id_grid.get_rect();
 }
-Rect2i ShipData::get_ship_region() const {
-   return ship_region;
+Rect2i ShipData::get_ship_rect() const {
+   return ship_rect;
 }
 int ShipData::get_cost() const {
    return cost;
@@ -81,9 +65,9 @@ double ShipData::get_turnrate() const {
    return turnrate;
 }
 Vector2 ShipData::get_center_of_mass() const {
-   return center_of_mass;
+   return mass_offset / mass;
 }
-Ref<Image> ShipData::get_image() const {
+NEVER_NULL Ref<Image> ShipData::get_image() const {
    return image;
 }
 Ref<ImageTexture> ShipData::get_texture() const {
@@ -92,121 +76,98 @@ Ref<ImageTexture> ShipData::get_texture() const {
 PackedInt32Array ShipData::get_unique_parts() {
    return unique_parts;
 }
-int ShipData::get_part_at(Vector2i location) const {
-   return grid_region.has_point(location) ? grid.getv(location) : NULL_PART_ID;
+int ShipData::get_part_at(Vector2i xy) const {
+   return id_grid.get_rect().has_point(xy) ? id_grid.getv(xy) : NULL_PART_ID;
 }
-ShipData::RotationState ShipData::get_part_rotation_state(int part_id) const {
-   ERR_FAIL_COND_V_MSG( !has_part(part_id), ROT_0_DEG,
-   "<ShipData> part not found (failed to get rotation state)");
-
-   return part_rotation_states[part_id];
+NO_ERROR_CHECK Vector2 ShipData::get_part_center(int part_id) const {
+   return static_cast<Rect2>(parts[part_id].rect).get_center();
 }
-Vector2 ShipData::get_part_center(int part_id) const {
-   ERR_FAIL_COND_V_MSG( !has_part(part_id), Vector2(0.0, 0.0),
-   "<ShipData> part not found (failed to get part center)");
-
-   return part_centers[part_id];
+NO_ERROR_CHECK Ref<PartData> ShipData::get_part_data(int part_id) const {
+   return parts[part_id].part_data;
 }
-Rect2i ShipData::get_part_region(int part_id) const {
-   ERR_FAIL_COND_V_MSG( !has_part(part_id), Rect2i(0, 0, 0, 0),
-   "<ShipData> part not found (failed to get part region)");
-
-   return part_regions[part_id];
+NO_ERROR_CHECK Rect2i ShipData::get_part_rect(int part_id) const {
+   return parts[part_id].rect;
 }
-Ref<PartData> ShipData::get_part_data(int part_id) const {
-   ERR_FAIL_COND_V_MSG( !has_part(part_id), nullptr,
-   "<ShipData> part not found (failed to get part data)");
-
-   return parts[part_id];
+NO_ERROR_CHECK PartData::Rotation ShipData::get_part_rotation(int part_id) const {
+   return static_cast<PartData::Rotation>(parts[part_id].rotation);
+}
+NO_ERROR_CHECK bool ShipData::is_part_flipped(int part_id) const {
+   return parts[part_id].flipped;
 }
 void ShipData::set_image(Ref<Image> new_image) {
-   ERR_FAIL_NULL_MSG(new_image,
-   "<ShipData> Image is null (failed to set image)");
+   ERR_FAIL_NULL(new_image);
 
    image = new_image;
 }
-NO_ERROR_CHECK PackedInt32Array ShipData::find_neighbors(int part_id, int boundary_flags) const {
+bool ShipData::rect_is_part(Rect2i rect, int part_id) const {
+   rect = id_grid.get_rect().intersection(rect);
+
+   return id_grid.rect_is_value(rect, part_id);
+}
+PackedInt32Array ShipData::find_neighbors(int part_id, int boundary_flags) const {
    PackedInt32Array neighbors;
-   Vector2i min = part_regions[part_id].position;
-   Vector2i max = part_regions[part_id].get_end();
+
+   ERR_FAIL_COND_V( !has_part(part_id), neighbors);
+
+   Vector2i min = parts[part_id].rect.position;
+   Vector2i max = parts[part_id].rect.get_end();
 
    /*------------------------------------------------------|
-   | Empty spaces are still counted as neighbors. This     |
-   | is useful for parts like thrusters.                   |
+   | Empty space is ignored. Note that this is relative to |
+   | the ship, not the part (part orientation is ignored). |
    |------------------------------------------------------*/
-   if (boundary_flags & EDGE_TOP)
-   for (int x = min.x; x < max.x; ++x) {
-      neighbors.push_back( grid.get(x, min.y - 1) );
+   if ((boundary_flags & EDGE_TOP) && min.y > 0)
+   for (int id, x = min.x; x < max.x; ++x) {
+      if ((id = id_grid.get(x, min.y - 1)) != NULL_PART_ID) neighbors.push_back(id);
    }
-   if (boundary_flags & EDGE_BOTTOM)
-   for (int x = min.x; x < max.x; ++x) {
-      neighbors.push_back( grid.get(x, max.y) );
+   if ((boundary_flags & EDGE_BOTTOM) && max.y < id_grid.get_rect().size.height)
+   for (int id, x = min.x; x < max.x; ++x) {
+      if ((id = id_grid.get(x, max.y)) != NULL_PART_ID) neighbors.push_back(id);
    }
-   if (boundary_flags & EDGE_LEFT)
-   for (int y = min.y; y < max.y; ++y) {
-      neighbors.push_back( grid.get(min.x - 1, y) );
+   if ((boundary_flags & EDGE_LEFT) && min.x > 0)
+   for (int id, y = min.y; y < max.y; ++y) {
+      if ((id = id_grid.get(min.x - 1, y)) != NULL_PART_ID) neighbors.push_back(id);
    }
-   if (boundary_flags & EDGE_RIGHT)
-   for (int y = min.y; y < max.y; ++y) {
-      neighbors.push_back( grid.get(max.x, y) );
+   if ((boundary_flags & EDGE_RIGHT) && max.x < id_grid.get_rect().size.width)
+   for (int id, y = min.y; y < max.y; ++y) {
+      if ((id = id_grid.get(max.x, y)) != NULL_PART_ID) neighbors.push_back(id);
    }
    return neighbors;
 }
-ShipData::PartError ShipData::add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state) {
+ShipData::PartError ShipData::add_part(Ref<PartData> part, Rect2i rect, PartData::Rotation rotation, bool flipped) {
    if (part.is_null()) return IS_NULL;
+   if ( !id_grid.get_rect().encloses(rect)) return OUT_OF_BOUNDS;
+   if ( !part->is_valid_orientation(rotation, flipped)) return INVALID_ORIENTATION;
+   if (part->is_connected() && !id_grid.rect_is_value(rect, NULL_PART_ID)) return OVERLAP;
 
-   Vector2i size = part->get_size();
-   if (rotation_state % 2 == 0) SWAP(size.width, size.height);
-
-   // Vector2i size   = transform_size(part->get_size(), rotation_state);
-   Vector2i corner = center - 0.5 * static_cast<Vector2>(size);
-   Rect2i rect     = Rect2i(corner, size).intersection(grid_region);
-
-   if (rect.size != size) return OUT_OF_BOUNDS;
-
+   /*------------------------------------------------------|
+   | Each part starts as an isolated cluster. We merge     |
+   | clusters to determine if the ship is connected.       |
+   |------------------------------------------------------*/
    int part_id = part_clusters.new_set();
 
-   parts.push_back(part);
-   part_centers.push_back(center);
-   part_regions.push_back(rect);
-   part_rotation_states.push_back(rotation_state);
-   add_stats(part);
-   
-   mass_offset    += part->get_mass() * center;
-   center_of_mass  = mass_offset / mass;
+   PackedPart packed = {flipped, rotation, part, rect};
 
-   switch (part->get_behavior()) {
-      case PartData::UNIQUE_DISCONNECTED:
-         part_clusters.merge(part_id, NULL_PART_ID);
-         unique_parts.push_back(part_id);
-         return OKAY;
-      case PartData::UNIQUE_CONNECTED:
-         unique_parts.push_back(part_id);
-      case PartData::STATIC:
-         if ( !grid.is_empty_region(rect, NULL_PART_ID)) return OVERLAP;
+   parts.push_back(packed);
+   add_stats(part_id, part);
+   expand_ship_rect(rect);
 
-         place_on_grid(part_id, rect);
-         draw_part(part->get_image(), rect, rotation_state);
-      default:
-         return OKAY;
-   }
+   if (part->is_unique()) unique_parts.push_back(part_id);
+
+   if (part->is_connected())
+      place_on_grid(part_id, rect);
+   else
+      part_clusters.merge(part_id, NULL_PART_ID);
+   return OKAY;
 }
 ShipData::PartError ShipData::add_part_node(Part* part) {
    if ( !part) return IS_NULL;
 
-   Ref<PartData> data = part->get_data();
-   bool flipped       = part->get_scale().x < 0;
-   double rotation    = part->get_rotation();
-   Vector2 position   = part->get_position() / PartData::PX_PER_GRID_SQUARE;
-
-   if (part->get_scale().y < 0) {
-      rotation += Math_PI;
-      flipped = !flipped;
-   }
-
-   return add_part(data, position, encode_rotation(rotation, flipped));
+   Rect2i rect = PartData::to_grid_rect( part->get_rect() );
+   
+   return add_part(part->get_data(), rect, part->get_rotation_state(), part->is_flipped());
 }
-void ShipData::add_stats(Ref<PartData> part) {
+void ShipData::add_stats(int part_id, Ref<PartData> part) {
    thrust         += part->get_thrust();
    cost           += part->get_cost();
    mass           += part->get_mass();
@@ -216,62 +177,17 @@ void ShipData::add_stats(Ref<PartData> part) {
    warp_per_sec   += part->get_warp_per_sec();
    shield_per_sec += part->get_shield_per_sec();
    energy_per_sec += part->get_energy_per_sec();
+   mass_offset    += part->get_mass() * get_part_center(part_id);
+}
+void ShipData::expand_ship_rect(Rect2i rect) {
+   ship_rect = unlikely(count_parts() <= 1) ? rect : ship_rect.merge(rect);
 }
 void ShipData::place_on_grid(int part_id, Rect2i rect) {
-   grid.fill_rect(rect, part_id);
-   ship_region = count_parts() == 1 ? rect : ship_region.merge(rect);
-   /*------------------------------------------------------|
-   | Every part starts out as its own set. We union        |
-   | adjacent sets to figure out if the ship is connected. |
-   |------------------------------------------------------*/
-   for (int id: find_neighbors(part_id, FULL_PERIMETER)) {
-      if (id != NULL_PART_ID) part_clusters.merge(part_id, id);
-   }
-}
-Vector2i ShipData::transform_size(Vector2i size, RotationState rotation_state) {
-   return rotation_state % 2 == 0 ? size : Vector2i(size.height, size.width);
-}
-NO_ERROR_CHECK void ShipData::draw_part(Ref<Image> part_image, Rect2i rect, RotationState rotation_state) {
+   id_grid.fill_rect(rect, part_id);
 
-   #if CPU_IMAGE_GENERATION
-   // No need to waste time or memory on default orientation
-   if (rotation_state != ROT_0_DEG) part_image = part_image->duplicate();
-   /*------------------------------------------------------|
-   | Image flip_x, rotate_90, rotate_180, and blit_rect    |
-   | functions all iterate over every pixel. This is       |
-   | expensive, so you may want to use a compute shader.   |
-   |------------------------------------------------------*/
-   switch (rotation_state) {
-      case ROT_0_DEG:
-         break;
-      case FLIPPED_ROT_0_DEG:
-         part_image->flip_x();
-         break;
-      case FLIPPED_ROT_90_DEG:
-         part_image->flip_x();
-      case ROT_90_DEG:
-         part_image->rotate_90(ClockDirection::CLOCKWISE);
-         break;
-      case FLIPPED_ROT_180_DEG:
-         part_image->flip_x();
-      case ROT_180_DEG:
-         part_image->rotate_180();
-         break;
-      case FLIPPED_ROT_270_DEG:
-         part_image->flip_x();
-      case ROT_270_DEG:
-         part_image->rotate_90(ClockDirection::COUNTERCLOCKWISE);
+   for (int neighbor_id: find_neighbors(part_id, FULL_PERIMETER)) {
+      part_clusters.merge(part_id, neighbor_id);
    }
-   /*------------------------------------------------------|
-   | For this to work, the part image size must be         |
-   | consistent with PartData::PX_PER_GRID_SQUARE. The     |
-   | scale will not automatically be fixed.                |
-   |------------------------------------------------------*/
-   rect.position *= PartData::PX_PER_GRID_SQUARE;
-   rect.size     *= PartData::PX_PER_GRID_SQUARE;
-   image->blit_rect(part_image, {{0, 0}, rect.size}, rect.position);
-   #endif // CPU_IMAGE_GENERATION
-
 }
 
 
@@ -284,10 +200,12 @@ void ShipManager::set_part_manager(Ref<PartManager> new_part_manager) {
 }
 void ShipManager::load_part_into_ship(Ref<ShipData> ship, PackedStringArray csv_line) {
    Ref<PartData> part = part_manager->lookup_code(csv_line[CODE]);
-   float x            = csv_line[X].to_float();
-   float y            = csv_line[Y].to_float();
-   int rotation_state = csv_line[ROTATION_STATE].to_int();
-   ship->add_part(part, {x, y}, static_cast<ShipData::RotationState>(rotation_state));
+   int x            = csv_line[X].to_int();
+   int y            = csv_line[Y].to_int();
+   int rotation = csv_line[ROTATION].to_int();
+   bool flipped = csv_line[FLIPPED] == "true";
+   Rect2i rect({x, y}, part->get_size());
+   ship->add_part(part, rect, static_cast<PartData::Rotation>(rotation), flipped);
 }
 Ref<ImageTexture> ShipManager::load_ship_image(String path) {
    return ResourceLoader::get_singleton()->load(path);
@@ -308,11 +226,13 @@ Ref<ShipData> ShipManager::load_ship_csv(int width, int height, String path) {
 }
 PackedStringArray ShipManager::to_csv_line(Ref<ShipData> ship, int part_id) {
    PackedStringArray line;
+   Vector2 center = ship->get_part_center(part_id);
    line.resize(NUM_PROPERTIES);
-   line[CODE]           = ship->parts[part_id]->get_code();
-   line[X]              = String::num(ship->part_centers[part_id].x);
-   line[Y]              = String::num(ship->part_centers[part_id].y);
-   line[ROTATION_STATE] = String::num_int64(ship->part_rotation_states[part_id]);
+   line[CODE]           = ship->parts[part_id].part_data->get_code();
+   line[X]              = String::num(center.x);
+   line[Y]              = String::num(center.y);
+   line[ROTATION] = String::num_int64(ship->parts[part_id].rotation);
+   line[FLIPPED] = String::num_int64(ship->parts[part_id].flipped);
    return line;
 }
 void ShipManager::save_ship_image(Ref<ShipData> ship, String path) {
@@ -333,6 +253,7 @@ void ShipManager::save_ship_csv(Ref<ShipData> ship, String path) {
 
    Ref<FileAccess> csv = FileAccess::open(path, FileAccess::WRITE);
    csv->store_csv_line(CSV_HEADER);
+
    for (int id = ShipData::NULL_PART_ID + 1; id <= ship->count_parts(); ++id) {
       csv->store_csv_line( to_csv_line(ship, id) );
    }

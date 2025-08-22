@@ -22,8 +22,7 @@ Target::Prediction Target::predict_lazy_from(Vector2 position, double speed) con
 Target::Prediction Target::predict_from(Vector2 position, double speed) const {
    /*------------------------------------------------------|
    | This assumes the speeds will remain constant and the  |
-   | paths will be straight. You can use this to make a    |
-   | turret by aiming at the intersection point.           |
+   | paths will be straight.                               |
    |------------------------------------------------------*/
 
    // We'll use this information to apply the quadratic formula

@@ -28,16 +28,19 @@ public:
 
    static Part* create_from(Ref<PartData> part_data);
 
+   Part();
+   bool is_flipped() const;
+   PartData::Rotation get_rotation_state() const;
+   Rect2 get_rect() const;
    Ref<PartData> get_data() const;
-   virtual InitStatus _ship_init(const Ship& parent_ship, int part_id);
+   virtual InitStatus _ship_init(const Ship& _parent_ship, int _part_id);
 protected:
    static void _bind_methods();
 private:
-   NEVER_NULL Ref<RectangleShape2D> hitbox = memnew(RectangleShape2D);
    NEVER_NULL Ref<PartData> data = get_default<PartData>();
-
-   void create_image();
-   void create_hitbox();
+   NEVER_NULL Ref<RectangleShape2D> hitbox = memnew(RectangleShape2D);
+	NEVER_NULL SAFE_PTR ResizableSprite2D* image = memnew(ResizableSprite2D);
+   NEVER_NULL SAFE_PTR CollisionShape2D* collider = memnew(CollisionShape2D);
 };
 
 
@@ -62,16 +65,17 @@ public:
 protected:
    static void _bind_methods();
 private:
-   bool dragging = false;
-   Vector2 mouse_offset = {0.0, 0.0};
    const Vector2 TEXTURE_OFFSET = {0.0, 0.0};
    const Vector2 GRID_SQUARE = {PartData::PX_PER_GRID_SQUARE, PartData::PX_PER_GRID_SQUARE};
+
+   bool dragging = false;
+   Vector2 mouse_offset = {0.0, 0.0};
 
    void stop_dragging();
    void begin_dragging();
    void add_part(Part* part);
-   Vector2 grid_snap_floor(Vector2 vector);
-   Vector2 grid_snap_ceil(Vector2 vector);
+   Vector2 grid_snap_floor(Vector2 xy);
+   Vector2 grid_snap_ceil(Vector2 xy);
 };
 
 }

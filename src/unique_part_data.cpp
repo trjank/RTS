@@ -2,27 +2,6 @@
 
 using namespace godot;
 
-Ref<PartData> PartData::create_correct_subtype(String subtype) {
-   if (subtype == "weapon")
-      return memnew(WeaponData);
-   if (subtype == "weapon_modifier")
-      return memnew(WeaponModifierData);
-   if (subtype == "weapon_mount")
-      return memnew(WeaponMountData);
-   if (subtype == "projectile")
-      return memnew(ProjectileData);
-   if (subtype != "")
-      WARN_PRINT_ED("<PartData> Subtype '" + subtype + "' not recognized");
-   return memnew(PartData);
-}
-
-
-void ProjectileData::load_unique_data(Dictionary data) {
-   PartData::load_unique_data(data);
-
-   set_hitscan( data.get("hitscan", hitscan) );
-   set_size( data.get("hitbox_size", hitbox_size) );
-}
 bool ProjectileData::is_hitscan() {
    return hitscan;
 }
@@ -42,9 +21,10 @@ void WeaponModifiers::combine(const WeaponModifiers& other_modifiers) {
    combine_multipliers(other_modifiers);
 }
 void WeaponModifiers::combine_flat(const WeaponModifiers& other_modifiers) {
-   flat_range  += other_modifiers.flat_range;
-   flat_energy += other_modifiers.flat_energy;
-   flat_speed  += other_modifiers.flat_speed;
+   flat_range    += other_modifiers.flat_range;
+   flat_energy   += other_modifiers.flat_energy;
+   flat_speed    += other_modifiers.flat_speed;
+   flat_cooldown += other_modifiers.flat_cooldown;
 }
 void WeaponModifiers::combine_multipliers(const WeaponModifiers& other_modifiers) {
    multiplier_range    *= other_modifiers.multiplier_range;
@@ -65,6 +45,9 @@ double WeaponModifierData::get_flat_energy() const {
 }
 double WeaponModifierData::get_flat_speed() const {
    return modifiers.flat_speed;
+}
+double WeaponModifierData::get_flat_cooldown() const {
+   return modifiers.flat_cooldown;
 }
 double WeaponModifierData::get_multiplier_range() const {
    return modifiers.multiplier_range;
@@ -87,6 +70,9 @@ void WeaponModifierData::set_flat_energy(double new_flat_energy) {
 void WeaponModifierData::set_flat_speed(double new_flat_speed) {
    modifiers.flat_speed = Math::max(new_flat_speed, MIN_FLAT);
 }
+void WeaponModifierData::set_flat_cooldown(double new_flat_cooldown) {
+   modifiers.flat_cooldown = Math::max(new_flat_cooldown, MIN_FLAT);
+}
 void WeaponModifierData::set_multiplier_range(double new_multiplier_range) {
    modifiers.multiplier_range = Math::max(new_multiplier_range, MIN_MULTIPLIER);
 }
@@ -99,31 +85,11 @@ void WeaponModifierData::set_multiplier_speed(double new_multiplier_speed) {
 void WeaponModifierData::set_multiplier_cooldown(double new_multiplier_cooldown) {
    modifiers.multiplier_cooldown = Math::max(new_multiplier_cooldown, MIN_MULTIPLIER);
 }
-void WeaponModifierData::load_unique_data(Dictionary data) {
-   PartData::load_unique_data(data);
-
-   set_multiplier_range( data.get("flag_range", modifiers.flat_range) );
-   set_multiplier_energy( data.get("flat_energy", modifiers.flat_energy) );
-   set_multiplier_speed( data.get("flat_speed", modifiers.flat_speed) );
-   set_multiplier_range( data.get("multiplier_range", modifiers.multiplier_range) );
-   set_multiplier_energy( data.get("multiplier_energy", modifiers.multiplier_energy) );
-   set_multiplier_speed( data.get("multiplier_speed", modifiers.multiplier_speed) );
-   set_multiplier_cooldown( data.get("multiplier_cooldown", modifiers.multiplier_cooldown) );
-}
 
 
 WeaponData::WeaponData() {
-   behavior = PartData::UNIQUE_DISCONNECTED;
-}
-void WeaponData::load_unique_data(Dictionary data) {
-   PartData::load_unique_data(data);
-
-   set_shots_per_burst( data.get("shots_per_burst", shots_per_burst) );
-   set_energy_per_shot( data.get("energy_per_shot", energy_per_shot) );
-   set_effective_range( data.get("effective_range", effective_range) );
-   set_spread_angle( data.get("spread_angle", spread_angle) );
-   set_sec_between_shots( data.get("sec_between_shots", sec_between_shots) );
-   set_reload_sec( data.get("reload_sec", reload_sec) );
+   unique    = true;
+   connected = false;
 }
 bool WeaponData::is_burst_weapon() const {
    return shots_per_burst == 1;
@@ -202,12 +168,6 @@ void WeaponMountData::set_firing_arc_degrees(double new_firing_arc_degrees) {
 void WeaponMountData::set_angle_degrees(double new_angle_degrees) {
    angle_degrees = new_angle_degrees;
    calculate_min_max_angles();
-}
-void WeaponMountData::load_unique_data(Dictionary data) {
-   WeaponModifierData::load_unique_data(data);
-
-   set_angle_degrees( data.get("angle_degrees", angle_degrees) );
-   set_firing_arc_degrees( data.get("firing_arc_degrees", firing_arc_degrees) );
 }
 void WeaponMountData::calculate_min_max_angles() {
    double arc   = Math::deg_to_rad(firing_arc_degrees);

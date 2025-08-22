@@ -7,12 +7,12 @@ Ship* Ship::create_from(Ref<ShipData> ship_data) {
    
    Ship* ship = memnew(Ship);
 
-   Vector2 image_offset = ship_data->get_grid_region().get_center() - ship_data->get_center_of_mass();
+   Vector2 image_offset = ship_data->get_grid_rect().get_center() - ship_data->get_center_of_mass();
 
    ship->data = ship_data;
    ship->create_hitbox();
    ship->set_texture( ship_data->get_texture() );
-   ship->resize_image( ship_data->get_grid_region().size * PartData::PX_PER_GRID_SQUARE);
+   ship->resize_image( ship_data->get_grid_rect().size * PartData::PX_PER_GRID_SQUARE);
    ship->set_image_offset(image_offset * PartData::PX_PER_GRID_SQUARE);
 
    for (int part_id: ship_data->get_unique_parts()) {
@@ -143,7 +143,7 @@ void Ship::create_unique_part(int part_id) {
 void Ship::create_hitbox() {
    CollisionShape2D* collision_shape = memnew(CollisionShape2D);
 
-   Vector2i ship_size = data->get_ship_region().size;
+   Vector2i ship_size = data->get_ship_rect().size;
 
    add_child(collision_shape);
    hitbox->set_size(ship_size * PartData::PX_PER_GRID_SQUARE);

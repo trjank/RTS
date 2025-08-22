@@ -13,7 +13,7 @@ func hide_overlay()->void:
 func show_overlay()->void:
 	overlay.show()
 
-func create_warp_trail(from: Vector2, to: Vector2):
+func create_warp_trail(from: Vector2, to: Vector2)->void:
 	var trail := preload("res://battle/WarpPath.tscn").instantiate()
 	add_child(trail)
 	trail.set_point_position(0, from)
@@ -41,6 +41,7 @@ func _ready()->void:
 	start()
 
 func _on_started()->void:
+	return
 	var part_manager := PartManager.new()
 	part_manager.new_part("NULL", "")
 	part_manager.load_csv("user://parts.csv")

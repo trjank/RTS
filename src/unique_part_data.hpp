@@ -10,7 +10,6 @@ namespace godot {
 class ProjectileData: public PartData {
    GDCLASS(ProjectileData, PartData)
 public:
-   void load_unique_data(Dictionary data) override;
    bool is_hitscan();
    Vector2 get_hitbox_size();
    void set_hitscan(bool make_hitscan);
@@ -27,6 +26,7 @@ struct WeaponModifiers {
    double flat_range = 0.0;
    double flat_energy = 0.0;
    double flat_speed = 0.0;
+   double flat_cooldown = 0.0;
    double multiplier_range = 1.0;
    double multiplier_energy = 1.0;
    double multiplier_speed = 1.0;
@@ -41,14 +41,14 @@ struct WeaponModifiers {
 class WeaponModifierData: public PartData {
    GDCLASS(WeaponModifierData, PartData)
 public:
-   static constexpr double MIN_MULTIPLIER = 0.1;
    static constexpr double MIN_FLAT = 0.0;
+   static constexpr double MIN_MULTIPLIER = 0.1;
 
-   void load_unique_data(Dictionary data) override;
    const WeaponModifiers& get_modifiers() const;
    double get_flat_range() const;
    double get_flat_energy() const;
    double get_flat_speed() const;
+   double get_flat_cooldown() const;
    double get_multiplier_range() const;
    double get_multiplier_energy() const;
    double get_multiplier_speed() const;
@@ -56,6 +56,7 @@ public:
    void set_flat_range(double new_flat_range);
    void set_flat_energy(double new_flat_energy);
    void set_flat_speed(double new_flat_speed);
+   void set_flat_cooldown(double new_flat_cooldown);
    void set_multiplier_range(double new_multiplier_range);
    void set_multiplier_energy(double new_multiplier_energy);
    void set_multiplier_speed(double new_multiplier_speed);
@@ -74,7 +75,6 @@ public:
    static constexpr double MIN_RELOAD_SEC = 0.1;
 
    WeaponData();
-   void load_unique_data(Dictionary data) override;
    bool is_burst_weapon() const;
    int get_shots_per_burst() const;
    double get_energy_per_shot() const;
@@ -123,7 +123,6 @@ public:
    int get_angle_degrees() const;
    void set_firing_arc_degrees(double new_firing_arc_degrees);
    void set_angle_degrees(double new_angle_degrees);
-   void load_unique_data(Dictionary data) override;
 protected:
    static void _bind_methods();
 private:

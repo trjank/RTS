@@ -57,14 +57,9 @@ void Detection::update_detection() {
    }
 }
 void Detection::add_unit(Unit* unit) {
-   /*------------------------------------------------------|
-   | If you get this warning, consider changing either the |
-   | collision mask or the node's collision layer.         |
-   |------------------------------------------------------*/
-   if (unlikely(unit == nullptr))
-      WARN_PRINT_ED("<Detection> Non-unit detected!");
-   else
-      units.push_back( unit->get_radar_signature() );
+   ERR_FAIL_NULL_MSG(unit, "<Detection> Non-unit detected (change the collision mask)");
+
+   units.push_back( unit->get_radar_signature() );
 }
 
 

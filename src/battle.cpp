@@ -198,8 +198,7 @@ void Battle::disconnect_all_players() {
    players.clear();
 }
 Ref<Team> Battle::add_team(String team_name) {
-   ERR_FAIL_COND_V_MSG(state != STOPPED, nullptr,
-   "<Battle> Cannot add teams while battle is running!");
+   ERR_FAIL_COND_V(state != STOPPED, nullptr);
 
    Ref<Team> team = memnew(Team);
 
@@ -231,9 +230,10 @@ Battle::Error Battle::kill_player(Ref<Player> player) {
    if (unlikely( !has_player(player))) return PLAYER_NOT_FOUND;
    if (unlikely( !player->is_alive)) return OKAY;
 
-   // We need to check the win conditions every time a player dies
-   Ref<Team> team   = player->team;
+   Ref<Team> team = player->team;
+
    player->is_alive = false;
+   // We need to check the win conditions every time a player dies
    if ( --team->num_players_alive <= 0 || team->sudden_death) kill_team(team);
    return OKAY;
 }

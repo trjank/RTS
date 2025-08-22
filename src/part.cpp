@@ -14,33 +14,37 @@ Part* Part::create_from(Ref<PartData> part_data) {
 
 	Part* part = part_data->new_blank_part();
 
+	Vector2i size = PartData::to_world_vec( part_data->get_size() );
+
 	part->data = part_data;
-	part->create_hitbox();
-	part->create_image();
+	part->image->set_texture( part_data->get_texture() );
+	part->image->resize(size);
+	part->hitbox->set_size(size);
 	return part;
+}
+Part::Part() {
+	collider->set_shape(hitbox);
+	add_child(image, false, INTERNAL_MODE_FRONT);
+	add_child(collider, false, INTERNAL_MODE_FRONT);
+}
+Rect2 Part::get_rect() const {
+	return get_transform().xform( hitbox->get_rect() );
+}
+bool Part::is_flipped() const {
+	return get_scale().y < 0;
+}
+PartData::Rotation Part::get_rotation_state() const {
+	double rotation = get_rotation() + Math_PI * is_flipped();
+	rotation = Math::snapped(rotation, PI_2);
+	int quadrant = Math::posmod(rotation / PI_2, 4);
+	return static_cast<PartData::Rotation>(quadrant);
 }
 Ref<PartData> Part::get_data() const {
 	return data;
 }
-Part::InitStatus Part::_ship_init(const Ship& parent_ship, int part_id) {
-	/*------------------------------------------------------|
-	| This will never run for static parts. This is for     |
-	| unique parts, which become actual nodes on the ship.  |
-	|------------------------------------------------------*/
-}
-void Part::create_image() {
-	ResizableSprite2D* image = memnew(ResizableSprite2D);
-
-	add_child(image, false, INTERNAL_MODE_FRONT);
-	image->set_texture( data->get_texture() );
-	image->resize( data->get_size_px() );
-}
-void Part::create_hitbox() {
-	CollisionShape2D* shape = memnew(CollisionShape2D);
-
-	add_child(shape, false, INTERNAL_MODE_FRONT);
-	hitbox->set_size( data->get_size_px() );
-	shape->set_shape(hitbox);
+Part::InitStatus Part::_ship_init(const Ship& _parent_ship, int _part_id) {
+	WARN_PRINT_ED("<Part::_ship_init> _ship_init does nothing for static parts");
+	return OKAY_KEEP_PART;
 }
 
 
@@ -54,7 +58,10 @@ bool PartGrouping::contains_mouse() const {
 	return get_rect().has_point( get_local_mouse_position() );
 }
 void PartGrouping::flip_parts() {
-	set_scale( { -get_scale().x, 1.0} );
+	Vector2 scale = get_scale();
+
+	scale.x = -scale.x;
+	set_scale(scale);
 	emit_signal("parts_flipped");
 }
 void PartGrouping::rotate_parts(int quarter_turns, float duration) {
@@ -62,16 +69,17 @@ void PartGrouping::rotate_parts(int quarter_turns, float duration) {
 
 	double start = Math::snapped(get_rotation(), PI_2);
 	double end   = start + PI_2 * quarter_turns;
+
 	tween->tween_property(this, "rotation", end, duration)->from(start);
 	emit_signal("parts_rotated", quarter_turns, duration);
 }
 void PartGrouping::clear_parts() {
 	Node* parent = get_parent();
 
-	ERR_FAIL_NULL_MSG(parent,
-	"<PartGrouping> PartGrouping has no parent (failed to clear parts)");
+	ERR_FAIL_NULL_MSG(parent, "<PartGrouping::clear_parts> PartGrouping has no parent");
 
 	set_region_rect( {0.0, 0.0, 0.0, 0.0} );
+
 	/*------------------------------------------------------|
 	| Iterate backwards through the children because we are |
 	| removing them. We will miss parts otherwise.          |
@@ -82,6 +90,7 @@ void PartGrouping::clear_parts() {
 }
 void PartGrouping::delete_parts() {
 	set_region_rect( {0.0, 0.0, 0.0, 0.0} );
+	
 	for (int n = 0; n < get_child_count(); ++n) {
 		get_child(n)->queue_free();
 	}
@@ -95,9 +104,9 @@ bool PartGrouping::spawn_part(Ref<PartData> part_data) {
 	clear_parts();
 	add_child(part);
 
-	set_global_position( get_global_mouse_position() );
 	set_global_rotation(0.0);
-	set_region_rect( {TEXTURE_OFFSET, part_data->get_size_px()} );
+	set_global_position( get_global_mouse_position() );
+	set_region_rect( {TEXTURE_OFFSET, PartData::to_world_vec( part_data->get_size() )} );
 
 	begin_dragging();
 	return true;
@@ -108,19 +117,17 @@ void PartGrouping::select_parts(TypedArray<Node2D> selection, Rect2 region) {
 	region.expand_to( grid_snap_floor(region.position) );
 	region.expand_to( grid_snap_ceil( region.get_end() ) );
 
-	set_global_position( region.get_center() );
 	set_global_rotation(0.0);
+	set_global_position( region.get_center() );
 	set_region_rect( {TEXTURE_OFFSET, region.size} );
-	/*------------------------------------------------------|
-	| Non-parts get casted to nullptr. We can easily filter |
-	| out nodes that are not parts.                         |
-	|------------------------------------------------------*/
+
 	for (int n = 0; n < selection.size(); ++n) {
 		add_part( Object::cast_to<Part>( selection[n] ) );
 	}
 }
 void PartGrouping::snap_to_grid() {
-	Rect2 rect    = get_transform().xform( get_rect() );
+	Rect2 rect = get_transform().xform( get_rect() );
+
 	rect.position = rect.position.snapped(GRID_SQUARE);
 	set_position( rect.get_center() );
 }
@@ -161,9 +168,9 @@ void PartGrouping::stop_dragging() {
 void PartGrouping::add_part(Part* part) {
 	if (part) part->reparent(this);
 }
-Vector2 PartGrouping::grid_snap_floor(Vector2 vector) {
-	return vector - vector.posmod(PartData::PX_PER_GRID_SQUARE);
+Vector2 PartGrouping::grid_snap_floor(Vector2 xy) {
+	return xy - xy.posmod(PartData::PX_PER_GRID_SQUARE);
 }
-Vector2 PartGrouping::grid_snap_ceil(Vector2 vector) {
-	return grid_snap_floor(vector) + GRID_SQUARE;
+Vector2 PartGrouping::grid_snap_ceil(Vector2 xy) {
+	return grid_snap_floor(xy) + GRID_SQUARE;
 }

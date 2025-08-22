@@ -19,25 +19,24 @@ func resize(size: Vector2)->void:
 	mirror_axis.position.x  = size.x * 0.5
 	mirror_axis.points[1].y = size.y
 
+func save_ship(size: Vector2i = grid.region_rect.size)->void:
+	var ship_data := ShipData.create(size.x, size.y)
+	part_grouping.clear_parts()
+	for n in range(2, grid.get_child_count()):
+		var part: Part = grid.get_child(n)
+		var error := ship_data.add_part_node(part)
+		print(error)
+	print(ship_data.is_connected())
+
 func _input(event):
-	if (event.is_action_pressed("save")):
-		# Testing some shipbuilding
+	if event.is_action_pressed("save"):
 		print("saving...")
-		part_grouping.clear_parts() # <-- This is VERY important
-		var ship_manager := ShipManager.new()
-		var ship := ShipData.create(64, 64)
-		for part in grid.get_children():
-			ship.add_part_node(part)
-			print("->", part.rotation, " | ", part.scale.x < 0, " | ", part.get_class())
-		ship_manager.save_ship_image(ship, "user://ship.png")
-		ship_manager.save_ship_csv(ship, "user://ship.csv")
-		print(ship.count_parts())
-		print("IS CONNECTED: ", ship.is_connected())
+		save_ship()
 
 func _ready():
 	resize(Vector2i(64, 64))
-	var manager := PartManager.new()
-	manager.load_csv("user://parts.csv")
+	var manager := JSONPartManager.new()
+	manager.load_json("user://part_data.json")
 	#manager.new_atlas("res://test_atlas.png")
 	PartButton.part_container = part_grouping
 	for atlas_id in range(manager.count_parts()):
@@ -46,7 +45,7 @@ func _ready():
 		var part_display := PartButton.new()
 		part_display.part_data = part
 		part_display.texture_normal = part.get_texture()
-		part_display.set_display_size(part.get_size())
+		part_display.set_display_size( part.get_size() )
 		if not part_container:
 			push_warning("Tab '%s' does not exist" % part_container)
 		else:

@@ -269,11 +269,20 @@ void Celestial::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "angular_velocity"), "set_angular_velocity", "get_angular_velocity");
 }
 void PartData::_bind_methods() {
+	BIND_ENUM_CONSTANT(ROT_0_DEG);
+	BIND_ENUM_CONSTANT(ROT_90_DEG);
+	BIND_ENUM_CONSTANT(ROT_180_DEG);
+	BIND_ENUM_CONSTANT(ROT_270_DEG);
 	BIND_CONSTANT(MIN_WIDTH);
 	BIND_CONSTANT(MIN_HEIGHT);
 	BIND_CONSTANT(PX_PER_GRID_SQUARE);
 	BIND_CONSTANT(MAX_NAME_LENGTH);
-	BIND_CONSTANT(MAX_DESC_LENGTH);
+	BIND_CONSTANT(MAX_DESCRIPTION_LENGTH);
+	ClassDB::bind_static_method("PartData", D_METHOD("create_subtype", "subtype"), &PartData::create_subtype);
+	ClassDB::bind_static_method("PartData", D_METHOD("to_world_vec", "vector"), &PartData::to_world_vec);
+	ClassDB::bind_static_method("PartData", D_METHOD("to_grid_vec", "vector"), &PartData::to_grid_vec);
+	ClassDB::bind_static_method("PartData", D_METHOD("to_world_rect", "rect"), &PartData::to_world_rect);
+	ClassDB::bind_static_method("PartData", D_METHOD("to_grid_rect", "rect"), &PartData::to_grid_rect);
 	ClassDB::bind_method(D_METHOD("get_cost"), &PartData::get_cost);
 	ClassDB::bind_method(D_METHOD("get_hp"), &PartData::get_hp);
 	ClassDB::bind_method(D_METHOD("get_mass"), &PartData::get_mass);
@@ -284,51 +293,56 @@ void PartData::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_torque"), &PartData::get_turning_momentum);
 	ClassDB::bind_method(D_METHOD("get_thrust"), &PartData::get_thrust);
 	ClassDB::bind_method(D_METHOD("get_size"), &PartData::get_size);
-	ClassDB::bind_method(D_METHOD("get_size_px"), &PartData::get_size_px);
 	ClassDB::bind_method(D_METHOD("get_code"), &PartData::get_code);
 	ClassDB::bind_method(D_METHOD("get_name"), &PartData::get_name);
 	ClassDB::bind_method(D_METHOD("get_tab"), &PartData::get_tab);
 	ClassDB::bind_method(D_METHOD("get_image"), &PartData::get_image);
 	ClassDB::bind_method(D_METHOD("get_texture"), &PartData::get_texture);
-	ClassDB::bind_method(D_METHOD("get_desc"), &PartData::get_desc);
+	ClassDB::bind_method(D_METHOD("get_description"), &PartData::get_description);
 	ClassDB::bind_method(D_METHOD("set_cost", "new_cost"), &PartData::set_cost);
 	ClassDB::bind_method(D_METHOD("set_mass", "new_mass"), &PartData::set_mass);
 	ClassDB::bind_method(D_METHOD("set_hp", "new_hp"), &PartData::set_hp);
+	ClassDB::bind_method(D_METHOD("set_width", "new_width"), &PartData::set_width);
+	ClassDB::bind_method(D_METHOD("set_height", "new_height"), &PartData::set_height);
 	ClassDB::bind_method(D_METHOD("set_size", "new_size"), &PartData::set_size);
 	ClassDB::bind_method(D_METHOD("set_name", "new_name"), &PartData::set_name);
 	ClassDB::bind_method(D_METHOD("set_tab", "new_tab"), &PartData::set_tab);
 	ClassDB::bind_method(D_METHOD("set_image_path", "local_path"), &PartData::set_image_path);
-	ClassDB::bind_method(D_METHOD("set_desc", "new_desc"), &PartData::set_desc);
+	ClassDB::bind_method(D_METHOD("set_description", "set_description"), &PartData::set_description);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "cost"), "set_cost", "get_cost");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "hp"), "set_hp", "get_hp");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "mass"), "set_mass", "get_mass");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2I, "size"), "set_size", "get_size");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "desc"), "set_desc", "get_desc");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "description"), "set_description", "get_description");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "name"), "set_name", "get_name");
 }
 void PartManager::_bind_methods() {
-	BIND_CONSTANT(CODE_LENGTH)
 	ClassDB::bind_method(D_METHOD("count_parts"), &PartManager::count_parts);
-	ClassDB::bind_method(D_METHOD("load_csv", "path"), &PartManager::load_csv);
-	ClassDB::bind_method(D_METHOD("save_csv", "path"), &PartManager::save_csv);
-	ClassDB::bind_method(D_METHOD("load_json", "path"), &PartManager::load_unique_data);
-	ClassDB::bind_method(D_METHOD("save_json", "path"), &PartManager::save_unique_data);
 	ClassDB::bind_method(D_METHOD("new_atlas"), &PartManager::new_atlas);
-	ClassDB::bind_method(D_METHOD("remove_part", "part"), &PartManager::remove_part);
 	ClassDB::bind_method(D_METHOD("new_part", "code", "subtype"), &PartManager::new_part);
 	ClassDB::bind_method(D_METHOD("lookup_id", "atlas_id"), &PartManager::lookup_id);
 	ClassDB::bind_method(D_METHOD("lookup_code", "code"), &PartManager::lookup_code);
-	ClassDB::bind_method(D_METHOD("get_unique", "code"), &PartManager::get_unique_data);
-	ClassDB::bind_method(D_METHOD("get_parts_folder_path"), &PartManager::get_parts_folder_path);
-	ClassDB::bind_method(D_METHOD("set_unique", "code", "new_data"), &PartManager::set_unique_data);
-	ClassDB::bind_method(D_METHOD("set_parts_folder_path", "new_parts_folder_path"), &PartManager::set_parts_folder_path);
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "parts_folder_path"), "set_parts_folder_path", "get_parts_folder_path");
 }
 void WeaponData::_bind_methods() {
 
 }
 void WeaponModifierData::_bind_methods() {
-
+	ClassDB::bind_method(D_METHOD("get_flat_range"), &WeaponModifierData::get_flat_range);
+	ClassDB::bind_method(D_METHOD("get_flat_energy"), &WeaponModifierData::get_flat_energy);
+	ClassDB::bind_method(D_METHOD("get_flat_speed"), &WeaponModifierData::get_flat_speed);
+	ClassDB::bind_method(D_METHOD("get_flat_cooldown"), &WeaponModifierData::get_flat_cooldown);
+	ClassDB::bind_method(D_METHOD("get_multiplier_range"), &WeaponModifierData::get_multiplier_range);
+	ClassDB::bind_method(D_METHOD("get_multiplier_energy"), &WeaponModifierData::get_multiplier_energy);
+	ClassDB::bind_method(D_METHOD("get_multiplier_speed"), &WeaponModifierData::get_multiplier_speed);
+	ClassDB::bind_method(D_METHOD("get_multiplier_cooldown"), &WeaponModifierData::get_multiplier_cooldown);
+	ClassDB::bind_method(D_METHOD("set_flat_range", "new_flat_range"), &WeaponModifierData::set_flat_range);
+	ClassDB::bind_method(D_METHOD("set_flat_energy", "new_flat_energy"), &WeaponModifierData::set_flat_energy);
+	ClassDB::bind_method(D_METHOD("set_flat_speed", "new_flat_speed"), &WeaponModifierData::set_flat_speed);
+	ClassDB::bind_method(D_METHOD("set_flat_cooldown", "new_flat_cooldown"), &WeaponModifierData::set_flat_cooldown);
+	ClassDB::bind_method(D_METHOD("set_multiplier_range", "new_multiplier_range"), &WeaponModifierData::set_multiplier_range);
+	ClassDB::bind_method(D_METHOD("set_multiplier_energy", "new_multiplier_energy"), &WeaponModifierData::set_multiplier_energy);
+	ClassDB::bind_method(D_METHOD("set_multiplier_speed", "new_multiplier_speed"), &WeaponModifierData::set_multiplier_speed);
+	ClassDB::bind_method(D_METHOD("set_multiplier_cooldown", "new_multiplier_cooldown"), &WeaponModifierData::set_multiplier_cooldown);
 }
 void WeaponMountData::_bind_methods() {
 
@@ -341,7 +355,10 @@ void ResizableSprite2D::_bind_methods() {
 }
 void Part::_bind_methods() {
 	ClassDB::bind_static_method("Part", D_METHOD("create_from", "part_data"), &Part::create_from);
+	ClassDB::bind_method(D_METHOD("is_flipped"), &Part::is_flipped);
 	ClassDB::bind_method(D_METHOD("get_data"), &Part::get_data);
+	ClassDB::bind_method(D_METHOD("get_rect"), &Part::get_rect);
+	ClassDB::bind_method(D_METHOD("get_rotation_state"), &Part::get_rotation_state);
 }
 void PartGrouping::_bind_methods() {
 	BIND_CONSTANT(CLOCKWISE);
@@ -362,7 +379,6 @@ void PartGrouping::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("dragging_ended", PropertyInfo(Variant::ARRAY, "selected"), PropertyInfo(Variant::RECT2, "region")));
 }
 void ShipData::_bind_methods() {
-	BIND_CONSTANT(GRID_PADDING);
 	BIND_CONSTANT(NULL_PART_ID);
 	BIND_CONSTANT(NUM_NULL_PARTS);
 	BIND_CONSTANT(MAX_NAME_LENGTH);
@@ -371,26 +387,18 @@ void ShipData::_bind_methods() {
 	BIND_ENUM_CONSTANT(EDGE_LEFT);
 	BIND_ENUM_CONSTANT(EDGE_RIGHT);
 	BIND_ENUM_CONSTANT(FULL_PERIMETER);
-	BIND_ENUM_CONSTANT(ROT_0_DEG);
-	BIND_ENUM_CONSTANT(ROT_90_DEG);
-	BIND_ENUM_CONSTANT(ROT_180_DEG);
-	BIND_ENUM_CONSTANT(ROT_270_DEG);
-	BIND_ENUM_CONSTANT(FLIPPED_ROT_0_DEG);
-	BIND_ENUM_CONSTANT(FLIPPED_ROT_90_DEG);
-	BIND_ENUM_CONSTANT(FLIPPED_ROT_180_DEG);
-	BIND_ENUM_CONSTANT(FLIPPED_ROT_270_DEG);
 	BIND_ENUM_CONSTANT(OKAY);
 	BIND_ENUM_CONSTANT(OVERLAP);
 	BIND_ENUM_CONSTANT(OUT_OF_BOUNDS);
 	BIND_ENUM_CONSTANT(IS_NULL);
+	BIND_ENUM_CONSTANT(INVALID_ORIENTATION);
 	ClassDB::bind_static_method("ShipData", D_METHOD("create", "width", "height"), &ShipData::create);
-	ClassDB::bind_static_method("ShipData", D_METHOD("encode_rotation", "radians", "flipped"), &ShipData::encode_rotation);
 	ClassDB::bind_method(D_METHOD("count_parts"), &ShipData::count_parts);
 	ClassDB::bind_method(D_METHOD("is_empty"), &ShipData::is_empty);
 	ClassDB::bind_method(D_METHOD("is_connected"), &ShipData::is_connected);
 	ClassDB::bind_method(D_METHOD("get_cost"), &ShipData::get_cost);
-	ClassDB::bind_method(D_METHOD("get_grid_region"), &ShipData::get_grid_region);
-	ClassDB::bind_method(D_METHOD("get_ship_region"), &ShipData::get_ship_region);
+	ClassDB::bind_method(D_METHOD("get_grid_region"), &ShipData::get_grid_rect);
+	ClassDB::bind_method(D_METHOD("get_ship_region"), &ShipData::get_ship_rect);
 	ClassDB::bind_method(D_METHOD("get_max_warp"), &ShipData::get_max_warp);
 	ClassDB::bind_method(D_METHOD("get_max_hp"), &ShipData::get_max_hp);
 	ClassDB::bind_method(D_METHOD("get_max_shield"), &ShipData::get_max_shield);
@@ -405,7 +413,7 @@ void ShipData::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_unique_parts"), &ShipData::get_unique_parts);
 	ClassDB::bind_method(D_METHOD("get_part_data", "part_id"), &ShipData::get_part_data);
 	ClassDB::bind_method(D_METHOD("get_part_center", "part_id"), &ShipData::get_part_center);
-	ClassDB::bind_method(D_METHOD("get_part_region", "part_id"), &ShipData::get_part_region);
+	ClassDB::bind_method(D_METHOD("get_part_region", "part_id"), &ShipData::get_part_rect);
 	ClassDB::bind_method(D_METHOD("set_image", "new_image"), &ShipData::set_image);
 	ClassDB::bind_method(D_METHOD("has_part", "part_id"), &ShipData::has_part);
 	ClassDB::bind_method(D_METHOD("add_part", "part", "center", "rotation_state"), &ShipData::add_part);
