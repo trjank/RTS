@@ -1,16 +1,16 @@
 [gd_scene load_steps=14 format=3 uid="uid://bgx6pbxte11v8"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
+[ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="2_5s37y"]
 [ext_resource type="StyleBox" uid="uid://7ddhu1wc1g27" path="res://navigator_button.tres" id="3_1dx7b"]
 [ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navigator_button_hover.tres" id="4_dotd0"]
-[ext_resource type="Script" path="res://Design.gd" id="5_mf6ox"]
+[ext_resource type="Script" uid="uid://dm3hwgk4ugh6p" path="res://Design.gd" id="5_mf6ox"]
 [ext_resource type="PackedScene" uid="uid://c8r8u7e7qkegq" path="res://battle/battle.tscn" id="5_rtafa"]
-[ext_resource type="Script" path="res://Battle.gd" id="6_4n2ky"]
-[ext_resource type="Script" path="res://Chat.gd" id="7_6efvs"]
+[ext_resource type="Script" uid="uid://bu1gqm8ibogv6" path="res://Battle.gd" id="6_4n2ky"]
+[ext_resource type="Script" uid="uid://coelirw0firjv" path="res://Chat.gd" id="7_6efvs"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="7_873ts"]
 [ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="7_ep3nq"]
-[ext_resource type="Script" path="res://Camera.gd" id="7_wdsxf"]
+[ext_resource type="Script" uid="uid://djs7ulexwvbme" path="res://Camera.gd" id="7_wdsxf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
 bg_color = Color(0, 0, 0, 0.588235)
@@ -73,10 +73,10 @@ size_flags_vertical = 3
 [node name="Design" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("design", "battle")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = ExtResource("3_1dx7b")
+theme_override_styles/focus = ExtResource("4_dotd0")
 theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
 theme_override_styles/pressed = ExtResource("4_dotd0")
-theme_override_styles/focus = ExtResource("4_dotd0")
+theme_override_styles/normal = ExtResource("3_1dx7b")
 text = "design"
 script = ExtResource("5_mf6ox")
 design = NodePath("../../../../../Design")
@@ -85,10 +85,10 @@ battle = NodePath("../../../../../Battle")
 [node name="Battle" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("design", "battle")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = ExtResource("3_1dx7b")
+theme_override_styles/focus = ExtResource("4_dotd0")
 theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
 theme_override_styles/pressed = ExtResource("4_dotd0")
-theme_override_styles/focus = ExtResource("4_dotd0")
+theme_override_styles/normal = ExtResource("3_1dx7b")
 text = "battle"
 script = ExtResource("6_4n2ky")
 design = NodePath("../../../../../Design")
@@ -97,10 +97,10 @@ battle = NodePath("../../../../../Battle")
 [node name="Chat" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("chat")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = ExtResource("3_1dx7b")
+theme_override_styles/focus = ExtResource("4_dotd0")
 theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
 theme_override_styles/pressed = ExtResource("4_dotd0")
-theme_override_styles/focus = ExtResource("4_dotd0")
+theme_override_styles/normal = ExtResource("3_1dx7b")
 text = "chat
 "
 script = ExtResource("7_6efvs")

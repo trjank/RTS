@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://xtpx4pnyrhf8"]
 
-[ext_resource type="Script" path="res://battle/WarpPath.gd" id="1_sneqp"]
+[ext_resource type="Script" uid="uid://pggc7pwunecg" path="res://battle/WarpPath.gd" id="1_sneqp"]
 
 [sub_resource type="Gradient" id="Gradient_qappt"]
 colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)

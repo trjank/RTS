@@ -1,8 +1,8 @@
 [gd_scene load_steps=10 format=3 uid="uid://c8r8u7e7qkegq"]
 
-[ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
-[ext_resource type="Script" path="res://battle/UnitFormation.gd" id="1_777ku"]
-[ext_resource type="Script" path="res://battle/RoundTimer.gd" id="2_gr1rv"]
+[ext_resource type="Script" uid="uid://bxcl1ara5ks5e" path="res://battle/battle.gd" id="1_2ostc"]
+[ext_resource type="Script" uid="uid://ccfbcyt2y8th7" path="res://battle/UnitFormation.gd" id="1_777ku"]
+[ext_resource type="Script" uid="uid://cs21sn82rbmvw" path="res://battle/RoundTimer.gd" id="2_gr1rv"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_j65k6"]
 [ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
 [ext_resource type="Texture2D" uid="uid://lomxdpkneo5n" path="res://icons/unit_path.png" id="6_a3aav"]
@@ -102,11 +102,11 @@ theme_override_constants/separation = 75
 [node name="TimeLeft" type="RichTextLabel" parent="UI/FleetBar/ResourceBar/HBoxContainer"]
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
 theme_override_font_sizes/normal_font_size = 32
 theme_override_font_sizes/bold_font_size = 32
-theme_override_font_sizes/italics_font_size = 32
-theme_override_font_sizes/bold_italics_font_size = 32
-theme_override_font_sizes/mono_font_size = 32
 bbcode_enabled = true
 text = "Time | [color=\"00ed8c\"]0[/color]:[color=\"00ed8c\"]00[/color]"
 fit_content = true
@@ -116,11 +116,11 @@ autowrap_mode = 0
 [node name="Alloy" type="RichTextLabel" parent="UI/FleetBar/ResourceBar/HBoxContainer"]
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
 theme_override_font_sizes/normal_font_size = 32
 theme_override_font_sizes/bold_font_size = 32
-theme_override_font_sizes/italics_font_size = 32
-theme_override_font_sizes/bold_italics_font_size = 32
-theme_override_font_sizes/mono_font_size = 32
 bbcode_enabled = true
 text = "Alloy | [color=\"bdeaff\"]1000[/color] | [color=\"bdeaff\"]12.5[/color]/s"
 fit_content = true
@@ -130,11 +130,11 @@ autowrap_mode = 0
 [node name="Energy" type="RichTextLabel" parent="UI/FleetBar/ResourceBar/HBoxContainer"]
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
 theme_override_font_sizes/normal_font_size = 32
 theme_override_font_sizes/bold_font_size = 32
-theme_override_font_sizes/italics_font_size = 32
-theme_override_font_sizes/bold_italics_font_size = 32
-theme_override_font_sizes/mono_font_size = 32
 bbcode_enabled = true
 text = "Energy | [color=\"fff5af\"]1000[/color] | [color=\"fff5af\"]12.5[/color]/s"
 fit_content = true
