@@ -6,4 +6,4 @@ demo/bin/*
 !demo/bin/test.gdextension
 *.obj
 *.o
-.sconsign.dblite
+#.sconsign.dblite
