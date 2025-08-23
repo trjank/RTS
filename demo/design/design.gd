@@ -33,7 +33,13 @@ func _input(event):
 		print("saving...")
 		save_ship()
 
+var ship_db := ShipDB.new()
+func load_ship_db()->void:
+	ship_db.load_db()
+	print(ship_db.get_ship(1))
+
 func _ready():
+	load_ship_db()
 	resize(Vector2i(64, 64))
 	var manager := JSONPartManager.new()
 	manager.load_json("user://part_data.json")
