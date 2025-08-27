@@ -1,20 +1,119 @@
-[gd_scene load_steps=7 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=14 format=3 uid="uid://bgx6pbxte11v8"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
-[ext_resource type="Script" path="res://core/MoveMarkers.gd" id="2_fsifo"]
-[ext_resource type="Script" path="res://UI/Cursor.gd" id="2_owt3e"]
-[ext_resource type="Script" path="res://SelectionBox.gd" id="3_fkvel"]
-[ext_resource type="Script" path="res://Map/Map.gd" id="7_rg2wc"]
-[ext_resource type="Script" path="res://core/Camera.gd" id="7_wdsxf"]
+[ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main.gd" id="1_h0c8p"]
+[ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="2_5s37y"]
+[ext_resource type="StyleBox" uid="uid://7ddhu1wc1g27" path="res://navigator_button.tres" id="3_1dx7b"]
+[ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navigator_button_hover.tres" id="4_dotd0"]
+[ext_resource type="Script" uid="uid://dm3hwgk4ugh6p" path="res://Design.gd" id="5_mf6ox"]
+[ext_resource type="PackedScene" uid="uid://c8r8u7e7qkegq" path="res://battle/battle.tscn" id="5_rtafa"]
+[ext_resource type="Script" uid="uid://bu1gqm8ibogv6" path="res://Battle.gd" id="6_4n2ky"]
+[ext_resource type="Script" uid="uid://coelirw0firjv" path="res://Chat.gd" id="7_6efvs"]
+[ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="7_873ts"]
+[ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="7_ep3nq"]
+[ext_resource type="Script" uid="uid://djs7ulexwvbme" path="res://Camera.gd" id="7_wdsxf"]
 
-[node name="Main" type="Node2D"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
+bg_color = Color(0, 0, 0, 0.588235)
+border_width_bottom = 2
+border_color = Color(0.772549, 0.611765, 0.85098, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fnf26"]
+content_margin_left = 20.0
+content_margin_top = 0.0
+content_margin_right = 20.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 0)
+border_width_bottom = 5
+border_color = Color(0.772549, 0.611765, 0.85098, 1)
+expand_margin_bottom = 20.0
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("battle")]
 script = ExtResource("1_h0c8p")
+battle = NodePath("Battle")
 
-[node name="MoveMarkers" type="Node2D" parent="."]
-script = ExtResource("2_fsifo")
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 3
 
-[node name="Cursor" type="Node" parent="."]
-script = ExtResource("2_owt3e")
+[node name="Nagivator" type="PanelContainer" parent="UI"]
+z_index = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 125.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ajdbe")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/Nagivator"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 20
+
+[node name="GridContainer" type="GridContainer" parent="UI/Nagivator/MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+columns = 6
+
+[node name="TextureRect" type="TextureRect" parent="UI/Nagivator/MarginContainer/GridContainer"]
+layout_mode = 2
+texture = ExtResource("2_5s37y")
+expand_mode = 3
+
+[node name="Button" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 32
+text = "menu"
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/Nagivator/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Design" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("design", "battle")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_styles/focus = ExtResource("4_dotd0")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
+theme_override_styles/pressed = ExtResource("4_dotd0")
+theme_override_styles/normal = ExtResource("3_1dx7b")
+text = "design"
+script = ExtResource("5_mf6ox")
+design = NodePath("../../../../../Design")
+battle = NodePath("../../../../../Battle")
+
+[node name="Battle" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("design", "battle")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_styles/focus = ExtResource("4_dotd0")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
+theme_override_styles/pressed = ExtResource("4_dotd0")
+theme_override_styles/normal = ExtResource("3_1dx7b")
+text = "battle"
+script = ExtResource("6_4n2ky")
+design = NodePath("../../../../../Design")
+battle = NodePath("../../../../../Battle")
+
+[node name="Chat" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("chat")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_styles/focus = ExtResource("4_dotd0")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
+theme_override_styles/pressed = ExtResource("4_dotd0")
+theme_override_styles/normal = ExtResource("3_1dx7b")
+text = "chat
+"
+script = ExtResource("7_6efvs")
+chat = NodePath("../../../../../Chat")
+
+[node name="Chat" parent="." instance=ExtResource("7_ep3nq")]
+layer = 2
+visible = false
+
+[node name="Battle" parent="." instance=ExtResource("5_rtafa")]
+seed = -2691266858627287251
+
+[node name="Design" parent="." instance=ExtResource("7_873ts")]
 
 [node name="Camera" type="RigidBody2D" parent="." node_paths=PackedStringArray("camera_node")]
 gravity_scale = 1.66533e-16
@@ -24,24 +123,6 @@ camera_node = NodePath("Camera2D")
 
 [node name="Camera2D" type="Camera2D" parent="Camera"]
 
-[node name="SelectionBox" type="ColorRect" parent="."]
-z_index = 1
-color = Color(1, 1, 1, 0.109804)
-script = ExtResource("3_fkvel")
-
-[node name="Objects" type="Node2D" parent="."]
-
-[node name="Map" type="Node2D" parent="."]
-script = ExtResource("7_rg2wc")
-
-[node name="Background" type="CanvasLayer" parent="Map"]
-layer = -1
-
-[node name="BackgroundImage" type="TextureRect" parent="Map/Background"]
-unique_name_in_owner = true
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch_mode = 6
+[connection signal="pressed" from="UI/Nagivator/MarginContainer/GridContainer/Design" to="UI/Nagivator/MarginContainer/GridContainer/Design" method="_on_pressed"]
+[connection signal="pressed" from="UI/Nagivator/MarginContainer/GridContainer/Battle" to="UI/Nagivator/MarginContainer/GridContainer/Battle" method="_on_pressed"]
+[connection signal="pressed" from="UI/Nagivator/MarginContainer/GridContainer/Chat" to="UI/Nagivator/MarginContainer/GridContainer/Chat" method="_on_pressed"]

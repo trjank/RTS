@@ -1,0 +1,306 @@
+[gd_scene load_steps=10 format=3 uid="uid://c8r8u7e7qkegq"]
+
+[ext_resource type="Script" uid="uid://bxcl1ara5ks5e" path="res://battle/battle.gd" id="1_2ostc"]
+[ext_resource type="Script" uid="uid://ccfbcyt2y8th7" path="res://battle/UnitFormation.gd" id="1_777ku"]
+[ext_resource type="Script" uid="uid://cs21sn82rbmvw" path="res://battle/RoundTimer.gd" id="2_gr1rv"]
+[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_j65k6"]
+[ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
+[ext_resource type="Texture2D" uid="uid://lomxdpkneo5n" path="res://icons/unit_path.png" id="6_a3aav"]
+
+[sub_resource type="Environment" id="Environment_lh35d"]
+background_mode = 3
+glow_enabled = true
+glow_intensity = 0.23
+glow_strength = 0.57
+glow_blend_mode = 1
+glow_hdr_threshold = 2.0
+glow_hdr_luminance_cap = 20.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fasl0"]
+content_margin_left = 25.0
+content_margin_top = 25.0
+content_margin_right = 25.0
+content_margin_bottom = 25.0
+bg_color = Color(0, 0, 0, 0.588235)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k4xxy"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(0, 0, 0, 0.588235)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.677157, 0.984528, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[node name="Battle" type="Battle" node_paths=PackedStringArray("countdown_timer", "round_timer", "overlay")]
+seed = 3508627170063674437
+script = ExtResource("1_2ostc")
+countdown_timer = NodePath("CountdownTimer")
+round_timer = NodePath("RoundTimer")
+overlay = NodePath("UI")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_lh35d")
+
+[node name="RoundTimer" type="Timer" parent="." node_paths=PackedStringArray("clock_label")]
+one_shot = true
+script = ExtResource("2_gr1rv")
+clock_label = NodePath("../UI/FleetBar/ResourceBar/HBoxContainer/TimeLeft")
+
+[node name="CountdownTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="TextureRect" type="TextureRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_lrxve")
+expand_mode = 3
+stretch_mode = 6
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 0
+
+[node name="FleetBar" type="VBoxContainer" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -752.0
+offset_top = -291.0
+offset_right = 752.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 25
+
+[node name="ResourceBar" type="PanelContainer" parent="UI/FleetBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_fasl0")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/FleetBar/ResourceBar"]
+layout_mode = 2
+theme_override_constants/separation = 75
+
+[node name="TimeLeft" type="RichTextLabel" parent="UI/FleetBar/ResourceBar/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+bbcode_enabled = true
+text = "Time | [color=\"00ed8c\"]0[/color]:[color=\"00ed8c\"]00[/color]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Alloy" type="RichTextLabel" parent="UI/FleetBar/ResourceBar/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+bbcode_enabled = true
+text = "Alloy | [color=\"bdeaff\"]1000[/color] | [color=\"bdeaff\"]12.5[/color]/s"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Energy" type="RichTextLabel" parent="UI/FleetBar/ResourceBar/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+bbcode_enabled = true
+text = "Energy | [color=\"fff5af\"]1000[/color] | [color=\"fff5af\"]12.5[/color]/s"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="ShipsBar" type="PanelContainer" parent="UI/FleetBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_k4xxy")
+
+[node name="GridContainer" type="GridContainer" parent="UI/FleetBar/ShipsBar"]
+layout_mode = 2
+theme_override_constants/h_separation = 100
+columns = 2
+
+[node name="Hotbar" type="VFlowContainer" parent="UI/FleetBar/ShipsBar/GridContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+
+[node name="Slot1" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar/Slot1"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot2" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar/Slot2"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot3" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Hotbar/Slot3"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Turrets" type="VFlowContainer" parent="UI/FleetBar/ShipsBar/GridContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+
+[node name="Slot1" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot1"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "f1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot2" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot2"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "f2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot3" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("2_j65k6")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot3"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "f3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UnitFormation" type="UnitFormation" parent="."]
+z_index = 5
+script = ExtResource("1_777ku")
+
+[node name="MouseSelection" type="MouseSelection" parent="."]
+
+[node name="Line2D" type="Line2D" parent="."]
+self_modulate = Color(10, 10, 10, 1)
+points = PackedVector2Array(338, 1924, -2003, 889)
+width = 50.0
+default_color = Color(1, 0.525804, 0.323341, 1)
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="Line2D2" type="Line2D" parent="."]
+self_modulate = Color(10, 10, 10, 1)
+texture_repeat = 2
+position = Vector2(-116, 855)
+points = PackedVector2Array(338, 1924, -2003, 889)
+width = 100.0
+default_color = Color(0, 0.819608, 0.109804, 1)
+texture = ExtResource("6_a3aav")
+texture_mode = 1
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[connection signal="spawned_ship" from="." to="." method="_on_spawned_ship"]
+[connection signal="started" from="." to="." method="_on_started"]
+[connection signal="path_ended" from="UnitFormation" to="UnitFormation" method="_on_path_ended"]
+[connection signal="path_started" from="UnitFormation" to="UnitFormation" method="_on_path_started"]
+[connection signal="selection_ended" from="MouseSelection" to="UnitFormation" method="_on_mouse_selection_selection_ended"]
