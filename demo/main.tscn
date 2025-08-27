@@ -1,16 +1,16 @@
 [gd_scene load_steps=14 format=3 uid="uid://bgx6pbxte11v8"]
 
-[ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main.gd" id="1_h0c8p"]
+[ext_resource type="Script" path="res://main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="2_5s37y"]
+[ext_resource type="Script" uid="uid://go7jmff76a43" path="res://state_manager.gd" id="2_l4s7m"]
+[ext_resource type="Script" uid="uid://eb6iaeejxdik" path="res://modules.gd" id="2_lquwl"]
 [ext_resource type="StyleBox" uid="uid://7ddhu1wc1g27" path="res://navigator_button.tres" id="3_1dx7b"]
 [ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navigator_button_hover.tres" id="4_dotd0"]
-[ext_resource type="Script" uid="uid://dm3hwgk4ugh6p" path="res://Design.gd" id="5_mf6ox"]
+[ext_resource type="Script" path="res://Design.gd" id="5_mf6ox"]
 [ext_resource type="PackedScene" uid="uid://c8r8u7e7qkegq" path="res://battle/battle.tscn" id="5_rtafa"]
-[ext_resource type="Script" uid="uid://bu1gqm8ibogv6" path="res://Battle.gd" id="6_4n2ky"]
-[ext_resource type="Script" uid="uid://coelirw0firjv" path="res://Chat.gd" id="7_6efvs"]
-[ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="7_873ts"]
+[ext_resource type="Script" path="res://Battle.gd" id="6_4n2ky"]
+[ext_resource type="Script" path="res://Chat.gd" id="7_6efvs"]
 [ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="7_ep3nq"]
-[ext_resource type="Script" uid="uid://djs7ulexwvbme" path="res://Camera.gd" id="7_wdsxf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
 bg_color = Color(0, 0, 0, 0.588235)
@@ -31,10 +31,18 @@ expand_margin_bottom = 20.0
 script = ExtResource("1_h0c8p")
 battle = NodePath("Battle")
 
+[node name="state_manager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_l4s7m")
+
+[node name="modules" type="Node" parent="."]
+script = ExtResource("2_lquwl")
+
 [node name="UI" type="CanvasLayer" parent="."]
 layer = 3
 
 [node name="Nagivator" type="PanelContainer" parent="UI"]
+visible = false
 z_index = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -70,7 +78,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Design" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("design", "battle")]
+[node name="Design" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("battle")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = ExtResource("4_dotd0")
@@ -79,10 +87,9 @@ theme_override_styles/pressed = ExtResource("4_dotd0")
 theme_override_styles/normal = ExtResource("3_1dx7b")
 text = "design"
 script = ExtResource("5_mf6ox")
-design = NodePath("../../../../../Design")
 battle = NodePath("../../../../../Battle")
 
-[node name="Battle" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("design", "battle")]
+[node name="Battle" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("battle")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = ExtResource("4_dotd0")
@@ -91,10 +98,9 @@ theme_override_styles/pressed = ExtResource("4_dotd0")
 theme_override_styles/normal = ExtResource("3_1dx7b")
 text = "battle"
 script = ExtResource("6_4n2ky")
-design = NodePath("../../../../../Design")
 battle = NodePath("../../../../../Battle")
 
-[node name="Chat" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("chat")]
+[node name="Chat" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = ExtResource("4_dotd0")
@@ -104,25 +110,10 @@ theme_override_styles/normal = ExtResource("3_1dx7b")
 text = "chat
 "
 script = ExtResource("7_6efvs")
-chat = NodePath("../../../../../Chat")
 
-[node name="Chat" parent="." instance=ExtResource("7_ep3nq")]
-layer = 2
+[node name="Chat" parent="UI" instance=ExtResource("7_ep3nq")]
 visible = false
 
 [node name="Battle" parent="." instance=ExtResource("5_rtafa")]
-seed = -2691266858627287251
-
-[node name="Design" parent="." instance=ExtResource("7_873ts")]
-
-[node name="Camera" type="RigidBody2D" parent="." node_paths=PackedStringArray("camera_node")]
-gravity_scale = 1.66533e-16
-linear_damp = 5.0
-script = ExtResource("7_wdsxf")
-camera_node = NodePath("Camera2D")
-
-[node name="Camera2D" type="Camera2D" parent="Camera"]
-
-[connection signal="pressed" from="UI/Nagivator/MarginContainer/GridContainer/Design" to="UI/Nagivator/MarginContainer/GridContainer/Design" method="_on_pressed"]
-[connection signal="pressed" from="UI/Nagivator/MarginContainer/GridContainer/Battle" to="UI/Nagivator/MarginContainer/GridContainer/Battle" method="_on_pressed"]
-[connection signal="pressed" from="UI/Nagivator/MarginContainer/GridContainer/Chat" to="UI/Nagivator/MarginContainer/GridContainer/Chat" method="_on_pressed"]
+seed = -4660530014316562278
+visible = false

@@ -3,6 +3,9 @@ extends Battle
 @export var countdown_timer: Timer
 @export var round_timer: Timer
 @export var overlay: CanvasLayer
+@onready var statemanager = $"../state_manager"
+@onready var menubutton = %MenuButton 
+@onready var designbutton = %DesignButton
 
 var client: Player
 var ship_manager := ShipManager.new()
@@ -26,17 +29,18 @@ func _on_spawned_ship(ship: Ship)->void:
 	ship.set_path_texture(preload("res://icons/unit_path.png"))
 
 func _ready()->void:
-	started.connect(round_timer.start)
-	started_countdown.connect(countdown_timer.start)
-	stopped.connect(round_timer.stop)
-	stopped.connect(countdown_timer.stop)
-	round_timer.timeout.connect(stop)
-	countdown_timer.timeout.connect(start)
+	
+	#started.connect(round_timer.start)
+	#started_countdown.connect(countdown_timer.start)
+	#stopped.connect(round_timer.stop)
+	#stopped.connect(countdown_timer.stop)
+	#round_timer.timeout.connect(stop)
+	#countdown_timer.timeout.connect(start)
 
 	# For testing
 	make_map()
-	round_timer.wait_time = 360.0
-	countdown_timer.wait_time = 5.0
+	#round_timer.wait_time = 360.0
+	#countdown_timer.wait_time = 5.0
 	client = connect_player("truejank", Color.ORANGE)
 	start()
 
@@ -97,3 +101,23 @@ func make_map()->void:
 	sun.new_layer(planets_layer)
 	planets.new_layer(moons_layer)
 	set_map(sun)
+	
+	#clock.timeout.connect(on_UI_refresh)
+	start_countdown()
+	#on_UI_refresh()
+	#set_duration_sec(360)
+	#clock.start(UI_REFRESHES_PER_SEC)
+	designbutton.pressed.connect(design_button_pressed)
+	menubutton.pressed.connect(menu_button_pressed)
+#
+#func on_UI_refresh()->void:
+	#clock_minutes_label.text = "%d"   % get_minutes_left()
+	#clock_seconds_label.text = "%02d" % get_seconds_left()
+
+func design_button_pressed():
+	statemanager.change_state(statemanager.DESIGN)
+
+func menu_button_pressed():
+	statemanager.change_state(statemanager.BACKGROUND)
+	statemanager.change_ui_state(statemanager.MAIN_MENU)
+	

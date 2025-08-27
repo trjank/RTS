@@ -7,3 +7,8 @@ demo/bin/*
 *.obj
 *.o
 #.sconsign.dblite
+msvc_capture.log
+.vscode
+demo/addons/godot-sqlite/bin/~libgdsqlite.windows.template_debug.x86_64.dll
+demo/design/stardust_sqlite.code-workspace
+.sconsign.dblite

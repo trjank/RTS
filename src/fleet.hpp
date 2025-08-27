@@ -14,7 +14,6 @@ class Fleet: public RefCounted {
 public:
    enum ShipType: int {CAPITAL_SHIP, SHIP, TURRET, NUM_SHIP_TYPES};
    static constexpr int MIN_NAME_LENGTH = 1;
-
    Fleet();
    int get_num_slots(ShipType type);
    Ref<ShipData> get_slot(ShipType type, int slot);
@@ -22,6 +21,7 @@ public:
    void set_num_slots(ShipType type, int new_num_slots);
    void set_slot(ShipType type, int slot, Ref<ShipData> new_ship);
    void set_name(String new_name);
+   void resize();
 protected:
    static void _bind_methods();
 private:

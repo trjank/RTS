@@ -1,0 +1,135 @@
+[gd_scene load_steps=3 format=3 uid="uid://brljyfotbk8le"]
+
+[ext_resource type="StyleBox" uid="uid://cbte42yvegwcv" path="res://ships_bar.tres" id="1_n6wp2"]
+[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="1_xejf7"]
+
+[node name="ShipsBar" type="PanelContainer"]
+size_flags_horizontal = 4
+theme_override_styles/panel = ExtResource("1_n6wp2")
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 2
+theme_override_constants/h_separation = 100
+columns = 2
+
+[node name="Hotbar" type="VFlowContainer" parent="GridContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+
+[node name="Slot1" type="TextureButton" parent="GridContainer/Hotbar"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("1_xejf7")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="GridContainer/Hotbar/Slot1"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot2" type="TextureButton" parent="GridContainer/Hotbar"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("1_xejf7")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="GridContainer/Hotbar/Slot2"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot3" type="TextureButton" parent="GridContainer/Hotbar"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("1_xejf7")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="GridContainer/Hotbar/Slot3"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Turrets" type="VFlowContainer" parent="GridContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+
+[node name="Slot1" type="TextureButton" parent="GridContainer/Turrets"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("1_xejf7")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="GridContainer/Turrets/Slot1"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "f1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot2" type="TextureButton" parent="GridContainer/Turrets"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("1_xejf7")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="GridContainer/Turrets/Slot2"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "f2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot3" type="TextureButton" parent="GridContainer/Turrets"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+texture_normal = ExtResource("1_xejf7")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Number" type="Label" parent="GridContainer/Turrets/Slot3"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 32
+text = "f3"
+horizontal_alignment = 1
+vertical_alignment = 1

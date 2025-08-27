@@ -1,6 +1,9 @@
 #include <godot_cpp/core/math.hpp>
 #include "celestial.hpp"
-
+// needed to use math primitives on visual studio compiler...
+#define _USE_MATH_DEFINES
+#include <cmath>
+#include <math.h>
 using namespace godot;
 
 double Orbit::time_scale = 1.0;

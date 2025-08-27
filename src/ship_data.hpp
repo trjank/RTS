@@ -121,6 +121,7 @@ public:
    void set_part_manager(Ref<PartManager> new_part_manager);
    void save_ship_image(Ref<ShipData> ship, String path);
    void save_ship_csv(Ref<ShipData> ship, String path);
+   String save_ship_string(Ref<ShipData>ship);
    Ref<ImageTexture> load_ship_image(String path);
    Ref<ShipData> load_ship_csv(int width, int height, String path);
 protected:
