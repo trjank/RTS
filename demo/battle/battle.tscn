@@ -1,10 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://c8r8u7e7qkegq"]
 
-[ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
-[ext_resource type="Script" path="res://battle/UnitFormation.gd" id="1_777ku"]
-[ext_resource type="Script" path="res://battle/RoundTimer.gd" id="2_gr1rv"]
-[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_j65k6"]
+[ext_resource type="Script" uid="uid://bg7syveeeu0it" path="res://battle/battle.gd" id="1_2ostc"]
+[ext_resource type="Script" uid="uid://cjvl1ipmtxjhk" path="res://battle/UnitFormation.gd" id="1_777ku"]
 [ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
+[ext_resource type="PackedScene" uid="uid://j7rna5tdvxk4" path="res://camera.tscn" id="4_6hnvb"]
 
 [sub_resource type="Environment" id="Environment_lh35d"]
 background_mode = 3
@@ -39,7 +38,7 @@ overlay = NodePath("UI")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_lh35d")
 
-[node name="RoundTimer" type="Timer" parent="." node_paths=PackedStringArray("clock_label")]
+[node name="RoundTimer" type="Timer" parent="."]
 one_shot = true
 
 [node name="CountdownTimer" type="Timer" parent="."]
@@ -79,7 +78,6 @@ anchor_bottom = 1.0
 offset_top = -150.0
 offset_right = 300.0
 grow_vertical = 0
-theme_override_styles/panel = ExtResource("3_448be")
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/Control/panel"]
 layout_mode = 2
@@ -87,11 +85,6 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
-
-[node name="GridContainer" parent="UI/Control/panel/MarginContainer" instance=ExtResource("3_dxl1x")]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 20.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI"]
 anchors_preset = 10
@@ -161,63 +154,8 @@ text = "Design"
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 20
-
-[node name="Slot1" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-ignore_texture_size = true
-stretch_mode = 4
-
-[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot1"]
-layout_mode = 0
-offset_right = 50.0
-offset_bottom = 50.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 20
-theme_override_font_sizes/font_size = 32
-text = "f1"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Slot2" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-ignore_texture_size = true
-stretch_mode = 4
-
-[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot2"]
-layout_mode = 0
-offset_right = 50.0
-offset_bottom = 50.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 20
-theme_override_font_sizes/font_size = 32
-text = "f2"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Slot3" type="TextureButton" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets"]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-texture_normal = ExtResource("2_j65k6")
-ignore_texture_size = true
-stretch_mode = 4
-
-[node name="Number" type="Label" parent="UI/FleetBar/ShipsBar/GridContainer/Turrets/Slot3"]
-layout_mode = 0
-offset_right = 50.0
-offset_bottom = 50.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 20
-theme_override_font_sizes/font_size = 32
-text = "f3"
-horizontal_alignment = 1
-vertical_alignment = 1
+text = "Menu
+"
 
 [node name="UnitFormation" type="UnitFormation" parent="."]
 z_index = 5
@@ -232,6 +170,8 @@ width = 50.0
 default_color = Color(1, 0.531333, 0.24, 1)
 begin_cap_mode = 2
 end_cap_mode = 2
+
+[node name="Camera" parent="." instance=ExtResource("4_6hnvb")]
 
 [connection signal="spawned_ship" from="." to="." method="_on_spawned_ship"]
 [connection signal="started" from="." to="." method="_on_started"]

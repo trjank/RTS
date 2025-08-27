@@ -30,6 +30,8 @@ Part::InitStatus Part::_ship_init(const Ship& parent_ship, int part_id) {
 	| This will never run for static parts. This is for     |
 	| unique parts, which become actual nodes on the ship.  |
 	|------------------------------------------------------*/
+	//fix for msvc
+	return OKAY_KEEP_PART;
 }
 void Part::create_image() {
 	ResizableSprite2D* image = memnew(ResizableSprite2D);

@@ -5,15 +5,15 @@ extends Node2D
 @export var part_grouping: PartGrouping
 @export var mirror_mode_button: TextureButton
 @export var mirror_axis: Line2D
-@export var grid: Sprite2D
 @export var info_text: Label
 var fleet:Fleet
 @onready var fleet_dropdown = %FleetDropdown
 @onready var rename_fleet_popup = %RenameFleetPopup
-@onready var design_grid = %Grid
+@onready var grid = %Grid
 @onready var ship_buttons = %ship_buttons
 @onready var manager := PartManager.new()
 @onready var ship_button = preload("res://fleet_button.tscn")
+@onready var testsprite = %test
 const UNSAVED_SHIP_ID = -1
 const UNSAVED_SHIP_NAME = "Untitled"
 const EMPTY_SLOT_NAME = " "
@@ -40,48 +40,8 @@ HAS2,36.5,35.0,2
 HAF1,34.5,36.5,0
 HAF1,35.5,36.5,0
 HAF1,36.5,36.5,0"
-"""
-schizo notes
-sortof a stateful things happening..
-
-- NO_SHIP: ship id is -1
-
-- SHIP: ship id is some real id
-
-- NO_FLEET: fleet id is -1
-
-- FLEET: fleet id is some real id
 
 
-state:
-
-	- fleet
-	 - defines what the slots are
-
-	- current slot
-	 - defines what the ship is
-
-	-slots
-	 - 10 slots
-	 - each slot has a ship id and a button
-
-
-state transitions: 
-	- clicking a ship button with an empty ship will turn into NO_SHIP state
-
-	- picking an existing fleet will turn into FLEET state
-
-	- creating a new fleet will turn into NO_FLEET state
-
-
-ok now we want fleets to exist
-
-slot system: 
-	10 slots
-	store a refrence to button (for ui stuff)
-	store ship id in db
-
-"""
 func load_ship_from_db(ship_id:int):
 	var ship_data = db.get_ship(ship_id)
 	if not ship_data:
@@ -203,8 +163,7 @@ func create_ship_button(button_name, method, del_method):
 	new_button.method = method
 	new_button.delete_method = del_method
 	new_button.button_name = button_name
-	return new_button
-
+	return new_button  
 func clear_current_slot():
 	clear_grid()
 	ship_slots[current_ship_slot] = UNSAVED_SHIP_ID
@@ -227,7 +186,7 @@ func set_ships(ships):
 		var btn_name = EMPTY_SLOT_NAME
 		var ship_id = -1
 		if cur_ship:
-			btn_name = cur_ship["name"]
+			btn_name = "Slot "+str(num)+":"+cur_ship["name"]
 			ship_id = cur_ship["id"]
 		
 		slot_buttons[num].button.text = btn_name

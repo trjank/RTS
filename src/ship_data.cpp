@@ -174,27 +174,6 @@ NO_ERROR_CHECK PackedInt32Array ShipData::find_neighbors(int part_id, int bounda
    return neighbors;
 }
 
-void ShipData::set_bounds(Vector2 bounds)
-{
-   if (bounds.x > ship_bounds_x.x)
-   {
-      ship_bounds_x.x = bounds.x;
-   }
-   if (bounds.x < ship_bounds_x.y)
-   {
-      ship_bounds_x.y = bounds.x;
-   }
-
-   if (bounds.y > ship_bounds_y.x)
-   {
-      ship_bounds_y.x = bounds.y;
-   }
-
-   if (bounds.y < ship_bounds_y.y)
-   {
-      ship_bounds_y.y = bounds.y;
-   }
-}
 
 ShipData::PartError ShipData::add_part(Ref<PartData> part, Vector2 center, RotationState rotation_state)
 {
