@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://8b0xosmrmilb"]
+[gd_scene load_steps=6 format=3 uid="uid://8b0xosmrmilb"]
 
 [ext_resource type="Shader" uid="uid://bnkcup81amd5o" path="res://main_menu/mainmenu.tres" id="1_7xuea"]
 [ext_resource type="Script" uid="uid://cntd7j0332jl" path="res://main_menu/mainmenu.gd" id="1_odr8w"]
+[ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://stardust_theme.tres" id="2_fs5a5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3m7f1"]
 shader = ExtResource("1_7xuea")
@@ -21,6 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme = ExtResource("2_fs5a5")
 script = ExtResource("1_odr8w")
 metadata/_edit_use_anchors_ = true
 

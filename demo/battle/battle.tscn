@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://c8r8u7e7qkegq"]
+[gd_scene load_steps=11 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" path="res://battle/UnitFormation.gd" id="1_777ku"]
 [ext_resource type="PackedScene" uid="uid://j7rna5tdvxk4" path="res://camera.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
+[ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://stardust_theme.tres" id="4_l1kiu"]
 [ext_resource type="Texture2D" uid="uid://lomxdpkneo5n" path="res://icons/unit_path.png" id="6_a3aav"]
 
 [sub_resource type="Environment" id="Environment_lh35d"]
@@ -93,6 +94,7 @@ theme_override_constants/margin_bottom = 20
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 35.0
+theme = ExtResource("4_l1kiu")
 
 [node name="Control" type="Control" parent="UI/HBoxContainer"]
 layout_mode = 2
