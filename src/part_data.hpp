@@ -25,7 +25,16 @@ class Part;
 class PartData: public RefCounted {
    GDCLASS(PartData, RefCounted)
 public:
-   enum Rotation: int {ROT_0_DEG, ROT_90_DEG, ROT_180_DEG, ROT_270_DEG, NUM_ROTATION_STATES};
+   enum Orientation: int {
+      ROT_0_DEG,
+      ROT_90_DEG,
+      ROT_180_DEG,
+      ROT_270_DEG,
+      FLIPPED_ROT_0_DEG,
+      FLIPPED_ROT_90_DEG,
+      FLIPPED_ROT_180_DEG,
+      FLIPPED_ROT_270_DEG
+   };
 
    static constexpr Image::Format IMAGE_FORMAT = Image::FORMAT_RGBA8;
    static constexpr int MIN_WIDTH = 1;
@@ -34,15 +43,14 @@ public:
    static constexpr int MAX_NAME_LENGTH = 50;
    static constexpr int MAX_DESCRIPTION_LENGTH = 400;
 
+   static bool is_flipped(Orientation orientation);
+   static Orientation get_rotation(Orientation orientation);
+   static Orientation to_orientation(int quarter_turns, bool flipped);
    static Ref<PartData> create_subtype(String subtype);
-   static Vector2 to_world_vec(Vector2i vector);
-   static Vector2i to_grid_vec(Vector2 vector);
-   static Rect2 to_world_rect(Rect2i rect);
-   static Rect2i to_grid_rect(Rect2 rect);
 
    bool is_unique() const;
    bool is_connected() const;
-   virtual bool is_valid_orientation(Rotation _rotation, bool _flipped) const;
+   virtual bool is_valid_orientation(Orientation _orientation) const;
    int get_atlas_id() const;
    int get_cost() const;
    double get_hp() const;
@@ -56,6 +64,7 @@ public:
    double get_thrust() const;
    double get_turning_momentum() const;
    Vector2i get_size() const;
+   Vector2i get_size_px() const;
    String get_code() const;
    String get_name() const;
    String get_tab() const;
@@ -109,6 +118,7 @@ class PartManager: public RefCounted {
 public:
    static constexpr int MAX_CODE_LENGTH = 10;
 
+   PartManager();
    int count_parts() const;
    const PackedVector2Array get_atlas_offsets();
    void new_atlas(String save_path);
@@ -131,6 +141,6 @@ private:
 
 }
 
-VARIANT_ENUM_CAST(PartData::Rotation);
+VARIANT_ENUM_CAST(PartData::Orientation);
 
 #endif // PART_DATA_HPP

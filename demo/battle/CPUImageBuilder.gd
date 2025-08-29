@@ -1,10 +1,11 @@
 class_name CPUImageBuilder extends RefCounted
 
-static func rotate_image(image: Image, rotation: PartData.Rotation, flipped: bool)->Image:
-	if rotation == PartData.ROT_0_DEG: return image
+static func rotate_image(image: Image, orientation: PartData.Orientation)->Image:
+	if orientation == PartData.ROT_0_DEG: return image
 	image = image.duplicate()
-	if flipped: image.flip_x()
-	match rotation:
+	if PartData.is_flipped(orientation):
+		image.flip_x()
+	match PartData.get_rotation(orientation):
 		PartData.ROT_0_DEG:
 			pass
 		PartData.ROT_90_DEG:
@@ -23,7 +24,7 @@ static func build_image(ship: ShipData)->void:
 		var id := 1 + n
 		var part := ship.get_part_data(id)
 		var rect := ship.get_part_region(id)
-		var pimage := rotate_image(part.get_image(), ship.get_part_rotation(id), ship.is_part_flipped(id))
+		var pimage := rotate_image(part.get_image(), ship.get_part_orientation(id))
 		image.blit_rect(pimage, Rect2i(0, 0, rect.size.x, rect.size.y), rect.position)
 	ship.set_image(image)
 	image.save_png("res://TEST_IMAGE.png")

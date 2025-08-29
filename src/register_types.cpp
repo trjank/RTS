@@ -274,16 +274,19 @@ void PartData::_bind_methods() {
 	BIND_ENUM_CONSTANT(ROT_90_DEG);
 	BIND_ENUM_CONSTANT(ROT_180_DEG);
 	BIND_ENUM_CONSTANT(ROT_270_DEG);
+	BIND_ENUM_CONSTANT(FLIPPED_ROT_0_DEG);
+	BIND_ENUM_CONSTANT(FLIPPED_ROT_90_DEG);
+	BIND_ENUM_CONSTANT(FLIPPED_ROT_180_DEG);
+	BIND_ENUM_CONSTANT(FLIPPED_ROT_270_DEG);
 	BIND_CONSTANT(MIN_WIDTH);
 	BIND_CONSTANT(MIN_HEIGHT);
 	BIND_CONSTANT(PX_PER_GRID_SQUARE);
 	BIND_CONSTANT(MAX_NAME_LENGTH);
 	BIND_CONSTANT(MAX_DESCRIPTION_LENGTH);
+	ClassDB::bind_static_method("PartData", D_METHOD("is_flipped", "orientation"), &PartData::is_flipped);
+	ClassDB::bind_static_method("PartData", D_METHOD("get_rotation", "orientation"), &PartData::get_rotation);
+	ClassDB::bind_static_method("PartData", D_METHOD("to_orientation", "orientation"), &PartData::to_orientation);
 	ClassDB::bind_static_method("PartData", D_METHOD("create_subtype", "subtype"), &PartData::create_subtype);
-	ClassDB::bind_static_method("PartData", D_METHOD("to_world_vec", "vector"), &PartData::to_world_vec);
-	ClassDB::bind_static_method("PartData", D_METHOD("to_grid_vec", "vector"), &PartData::to_grid_vec);
-	ClassDB::bind_static_method("PartData", D_METHOD("to_world_rect", "rect"), &PartData::to_world_rect);
-	ClassDB::bind_static_method("PartData", D_METHOD("to_grid_rect", "rect"), &PartData::to_grid_rect);
 	ClassDB::bind_method(D_METHOD("get_cost"), &PartData::get_cost);
 	ClassDB::bind_method(D_METHOD("get_hp"), &PartData::get_hp);
 	ClassDB::bind_method(D_METHOD("get_mass"), &PartData::get_mass);
@@ -359,16 +362,17 @@ void Part::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_flipped"), &Part::is_flipped);
 	ClassDB::bind_method(D_METHOD("get_data"), &Part::get_data);
 	ClassDB::bind_method(D_METHOD("get_rect"), &Part::get_rect);
-	ClassDB::bind_method(D_METHOD("get_rotation_state"), &Part::get_rotation_state);
+	ClassDB::bind_method(D_METHOD("get_orientation"), &Part::get_orientation);
 }
 void PartGrouping::_bind_methods() {
 	BIND_CONSTANT(CLOCKWISE);
 	BIND_CONSTANT(COUNTER_CLOCKWISE);
-	ClassDB::bind_method(D_METHOD("clone"), &PartGrouping::clone);
-	ClassDB::bind_method(D_METHOD("is_dragging"), &PartGrouping::is_dragging);
+	ClassDB::bind_method(D_METHOD("contains_mouse"), &PartGrouping::contains_mouse);
+	ClassDB::bind_method(D_METHOD("resize", "new_size"), &PartGrouping::resize);
 	ClassDB::bind_method(D_METHOD("flip_parts"), &PartGrouping::flip_parts);
 	ClassDB::bind_method(D_METHOD("rotate_parts", "quarter_turns", "duration"), &PartGrouping::rotate_parts);
-	ClassDB::bind_method(D_METHOD("spawn_part", "part_data"), &PartGrouping::spawn_part);
+	ClassDB::bind_method(D_METHOD("spawn_part_at_mouse", "part_data"), &PartGrouping::spawn_part_at_mouse);
+	ClassDB::bind_method(D_METHOD("spawn_part_at", "position", "part_data"), &PartGrouping::spawn_part_at);
 	ClassDB::bind_method(D_METHOD("select_parts", "parts"), &PartGrouping::select_parts);
 	ClassDB::bind_method(D_METHOD("clear_parts"), &PartGrouping::clear_parts);
 	ClassDB::bind_method(D_METHOD("delete_parts"), &PartGrouping::delete_parts);
@@ -376,8 +380,6 @@ void PartGrouping::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("parts_deleted"));
 	ADD_SIGNAL(MethodInfo("parts_rotated", PropertyInfo(Variant::INT, "quarter_turns"), PropertyInfo(Variant::FLOAT, "duration")));
 	ADD_SIGNAL(MethodInfo("parts_flipped"));
-	ADD_SIGNAL(MethodInfo("dragging_started"));
-	ADD_SIGNAL(MethodInfo("dragging_ended", PropertyInfo(Variant::ARRAY, "selected"), PropertyInfo(Variant::RECT2, "region")));
 }
 void ShipData::_bind_methods() {
 	BIND_CONSTANT(NULL_PART_ID);
@@ -393,13 +395,15 @@ void ShipData::_bind_methods() {
 	BIND_ENUM_CONSTANT(OUT_OF_BOUNDS);
 	BIND_ENUM_CONSTANT(IS_NULL);
 	BIND_ENUM_CONSTANT(INVALID_ORIENTATION);
-	ClassDB::bind_static_method("ShipData", D_METHOD("create", "width", "height"), &ShipData::create);
+	BIND_ENUM_CONSTANT(MISSING_CSV_DATA);
+	ClassDB::bind_static_method("ShipData", D_METHOD("create", "grid_width", "grid_height"), &ShipData::create);
+	ClassDB::bind_method(D_METHOD("count_part_clusters"), &ShipData::count_part_clusters);
 	ClassDB::bind_method(D_METHOD("count_parts"), &ShipData::count_parts);
 	ClassDB::bind_method(D_METHOD("is_empty"), &ShipData::is_empty);
 	ClassDB::bind_method(D_METHOD("is_connected"), &ShipData::is_connected);
 	ClassDB::bind_method(D_METHOD("get_cost"), &ShipData::get_cost);
-	ClassDB::bind_method(D_METHOD("get_grid_region"), &ShipData::get_grid_rect);
-	ClassDB::bind_method(D_METHOD("get_ship_region"), &ShipData::get_ship_rect);
+	ClassDB::bind_method(D_METHOD("get_grid_rect"), &ShipData::get_grid_rect);
+	ClassDB::bind_method(D_METHOD("get_ship_rect"), &ShipData::get_ship_rect);
 	ClassDB::bind_method(D_METHOD("get_max_warp"), &ShipData::get_max_warp);
 	ClassDB::bind_method(D_METHOD("get_max_hp"), &ShipData::get_max_hp);
 	ClassDB::bind_method(D_METHOD("get_max_shield"), &ShipData::get_max_shield);
@@ -410,27 +414,23 @@ void ShipData::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_thrust"), &ShipData::get_thrust);
 	ClassDB::bind_method(D_METHOD("get_turnrate"), &ShipData::get_turnrate);
 	ClassDB::bind_method(D_METHOD("get_center_of_mass"), &ShipData::get_center_of_mass);
+	ClassDB::bind_method(D_METHOD("get_name"), &ShipData::get_name);
 	ClassDB::bind_method(D_METHOD("get_image"), &ShipData::get_image);
 	ClassDB::bind_method(D_METHOD("get_unique_parts"), &ShipData::get_unique_parts);
+	ClassDB::bind_method(D_METHOD("get_part_orientation", "part_id"), &ShipData::get_part_orientation);
 	ClassDB::bind_method(D_METHOD("get_part_data", "part_id"), &ShipData::get_part_data);
 	ClassDB::bind_method(D_METHOD("get_part_center", "part_id"), &ShipData::get_part_center);
 	ClassDB::bind_method(D_METHOD("get_part_region", "part_id"), &ShipData::get_part_rect);
+	ClassDB::bind_method(D_METHOD("get_csv"), &ShipData::get_csv);
+	ClassDB::bind_method(D_METHOD("set_name", "new_name"), &ShipData::set_name);
 	ClassDB::bind_method(D_METHOD("set_image", "new_image"), &ShipData::set_image);
 	ClassDB::bind_method(D_METHOD("has_part", "part_id"), &ShipData::has_part);
 	ClassDB::bind_method(D_METHOD("add_part", "part", "center", "rotation_state"), &ShipData::add_part);
 	ClassDB::bind_method(D_METHOD("add_part_node", "part"), &ShipData::add_part_node);
+	ClassDB::bind_method(D_METHOD("add_part_csv_line", "data", "part_manager"), &ShipData::add_part_csv_line);
 	ClassDB::bind_method(D_METHOD("collision_check", "point"), &ShipData::add_part_node);
 	ClassDB::bind_method(D_METHOD("find_neighbors", "part_id", "boundary_flags"), &ShipData::find_neighbors);
-}
-void ShipManager::_bind_methods() {
-   BIND_CONSTANT(NULL_PART_ATLAS_ID);
-	ClassDB::bind_method(D_METHOD("set_part_manager", "new_parts_manager"), &ShipManager::set_part_manager);
-
-	ClassDB::bind_method(D_METHOD("save_ship_image", "ship", "path"), &ShipManager::save_ship_image);
-	ClassDB::bind_method(D_METHOD("save_ship_csv", "ship", "path"), &ShipManager::save_ship_csv);
-	ClassDB::bind_method(D_METHOD("load_ship_image", "path"), &ShipManager::load_ship_image);
-	ClassDB::bind_method(D_METHOD("load_ship_csv", "size", "path"), &ShipManager::load_ship_csv);
-	//ClassDB::bind_method(D_METHOD("save_ship_string"), &ShipManager::save_ship_string);
+	ClassDB::bind_method(D_METHOD("encode_csv", "delimeter"), &ShipData::encode_csv);
 }
 void Star::_bind_methods() {
 	ClassDB::bind_static_method("Star", D_METHOD("set_star_shader", "shader"), &Star::set_star_shader);
@@ -554,7 +554,6 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(Part);
 	GDREGISTER_CLASS(PartGrouping);
 	GDREGISTER_CLASS(ShipData);
-	GDREGISTER_CLASS(ShipManager);
 	GDREGISTER_CLASS(Map);
 	GDREGISTER_CLASS(MapLayer);
 	GDREGISTER_CLASS(System);

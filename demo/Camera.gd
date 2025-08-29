@@ -11,8 +11,8 @@ var z := 2.0
 @export var camera_node: Camera2D
 
 func _physics_process(delta):
-	var input_xy = Input.get_vector("left", "right", "up", "down")
-	var input_z = Input.get_axis("in", "out")
+	var input_xy := Input.get_vector("left", "right", "up", "down")
+	var input_z  := Input.get_axis("in", "out")
 	apply_force(input_xy * speed_xy)
 	z = clamp(z + input_z * speed_z * delta, min_z, max_z)
 	camera_node.zoom = DEFAULT_ZOOM / z

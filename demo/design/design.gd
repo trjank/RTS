@@ -78,7 +78,7 @@ func show_overlay()->void:
 func hide_overlay()->void:
 	overlay.hide()
 
-func resize(size: Vector2)->void:
+func resize_grid(size: Vector2)->void:
 	size *= PartData.PX_PER_GRID_SQUARE
 	grid.region_rect.size   = size
 	mirror_axis.position.x  = size.x * 0.5

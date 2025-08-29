@@ -2,7 +2,7 @@ class_name PartButton extends TextureButton
 
 static var part_container: PartGrouping
 
-const DISPLAY_SCALE := 1.5 * PartData.PX_PER_GRID_SQUARE
+const DISPLAY_SCALE := 1.5
 
 var part_data: PartData
 
@@ -12,7 +12,8 @@ func _ready():
 	button_down.connect(spawn_part)
 
 func set_display_size(new_display_size: Vector2):
-	custom_minimum_size = DISPLAY_SCALE * new_display_size
+	custom_minimum_size = DISPLAY_SCALE * new_display_size * PartData.PX_PER_GRID_SQUARE
 
 func spawn_part():
-	part_container.spawn_part(part_data)
+	part_container.spawn_part_at_mouse(part_data)
+	part_container.begin_dragging()
