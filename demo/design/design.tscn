@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=15 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="PackedScene" uid="uid://hi3bwlaeckb5" path="res://design/fleet_container.tscn" id="2_bjdq3"]
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/partslist/parts_container.tscn" id="9_3c8mw"]
+[ext_resource type="PackedScene" uid="uid://up3bgite3mbq" path="res://grid_box.tscn" id="9_6gxgq"]
 [ext_resource type="Script" path="res://design/PartGrouping.gd" id="10_6vk6i"]
 [ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="Shader" uid="uid://ci2cowlt3xued" path="res://design/grid.tres" id="11_licix"]
@@ -35,6 +36,14 @@ metadata/_edit_vertical_guides_ = [136.0]
 
 [node name="UI" type="CanvasLayer" parent="."]
 
+[node name="background" type="Panel" parent="UI"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="margin" type="MarginContainer" parent="UI"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,19 +64,21 @@ layout_mode = 2
 
 [node name="PartsContainer" parent="UI/margin/HBoxContainer" instance=ExtResource("9_3c8mw")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="Grid" type="Sprite2D" parent="UI/margin/HBoxContainer"]
+[node name="spacer" type="MarginContainer" parent="UI/margin/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Grid" type="MarginContainer" parent="UI/margin/HBoxContainer"]
 unique_name_in_owner = true
 texture_filter = 3
 texture_repeat = 2
 material = SubResource("ShaderMaterial_licix")
-position = Vector2(925, 0)
-texture = ExtResource("15_ha1ne")
-centered = false
-region_enabled = true
-region_rect = Rect2(2.08165e-12, 2.08165e-12, 256, 256)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 6.0
 
 [node name="PartGrouping" type="PartGrouping" parent="UI/margin/HBoxContainer/Grid" node_paths=PackedStringArray("mirror_axis")]
 z_index = 1
@@ -86,9 +97,28 @@ default_color = Color(0.0666667, 0.176471, 0.337255, 1)
 
 [node name="test" type="Sprite2D" parent="UI/margin/HBoxContainer/Grid"]
 unique_name_in_owner = true
+visible = false
 texture = ExtResource("14_qg3uy")
 
+[node name="TextureRect" type="TextureRect" parent="UI/margin/HBoxContainer/Grid"]
+visible = false
+layout_mode = 2
+texture = ExtResource("15_ha1ne")
+stretch_mode = 1
+
+[node name="Panel" type="Panel" parent="UI/margin/HBoxContainer/Grid"]
+layout_mode = 2
+
+[node name="Control" parent="UI/margin/HBoxContainer/Grid" instance=ExtResource("9_6gxgq")]
+visible = false
+layout_mode = 2
+
 [node name="CenterContainer" type="CenterContainer" parent="UI/margin/HBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="spacer2" type="MarginContainer" parent="UI/margin/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 

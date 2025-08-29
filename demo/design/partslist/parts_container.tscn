@@ -1,7 +1,7 @@
-[gd_scene load_steps=18 format=3 uid="uid://dfjm11tydfbwt"]
+[gd_scene load_steps=22 format=3 uid="uid://dfjm11tydfbwt"]
 
 [ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://stardust_theme.tres" id="1_0c2qi"]
-[ext_resource type="Texture2D" uid="uid://ogk3gdxrpgi4" path="res://icons/parts_container_background.png" id="1_uwltu"]
+[ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="1_tdel1"]
 [ext_resource type="Theme" uid="uid://dgs1qnc6a3qos" path="res://design/partslist/dropdown_theme.tres" id="2_8umgk"]
 [ext_resource type="Script" uid="uid://1ytf1odlubls" path="res://design/partslist/parts_container.gd" id="2_xb30u"]
 [ext_resource type="Script" uid="uid://d0o651bw7b0wf" path="res://design/partslist/tab_buttons.gd" id="3_g5m8g"]
@@ -13,14 +13,26 @@
 [ext_resource type="Texture2D" uid="uid://b1q6iuiq8kne0" path="res://icons/mirror_mode_disabled.png" id="8_xwbhh"]
 [ext_resource type="Script" uid="uid://d2oq7xnbcuews" path="res://design/partslist/MirrorButton.gd" id="9_mcgoo"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w8n0p"]
-texture = ExtResource("1_uwltu")
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wa60n"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yh7po"]
-bg_color = Color(0.928977, 0.659506, 0.460741, 1)
-border_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g5m8g"]
+bg_color = Color(1, 1, 1, 0.156863)
+draw_center = false
+shadow_size = 10
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0c2qi"]
+shader = ExtResource("1_tdel1")
+shader_parameter/sigma = 3.3
+
+[sub_resource type="Gradient" id="Gradient_g5m8g"]
+offsets = PackedFloat32Array(0, 0.974138, 1)
+colors = PackedColorArray(0.0980392, 0.196078, 0.235294, 0.980392, 0.0980392, 0.196078, 0.235294, 0.785565, 0.0980392, 0.196078, 0.235294, 0.780392)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0c2qi"]
+gradient = SubResource("Gradient_g5m8g")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tdel1"]
+texture = SubResource("GradientTexture2D_0c2qi")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epnfi"]
 content_margin_left = 20.0
@@ -37,18 +49,28 @@ corner_radius_top_right = 10
 bg_color = Color(1, 1, 1, 0)
 
 [node name="PartsContainer" type="PanelContainer"]
+material = SubResource("ShaderMaterial_wa60n")
 theme = ExtResource("1_0c2qi")
-theme_override_styles/panel = SubResource("StyleBoxTexture_w8n0p")
+theme_override_styles/panel = SubResource("StyleBoxFlat_g5m8g")
 script = ExtResource("2_xb30u")
+
+[node name="blur" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_0c2qi")
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="."]
+texture_repeat = 2
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_tdel1")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_yh7po")
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 theme_override_constants/h_separation = 0
 columns = 3
@@ -59,18 +81,21 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 icon = ExtResource("4_l0dbo")
+icon_alignment = 1
 
 [node name="Weapons" type="Button" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 icon = ExtResource("6_okk5v")
+icon_alignment = 1
 
 [node name="Armor" type="Button" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 icon = ExtResource("5_rmcst")
+icon_alignment = 1
 
 [node name="VFlowContainer" type="VFlowContainer" parent="VBoxContainer/PanelContainer"]
 visible = false
@@ -135,6 +160,7 @@ visible = false
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 20
@@ -149,19 +175,19 @@ horizontal_scroll_mode = 0
 [node name="part_tabs" type="TabContainer" parent="VBoxContainer/MarginContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_f44sc")
-current_tab = 1
+current_tab = 3
 tabs_visible = false
 
 [node name="Energy" type="GridContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/part_tabs"]
 visible = false
 layout_mode = 2
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
 columns = 3
 metadata/_tab_index = 0
 
 [node name="Armor" type="GridContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/part_tabs"]
+visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
@@ -177,7 +203,6 @@ columns = 3
 metadata/_tab_index = 2
 
 [node name="Utility" type="FlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/part_tabs"]
-visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
