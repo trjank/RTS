@@ -113,9 +113,9 @@ func make_map()->void:
 	#clock_seconds_label.text = "%02d" % get_seconds_left()
 
 func design_button_pressed():
-	statemanager.change_state(statemanager.DESIGN)
+	statemanager.change_state(statemanager.State.DESIGN)
 
 func menu_button_pressed():
-	statemanager.change_state(statemanager.BACKGROUND)
-	statemanager.change_ui_state(statemanager.MAIN_MENU)
+	statemanager.change_state(statemanager.State.BACKGROUND)
+	statemanager.change_ui_state(statemanager.UI.MAIN_MENU)
 	

@@ -4,11 +4,11 @@ extends MarginContainer
 var method:Callable
 var delete_method:Callable
 var button_name="Untitled ship"
+
 func _ready():
 	button.text = button_name
 	button.pressed.connect(method)
 	delete_button.pressed.connect(delete_method)
-	pass
 
 func rebind(new_method:Callable):
 	button.pressed.disconnect(method)

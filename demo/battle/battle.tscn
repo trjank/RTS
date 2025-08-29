@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bxcl1ara5ks5e" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" uid="uid://ccfbcyt2y8th7" path="res://battle/UnitFormation.gd" id="1_777ku"]
 [ext_resource type="PackedScene" uid="uid://p3nnscobw38k" path="res://camera.tscn" id="2_4mnim"]
-[ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
+[ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="3_4mnim"]
 [ext_resource type="Texture2D" uid="uid://lomxdpkneo5n" path="res://icons/unit_path.png" id="6_a3aav"]
 
 [sub_resource type="Environment" id="Environment_lh35d"]
@@ -60,7 +60,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture = ExtResource("3_lrxve")
+texture = ExtResource("3_4mnim")
 expand_mode = 3
 stretch_mode = 6
 

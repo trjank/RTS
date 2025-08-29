@@ -4,90 +4,74 @@ extends Node
 @onready var mainmenu = preload("res://main_menu/mainmenu.tscn").instantiate()
 @onready var settings = preload("res://settings/settings_menu.tscn").instantiate()
 @onready var navbar = preload("res://navbar/navbar.tscn").instantiate()
-@onready var ui = $"../UI"
+@onready var ui_node = $"../UI"
 
+enum State {NONE, BACKGROUND, BATTLE, DESIGN}
+enum UI {NO_UI, NAVBAR, MAIN_MENU, SETTINGS}
 
-# const BACKGROUND = "BACKGROUND"
-# const NONE      = "NONE"
-# const DESIGN    = "DESIGN"
-# const BATTLE    = "BATTLE"
-# const NO_UI     = "NO_UI"
-# const NAVBAR    = "NAVBAR"
-# const MAIN_MENU = "MAIN_MENU"
-enum {NONE, NO_UI,BACKGROUND ,DESIGN, BATTLE, NAVBAR, MAIN_MENU, SETTINGS}
-var state = NONE
-var ui_state = NO_UI
+var state := State.NONE
+var ui := UI.NO_UI
 
 @onready var battle = $"../Battle"
-func _ready():
-	print(ui)
-	pass
 
-#could maybe abstract a bit here, there seems to be 2 layers (game, and UI), instead of duplicating functions for each layer, the layer could just be a class. could also use a data strucutre for the states themselves..
-
-func remove_current_state():
+func remove_current_state()->void:
 	match state:
-		BATTLE:
+		State.BATTLE:
 			battle.hide_overlay()
 			battle.hide()
-		DESIGN:
+		State.DESIGN:
 			$"..".remove_child(design)
-	state = NONE
-
+	state = State.NONE
 
 func change_new_state(new_state):
 	match new_state:
-		BACKGROUND:
+		State.BACKGROUND:
 			battle.hide_overlay()
 			battle.show()
-			state = BACKGROUND
-		BATTLE:
+			state = State.BACKGROUND
+		State.BATTLE:
 			#this feels really scuffed
 			remove_current_ui_state()
 			battle.show_overlay()
 			battle.show()
-			state = BATTLE
-		DESIGN:
-			change_new_ui_state(NAVBAR)
+			state = State.BATTLE
+		State.DESIGN:
+			change_new_ui_state(UI.NAVBAR)
 			$"..".add_child(design)
-			state = DESIGN
+			state = State.DESIGN
 		_:
-			state = NONE
+			state = State.NONE
 
 func change_state(new_state):
 	remove_current_state()
 	change_new_state(new_state)
 
-func remove_current_ui_state():
-	match ui_state:
-		NAVBAR:
-			ui.remove_child(navbar)
-		MAIN_MENU:
-			ui.remove_child(mainmenu)
-		SETTINGS:
-			ui.remove_child(settings)
-	ui_state = NO_UI
+func remove_current_ui_state()->void:
+	match ui:
+		UI.NAVBAR:
+			ui_node.remove_child(navbar)
+		UI.MAIN_MENU:
+			ui_node.remove_child(mainmenu)
+		UI.SETTINGS:
+			ui_node.remove_child(settings)
+	ui = UI.NO_UI
 
-func change_new_ui_state(new_state):
+func change_new_ui_state(new_state: UI)->void:
 	match new_state:
-		NAVBAR:
+		UI.NAVBAR:
 			print("adding nav")
-			ui.add_child(navbar)
-			ui_state = NAVBAR
-		MAIN_MENU:
+			ui_node.add_child(navbar)
+			ui = UI.NAVBAR
+		UI.MAIN_MENU:
 			print("adding mainmenu")
-			ui.add_child(mainmenu)
-			ui_state = MAIN_MENU
-		SETTINGS:
+			ui_node.add_child(mainmenu)
+			ui = UI.MAIN_MENU
+		UI.SETTINGS:
 			print("adding settings")
-			ui.add_child(settings)
-			ui_state = SETTINGS
+			ui_node.add_child(settings)
+			ui = UI.SETTINGS
 
-func change_ui_state(new_state):
-	if new_state!=ui_state:
+func change_ui_state(new_state: UI):
+	if new_state != ui:
 		remove_current_ui_state()
 	change_new_ui_state(new_state)
-
-
-func _process(_delta):
-	pass

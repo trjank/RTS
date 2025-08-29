@@ -11,8 +11,8 @@ func _ready():
 	pass # Replace with function body.
 
 func settings_button_pressed():
-	stateManager.change_ui_state(stateManager.SETTINGS)
+	stateManager.change_ui_state(stateManager.UI.SETTINGS)
 
 func play_button_pressed():
-	stateManager.change_state(stateManager.BATTLE)
+	stateManager.change_state(stateManager.State.BATTLE)
 	#stateManager.change_ui_state(stateManager.NAVBAR)

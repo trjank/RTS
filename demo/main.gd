@@ -7,8 +7,8 @@ const cursor := preload("res://icons/cursor_default.png")
 
 func _ready():
 	#Input.set_custom_mouse_cursor(cursor)
-	state_manager.change_state(state_manager.BACKGROUND)
-	state_manager.change_new_ui_state(state_manager.MAIN_MENU)
+	state_manager.change_state(state_manager.State.BACKGROUND)
+	state_manager.change_new_ui_state(state_manager.UI.MAIN_MENU)
 	return
 	#var manager := PartManager.new()
 	##var part1 := manager.new_part()

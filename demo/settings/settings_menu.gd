@@ -8,4 +8,4 @@ func _ready():
 	pass # Replace with function body.
 
 func back_button_pressed():
-	stateManager.change_ui_state(stateManager.MAIN_MENU)
+	stateManager.change_ui_state(stateManager.UI.MAIN_MENU)

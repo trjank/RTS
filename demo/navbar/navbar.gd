@@ -15,8 +15,6 @@ func _ready():
 	menu_button.pressed.connect(menu_button_pressed)
 	pass # Replace with function body.
 
-
-		
 func menu_button_pressed():
 	stateManager.change_ui_state(stateManager.MAIN_MENU)
 	stateManager.change_state(stateManager.BACKGROUND)
@@ -24,16 +22,9 @@ func menu_button_pressed():
 func chat_button_pressed():
 	chat.visible = not chat.visible
 
-
 func battle_button_pressed():
-	stateManager.change_state(stateManager.BATTLE)
-
-
+	stateManager.change_state(stateManager.State.BATTLE)
 
 func design_button_pressed():
-	stateManager.change_state(stateManager.DESIGN)
+	stateManager.change_state(stateManager.State.DESIGN)
 	print("design_button")
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
