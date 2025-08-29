@@ -12,11 +12,11 @@
 [ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="7_5fbpj"]
 [ext_resource type="Theme" uid="uid://dgs1qnc6a3qos" path="res://design/dropdown_theme.tres" id="7_leno0"]
 [ext_resource type="PackedScene" uid="uid://x7hwc0lotf28" path="res://fleet_button.tscn" id="8_on51i"]
-[ext_resource type="Script" path="res://design/OptionButton.gd" id="8_s4sq3"]
+[ext_resource type="Script" uid="uid://bwql2s2x712p1" path="res://design/OptionButton.gd" id="8_s4sq3"]
 [ext_resource type="Texture2D" uid="uid://b1q6iuiq8kne0" path="res://icons/mirror_mode_disabled.png" id="9_neots"]
-[ext_resource type="Script" path="res://design/PartGrouping.gd" id="10_6vk6i"]
+[ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/PartGrouping.gd" id="10_6vk6i"]
 [ext_resource type="Script" uid="uid://d2oq7xnbcuews" path="res://design/MirrorButton.gd" id="10_u7s8c"]
-[ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
+[ext_resource type="Script" uid="uid://0peykvq70p5b" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="Shader" uid="uid://ci2cowlt3xued" path="res://design/grid.tres" id="11_licix"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="14_qg3uy"]
 [ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://icons/grid_background_5x5.png" id="15_ha1ne"]
@@ -93,8 +93,8 @@ corner_radius_bottom_left = 10
 script = ExtResource("1_wctwy")
 overlay = NodePath("UI")
 container = NodePath("UI/margin/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer")
-part_grouping = NodePath("UI/margin/HBoxContainer/Grid/PartGrouping")
-mirror_axis = NodePath("UI/margin/HBoxContainer/Grid/MirrorAxis")
+part_grouping = NodePath("Grid/PartGrouping")
+mirror_axis = NodePath("Grid/MirrorAxis")
 metadata/_edit_vertical_guides_ = [136.0]
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -237,14 +237,15 @@ part_tabs_container = NodePath("../../../../MarginContainer/TabContainer")
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MirrorButton" type="TextureButton" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer" node_paths=PackedStringArray("mirror_axis")]
+[node name="MirrorButton" type="TextureButton" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer" node_paths=PackedStringArray("mirror_axis", "grid")]
 custom_minimum_size = Vector2(55, 55)
 layout_mode = 2
 texture_normal = ExtResource("9_neots")
 ignore_texture_size = true
 stretch_mode = 4
 script = ExtResource("10_u7s8c")
-mirror_axis = NodePath("../../../../../../../Grid/MirrorAxis")
+mirror_axis = NodePath("../../../../../../../../../../Grid/MirrorAxis")
+grid = NodePath("../../../../../../../../../../Grid")
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer"]
 layout_mode = 2
@@ -287,18 +288,22 @@ theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 metadata/_tab_index = 3
 
-[node name="Grid" type="Sprite2D" parent="UI/margin/HBoxContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="UI/margin/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Grid" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 texture_filter = 3
 texture_repeat = 2
 material = SubResource("ShaderMaterial_licix")
-position = Vector2(925, 0)
+position = Vector2(925, 90)
 texture = ExtResource("15_ha1ne")
 centered = false
 region_enabled = true
 region_rect = Rect2(2.08165e-12, 2.08165e-12, 256, 256)
 
-[node name="PartGrouping" type="PartGrouping" parent="UI/margin/HBoxContainer/Grid" node_paths=PackedStringArray("mirror_axis", "mirror_button")]
+[node name="PartGrouping" type="PartGrouping" parent="Grid" node_paths=PackedStringArray("mirror_axis", "mirror_button")]
 z_index = 1
 texture_filter = 1
 texture_repeat = 2
@@ -306,24 +311,17 @@ texture = ExtResource("17_qupps")
 region_enabled = true
 script = ExtResource("10_6vk6i")
 mirror_axis = NodePath("../MirrorAxis")
-mirror_button = NodePath("../../PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton")
+mirror_button = NodePath("../../UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton")
 
-[node name="MirrorAxis" type="Line2D" parent="UI/margin/HBoxContainer/Grid"]
+[node name="MirrorAxis" type="Line2D" parent="Grid"]
 visible = false
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
 default_color = Color(0.0666667, 0.176471, 0.337255, 1)
 
-[node name="test" type="Sprite2D" parent="UI/margin/HBoxContainer/Grid"]
+[node name="test" type="Sprite2D" parent="Grid"]
 unique_name_in_owner = true
 texture = ExtResource("14_qg3uy")
-
-[node name="CenterContainer" type="CenterContainer" parent="UI/margin/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="UI_NavigatorOffset_HSplitContainer#RightSidebar" type="HSplitContainer" parent="."]
-size_flags_horizontal = 3
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
 z_index = 1
@@ -418,6 +416,9 @@ text = "This action cannot be undone!"
 
 [connection signal="item_selected" from="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" to="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_item_selected"]
 [connection signal="button_down" from="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" to="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" method="_on_button_down"]
+[connection signal="dragging_ended" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_ended"]
+[connection signal="dragging_started" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_started"]
+[connection signal="selection_ended" from="MouseSelection" to="Grid/PartGrouping" method="_on_mouse_selection_selection_ended"]
 [connection signal="confirmed" from="RenameFleetPopup" to="RenameFleetPopup" method="_on_confirmed"]
 [connection signal="valid_rename" from="RenameFleetPopup" to="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_rename_fleet_popup_valid_rename"]
 [connection signal="confirmed" from="DeleteFleetPopup" to="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_delete_fleet_popup_confirmed"]

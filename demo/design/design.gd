@@ -6,7 +6,7 @@ extends Node2D
 @export var mirror_mode_button: TextureButton
 @export var mirror_axis: Line2D
 @export var info_text: Label
-var fleet:Fleet
+#var fleet:Fleet
 @onready var fleet_dropdown = %FleetDropdown
 @onready var rename_fleet_popup = %RenameFleetPopup
 @onready var grid = %Grid
@@ -62,7 +62,7 @@ func load_ship(stats:String):
 		var part:PartData = manager.lookup_code(line[0])
 		var partPosition = Vector2(float(line[1]),float(line[2]))
 		var partRotation = int(line[3])
-		var mirrored = (int(line[3]) > 3)
+		#var mirrored = (int(line[3]) > 3)
 		var newPart = Part.create_from(part)
 		grid.add_child(newPart)
 		#need knowledge of 
@@ -84,12 +84,13 @@ func resize_grid(size: Vector2)->void:
 	mirror_axis.position.x  = size.x * 0.5
 	mirror_axis.points[1].y = size.y
 
-func save_ship(ship:ShipData, ship_manager:ShipManager):
-	var ship_stats = ship_manager.save_ship_string(ship)
+func save_ship(ship: ShipData):
 	var current_id = ship_slots[current_ship_slot]
+	ship.encode_csv(",")
+	var ship_stats := ship.get_csv()
 	if current_id > -1:
 		print("Updating ship stats for ship id: %d" % current_id)
-		db.update_ship_stats(current_id ,ship_stats)
+		db.update_ship_stats(current_id, ship_stats)
 		return
 	var results = db.create_ship(ship_name, ship_stats)
 
@@ -102,29 +103,28 @@ func save_ship(ship:ShipData, ship_manager:ShipManager):
 		slot_buttons[current_ship_slot].button.text = "Untitled"
 		slot_buttons[current_ship_slot].delete_button.visible = true
 
-func save_ship_img(ship:ShipData):
-		var bounds_x = ship.get_ship_bounds_x()
-		var bounds_y = ship.get_ship_bounds_y()
-		var bounds = Vector2(bounds_x.x - bounds_x.y, bounds_y.x - bounds_y.y)
-		var square_size = max(bounds.x, bounds.y)+1
-		var padding = 64
-		print(bounds_x)
-		print(bounds_y)
-		#var img = Image.load_from_file("user://ship.png").get_region(Rect2i(bounds_x.y*32 - 32 -padding/2 ,bounds_y.y*32 - 32 -padding/2, square_size*32 + 32 + padding, square_size*32 + 32 + padding))
-		#img.save_png("user://ship2.png")
-		#print(bounds)
+func save_ship_img(ship: ShipData):
+	var bounds_x = ship.get_ship_bounds_x()
+	var bounds_y = ship.get_ship_bounds_y()
+	#var bounds = Vector2(bounds_x.x - bounds_x.y, bounds_y.x - bounds_y.y)
+	#var square_size = max(bounds.x, bounds.y) + 1
+	#var padding = 64
+	print(bounds_x)
+	print(bounds_y)
+	#var img = Image.load_from_file("user://ship.png").get_region(Rect2i(bounds_x.y*32 - 32 -padding/2 ,bounds_y.y*32 - 32 -padding/2, square_size*32 + 32 + padding, square_size*32 + 32 + padding))
+	#img.save_png("user://ship2.png")
+	#print(bounds)
 
 func _input(event):
 	if event.is_action_pressed("save"):
 		print("saving...")
 		part_grouping.clear_parts() # <-- This is VERY important
-		var ship_manager := ShipManager.new()
 		var ship := ShipData.create(64, 64)
 		for part in grid.get_children():
 			ship.add_part_node(part)
 			print("->", part.rotation, " | ", part.scale.x < 0, " | ", part.get_class())
 		print(ship.count_parts())
-		save_ship(ship,ship_manager)
+		save_ship(ship)
 		#save_ship_img(ship)
 
 func clear_grid():
@@ -196,7 +196,7 @@ func set_ships(ships):
 func setup_part_buttons():
 	manager.load_json("user://part_data.json")
 	PartButton.part_container = part_grouping
-	for atlas_id in range(manager.count_parts()):
+	for atlas_id in range(1, manager.count_parts()):
 		var part := manager.lookup_id(atlas_id)
 		var part_container := container.get_node(part.get_tab())
 		var part_display := PartButton.new()
@@ -219,9 +219,12 @@ func setup_fleet_buttons():
 	rename_fleet_popup.valid_rename.connect(on_valid_rename)
 	
 
+func resize(new_size: Vector2)->void:
+	grid.region_rect.size = new_size * PartData.PX_PER_GRID_SQUARE
+
 func _ready():
 	#setup global db connection?
-	resize(Vector2i(64, 64))
+	resize(Vector2(64, 64))
 	var ships = db.get_ships_in_fleet(current_fleet)
 	print(ships)
 	create_ship_buttons()

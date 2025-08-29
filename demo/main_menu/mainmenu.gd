@@ -16,8 +16,3 @@ func settings_button_pressed():
 func play_button_pressed():
 	stateManager.change_state(stateManager.BATTLE)
 	#stateManager.change_ui_state(stateManager.NAVBAR)
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

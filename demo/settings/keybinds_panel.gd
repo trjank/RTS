@@ -90,8 +90,3 @@ func _ready():
 		keybind_list.add_child(new_keybind_row(keymap_key, keybind_action, keybind_key.as_text(), keybind_fn))
 		#print(get_node(keymap_key).keybind_button)
 	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

@@ -1,8 +1,8 @@
 [gd_scene load_steps=10 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" uid="uid://bxcl1ara5ks5e" path="res://battle/battle.gd" id="1_2ostc"]
-[ext_resource type="Script" path="res://battle/UnitFormation.gd" id="1_777ku"]
-[ext_resource type="PackedScene" uid="uid://j7rna5tdvxk4" path="res://camera.tscn" id="2_4mnim"]
+[ext_resource type="Script" uid="uid://ccfbcyt2y8th7" path="res://battle/UnitFormation.gd" id="1_777ku"]
+[ext_resource type="PackedScene" uid="uid://p3nnscobw38k" path="res://camera.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]
 [ext_resource type="Texture2D" uid="uid://lomxdpkneo5n" path="res://icons/unit_path.png" id="6_a3aav"]
 
@@ -31,9 +31,11 @@ colors = PackedColorArray(0.301961, 0.301961, 0.301961, 0.313726, 0.364706, 0.36
 gradient = SubResource("Gradient_lt5l7")
 fill_to = Vector2(1, 1)
 
-[node name="Battle" type="Battle" node_paths=PackedStringArray("overlay")]
+[node name="Battle" type="Battle" node_paths=PackedStringArray("countdown_timer", "round_timer", "overlay")]
 seed = -1909400080011345178
 script = ExtResource("1_2ostc")
+countdown_timer = NodePath("CountdownTimer")
+round_timer = NodePath("RoundTimer")
 overlay = NodePath("UI")
 
 [node name="Camera" parent="." instance=ExtResource("2_4mnim")]

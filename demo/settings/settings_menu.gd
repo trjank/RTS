@@ -9,7 +9,3 @@ func _ready():
 
 func back_button_pressed():
 	stateManager.change_ui_state(stateManager.MAIN_MENU)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

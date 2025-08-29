@@ -1,8 +1,5 @@
 #include "part.hpp"
-// needed to use math primitives on visual studio compiler...
-#define _USE_MATH_DEFINES
-#include <cmath>
-#include <math.h>
+
 using namespace godot;
 
 constexpr double PI_2 = 0.5 * Math_PI;

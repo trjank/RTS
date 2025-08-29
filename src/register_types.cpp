@@ -13,10 +13,11 @@
 #include "part.hpp"
 #include "resizable_sprite_2d.hpp"
 #include "ship_data.hpp"
+#include "ship.hpp"
+#include "unit_formation.hpp"
 #include "celestial.hpp"
 #include "star.hpp"
 #include "map.hpp"
-#include "fleet.hpp"
 #include "unique_part.hpp"
 #include "target.hpp"
 
@@ -483,35 +484,6 @@ void System::_bind_methods() {
 void StarSystem::_bind_methods() {
 	// Nothing to bind
 }
-void Fleet::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("get_num_slots", "type"), &Fleet::get_num_slots);
-    ClassDB::bind_method(D_METHOD("get_slot", "type", "slot"), &Fleet::get_slot);
-    ClassDB::bind_method(D_METHOD("get_name"), &Fleet::get_name);
-    ClassDB::bind_method(D_METHOD("set_num_slots", "type", "new_num_slots"), &Fleet::set_num_slots);
-    ClassDB::bind_method(D_METHOD("set_slot", "type", "slot", "new_ship"), &Fleet::set_slot);
-    ClassDB::bind_method(D_METHOD("set_name", "new_name"), &Fleet::set_name);
-	ClassDB::bind_method(D_METHOD("resize"),&Fleet::resize);
-    BIND_ENUM_CONSTANT(CAPITAL_SHIP);
-    BIND_ENUM_CONSTANT(SHIP);
-    BIND_ENUM_CONSTANT(TURRET);
-    BIND_ENUM_CONSTANT(NUM_SHIP_TYPES);
-    
-    BIND_CONSTANT(MIN_NAME_LENGTH);
-}
-
-void FleetManager::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("fleet_exists", "fleet_name"), &FleetManager::fleet_exists);
-    ClassDB::bind_method(D_METHOD("set_fleet_folder", "user_path"), &FleetManager::set_fleet_folder, DEFVAL("user://fleets"));
-    ClassDB::bind_method(D_METHOD("save_fleet", "fleet"), &FleetManager::save_fleet);
-    ClassDB::bind_method(D_METHOD("save_fleet_type", "fleet", "type"), &FleetManager::save_fleet_type);
-    ClassDB::bind_method(D_METHOD("save_fleet_slot", "fleet", "type", "slot"), &FleetManager::save_fleet_slot);
-    ClassDB::bind_method(D_METHOD("load_fleet", "name"), &FleetManager::load_fleet);
-    ClassDB::bind_method(D_METHOD("load_fleet_type", "fleet", "type"), &FleetManager::load_fleet_type);
-    ClassDB::bind_method(D_METHOD("load_fleet_slot", "fleet", "type", "slot"), &FleetManager::load_fleet_slot);
-    ClassDB::bind_method(D_METHOD("delete_fleet", "fleet"), &FleetManager::delete_fleet);
-    ClassDB::bind_method(D_METHOD("delete_fleet_type", "fleet", "type"), &FleetManager::delete_fleet_type);
-    ClassDB::bind_method(D_METHOD("delete_fleet_slot", "fleet", "type", "slot"), &FleetManager::delete_fleet_slot);
-}
 void ProjectileData::_bind_methods() {
 
 }
@@ -558,8 +530,6 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(MapLayer);
 	GDREGISTER_CLASS(System);
 	GDREGISTER_CLASS(StarSystem);
-	GDREGISTER_CLASS(Fleet);
-	GDREGISTER_CLASS(FleetManager);
 
 	GDREGISTER_CLASS(Weapon);
 	GDREGISTER_CLASS(ProjectileData);
