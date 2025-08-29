@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://c8r8u7e7qkegq"]
 
-[ext_resource type="Script" path="res://battle/battle.gd" id="1_2ostc"]
+[ext_resource type="Script" uid="uid://bxcl1ara5ks5e" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" path="res://battle/UnitFormation.gd" id="1_777ku"]
 [ext_resource type="PackedScene" uid="uid://j7rna5tdvxk4" path="res://camera.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://dkvae7m1qcydf" path="res://images_backgrounds/light.png" id="3_lrxve"]

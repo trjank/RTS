@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
-[ext_resource type="Script" path="res://design/fleet_selector.gd" id="4_nwsnp"]
+[ext_resource type="Script" uid="uid://daw7vfno8mvqr" path="res://design/fleet_selector.gd" id="4_nwsnp"]
 [ext_resource type="Texture2D" uid="uid://blwjohdbu8pgf" path="res://icons/fleet_rename.png" id="5_8hx7x"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="5_q73th"]
 [ext_resource type="Texture2D" uid="uid://inbrq5b8ia5x" path="res://icons/fleet_delete.png" id="5_tfe8n"]
@@ -15,14 +15,14 @@
 [ext_resource type="Script" path="res://design/OptionButton.gd" id="8_s4sq3"]
 [ext_resource type="Texture2D" uid="uid://b1q6iuiq8kne0" path="res://icons/mirror_mode_disabled.png" id="9_neots"]
 [ext_resource type="Script" path="res://design/PartGrouping.gd" id="10_6vk6i"]
-[ext_resource type="Script" path="res://design/MirrorButton.gd" id="10_u7s8c"]
+[ext_resource type="Script" uid="uid://d2oq7xnbcuews" path="res://design/MirrorButton.gd" id="10_u7s8c"]
 [ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="Shader" uid="uid://ci2cowlt3xued" path="res://design/grid.tres" id="11_licix"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="14_qg3uy"]
 [ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://icons/grid_background_5x5.png" id="15_ha1ne"]
 [ext_resource type="Texture2D" uid="uid://cvcfx8expolen" path="res://icons/parts_selection_background.png" id="17_qupps"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popup_menu.tres" id="18_01mpa"]
-[ext_resource type="Script" path="res://design/RenameFleetPopup.gd" id="19_ract4"]
+[ext_resource type="Script" uid="uid://bpptswrvnl6dk" path="res://design/RenameFleetPopup.gd" id="19_ract4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bomom"]
 content_margin_left = 0.0
