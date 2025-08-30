@@ -2,19 +2,12 @@ extends Battle
 
 @export var countdown_timer: Timer
 @export var round_timer: Timer
-@export var overlay: CanvasLayer
-@onready var statemanager = $"../state_manager"
+@onready var state_manager = $"../StateManager"
 @onready var menubutton = %MenuButton 
 @onready var designbutton = %DesignButton
 
 var client: Player
 var part_manager := JSONPartManager.new()
-
-func hide_overlay()->void:
-	overlay.hide()
-
-func show_overlay()->void:
-	overlay.show()
 
 func create_warp_trail(from: Vector2, to: Vector2)->void:
 	var trail := preload("res://battle/WarpPath.tscn").instantiate()
@@ -113,9 +106,8 @@ func make_map()->void:
 	#clock_seconds_label.text = "%02d" % get_seconds_left()
 
 func design_button_pressed():
-	statemanager.change_state(statemanager.State.DESIGN)
+	state_manager.state = state_manager.State.DESIGN
 
 func menu_button_pressed():
-	statemanager.change_state(statemanager.State.BACKGROUND)
-	statemanager.change_ui_state(statemanager.UI.MAIN_MENU)
-	
+	state_manager.state = state_manager.State.NONE
+	state_manager.ui = state_manager.UI.MAIN_MENU

@@ -1,6 +1,3 @@
 extends Node
 
-var db:DB
-
-func _ready():
-	db = DB.new()
+var db := DB.new()

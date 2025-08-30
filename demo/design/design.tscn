@@ -1,6 +1,7 @@
-[gd_scene load_steps=34 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=35 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
+[ext_resource type="Script" uid="uid://djhuy3av2b5qd" path="res://CanvasLayerToggle.gd" id="2_cg3po"]
 [ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
 [ext_resource type="Script" uid="uid://daw7vfno8mvqr" path="res://design/fleet_selector.gd" id="4_nwsnp"]
 [ext_resource type="Texture2D" uid="uid://blwjohdbu8pgf" path="res://icons/fleet_rename.png" id="5_8hx7x"]
@@ -98,6 +99,7 @@ mirror_axis = NodePath("Grid/MirrorAxis")
 metadata/_edit_vertical_guides_ = [136.0]
 
 [node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("2_cg3po")
 
 [node name="margin" type="MarginContainer" parent="UI"]
 anchors_preset = 15

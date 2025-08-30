@@ -2,7 +2,7 @@ extends Control
 
 @onready var play_button  = %PlayButton
 @onready var settings_button = %SettingsButton
-@onready var stateManager = $"../../state_manager"
+@onready var state_manager = $"../../StateManager"
 
 
 func _ready():
@@ -11,8 +11,8 @@ func _ready():
 	pass # Replace with function body.
 
 func settings_button_pressed():
-	stateManager.change_ui_state(stateManager.UI.SETTINGS)
+	state_manager.ui = state_manager.UI.SETTINGS
 
 func play_button_pressed():
-	stateManager.change_state(stateManager.State.BATTLE)
-	#stateManager.change_ui_state(stateManager.NAVBAR)
+	state_manager.state = state_manager.State.BATTLE
+	state_manager.ui = state_manager.UI.NAVBAR

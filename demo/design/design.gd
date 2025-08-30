@@ -31,7 +31,7 @@ var ship_slots = {}
 var slot_buttons = {}
 var unsaved:bool = false
 #@onready var fleet_folder = DirAccess.open("user://fleets")
-@onready var  db = $"../modules".db
+@onready var db = $"../modules".db
 
 var testStr = "ENT2,35.0,33.0,0
 ENT2,35.0,35.0,0
@@ -40,7 +40,6 @@ HAS2,36.5,35.0,2
 HAF1,34.5,36.5,0
 HAF1,35.5,36.5,0
 HAF1,36.5,36.5,0"
-
 
 func load_ship_from_db(ship_id:int):
 	var ship_data = db.get_ship(ship_id)

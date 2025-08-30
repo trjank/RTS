@@ -1,119 +1,44 @@
-[gd_scene load_steps=14 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=10 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main.gd" id="1_h0c8p"]
-[ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="2_5s37y"]
-[ext_resource type="Script" uid="uid://go7jmff76a43" path="res://state_manager.gd" id="2_l4s7m"]
-[ext_resource type="Script" path="res://modules.gd" id="2_lquwl"]
-[ext_resource type="StyleBox" uid="uid://7ddhu1wc1g27" path="res://navigator_button.tres" id="3_1dx7b"]
-[ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navigator_button_hover.tres" id="4_dotd0"]
-[ext_resource type="Script" uid="uid://dm3hwgk4ugh6p" path="res://Design.gd" id="5_mf6ox"]
+[ext_resource type="Script" uid="uid://go7jmff76a43" path="res://StateManager.gd" id="2_l4s7m"]
+[ext_resource type="Script" uid="uid://eb6iaeejxdik" path="res://modules.gd" id="2_lquwl"]
 [ext_resource type="PackedScene" uid="uid://c8r8u7e7qkegq" path="res://battle/battle.tscn" id="5_rtafa"]
-[ext_resource type="Script" uid="uid://bu1gqm8ibogv6" path="res://Battle.gd" id="6_4n2ky"]
-[ext_resource type="Script" uid="uid://coelirw0firjv" path="res://Chat.gd" id="7_6efvs"]
 [ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="7_ep3nq"]
+[ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]
+[ext_resource type="PackedScene" uid="uid://8b0xosmrmilb" path="res://main_menu/mainmenu.tscn" id="12_ycdy4"]
+[ext_resource type="PackedScene" uid="uid://cxyn26sy7uyyr" path="res://settings/settings_menu.tscn" id="13_w48qg"]
+[ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="14_vivmo"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
-bg_color = Color(0, 0, 0, 0.588235)
-border_width_bottom = 2
-border_color = Color(0.772549, 0.611765, 0.85098, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fnf26"]
-content_margin_left = 20.0
-content_margin_top = 0.0
-content_margin_right = 20.0
-content_margin_bottom = 0.0
-bg_color = Color(1, 1, 1, 0)
-border_width_bottom = 5
-border_color = Color(0.772549, 0.611765, 0.85098, 1)
-expand_margin_bottom = 20.0
-
-[node name="Main" type="Node2D" node_paths=PackedStringArray("battle")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("battle", "state_manager")]
 script = ExtResource("1_h0c8p")
 battle = NodePath("Battle")
-
-[node name="state_manager" type="Node" parent="."]
-unique_name_in_owner = true
-script = ExtResource("2_l4s7m")
-
-[node name="modules" type="Node" parent="."]
-script = ExtResource("2_lquwl")
+state_manager = NodePath("StateManager")
 
 [node name="UI" type="CanvasLayer" parent="."]
 layer = 3
 
-[node name="Nagivator" type="PanelContainer" parent="UI"]
+[node name="Nagivator" parent="UI" instance=ExtResource("14_vivmo")]
 visible = false
-z_index = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 125.0
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ajdbe")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/Nagivator"]
-layout_mode = 2
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 20
+[node name="MainMenu" parent="UI" instance=ExtResource("12_ycdy4")]
+visible = false
 
-[node name="GridContainer" type="GridContainer" parent="UI/Nagivator/MarginContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 20
-columns = 6
-
-[node name="TextureRect" type="TextureRect" parent="UI/Nagivator/MarginContainer/GridContainer"]
-layout_mode = 2
-texture = ExtResource("2_5s37y")
-expand_mode = 3
-
-[node name="Button" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer"]
-layout_mode = 2
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 32
-text = "menu"
-
-[node name="CenterContainer" type="CenterContainer" parent="UI/Nagivator/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Design" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("battle")]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-theme_override_styles/focus = ExtResource("4_dotd0")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
-theme_override_styles/pressed = ExtResource("4_dotd0")
-theme_override_styles/normal = ExtResource("3_1dx7b")
-text = "design"
-script = ExtResource("5_mf6ox")
-battle = NodePath("../../../../../Battle")
-
-[node name="Battle" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer" node_paths=PackedStringArray("battle")]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-theme_override_styles/focus = ExtResource("4_dotd0")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
-theme_override_styles/pressed = ExtResource("4_dotd0")
-theme_override_styles/normal = ExtResource("3_1dx7b")
-text = "battle"
-script = ExtResource("6_4n2ky")
-battle = NodePath("../../../../../Battle")
-
-[node name="Chat" type="Button" parent="UI/Nagivator/MarginContainer/GridContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-theme_override_styles/focus = ExtResource("4_dotd0")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
-theme_override_styles/pressed = ExtResource("4_dotd0")
-theme_override_styles/normal = ExtResource("3_1dx7b")
-text = "chat
-"
-script = ExtResource("7_6efvs")
+[node name="SettingsMenu" parent="UI" instance=ExtResource("13_w48qg")]
+visible = false
 
 [node name="Chat" parent="UI" instance=ExtResource("7_ep3nq")]
 visible = false
 
 [node name="Battle" parent="." instance=ExtResource("5_rtafa")]
 seed = -4660530014316562278
-visible = false
+
+[node name="Design" parent="." instance=ExtResource("11_dg77c")]
+
+[node name="modules" type="Node" parent="."]
+script = ExtResource("2_lquwl")
+
+[node name="StateManager" type="Node" parent="." node_paths=PackedStringArray("state_nodes", "ui_nodes")]
+script = ExtResource("2_l4s7m")
+state_nodes = [null, NodePath("../Battle"), NodePath("../Design")]
+ui_nodes = [null, NodePath("../UI/Nagivator"), NodePath("../UI/MainMenu"), NodePath("../UI/SettingsMenu")]

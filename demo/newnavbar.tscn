@@ -1,4 +1,4 @@
-[gd_scene load_steps=0 format=3 uid="uid://d15aijgmyej5t"]
+[gd_scene format=3 uid="uid://d15aijgmyej5t"]
 
 [node name="Nagivator" type="PanelContainer"]
 z_index = 1
