@@ -1,6 +1,7 @@
-[gd_scene load_steps=35 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=36 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
+[ext_resource type="PackedScene" uid="uid://p3nnscobw38k" path="res://camera.tscn" id="2_3qscj"]
 [ext_resource type="Script" uid="uid://djhuy3av2b5qd" path="res://CanvasLayerToggle.gd" id="2_cg3po"]
 [ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
 [ext_resource type="Script" uid="uid://daw7vfno8mvqr" path="res://design/fleet_selector.gd" id="4_nwsnp"]
@@ -19,6 +20,7 @@
 [ext_resource type="Script" uid="uid://d2oq7xnbcuews" path="res://design/MirrorButton.gd" id="10_u7s8c"]
 [ext_resource type="Script" uid="uid://0peykvq70p5b" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="Shader" uid="uid://ci2cowlt3xued" path="res://design/grid.tres" id="11_licix"]
+[ext_resource type="Texture2D" uid="uid://dx6fdu1yy0fot" path="res://icons/dropdown.png" id="12_bggdi"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="14_qg3uy"]
 [ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://icons/grid_background_5x5.png" id="15_ha1ne"]
 [ext_resource type="Texture2D" uid="uid://cvcfx8expolen" path="res://icons/parts_selection_background.png" id="17_qupps"]
@@ -48,8 +50,6 @@ content_margin_bottom = 15.0
 bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgale"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w8n0p"]
 texture = ExtResource("7_1reeb")
@@ -90,13 +90,14 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[node name="Design" type="Node2D" node_paths=PackedStringArray("overlay", "container", "part_grouping", "mirror_axis")]
+[node name="Design" type="Node2D" node_paths=PackedStringArray("container", "part_grouping", "mirror_axis")]
 script = ExtResource("1_wctwy")
-overlay = NodePath("UI")
 container = NodePath("UI/margin/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer")
 part_grouping = NodePath("Grid/PartGrouping")
 mirror_axis = NodePath("Grid/MirrorAxis")
 metadata/_edit_vertical_guides_ = [136.0]
+
+[node name="Camera" parent="." instance=ExtResource("2_3qscj")]
 
 [node name="UI" type="CanvasLayer" parent="."]
 script = ExtResource("2_cg3po")
@@ -138,7 +139,7 @@ theme_override_styles/hover = ExtResource("2_wxr8y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_jti52")
 theme_override_styles/normal = ExtResource("2_wxr8y")
 theme_override_constants/arrow_margin = 15
-theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
+theme_override_icons/arrow = ExtResource("12_bggdi")
 selected = 3
 item_count = 5
 popup/item_0/text = "NEW FLEET"
@@ -218,7 +219,7 @@ theme_override_styles/hover = ExtResource("2_wxr8y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_epnfi")
 theme_override_styles/normal = ExtResource("2_wxr8y")
 theme_override_constants/arrow_margin = 15
-theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
+theme_override_icons/arrow = ExtResource("12_bggdi")
 selected = 0
 item_count = 4
 popup/item_0/text = "Energy"

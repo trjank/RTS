@@ -14,8 +14,7 @@ static func toggle_node(node: Node, visible: bool)->void:
 	if not node: return
 	# Avoid overhead of creating and freeing nodes
 	node.visible = visible
-	node.set_process(visible)
-	node.set_physics_process(visible)
+	node.process_mode = Node.PROCESS_MODE_INHERIT if visible else Node.PROCESS_MODE_DISABLED
 
 # IMPORTANT: Ensure this _ready occurs AFTER all of the other nodes
 func _ready()->void:

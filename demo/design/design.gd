@@ -1,6 +1,5 @@
 extends Node2D
 
-@export var overlay: CanvasLayer
 @export var container: TabContainer
 @export var part_grouping: PartGrouping
 @export var mirror_mode_button: TextureButton
@@ -70,12 +69,6 @@ func load_ship(stats:String):
 		newPart.position =   partPosition
 		newPart.rotation = snapped(newPart.rotation,PI/2) + partRotation*PI/2 
 		#newPart.set_data(part)
-
-func show_overlay()->void:
-	overlay.show()
-
-func hide_overlay()->void:
-	overlay.hide()
 
 func resize_grid(size: Vector2)->void:
 	size *= PartData.PX_PER_GRID_SQUARE
