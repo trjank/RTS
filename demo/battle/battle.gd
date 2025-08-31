@@ -2,21 +2,12 @@ extends Battle
 
 @export var countdown_timer: Timer
 @export var round_timer: Timer
-@export var overlay: CanvasLayer
-@onready var statemanager = $"../state_manager"
+@onready var state_manager = $"../StateManager"
 @onready var menubutton = %MenuButton 
 @onready var designbutton = %DesignButton
 #@onready var blur = %blur
 var client: Player
-var ship_manager := ShipManager.new()
-
-func hide_overlay()->void:
-#	blur.show()
-	overlay.hide()
-
-func show_overlay()->void:
-#	blur.hide()
-	overlay.show()
+var part_manager := JSONPartManager.new()
 
 func create_warp_trail(from: Vector2, to: Vector2)->void:
 	var trail := preload("res://battle/WarpPath.tscn").instantiate()
@@ -30,15 +21,17 @@ func _on_spawned_ship(ship: Ship)->void:
 	ship.set_path_width(50)
 	ship.set_path_texture(preload("res://icons/unit_path.png"))
 
-func _ready()->void:
-	
-	#started.connect(round_timer.start)
-	#started_countdown.connect(countdown_timer.start)
-	#stopped.connect(round_timer.stop)
-	#stopped.connect(countdown_timer.stop)
-	#round_timer.timeout.connect(stop)
-	#countdown_timer.timeout.connect(start)
+func connect_timers()->void:
+	started.connect(round_timer.start)
+	started_countdown.connect(countdown_timer.start)
+	stopped.connect(round_timer.stop)
+	stopped.connect(countdown_timer.stop)
+	round_timer.timeout.connect(stop)
+	countdown_timer.timeout.connect(start)
 
+func _ready()->void:
+	part_manager.load_json()
+	connect_timers()
 	# For testing
 	make_map()
 	#round_timer.wait_time = 360.0
@@ -48,28 +41,25 @@ func _ready()->void:
 
 func _on_started()->void:
 	return
-	var part_manager := PartManager.new()
-	part_manager.new_part("NULL", "")
-	part_manager.load_csv("user://parts.csv")
-	ship_manager.set_part_manager(part_manager)
-	var capital_ship_data := ship_manager.load_ship_csv(64, 64, "user://capital_ship.csv")
-	var capital_ship := spawn_ship(client, capital_ship_data, Vector2.ZERO)
-	#print(capital_ship_data.get_center_of_mass())
-	#print(capital_ship_data.get_ship_region())
-	#print(capital_ship_data.count_parts())
-	capital_ship.position = Vector2(-2000, 0)
-	
-	for n in range(10):
-		var ship := spawn_ship(client, capital_ship_data, Vector2.ZERO)
-		ship.set_position(n * Vector2(500, 0))
+	#var capital_ship_data := ship_manager.load_ship_csv(64, 64, "user://capital_ship.csv")
+	#var capital_ship := spawn_ship(client, capital_ship_data, Vector2.ZERO)
+	##print(capital_ship_data.get_center_of_mass())
+	##print(capital_ship_data.get_ship_region())
+	##print(capital_ship_data.count_parts())
+	#capital_ship.position = Vector2(-2000, 0)
+	#
+	#for n in range(10):
+		#var ship := spawn_ship(client, capital_ship_data, Vector2.ZERO)
+		#ship.set_position(n * Vector2(500, 0))
 
 func make_map()->void:
+	Star.set_black_hole_shader(preload("res://shaders/black_hole.tres"))
 	System.set_default_texture(preload("res://images_planets_terrestrial/unloaded_celestial.tres"))
 	Orbit.set_time_scale(100)
 	
 	var sun := StarSystem.new()
 	sun.set_radius_range(750, 1000)
-	sun.set_mass_range(100, 200)
+	sun.set_mass_range(10000, 20000)
 	sun.names = ["Star"]
 	sun.textures = [preload("res://images_stars/blue.png")]
 	
@@ -117,9 +107,8 @@ func make_map()->void:
 	#clock_seconds_label.text = "%02d" % get_seconds_left()
 
 func design_button_pressed():
-	statemanager.change_state(statemanager.DESIGN)
+	state_manager.state = state_manager.State.DESIGN
 
 func menu_button_pressed():
-	statemanager.change_state(statemanager.BACKGROUND)
-	statemanager.change_ui_state(statemanager.MAIN_MENU)
-	
+	state_manager.state = state_manager.State.NONE
+	state_manager.ui = state_manager.UI.MAIN_MENU

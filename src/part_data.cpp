@@ -3,23 +3,22 @@
 using namespace godot;
 
 Ref<PartData> PartData::create_subtype(String subtype) {
+   /*------------------------------------------------------|
+   | Note that this will work differently for gdscript     |
+   | created classes. You will need the full script path.  |
+   |------------------------------------------------------*/
    return ClassDB::instantiate(subtype);
 }
-Vector2 PartData::to_world_vec(Vector2i vector) {
-   vector *= PX_PER_GRID_SQUARE;
-   return static_cast<Vector2>(vector);
+bool PartData::is_flipped(Orientation orientation) {
+   return orientation > ROT_270_DEG;
 }
-Vector2i PartData::to_grid_vec(Vector2 vector) {
-   vector /= PX_PER_GRID_SQUARE;
-   return static_cast<Vector2i>(vector);
+PartData::Orientation PartData::get_rotation(Orientation orientation) {
+   return static_cast<Orientation>(orientation % 4);
 }
-Rect2 PartData::to_world_rect(Rect2i rect) {
-   return Rect2(to_world_vec(rect.position), to_world_vec(rect.size));
+PartData::Orientation PartData::to_orientation(int quarter_turns, bool flipped) {
+   return static_cast<Orientation>(Math::posmod(quarter_turns, 4) + 4 * flipped);
 }
-Rect2i PartData::to_grid_rect(Rect2 rect) {
-   return Rect2i(to_grid_vec(rect.position), to_grid_vec(rect.size));
-}
-bool PartData::is_valid_orientation(Rotation _rotation, bool _flipped) const {
+bool PartData::is_valid_orientation(Orientation _orientation) const {
    return true;
 }
 bool PartData::is_unique() const {
@@ -66,6 +65,9 @@ double PartData::get_thrust() const {
 }
 Vector2i PartData::get_size() const {
    return size;
+}
+Vector2i PartData::get_size_px() const {
+   return size * PX_PER_GRID_SQUARE;
 }
 String PartData::get_code() const {
    return code;
@@ -115,7 +117,7 @@ void PartData::set_description(String new_description) {
 }
 void PartData::set_image(Ref<Image> new_image) {
    ERR_FAIL_NULL(new_image);
-   ERR_FAIL_COND(new_image->get_size() != to_world_vec(size));
+   ERR_FAIL_COND(new_image->get_size() != get_size_px());
 
    image = new_image;
    image->convert(IMAGE_FORMAT);
@@ -129,6 +131,9 @@ void PartData::set_image_path(String path) {
 }
 
 
+PartManager::PartManager() {
+   new_part("NULL");
+}
 int PartManager::count_parts() const {
    return parts.size();
 }
@@ -170,7 +175,7 @@ void PartManager::create_atlas() {
    PackedVector2Array part_sizes;
 
    for (Ref<PartData> part: parts) {
-      part_sizes.push_back( PartData::to_world_vec( part->get_size() ) );
+      part_sizes.push_back( part->get_size_px() );
    }
    Dictionary atlas_data = Geometry2D::get_singleton()->make_atlas(part_sizes);
    Vector2i size = atlas_data["size"];
@@ -178,7 +183,7 @@ void PartManager::create_atlas() {
    atlas = Image::create(size.x, size.y, true, PartData::IMAGE_FORMAT);
 }
 void PartManager::draw_part_on_atlas(Ref<PartData> part) {
-   Vector2i size = PartData::to_world_vec( part->get_size() ) ;
+   Vector2i size = part->get_size_px();
    Rect2i rect   = {0, 0, size.width, size.height};
    atlas->blit_rect(part->image, rect, atlas_offsets[part->atlas_id]);
 }

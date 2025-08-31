@@ -1,7 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://bb6bj8b6mhosi"]
+[gd_scene load_steps=15 format=3 uid="uid://bb6bj8b6mhosi"]
 
 [ext_resource type="Script" uid="uid://c1kpbbaqx8xxa" path="res://battle/Ship.gd" id="1_7vtla"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="2_dupo0"]
+[ext_resource type="Texture2D" uid="uid://cowu84lxprenc" path="res://icons/bar_pips.png" id="3_ixb6q"]
+[ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://icons/grid_background_5x5.png" id="4_dfdry"]
 
 [sub_resource type="Gradient" id="Gradient_wnxci"]
 offsets = PackedFloat32Array(0.516908, 0.676328, 0.717391)
@@ -34,6 +36,10 @@ bg_color = Color(1, 0.960784, 0.686275, 0.392157)
 bg_color = Color(1, 0.960784, 0.686275, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_j187u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ixb6q"]
+atlas = ExtResource("3_ixb6q")
+region = Rect2(0, 0, 250, 0)
 
 [node name="Ship" type="Ship" node_paths=PackedStringArray("HP_bar", "energy_bar")]
 collision_mask = 0
@@ -102,3 +108,13 @@ texture = ExtResource("2_dupo0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_j187u")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+texture_filter = 1
+texture_repeat = 2
+custom_minimum_size = Vector2(500, 0)
+offset_right = 500.0
+offset_bottom = 160.0
+value = 100.0
+texture_over = SubResource("AtlasTexture_ixb6q")
+texture_progress = ExtResource("4_dfdry")

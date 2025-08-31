@@ -1,6 +1,6 @@
 extends Control
 @onready var backbutton = %back_button
-@onready var stateManager = $"../../state_manager"
+@onready var state_manager = $"../../StateManager"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -8,8 +8,4 @@ func _ready():
 	pass # Replace with function body.
 
 func back_button_pressed():
-	stateManager.change_ui_state(stateManager.MAIN_MENU)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+	state_manager.ui = state_manager.UI.MAIN_MENU

@@ -12,6 +12,7 @@ class Star: public Celestial {
 public:
    static void set_star_shader(Ref<ShaderMaterial> shader);
    static void set_black_hole_shader(Ref<ShaderMaterial> shader);
+
    bool is_black_hole();
    bool can_capture() const override;
    void set_mass(double new_mass) override;
@@ -19,10 +20,13 @@ public:
 protected:
    static void _bind_methods();
 private:
-   static constexpr double STABILITY = 1.0;
+   static constexpr double STABILITY = 0.0001;
+
    static Ref<ShaderMaterial>& get_star_shader();
    static Ref<ShaderMaterial>& get_black_hole_shader();
+
    bool collapsed = false;
+
    void check_for_black_hole();
 };
 

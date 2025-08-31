@@ -79,19 +79,9 @@ func _input(event):
 	update_keybind_row(key_to_bind, event)
 	end_rebind()
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	for keymap_key in bindable_inputs:
-		print(keymap_key)
 		var keybind_action = bindable_inputs[keymap_key]
 		var keybind_key = InputMap.action_get_events(keymap_key)[0]
-		print(keybind_key)
 		var keybind_fn = start_rebind.bind(keymap_key,keybind_key)
 		keybind_list.add_child(new_keybind_row(keymap_key, keybind_action, keybind_key.as_text(), keybind_fn))
-		#print(get_node(keymap_key).keybind_button)
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

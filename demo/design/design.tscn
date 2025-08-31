@@ -46,6 +46,8 @@ part_grouping = NodePath("UI/margin/HBoxContainer/Grid/PartGrouping")
 mirror_axis = NodePath("UI/margin/HBoxContainer/Grid/MirrorAxis")
 metadata/_edit_vertical_guides_ = [136.0]
 
+[node name="Camera" parent="." instance=ExtResource("2_3qscj")]
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="background" type="Panel" parent="UI"]
@@ -101,12 +103,12 @@ region_enabled = true
 script = ExtResource("10_6vk6i")
 mirror_axis = NodePath("../MirrorAxis")
 
-[node name="MirrorAxis" type="Line2D" parent="UI/margin/HBoxContainer/Grid"]
+[node name="MirrorAxis" type="Line2D" parent="Grid"]
 visible = false
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
 
-[node name="test" type="Sprite2D" parent="UI/margin/HBoxContainer/Grid"]
+[node name="test" type="Sprite2D" parent="Grid"]
 unique_name_in_owner = true
 visible = false
 texture = ExtResource("14_qg3uy")
@@ -132,6 +134,7 @@ size_flags_horizontal = 3
 size_flags_horizontal = 3
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
+action = "select"
 z_index = 1
 script = ExtResource("11_541lb")
 
@@ -222,7 +225,9 @@ theme_override_colors/font_color = Color(1, 0.928333, 0.57, 1)
 theme_override_font_sizes/font_size = 26
 text = "This action cannot be undone!"
 
-[node name="Camera" parent="." instance=ExtResource("13_rmp56")]
-visible = false
-
+[connection signal="item_selected" from="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" to="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_item_selected"]
+[connection signal="button_down" from="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" to="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" method="_on_button_down"]
+[connection signal="dragging_ended" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_ended"]
+[connection signal="dragging_started" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_started"]
+[connection signal="selection_ended" from="MouseSelection" to="Grid/PartGrouping" method="_on_mouse_selection_selection_ended"]
 [connection signal="confirmed" from="RenameFleetPopup" to="RenameFleetPopup" method="_on_confirmed"]

@@ -5,35 +5,25 @@ extends PanelContainer
 @onready var design_button = $MarginContainer/GridContainer/DesignButton
 @onready var menu_button = $MarginContainer/GridContainer/MenuButton
 @onready var chat = $"../Chat"
-@onready var stateManager = $"../../state_manager"
-
+@onready var state_manager = $"../../StateManager"
 
 func _ready():
 	chat_button.pressed.connect(chat_button_pressed)
 	battle_button.pressed.connect(battle_button_pressed)
 	design_button.pressed.connect(design_button_pressed)
 	menu_button.pressed.connect(menu_button_pressed)
-	pass # Replace with function body.
 
-
-		
 func menu_button_pressed():
-	stateManager.change_ui_state(stateManager.MAIN_MENU)
-	stateManager.change_state(stateManager.BACKGROUND)
+	state_manager.ui = state_manager.UI.MAIN_MENU
+	state_manager.state = state_manager.State.NONE
 
 func chat_button_pressed():
 	chat.visible = not chat.visible
 
-
 func battle_button_pressed():
-	stateManager.change_state(stateManager.BATTLE)
-
-
+	state_manager.state = state_manager.State.BATTLE
+	state_manager.ui = state_manager.UI.NAVBAR
 
 func design_button_pressed():
-	stateManager.change_state(stateManager.DESIGN)
-	print("design_button")
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
+	state_manager.state = state_manager.State.DESIGN
+	state_manager.ui = state_manager.UI.NAVBAR

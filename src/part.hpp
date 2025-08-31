@@ -30,8 +30,9 @@ public:
 
    Part();
    bool is_flipped() const;
-   PartData::Rotation get_rotation_state() const;
+   PartData::Orientation get_orientation() const;
    Rect2 get_rect() const;
+   Rect2i get_grid_rect() const;
    Ref<PartData> get_data() const;
    virtual InitStatus _ship_init(const Ship& _parent_ship, int _part_id);
 protected:
@@ -41,6 +42,8 @@ private:
    NEVER_NULL Ref<RectangleShape2D> hitbox = memnew(RectangleShape2D);
 	NEVER_NULL SAFE_PTR ResizableSprite2D* image = memnew(ResizableSprite2D);
    NEVER_NULL SAFE_PTR CollisionShape2D* collider = memnew(CollisionShape2D);
+
+   double get_true_rotation(bool flipped) const;
 };
 
 
@@ -50,29 +53,21 @@ public:
    static constexpr int CLOCKWISE = 1;
    static constexpr int COUNTER_CLOCKWISE = -1;
 
-   PartGrouping* clone() const;
-   bool is_dragging() const;
    bool contains_mouse() const;
+   void resize(Vector2 new_size);
    void flip_parts();
-   void rotate_parts(int quarter_turns, float duration = 0.15);
+   void rotate_parts(int quarter_turns, float duration);
    void clear_parts();
    void delete_parts();
-   bool spawn_part(Ref<PartData> part_data);
+   bool spawn_part_at(Vector2 position, Ref<PartData> part_data);
+   bool spawn_part_at_mouse(Ref<PartData> part_data);
    void select_parts(TypedArray<Node2D> selection, Rect2 region);
    void snap_to_grid();
-   void _input(const Ref<InputEvent>& event) override;
-   void _process(double _dt) override;
 protected:
    static void _bind_methods();
 private:
-   const Vector2 TEXTURE_OFFSET = {0.0, 0.0};
    const Vector2 GRID_SQUARE = {PartData::PX_PER_GRID_SQUARE, PartData::PX_PER_GRID_SQUARE};
 
-   bool dragging = false;
-   Vector2 mouse_offset = {0.0, 0.0};
-
-   void stop_dragging();
-   void begin_dragging();
    void add_part(Part* part);
    Vector2 grid_snap_floor(Vector2 xy);
    Vector2 grid_snap_ceil(Vector2 xy);

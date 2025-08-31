@@ -9,7 +9,7 @@ Projectile* Projectile::create_from(Ref<ProjectileData> data) {
    projectile->data = data;
    projectile->hp = data->get_hp();
    projectile->set_texture( data->get_texture() );
-   projectile->hitbox->set_size( PartData::to_world_vec(data->get_size()) );
+   projectile->hitbox->set_size( data->get_size_px() );
 
    return projectile;
 }
@@ -36,7 +36,7 @@ void Projectile::set_lifespan_sec(double new_lifespan_sec) {
 }
 void Projectile::set_safe_scale(double new_safe_scale) {
    safe_scale = new_safe_scale;
-   Vector2 size = PartData::to_world_vec(data->get_size());
+   Vector2 size = data->get_size_px();
    resize_image(size * safe_scale);
    hitbox->set_size(size * safe_scale);
 }
