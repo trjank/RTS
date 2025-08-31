@@ -3,8 +3,6 @@
 using namespace godot;
 
 MouseSelection::MouseSelection() {
-   CollisionShape2D* collision_shape = memnew(CollisionShape2D);
-
    collision_shape->set_shape(shape);
    add_child(collision_shape, false, INTERNAL_MODE_FRONT);
 }
@@ -20,18 +18,31 @@ Color MouseSelection::get_color() const {
 Rect2 MouseSelection::get_region() const {
    return region.abs();
 }
+String MouseSelection::get_action() const {
+   return action;
+}
 TypedArray<Node2D> MouseSelection::get_selected() {
    return selected;
 }
 void MouseSelection::set_enabled(bool enable) {
    enabled = enable;
+
    if ( !enable) stop_selection();
 }
 void MouseSelection::set_color(Color new_color) {
    color = new_color;
 }
+void MouseSelection::set_action(String new_action) {
+   action = new_action;
+}
 void MouseSelection::_draw() {
    draw_rect(shape->get_rect(), color);
+}
+void MouseSelection::_unhandled_input(const Ref<InputEvent>& event) {
+   if ( !enabled || !InputMap::get_singleton()->has_action(action)) return;
+
+   if (event->is_action_pressed(action)) begin_selection();
+   if (event->is_action_released(action) && selecting) finish_selection();
 }
 void MouseSelection::_process(double _dt) {
    if ( !enabled || !selecting) return;
@@ -39,14 +50,6 @@ void MouseSelection::_process(double _dt) {
    region.set_end( get_global_mouse_position() );
    set_global_position( region.get_center() );
    resize_hitbox();
-}
-void MouseSelection::_unhandled_input(const Ref<InputEvent>& event) {
-   if ( !enabled) return;
-
-   if (event->is_action_pressed("select"))
-      begin_selection();
-   if (event->is_action_released("select") && selecting)
-      finish_selection();
 }
 void MouseSelection::resize_hitbox() {
    shape->set_size( region.size.abs() );
@@ -70,6 +73,7 @@ void MouseSelection::stop_selection() {
 }
 void MouseSelection::finish_selection() {
    Rect2 final_region = region.abs();
+
    selected = get_overlapping_bodies();
    stop_selection();
    emit_signal("selection_ended", selected, final_region);

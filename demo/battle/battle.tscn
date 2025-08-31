@@ -168,6 +168,7 @@ z_index = 5
 script = ExtResource("1_777ku")
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
+action = "select"
 
 [node name="Line2D" type="Line2D" parent="."]
 self_modulate = Color(10, 10, 10, 1)

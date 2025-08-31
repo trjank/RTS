@@ -96,6 +96,8 @@ public:
    void _ready() override;
 protected:
    static void _bind_methods();
+
+   ResizableSprite2D* image;
 private:
    static constexpr int NUM_SEGMENTS = 100;
    static constexpr double THICKNESS = 10.0;
@@ -109,7 +111,6 @@ private:
    double capture_progress = 0.0;
    Area2D* capture_zone;
    Label* label;
-   ResizableSprite2D* image;
    Ref<CircleShape2D> hitbox;
    Ref<Team> contestor;
    Ref<Team> owner;

@@ -18,7 +18,7 @@ static func rotate_image(image: Image, orientation: PartData.Orientation)->Image
 	
 
 static func build_image(ship: ShipData)->void:
-	var size  := ship.get_grid_region().size
+	var size  := ship.get_grid_rect().size
 	var image := Image.create(size.x, size.y, true, Image.FORMAT_RGBA8)
 	for n in range(ship.count_parts()):
 		var id := 1 + n

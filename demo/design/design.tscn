@@ -327,6 +327,7 @@ unique_name_in_owner = true
 texture = ExtResource("14_qg3uy")
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
+action = "select"
 z_index = 1
 script = ExtResource("11_541lb")
 

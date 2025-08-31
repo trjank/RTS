@@ -124,11 +124,14 @@ void MouseSelection::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_selecting"), &MouseSelection::is_enabled);
 	ClassDB::bind_method(D_METHOD("get_color"), &MouseSelection::get_color);
 	ClassDB::bind_method(D_METHOD("get_region"), &MouseSelection::get_region);
+	ClassDB::bind_method(D_METHOD("get_action"), &MouseSelection::get_action);
 	ClassDB::bind_method(D_METHOD("get_selected"), &MouseSelection::get_selected);
 	ClassDB::bind_method(D_METHOD("set_enabled", "enable"), &MouseSelection::set_enabled);
 	ClassDB::bind_method(D_METHOD("set_color", "new_color"), &MouseSelection::set_color);
+	ClassDB::bind_method(D_METHOD("set_action", "new_action"), &MouseSelection::set_action);
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enabled"), "set_enabled", "is_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "action"), "set_action", "get_action");
 	ADD_SIGNAL(MethodInfo("selection_started"));
 	ADD_SIGNAL(MethodInfo("selection_ended", PropertyInfo(Variant::ARRAY, "selected"), PropertyInfo(Variant::RECT2, "region")));
 }

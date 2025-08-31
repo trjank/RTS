@@ -53,12 +53,13 @@ func _on_started()->void:
 		#ship.set_position(n * Vector2(500, 0))
 
 func make_map()->void:
+	Star.set_black_hole_shader(preload("res://shaders/black_hole.tres"))
 	System.set_default_texture(preload("res://images_planets_terrestrial/unloaded_celestial.tres"))
 	Orbit.set_time_scale(100)
 	
 	var sun := StarSystem.new()
 	sun.set_radius_range(750, 1000)
-	sun.set_mass_range(100, 200)
+	sun.set_mass_range(10000, 20000)
 	sun.names = ["Star"]
 	sun.textures = [preload("res://images_stars/blue.png")]
 	
