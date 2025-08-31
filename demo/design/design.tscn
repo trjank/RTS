@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://ogk3gdxrpgi4" path="res://icons/parts_container_background.png" id="7_1reeb"]
 [ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="7_5fbpj"]
 [ext_resource type="Theme" uid="uid://dgs1qnc6a3qos" path="res://design/dropdown_theme.tres" id="7_leno0"]
-[ext_resource type="PackedScene" uid="uid://x7hwc0lotf28" path="res://fleet_button.tscn" id="8_on51i"]
+[ext_resource type="PackedScene" uid="uid://x7hwc0lotf28" path="res://design/fleet_button.tscn" id="8_on51i"]
 [ext_resource type="Script" uid="uid://bwql2s2x712p1" path="res://design/OptionButton.gd" id="8_s4sq3"]
 [ext_resource type="Texture2D" uid="uid://b1q6iuiq8kne0" path="res://icons/mirror_mode_disabled.png" id="9_neots"]
 [ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/PartGrouping.gd" id="10_6vk6i"]

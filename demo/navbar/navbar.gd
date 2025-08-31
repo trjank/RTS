@@ -7,13 +7,11 @@ extends PanelContainer
 @onready var chat = $"../Chat"
 @onready var state_manager = $"../../StateManager"
 
-
 func _ready():
 	chat_button.pressed.connect(chat_button_pressed)
 	battle_button.pressed.connect(battle_button_pressed)
 	design_button.pressed.connect(design_button_pressed)
 	menu_button.pressed.connect(menu_button_pressed)
-	pass # Replace with function body.
 
 func menu_button_pressed():
 	state_manager.ui = state_manager.UI.MAIN_MENU
@@ -29,4 +27,3 @@ func battle_button_pressed():
 func design_button_pressed():
 	state_manager.state = state_manager.State.DESIGN
 	state_manager.ui = state_manager.UI.NAVBAR
-	print("design_button")

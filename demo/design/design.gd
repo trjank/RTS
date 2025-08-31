@@ -11,7 +11,7 @@ extends Node2D
 @onready var grid = %Grid
 @onready var ship_buttons = %ship_buttons
 @onready var manager := JSONPartManager.new()
-@onready var ship_button = preload("res://fleet_button.tscn")
+@onready var ship_button = preload("res://design/fleet_button.tscn")
 @onready var testsprite = %test
 const UNSAVED_SHIP_ID = -1
 const UNSAVED_SHIP_NAME = "Untitled"
