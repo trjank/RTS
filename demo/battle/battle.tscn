@@ -1,11 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://c8r8u7e7qkegq"]
+[gd_scene load_steps=10 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" uid="uid://bxcl1ara5ks5e" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" path="res://battle/UnitFormation.gd" id="1_777ku"]
 [ext_resource type="PackedScene" uid="uid://j7rna5tdvxk4" path="res://camera.tscn" id="2_4mnim"]
-[ext_resource type="Texture2D" uid="uid://bh387tcvwbx50" path="res://images_backgrounds/background.png" id="3_l1kiu"]
-[ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://stardust_theme.tres" id="4_l1kiu"]
-[ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="5_7fucf"]
+[ext_resource type="Texture2D" uid="uid://bh387tcvwbx50" path="res://images_backgrounds/background.png" id="3_4mnim"]
 [ext_resource type="Texture2D" uid="uid://lomxdpkneo5n" path="res://icons/unit_path.png" id="6_a3aav"]
 
 [sub_resource type="Environment" id="Environment_lh35d"]
@@ -16,10 +14,6 @@ glow_strength = 0.57
 glow_blend_mode = 1
 glow_hdr_threshold = 2.0
 glow_hdr_luminance_cap = 20.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_iorop"]
-shader = ExtResource("5_7fucf")
-shader_parameter/sigma = 5.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_to5dj"]
 border_width_left = 3
@@ -37,9 +31,11 @@ colors = PackedColorArray(0.301961, 0.301961, 0.301961, 0.313726, 0.364706, 0.36
 gradient = SubResource("Gradient_lt5l7")
 fill_to = Vector2(1, 1)
 
-[node name="Battle" type="Battle" node_paths=PackedStringArray("overlay")]
+[node name="Battle" type="Battle" node_paths=PackedStringArray("countdown_timer", "round_timer", "overlay")]
 seed = -1909400080011345178
 script = ExtResource("1_2ostc")
+countdown_timer = NodePath("CountdownTimer")
+round_timer = NodePath("RoundTimer")
 overlay = NodePath("UI")
 
 [node name="Camera" parent="." instance=ExtResource("2_4mnim")]
@@ -56,19 +52,6 @@ one_shot = true
 [node name="Background" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="blur" type="CanvasLayer" parent="Background"]
-unique_name_in_owner = true
-visible = false
-
-[node name="blur" type="Panel" parent="Background/blur"]
-visible = false
-material = SubResource("ShaderMaterial_iorop")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
 [node name="TextureRect" type="TextureRect" parent="Background"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -77,7 +60,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-texture = ExtResource("3_l1kiu")
+texture = ExtResource("3_4mnim")
 expand_mode = 3
 stretch_mode = 6
 
@@ -112,7 +95,6 @@ theme_override_constants/margin_bottom = 20
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 35.0
-theme = ExtResource("4_l1kiu")
 
 [node name="Control" type="Control" parent="UI/HBoxContainer"]
 layout_mode = 2

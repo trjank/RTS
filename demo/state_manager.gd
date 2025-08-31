@@ -48,7 +48,7 @@ func change_new_state(new_state):
 			battle.show()
 			state = BATTLE
 		DESIGN:
-			change_new_ui_state(NAVBAR)
+			#change_new_ui_state(NAVBAR)
 			$"..".add_child(design)
 			state = DESIGN
 		_:

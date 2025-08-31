@@ -6,16 +6,16 @@ extends Battle
 @onready var statemanager = $"../state_manager"
 @onready var menubutton = %MenuButton 
 @onready var designbutton = %DesignButton
-@onready var blur = %blur
+#@onready var blur = %blur
 var client: Player
 var ship_manager := ShipManager.new()
 
 func hide_overlay()->void:
-	blur.show()
+#	blur.show()
 	overlay.hide()
 
 func show_overlay()->void:
-	blur.hide()
+#	blur.hide()
 	overlay.show()
 
 func create_warp_trail(from: Vector2, to: Vector2)->void:

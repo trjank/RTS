@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dfjm11tydfbwt"]
+[gd_scene load_steps=26 format=3 uid="uid://dfjm11tydfbwt"]
 
 [ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://stardust_theme.tres" id="1_0c2qi"]
 [ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="1_tdel1"]
@@ -25,14 +25,23 @@ shader = ExtResource("1_tdel1")
 shader_parameter/sigma = 3.3
 
 [sub_resource type="Gradient" id="Gradient_g5m8g"]
-offsets = PackedFloat32Array(0, 0.974138, 1)
-colors = PackedColorArray(0.0980392, 0.196078, 0.235294, 0.980392, 0.0980392, 0.196078, 0.235294, 0.785565, 0.0980392, 0.196078, 0.235294, 0.780392)
+colors = PackedColorArray(0, 0, 0, 0.980392, 0, 0, 0, 0.494118)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_0c2qi"]
 gradient = SubResource("Gradient_g5m8g")
+fill_to = Vector2(0.995726, 0)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tdel1"]
 texture = SubResource("GradientTexture2D_0c2qi")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0c2qi"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0c2qi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tdel1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wa60n"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epnfi"]
 content_margin_left = 20.0
@@ -55,6 +64,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_g5m8g")
 script = ExtResource("2_xb30u")
 
 [node name="blur" type="Panel" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_0c2qi")
 layout_mode = 2
 
@@ -67,7 +77,9 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_tdel1")
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+use_parent_material = true
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0c2qi")
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer/PanelContainer"]
 custom_minimum_size = Vector2(0, 100)
@@ -80,6 +92,7 @@ script = ExtResource("3_g5m8g")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0c2qi")
 icon = ExtResource("4_l0dbo")
 icon_alignment = 1
 
@@ -87,6 +100,7 @@ icon_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tdel1")
 icon = ExtResource("6_okk5v")
 icon_alignment = 1
 
@@ -94,6 +108,7 @@ icon_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wa60n")
 icon = ExtResource("5_rmcst")
 icon_alignment = 1
 

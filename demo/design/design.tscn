@@ -1,20 +1,32 @@
-[gd_scene load_steps=15 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=17 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="PackedScene" uid="uid://hi3bwlaeckb5" path="res://design/fleet_container.tscn" id="2_bjdq3"]
+[ext_resource type="Shader" uid="uid://baekawl1v8f2g" path="res://design/grid/grid.gdshader" id="8_bjdq3"]
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/partslist/parts_container.tscn" id="9_3c8mw"]
-[ext_resource type="PackedScene" uid="uid://up3bgite3mbq" path="res://grid_box.tscn" id="9_6gxgq"]
-[ext_resource type="Script" path="res://design/PartGrouping.gd" id="10_6vk6i"]
+[ext_resource type="Script" uid="uid://bhgc5agngbyp0" path="res://design/panel.gd" id="9_6gxgq"]
+[ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/PartGrouping.gd" id="10_6vk6i"]
 [ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="Shader" uid="uid://ci2cowlt3xued" path="res://design/grid.tres" id="11_licix"]
+[ext_resource type="PackedScene" uid="uid://j7rna5tdvxk4" path="res://camera.tscn" id="13_rmp56"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="14_qg3uy"]
-[ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://icons/grid_background_5x5.png" id="15_ha1ne"]
 [ext_resource type="Texture2D" uid="uid://cvcfx8expolen" path="res://icons/parts_selection_background.png" id="17_qupps"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="18_01mpa"]
 [ext_resource type="Script" uid="uid://bpptswrvnl6dk" path="res://design/popups/RenameFleetPopup.gd" id="19_ract4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_licix"]
 shader = ExtResource("11_licix")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6gxgq"]
+shader = ExtResource("8_bjdq3")
+shader_parameter/grid = 32.0
+shader_parameter/big_grid_size = 288.0
+shader_parameter/line_color = Color(0, 0.435294, 0.435294, 0)
+shader_parameter/big_line_color = Color(0, 0.635294, 0.635294, 0)
+shader_parameter/panel_color = Color(1, 1, 1, 0.0196078)
+shader_parameter/thickness = 2.0
+shader_parameter/padding = 3.0
+shader_parameter/mouse_pos = Vector2(0, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkia0"]
 content_margin_left = 20.0
@@ -50,7 +62,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_top = 90
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/margin"]
 clip_contents = true
@@ -68,6 +79,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="spacer" type="MarginContainer" parent="UI/margin/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -93,25 +105,18 @@ mirror_axis = NodePath("../MirrorAxis")
 visible = false
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
-default_color = Color(0.0666667, 0.176471, 0.337255, 1)
 
 [node name="test" type="Sprite2D" parent="UI/margin/HBoxContainer/Grid"]
 unique_name_in_owner = true
 visible = false
 texture = ExtResource("14_qg3uy")
 
-[node name="TextureRect" type="TextureRect" parent="UI/margin/HBoxContainer/Grid"]
-visible = false
-layout_mode = 2
-texture = ExtResource("15_ha1ne")
-stretch_mode = 1
-
 [node name="Panel" type="Panel" parent="UI/margin/HBoxContainer/Grid"]
+material = SubResource("ShaderMaterial_6gxgq")
+custom_minimum_size = Vector2(640, 640)
 layout_mode = 2
-
-[node name="Control" parent="UI/margin/HBoxContainer/Grid" instance=ExtResource("9_6gxgq")]
-visible = false
-layout_mode = 2
+mouse_filter = 2
+script = ExtResource("9_6gxgq")
 
 [node name="CenterContainer" type="CenterContainer" parent="UI/margin/HBoxContainer"]
 visible = false
@@ -119,6 +124,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="spacer2" type="MarginContainer" parent="UI/margin/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -215,5 +221,8 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.928333, 0.57, 1)
 theme_override_font_sizes/font_size = 26
 text = "This action cannot be undone!"
+
+[node name="Camera" parent="." instance=ExtResource("13_rmp56")]
+visible = false
 
 [connection signal="confirmed" from="RenameFleetPopup" to="RenameFleetPopup" method="_on_confirmed"]

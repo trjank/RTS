@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://up3bgite3mbq"]
+[gd_scene load_steps=0 format=3 uid="uid://up3bgite3mbq"]
 
 [node name="Node2D" type="Panel"]
 anchors_preset = 15
