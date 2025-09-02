@@ -367,6 +367,8 @@ void Part::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_data"), &Part::get_data);
 	ClassDB::bind_method(D_METHOD("get_rect"), &Part::get_rect);
 	ClassDB::bind_method(D_METHOD("get_orientation"), &Part::get_orientation);
+	ClassDB::bind_method(D_METHOD("set_orientation", "new_orientation"), &Part::set_orientation);
+	ClassDB::bind_method(D_METHOD("snap_to_grid"), &Part::snap_to_grid);
 }
 void PartGrouping::_bind_methods() {
 	BIND_CONSTANT(CLOCKWISE);

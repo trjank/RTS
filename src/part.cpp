@@ -48,6 +48,17 @@ PartData::Orientation Part::get_orientation() const {
 
 	return PartData::to_orientation(theta / PI_2, flipped);
 }
+void Part::set_orientation(PartData::Orientation new_orientation) {
+	Vector2 scale = get_scale();
+	scale.x = Math::abs(scale.x);
+	scale.x = PartData::is_flipped(new_orientation) ? -scale.x : scale.x;
+	set_scale(scale);
+	set_rotation(PartData::get_rotation(new_orientation) * PI_2);
+}
+void Part::snap_to_grid() {
+	const Vector2 GRID_SQUARE_SIZE = PartData::PX_PER_GRID_SQUARE * Vector2(1.0, 1.0);
+	set_position( get_position().snapped(GRID_SQUARE_SIZE) );
+}
 Ref<PartData> Part::get_data() const {
 	return data;
 }

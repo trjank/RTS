@@ -88,6 +88,7 @@ protected:
 private:
    struct PackedPart;
 
+   int _id = -1;
    int cost = 0;
    double mass = 0.0;
    double warp_per_sec = 0.0;

@@ -27,4 +27,4 @@ static func build_image(ship: ShipData)->void:
 		var pimage := rotate_image(part.get_image(), ship.get_part_orientation(id))
 		image.blit_rect(pimage, Rect2i(0, 0, rect.size.x, rect.size.y), rect.position)
 	ship.set_image(image)
-	image.save_png("res://TEST_IMAGE.png")
+	#image.save_png("res://TEST_IMAGE.png")

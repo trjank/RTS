@@ -34,6 +34,8 @@ public:
    Rect2 get_rect() const;
    Rect2i get_grid_rect() const;
    Ref<PartData> get_data() const;
+   void set_orientation(PartData::Orientation new_orientation);
+   void snap_to_grid();
    virtual InitStatus _ship_init(const Ship& _parent_ship, int _part_id);
 protected:
    static void _bind_methods();

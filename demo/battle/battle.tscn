@@ -1,11 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://c8r8u7e7qkegq"]
+[gd_scene load_steps=10 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" uid="uid://bxcl1ara5ks5e" path="res://battle/battle.gd" id="1_2ostc"]
 [ext_resource type="Script" uid="uid://ccfbcyt2y8th7" path="res://battle/UnitFormation.gd" id="1_777ku"]
 [ext_resource type="PackedScene" uid="uid://p3nnscobw38k" path="res://camera.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="3_4mnim"]
 [ext_resource type="Script" uid="uid://djhuy3av2b5qd" path="res://CanvasLayerToggle.gd" id="4_l1kiu"]
-[ext_resource type="Texture2D" uid="uid://lomxdpkneo5n" path="res://icons/unit_path.png" id="6_a3aav"]
 
 [sub_resource type="Environment" id="Environment_lh35d"]
 background_mode = 3
@@ -175,18 +174,6 @@ self_modulate = Color(10, 10, 10, 1)
 points = PackedVector2Array(338, 1924, -2003, 889)
 width = 50.0
 default_color = Color(1, 0.525804, 0.323341, 1)
-begin_cap_mode = 2
-end_cap_mode = 2
-
-[node name="Line2D2" type="Line2D" parent="."]
-self_modulate = Color(10, 10, 10, 1)
-texture_repeat = 2
-position = Vector2(-116, 855)
-points = PackedVector2Array(338, 1924, -2003, 889)
-width = 100.0
-default_color = Color(0, 0.819608, 0.109804, 1)
-texture = ExtResource("6_a3aav")
-texture_mode = 1
 begin_cap_mode = 2
 end_cap_mode = 2
 
