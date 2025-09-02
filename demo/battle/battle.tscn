@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://battle/UnitFormation.gd" id="1_777ku"]
 [ext_resource type="PackedScene" uid="uid://p3nnscobw38k" path="res://camera.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="3_4mnim"]
-[ext_resource type="Script" uid="uid://djhuy3av2b5qd" path="res://CanvasLayerToggle.gd" id="4_l1kiu"]
+[ext_resource type="Script" path="res://CanvasLayerToggle.gd" id="4_l1kiu"]
 
 [sub_resource type="Environment" id="Environment_lh35d"]
 background_mode = 3

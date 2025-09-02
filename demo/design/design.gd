@@ -138,8 +138,8 @@ func set_ships(ships):
 func setup_part_buttons():
 	parts_manager.load_json("user://part_data.json")
 	PartButton.part_container = part_grouping
-	for atlas_id in range(1, manager.count_parts()):
-		var part := manager.lookup_id(atlas_id)
+	for atlas_id in range(1, parts_manager.count_parts()):
+		var part := parts_manager.lookup_id(atlas_id)
 		var tab := part.get_tab()
 		var part_display := PartButton.new()
 		part_display.part_data = part
@@ -171,8 +171,8 @@ func _ready():
 	ship_db.part_manager = parts_manager
 	#setup global db connection?
 	#resize(Vector2(64, 64))
-	var ships = db.get_ships_in_fleet(current_fleet)
-	print(ships)
+	#var ships = db.get_ships_in_fleet(current_fleet)
+	#print(ships)
 	#create_ship_buttons()
 	setup_part_buttons()
 	#setup_fleet_buttons()
