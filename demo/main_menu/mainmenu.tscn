@@ -1,13 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://8b0xosmrmilb"]
+[gd_scene load_steps=8 format=3 uid="uid://8b0xosmrmilb"]
 
 [ext_resource type="Shader" uid="uid://bnkcup81amd5o" path="res://main_menu/mainmenu.tres" id="1_7xuea"]
 [ext_resource type="Script" uid="uid://cntd7j0332jl" path="res://main_menu/mainmenu.gd" id="1_odr8w"]
+[ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://stardust_theme.tres" id="2_fs5a5"]
+[ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="4_qfadr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3m7f1"]
 shader = ExtResource("1_7xuea")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_itpeu"]
+shader = ExtResource("4_qfadr")
+shader_parameter/sigma = 3.3
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yeq3j"]
-bg_color = Color(0.0862745, 0.0862745, 0.0862745, 0)
+bg_color = Color(0, 0, 0, 0.556863)
 
 [node name="mainmenu" type="Control"]
 material = SubResource("ShaderMaterial_3m7f1")
@@ -21,8 +27,19 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme = ExtResource("2_fs5a5")
 script = ExtResource("1_odr8w")
 metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_itpeu")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1

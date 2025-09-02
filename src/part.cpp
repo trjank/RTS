@@ -1,5 +1,4 @@
 #include "part.hpp"
-
 using namespace godot;
 
 constexpr double PI_2 = 0.5 * Math_PI;

@@ -1,83 +1,32 @@
-[gd_scene load_steps=36 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=17 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
-[ext_resource type="PackedScene" uid="uid://p3nnscobw38k" path="res://camera.tscn" id="2_3qscj"]
-[ext_resource type="Script" uid="uid://djhuy3av2b5qd" path="res://CanvasLayerToggle.gd" id="2_cg3po"]
-[ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/dropdown.tres" id="2_wxr8y"]
-[ext_resource type="Script" uid="uid://daw7vfno8mvqr" path="res://design/fleet_selector.gd" id="4_nwsnp"]
-[ext_resource type="Texture2D" uid="uid://blwjohdbu8pgf" path="res://icons/fleet_rename.png" id="5_8hx7x"]
-[ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="5_q73th"]
-[ext_resource type="Texture2D" uid="uid://inbrq5b8ia5x" path="res://icons/fleet_delete.png" id="5_tfe8n"]
-[ext_resource type="Texture2D" uid="uid://wq8ei1nlxqqq" path="res://icons/fleet_new.png" id="5_tiyvg"]
-[ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="6_0y3e0"]
-[ext_resource type="Texture2D" uid="uid://ogk3gdxrpgi4" path="res://icons/parts_container_background.png" id="7_1reeb"]
-[ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="7_5fbpj"]
-[ext_resource type="Theme" uid="uid://dgs1qnc6a3qos" path="res://design/dropdown_theme.tres" id="7_leno0"]
-[ext_resource type="PackedScene" uid="uid://x7hwc0lotf28" path="res://design/fleet_button.tscn" id="8_on51i"]
-[ext_resource type="Script" uid="uid://bwql2s2x712p1" path="res://design/OptionButton.gd" id="8_s4sq3"]
-[ext_resource type="Texture2D" uid="uid://b1q6iuiq8kne0" path="res://icons/mirror_mode_disabled.png" id="9_neots"]
+[ext_resource type="Script" path="res://CanvasLayerToggle.gd" id="2_r41aq"]
+[ext_resource type="Shader" uid="uid://baekawl1v8f2g" path="res://design/grid/grid.gdshader" id="8_bjdq3"]
+[ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/partslist/parts_container.tscn" id="9_3c8mw"]
+[ext_resource type="Script" uid="uid://bhgc5agngbyp0" path="res://design/panel.gd" id="9_6gxgq"]
 [ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/PartGrouping.gd" id="10_6vk6i"]
-[ext_resource type="Script" uid="uid://d2oq7xnbcuews" path="res://design/MirrorButton.gd" id="10_u7s8c"]
-[ext_resource type="Script" uid="uid://0peykvq70p5b" path="res://design/MouseSelection.gd" id="11_541lb"]
+[ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="Shader" uid="uid://ci2cowlt3xued" path="res://design/grid.tres" id="11_licix"]
-[ext_resource type="Texture2D" uid="uid://dx6fdu1yy0fot" path="res://icons/dropdown.png" id="12_bggdi"]
+[ext_resource type="PackedScene" uid="uid://p3nnscobw38k" path="res://camera.tscn" id="13_rmp56"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="14_qg3uy"]
-[ext_resource type="Texture2D" uid="uid://dqkpq60d41ed6" path="res://icons/grid_background_5x5.png" id="15_ha1ne"]
 [ext_resource type="Texture2D" uid="uid://cvcfx8expolen" path="res://icons/parts_selection_background.png" id="17_qupps"]
-[ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popup_menu.tres" id="18_01mpa"]
-[ext_resource type="Script" uid="uid://bpptswrvnl6dk" path="res://design/RenameFleetPopup.gd" id="19_ract4"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bomom"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-bg_color = Color(0.262745, 0.305882, 0.368627, 0.392157)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o6k85"]
-content_margin_left = 40.0
-content_margin_top = 20.0
-content_margin_right = 40.0
-content_margin_bottom = 20.0
-bg_color = Color(0.261579, 0.30508, 0.367227, 1)
-border_color = Color(1, 0.678431, 0.984314, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jti52"]
-content_margin_left = 20.0
-content_margin_top = 15.0
-content_margin_right = 60.0
-content_margin_bottom = 15.0
-bg_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w8n0p"]
-texture = ExtResource("7_1reeb")
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yh7po"]
-content_margin_left = 40.0
-content_margin_top = 20.0
-content_margin_right = 40.0
-content_margin_bottom = 20.0
-bg_color = Color(0.928977, 0.659506, 0.460741, 1)
-border_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epnfi"]
-content_margin_left = 20.0
-content_margin_top = 15.0
-content_margin_right = 15.0
-content_margin_bottom = 15.0
-bg_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f44sc"]
-bg_color = Color(1, 1, 1, 0)
+[ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="18_01mpa"]
+[ext_resource type="Script" uid="uid://bpptswrvnl6dk" path="res://design/popups/RenameFleetPopup.gd" id="19_ract4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_licix"]
 shader = ExtResource("11_licix")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6gxgq"]
+shader = ExtResource("8_bjdq3")
+shader_parameter/grid = 32.0
+shader_parameter/big_grid_size = 288.0
+shader_parameter/line_color = Color(0, 0.435294, 0.435294, 0)
+shader_parameter/big_line_color = Color(0, 0.635294, 0.635294, 0)
+shader_parameter/panel_color = Color(1, 1, 1, 0.0196078)
+shader_parameter/thickness = 2.0
+shader_parameter/padding = 3.0
+shader_parameter/mouse_pos = Vector2(0, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkia0"]
 content_margin_left = 20.0
@@ -90,17 +39,23 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[node name="Design" type="Node2D" node_paths=PackedStringArray("container", "part_grouping", "mirror_axis")]
+[node name="Design" type="Node2D" node_paths=PackedStringArray("overlay", "part_grouping", "mirror_axis")]
 script = ExtResource("1_wctwy")
-container = NodePath("UI/margin/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer")
-part_grouping = NodePath("Grid/PartGrouping")
-mirror_axis = NodePath("Grid/MirrorAxis")
+overlay = NodePath("UI")
+part_grouping = NodePath("UI/margin/HBoxContainer/Grid/PartGrouping")
+mirror_axis = NodePath("UI/margin/HBoxContainer/Grid/MirrorAxis")
 metadata/_edit_vertical_guides_ = [136.0]
 
-[node name="Camera" parent="." instance=ExtResource("2_3qscj")]
-
 [node name="UI" type="CanvasLayer" parent="."]
-script = ExtResource("2_cg3po")
+script = ExtResource("2_r41aq")
+
+[node name="background" type="Panel" parent="UI"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="margin" type="MarginContainer" parent="UI"]
 anchors_preset = 15
@@ -108,205 +63,27 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_top = 90
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/margin"]
+clip_contents = true
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="FleetContainer" type="PanelContainer" parent="UI/margin/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bomom")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/margin/HBoxContainer/FleetContainer"]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="UI/margin/HBoxContainer/FleetContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_o6k85")
-
-[node name="FleetDropdown" type="OptionButton" parent="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer" node_paths=PackedStringArray("rename_fleet_popup", "delete_fleet_popup")]
-unique_name_in_owner = true
-layout_mode = 2
-theme = ExtResource("7_leno0")
-theme_override_colors/font_hover_color = Color(1, 0.572419, 0.617748, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(1, 0.572549, 0.619608, 1)
-theme_override_constants/h_separation = 15
-theme_override_font_sizes/font_size = 28
-theme_override_styles/focus = ExtResource("2_wxr8y")
-theme_override_styles/hover = ExtResource("2_wxr8y")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_jti52")
-theme_override_styles/normal = ExtResource("2_wxr8y")
-theme_override_constants/arrow_margin = 15
-theme_override_icons/arrow = ExtResource("12_bggdi")
-selected = 3
-item_count = 5
-popup/item_0/text = "NEW FLEET"
-popup/item_0/icon = ExtResource("5_tiyvg")
-popup/item_0/id = 0
-popup/item_1/text = "RENAME FLEET"
-popup/item_1/icon = ExtResource("5_8hx7x")
-popup/item_1/id = 1
-popup/item_2/text = "DELETE FLEET"
-popup/item_2/icon = ExtResource("5_tfe8n")
-popup/item_2/id = 2
-popup/item_3/text = "Fleets"
-popup/item_3/id = 3
-popup/item_3/separator = true
-popup/item_4/id = 4
-script = ExtResource("4_nwsnp")
-rename_fleet_popup = NodePath("../../../../../../../RenameFleetPopup")
-delete_fleet_popup = NodePath("../../../../../../../DeleteFleetPopup")
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/margin/HBoxContainer/FleetContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/margin/HBoxContainer/FleetContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ship_buttons" type="VBoxContainer" parent="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/ScrollContainer"]
+[node name="PartsContainer" parent="UI/margin/HBoxContainer" instance=ExtResource("9_3c8mw")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
 
-[node name="MarginContainer" parent="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/ScrollContainer/ship_buttons" instance=ExtResource("8_on51i")]
-visible = false
-layout_mode = 2
-
-[node name="PartsContainer" type="PanelContainer" parent="UI/margin/HBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_w8n0p")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/margin/HBoxContainer/PartsContainer"]
-layout_mode = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_yh7po")
-
-[node name="CenterContainer" type="CenterContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer"]
-layout_mode = 2
-
-[node name="VFlowContainer" type="VFlowContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 25
-
-[node name="Label" type="Label" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 28
-text = "Parts"
-vertical_alignment = 1
-
-[node name="OptionButton" type="OptionButton" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer" node_paths=PackedStringArray("part_tabs_container")]
-layout_mode = 2
-theme = ExtResource("7_leno0")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_constants/h_separation = 15
-theme_override_font_sizes/font_size = 28
-theme_override_styles/focus = ExtResource("2_wxr8y")
-theme_override_styles/hover = ExtResource("2_wxr8y")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_epnfi")
-theme_override_styles/normal = ExtResource("2_wxr8y")
-theme_override_constants/arrow_margin = 15
-theme_override_icons/arrow = ExtResource("12_bggdi")
-selected = 0
-item_count = 4
-popup/item_0/text = "Energy"
-popup/item_0/icon = ExtResource("5_q73th")
-popup/item_0/id = 0
-popup/item_1/text = "Armor"
-popup/item_1/icon = ExtResource("6_0y3e0")
-popup/item_1/id = 1
-popup/item_2/text = "Weapons"
-popup/item_2/icon = ExtResource("7_5fbpj")
-popup/item_2/id = 2
-popup/item_3/text = "Utility"
-popup/item_3/id = 3
-script = ExtResource("8_s4sq3")
-part_tabs_container = NodePath("../../../../MarginContainer/TabContainer")
-
-[node name="CenterContainer" type="CenterContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="MirrorButton" type="TextureButton" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer" node_paths=PackedStringArray("mirror_axis", "grid")]
-custom_minimum_size = Vector2(55, 55)
-layout_mode = 2
-texture_normal = ExtResource("9_neots")
-ignore_texture_size = true
-stretch_mode = 4
-script = ExtResource("10_u7s8c")
-mirror_axis = NodePath("../../../../../../../../../../Grid/MirrorAxis")
-grid = NodePath("../../../../../../../../../../Grid")
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="TabContainer" type="TabContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_f44sc")
-current_tab = 0
-tabs_visible = false
-
-[node name="Energy" type="FlowContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
-metadata/_tab_index = 0
-
-[node name="Armor" type="FlowContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer"]
-visible = false
-layout_mode = 2
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
-metadata/_tab_index = 1
-
-[node name="Weapons" type="FlowContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer"]
-visible = false
-layout_mode = 2
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
-metadata/_tab_index = 2
-
-[node name="Utility" type="FlowContainer" parent="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/MarginContainer/TabContainer"]
-visible = false
-layout_mode = 2
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
-metadata/_tab_index = 3
-
-[node name="CenterContainer" type="CenterContainer" parent="UI/margin/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Grid" type="Sprite2D" parent="."]
+[node name="Grid" type="MarginContainer" parent="UI/margin/HBoxContainer"]
 unique_name_in_owner = true
 texture_filter = 3
 texture_repeat = 2
 material = SubResource("ShaderMaterial_licix")
-position = Vector2(925, 90)
-texture = ExtResource("15_ha1ne")
-centered = false
-region_enabled = true
-region_rect = Rect2(2.08165e-12, 2.08165e-12, 256, 256)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 6.0
 
-[node name="PartGrouping" type="PartGrouping" parent="Grid" node_paths=PackedStringArray("mirror_axis", "mirror_button")]
+[node name="PartGrouping" type="PartGrouping" parent="UI/margin/HBoxContainer/Grid" node_paths=PackedStringArray("mirror_axis")]
 z_index = 1
 texture_filter = 1
 texture_repeat = 2
@@ -314,20 +91,25 @@ texture = ExtResource("17_qupps")
 region_enabled = true
 script = ExtResource("10_6vk6i")
 mirror_axis = NodePath("../MirrorAxis")
-mirror_button = NodePath("../../UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton")
 
-[node name="MirrorAxis" type="Line2D" parent="Grid"]
+[node name="MirrorAxis" type="Line2D" parent="UI/margin/HBoxContainer/Grid"]
 visible = false
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
-default_color = Color(0.0666667, 0.176471, 0.337255, 1)
 
-[node name="test" type="Sprite2D" parent="Grid"]
+[node name="test" type="Sprite2D" parent="UI/margin/HBoxContainer/Grid"]
 unique_name_in_owner = true
+visible = false
 texture = ExtResource("14_qg3uy")
 
+[node name="Panel" type="Panel" parent="UI/margin/HBoxContainer/Grid"]
+material = SubResource("ShaderMaterial_6gxgq")
+custom_minimum_size = Vector2(640, 640)
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("9_6gxgq")
+
 [node name="MouseSelection" type="MouseSelection" parent="."]
-action = "select"
 z_index = 1
 script = ExtResource("11_541lb")
 
@@ -418,11 +200,7 @@ theme_override_colors/font_color = Color(1, 0.928333, 0.57, 1)
 theme_override_font_sizes/font_size = 26
 text = "This action cannot be undone!"
 
-[connection signal="item_selected" from="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" to="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_item_selected"]
-[connection signal="button_down" from="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" to="UI/margin/HBoxContainer/PartsContainer/VBoxContainer/PanelContainer/CenterContainer/VFlowContainer/CenterContainer/MirrorButton" method="_on_button_down"]
-[connection signal="dragging_ended" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_ended"]
-[connection signal="dragging_started" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_started"]
-[connection signal="selection_ended" from="MouseSelection" to="Grid/PartGrouping" method="_on_mouse_selection_selection_ended"]
+[node name="Camera" parent="." instance=ExtResource("13_rmp56")]
+visible = false
+
 [connection signal="confirmed" from="RenameFleetPopup" to="RenameFleetPopup" method="_on_confirmed"]
-[connection signal="valid_rename" from="RenameFleetPopup" to="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_rename_fleet_popup_valid_rename"]
-[connection signal="confirmed" from="DeleteFleetPopup" to="UI/margin/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/FleetDropdown" method="_on_delete_fleet_popup_confirmed"]

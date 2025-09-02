@@ -5,7 +5,7 @@ extends Battle
 @onready var state_manager = $"../StateManager"
 @onready var menubutton = %MenuButton 
 @onready var designbutton = %DesignButton
-
+#@onready var blur = %blur
 var client: Player
 var part_manager := JSONPartManager.new()
 

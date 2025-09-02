@@ -1,0 +1,226 @@
+[gd_scene load_steps=26 format=3 uid="uid://dfjm11tydfbwt"]
+
+[ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://stardust_theme.tres" id="1_0c2qi"]
+[ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="1_tdel1"]
+[ext_resource type="Theme" uid="uid://dgs1qnc6a3qos" path="res://design/partslist/dropdown_theme.tres" id="2_8umgk"]
+[ext_resource type="Script" uid="uid://1ytf1odlubls" path="res://design/partslist/parts_container.gd" id="2_xb30u"]
+[ext_resource type="Script" uid="uid://d0o651bw7b0wf" path="res://design/partslist/tab_buttons.gd" id="3_g5m8g"]
+[ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/partslist/dropdown.tres" id="3_who0f"]
+[ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_l0dbo"]
+[ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="5_rmcst"]
+[ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="6_okk5v"]
+[ext_resource type="Script" path="res://design/OptionButton.gd" id="7_wtrov"]
+[ext_resource type="Texture2D" uid="uid://b1q6iuiq8kne0" path="res://icons/mirror_mode_disabled.png" id="8_xwbhh"]
+[ext_resource type="Script" uid="uid://d2oq7xnbcuews" path="res://design/partslist/MirrorButton.gd" id="9_mcgoo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wa60n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g5m8g"]
+bg_color = Color(1, 1, 1, 0.156863)
+draw_center = false
+shadow_size = 10
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0c2qi"]
+shader = ExtResource("1_tdel1")
+shader_parameter/sigma = 3.3
+
+[sub_resource type="Gradient" id="Gradient_g5m8g"]
+colors = PackedColorArray(0, 0, 0, 0.980392, 0, 0, 0, 0.494118)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0c2qi"]
+gradient = SubResource("Gradient_g5m8g")
+fill_to = Vector2(0.995726, 0)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tdel1"]
+texture = SubResource("GradientTexture2D_0c2qi")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0c2qi"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0c2qi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tdel1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wa60n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epnfi"]
+content_margin_left = 20.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgale"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f44sc"]
+bg_color = Color(1, 1, 1, 0)
+
+[node name="PartsContainer" type="PanelContainer"]
+material = SubResource("ShaderMaterial_wa60n")
+theme = ExtResource("1_0c2qi")
+theme_override_styles/panel = SubResource("StyleBoxFlat_g5m8g")
+script = ExtResource("2_xb30u")
+
+[node name="blur" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_0c2qi")
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="."]
+texture_repeat = 2
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_tdel1")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+use_parent_material = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0c2qi")
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_constants/h_separation = 0
+columns = 3
+script = ExtResource("3_g5m8g")
+
+[node name="Energy" type="Button" parent="VBoxContainer/PanelContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0c2qi")
+icon = ExtResource("4_l0dbo")
+icon_alignment = 1
+
+[node name="Weapons" type="Button" parent="VBoxContainer/PanelContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tdel1")
+icon = ExtResource("6_okk5v")
+icon_alignment = 1
+
+[node name="Armor" type="Button" parent="VBoxContainer/PanelContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wa60n")
+icon = ExtResource("5_rmcst")
+icon_alignment = 1
+
+[node name="VFlowContainer" type="VFlowContainer" parent="VBoxContainer/PanelContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 25
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/VFlowContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 28
+text = "Parts"
+vertical_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/PanelContainer/VFlowContainer" node_paths=PackedStringArray("part_tabs_container")]
+visible = false
+layout_mode = 2
+theme = ExtResource("2_8umgk")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/h_separation = 15
+theme_override_font_sizes/font_size = 28
+theme_override_styles/focus = ExtResource("3_who0f")
+theme_override_styles/hover = ExtResource("3_who0f")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_epnfi")
+theme_override_styles/normal = ExtResource("3_who0f")
+theme_override_constants/arrow_margin = 15
+theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
+selected = 0
+item_count = 4
+popup/item_0/text = "Energy"
+popup/item_0/icon = ExtResource("4_l0dbo")
+popup/item_0/id = 0
+popup/item_1/text = "Armor"
+popup/item_1/icon = ExtResource("5_rmcst")
+popup/item_1/id = 1
+popup/item_2/text = "Weapons"
+popup/item_2/icon = ExtResource("6_okk5v")
+popup/item_2/id = 2
+popup/item_3/text = "Utility"
+popup/item_3/id = 3
+script = ExtResource("7_wtrov")
+part_tabs_container = NodePath("../../../MarginContainer/ScrollContainer/part_tabs")
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/PanelContainer/VFlowContainer"]
+process_mode = 4
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MirrorButton" type="TextureButton" parent="VBoxContainer/PanelContainer/VFlowContainer/CenterContainer"]
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+texture_normal = ExtResource("8_xwbhh")
+ignore_texture_size = true
+stretch_mode = 4
+script = ExtResource("9_mcgoo")
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/PanelContainer"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="part_tabs" type="TabContainer" parent="VBoxContainer/MarginContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_f44sc")
+current_tab = 3
+tabs_visible = false
+
+[node name="Energy" type="GridContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/part_tabs"]
+visible = false
+layout_mode = 2
+columns = 3
+metadata/_tab_index = 0
+
+[node name="Armor" type="GridContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/part_tabs"]
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 3
+metadata/_tab_index = 1
+
+[node name="Weapons" type="GridContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/part_tabs"]
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 3
+metadata/_tab_index = 2
+
+[node name="Utility" type="FlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/part_tabs"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+metadata/_tab_index = 3
+
+[connection signal="button_down" from="VBoxContainer/PanelContainer/VFlowContainer/CenterContainer/MirrorButton" to="VBoxContainer/PanelContainer/VFlowContainer/CenterContainer/MirrorButton" method="_on_button_down"]

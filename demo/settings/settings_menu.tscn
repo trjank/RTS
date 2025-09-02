@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cxyn26sy7uyyr"]
+[gd_scene load_steps=5 format=3 uid="uid://cxyn26sy7uyyr"]
 
 [ext_resource type="Script" uid="uid://ocul6wdp2fmr" path="res://settings/settings_menu.gd" id="1_17m10"]
 [ext_resource type="PackedScene" uid="uid://bfjk4a5p0r345" path="res://settings/settings_panel.tscn" id="1_dq6we"]
+[ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://stardust_theme.tres" id="1_shoos"]
 [ext_resource type="PackedScene" uid="uid://bnnn7c40rsf6y" path="res://settings/keybinds_panel.tscn" id="1_u45p5"]
 
 [node name="settings_menu" type="Control"]
@@ -11,6 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_shoos")
 script = ExtResource("1_17m10")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

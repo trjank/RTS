@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://cvbms4kiiwwab"]
+
+[ext_resource type="Shader" uid="uid://bo2nmsxecpm5n" path="res://shaders/star_background.gdshader" id="1_wtcfe"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0e48y"]
+shader = ExtResource("1_wtcfe")
+shader_parameter/nebula_color = Vector3(0, 0, 0)
+shader_parameter/nebula_fade_color = Vector3(0, 0, 0)
+shader_parameter/nebula_var_color = Vector3(0, 0, 0)
+shader_parameter/darkness_density = 0.0
+shader_parameter/smoothing = 0.0
+shader_parameter/nebula_color_variation = 0.0
+
+[node name="Node2D" type="Panel"]
+material = SubResource("ShaderMaterial_0e48y")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

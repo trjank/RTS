@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://c8r8u7e7qkegq"]
 
 [ext_resource type="Script" uid="uid://bxcl1ara5ks5e" path="res://battle/battle.gd" id="1_2ostc"]
-[ext_resource type="Script" uid="uid://ccfbcyt2y8th7" path="res://battle/UnitFormation.gd" id="1_777ku"]
+[ext_resource type="Script" path="res://battle/UnitFormation.gd" id="1_777ku"]
 [ext_resource type="PackedScene" uid="uid://p3nnscobw38k" path="res://camera.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="3_4mnim"]
 [ext_resource type="Script" uid="uid://djhuy3av2b5qd" path="res://CanvasLayerToggle.gd" id="4_l1kiu"]
@@ -167,7 +167,6 @@ z_index = 5
 script = ExtResource("1_777ku")
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
-action = "select"
 
 [node name="Line2D" type="Line2D" parent="."]
 self_modulate = Color(10, 10, 10, 1)

@@ -1,0 +1,45 @@
+[gd_scene load_steps=10 format=3 uid="uid://bgx6pbxte11v8"]
+
+[ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main.gd" id="1_h0c8p"]
+[ext_resource type="Script" uid="uid://eb6iaeejxdik" path="res://modules.gd" id="2_lquwl"]
+[ext_resource type="PackedScene" uid="uid://c8r8u7e7qkegq" path="res://battle/battle.tscn" id="5_rtafa"]
+[ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="7_ep3nq"]
+[ext_resource type="Script" uid="uid://go7jmff76a43" path="res://StateManager.gd" id="9_kek77"]
+[ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]
+[ext_resource type="PackedScene" uid="uid://8b0xosmrmilb" path="res://main_menu/mainmenu.tscn" id="12_ycdy4"]
+[ext_resource type="PackedScene" uid="uid://cxyn26sy7uyyr" path="res://settings/settings_menu.tscn" id="13_w48qg"]
+[ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="14_vivmo"]
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("battle")]
+script = ExtResource("1_h0c8p")
+battle = NodePath("Battle")
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="Nagivator" parent="UI" instance=ExtResource("14_vivmo")]
+visible = false
+
+[node name="MainMenu" parent="UI" instance=ExtResource("12_ycdy4")]
+unique_name_in_owner = true
+
+[node name="SettingsMenu" parent="UI" instance=ExtResource("13_w48qg")]
+unique_name_in_owner = true
+visible = false
+
+[node name="Chat" parent="UI" instance=ExtResource("7_ep3nq")]
+visible = false
+
+[node name="Battle" parent="." instance=ExtResource("5_rtafa")]
+seed = -4660530014316562278
+unique_name_in_owner = true
+
+[node name="Design" parent="." instance=ExtResource("11_dg77c")]
+unique_name_in_owner = true
+
+[node name="modules" type="Node" parent="."]
+script = ExtResource("2_lquwl")
+
+[node name="StateManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("9_kek77")

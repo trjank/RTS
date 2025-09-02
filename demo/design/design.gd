@@ -1,11 +1,14 @@
 extends Node2D
 
-@export var container: TabContainer
+@export var overlay: CanvasLayer
 @export var part_grouping: PartGrouping
 @export var mirror_mode_button: TextureButton
 @export var mirror_axis: Line2D
 @export var info_text: Label
+var fleet
 
+@onready var fleets_container = %FleetContainer
+@onready var parts_container = %PartsContainer
 @onready var fleet_dropdown = %FleetDropdown
 @onready var rename_fleet_popup = %RenameFleetPopup
 @onready var grid = %Grid
@@ -135,17 +138,20 @@ func set_ships(ships):
 func setup_part_buttons():
 	parts_manager.load_json("user://part_data.json")
 	PartButton.part_container = part_grouping
-	for atlas_id in range(1, parts_manager.count_parts()):
-		var part := parts_manager.lookup_id(atlas_id)
-		var part_container := container.get_node(part.get_tab())
+	for atlas_id in range(1, manager.count_parts()):
+		var part := manager.lookup_id(atlas_id)
+		var tab := part.get_tab()
 		var part_display := PartButton.new()
 		part_display.part_data = part
 		part_display.texture_normal = part.get_texture()
 		part_display.set_display_size( part.get_size() )
-		if not part_container:
-			push_warning("Tab '%s' does not exist" % part_container)
-		else:
-			part_container.add_child(part_display)
+		#part_display.set_stretch_mode(TextureButton.StretchMode.STRETCH_KEEP_ASPECT_CENTERED)
+	
+		parts_container.add_part(tab, part_display)
+		#if not container:
+		#	push_warning("Tab '%s' does not exist" % container)
+		#else:
+		#	container.add_child(part_display)
 
 func setup_fleet_buttons():
 	var fleets = ship_db.get_fleets(100)
@@ -164,12 +170,12 @@ func resize(new_size: Vector2)->void:
 func _ready():
 	ship_db.part_manager = parts_manager
 	#setup global db connection?
-	resize(Vector2(64, 64))
-	#var ships = ship_db.get_ships_in_fleet(current_fleet)
-	#print(ships)
-	create_ship_buttons()
+	#resize(Vector2(64, 64))
+	var ships = db.get_ships_in_fleet(current_fleet)
+	print(ships)
+	#create_ship_buttons()
 	setup_part_buttons()
-	setup_fleet_buttons()
+	#setup_fleet_buttons()
 	#set_fleet(1)
 
 
