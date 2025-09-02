@@ -5,7 +5,7 @@ extends Node2D
 @export var mirror_mode_button: TextureButton
 @export var mirror_axis: Line2D
 @export var info_text: Label
-var fleet:Fleet
+var fleet
 
 @onready var fleets_container = %FleetContainer
 @onready var parts_container = %PartsContainer
@@ -82,7 +82,7 @@ func resize_grid(size: Vector2)->void:
 func save_ship(ship: ShipData):
 	var current_id = ship_slots[current_ship_slot]
 	ship.encode_csv(",")
-	var ship_stats := ship.get_csv()
+	var ship_stats = ship.get_csv()
 	if current_id > -1:
 		print("Updating ship stats for ship id: %d" % current_id)
 		db.update_ship_stats(current_id, ship_stats)
@@ -222,7 +222,7 @@ func resize(new_size: Vector2)->void:
 
 func _ready():
 	#setup global db connection?
-	resize(Vector2(64, 64))
+	#resize(Vector2(64, 64))
 	var ships = db.get_ships_in_fleet(current_fleet)
 	print(ships)
 	#create_ship_buttons()

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bbw701x53gipl"]
 
-[ext_resource type="Script" uid="uid://bewpk56jrvdew" path="res://chat_box/SendMessage.gd" id="1_uf4t8"]
+[ext_resource type="Script" path="res://chat_box/SendMessage.gd" id="1_uf4t8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6u8vi"]
 content_margin_left = 50.0

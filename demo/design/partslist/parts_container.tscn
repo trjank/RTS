@@ -64,7 +64,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_g5m8g")
 script = ExtResource("2_xb30u")
 
 [node name="blur" type="Panel" parent="."]
-visible = false
 material = SubResource("ShaderMaterial_0c2qi")
 layout_mode = 2
 
@@ -158,6 +157,7 @@ script = ExtResource("7_wtrov")
 part_tabs_container = NodePath("../../../MarginContainer/ScrollContainer/part_tabs")
 
 [node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/PanelContainer/VFlowContainer"]
+process_mode = 4
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
