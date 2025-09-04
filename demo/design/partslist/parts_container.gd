@@ -5,6 +5,8 @@ func add_part(tab, partbutton):
 	if not container: 
 		push_warning("Tab '%s' does not exist" % tab)
 	else:
-		print(partbutton.stretch_mode)
+		#muting sneaky print statements
+		#print(partbutton.stretch_mode)
+		#print(partbutton)
 		container.add_child(partbutton)
 	

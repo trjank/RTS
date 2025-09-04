@@ -1,6 +1,6 @@
-extends Control
+extends CanvasLayer
 @onready var backbutton = %back_button
-@onready var state_manager = $"../../StateManager"
+@onready var state_manager = $"../StateManager"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -8,4 +8,4 @@ func _ready():
 	pass # Replace with function body.
 
 func back_button_pressed():
-	state_manager.ui = state_manager.UI.MAIN_MENU
+	state_manager.set_state(state_manager.State.MAIN_MENU)

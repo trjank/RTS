@@ -1,7 +1,6 @@
-[gd_scene load_steps=17 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=16 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
-[ext_resource type="Script" path="res://CanvasLayerToggle.gd" id="2_r41aq"]
 [ext_resource type="Shader" uid="uid://baekawl1v8f2g" path="res://design/grid/grid.gdshader" id="8_bjdq3"]
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/partslist/parts_container.tscn" id="9_3c8mw"]
 [ext_resource type="Script" uid="uid://bhgc5agngbyp0" path="res://design/panel.gd" id="9_6gxgq"]
@@ -47,7 +46,6 @@ mirror_axis = NodePath("UI/margin/HBoxContainer/Grid/MirrorAxis")
 metadata/_edit_vertical_guides_ = [136.0]
 
 [node name="UI" type="CanvasLayer" parent="."]
-script = ExtResource("2_r41aq")
 
 [node name="background" type="Panel" parent="UI"]
 visible = false
@@ -72,7 +70,7 @@ theme_override_constants/separation = 1
 [node name="PartsContainer" parent="UI/margin/HBoxContainer" instance=ExtResource("9_3c8mw")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 2
 
 [node name="Grid" type="MarginContainer" parent="UI/margin/HBoxContainer"]
 unique_name_in_owner = true
@@ -81,7 +79,7 @@ texture_repeat = 2
 material = SubResource("ShaderMaterial_licix")
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 6.0
+size_flags_stretch_ratio = 5.0
 
 [node name="PartGrouping" type="PartGrouping" parent="UI/margin/HBoxContainer/Grid" node_paths=PackedStringArray("mirror_axis")]
 z_index = 1
@@ -174,6 +172,7 @@ theme = ExtResource("18_01mpa")
 ok_button_text = "Yes, delete this fleet"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DeleteFleetPopup"]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

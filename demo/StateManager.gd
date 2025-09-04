@@ -1,34 +1,41 @@
 extends Node
 
-enum State {NONE, BATTLE, DESIGN}
-enum UI {NONE, NAVBAR, MAIN_MENU, SETTINGS}
+enum State {DESIGN, MAIN_MENU, SETTINGS, BATTLE}
 
-var state := State.NONE: set = set_state
-var ui := UI.NONE: set = set_ui
+@onready var design := preload("res://design/design.tscn").instantiate()
+@onready var mainmenu := preload("res://main_menu/mainmenu.tscn").instantiate()
+@onready var settings := preload("res://settings/settings_menu.tscn").instantiate()
+@onready var battle := preload("res://battle/battle.tscn").instantiate()
+@onready var main = get_owner()
 
-# These should have the same order as the enums above
-@export var state_nodes: Array[Node]
-@export var ui_nodes: Array[Control]
 
-static func toggle_node(node: Node, visible: bool)->void:
-	if not node: return
-	# Avoid overhead of creating and freeing nodes
-	node.visible = visible
-	node.process_mode = Node.PROCESS_MODE_INHERIT if visible else Node.PROCESS_MODE_DISABLED
+#state for when game starts
+var DEFAULT_STATE := State.MAIN_MENU
+var current_state := DEFAULT_STATE
+
+@onready var states := {
+	State.DESIGN: design,
+	State.MAIN_MENU: mainmenu,
+	State.SETTINGS: settings,
+	State.BATTLE : battle
+}
+
+
+
 
 # IMPORTANT: Ensure this _ready occurs AFTER all of the other nodes
 func _ready()->void:
-	for state_node in state_nodes:
-		toggle_node(state_node, false)
-	for ui_node in ui_nodes:
-		toggle_node(ui_node, false)
+	main.add_child.call_deferred(states[current_state])
+	pass
+
 
 func set_state(new_state: State)->void:
-	toggle_node(state_nodes[state], false)
-	toggle_node(state_nodes[new_state], true)
-	state = new_state
+	var current_scene = states[current_state]
+	var new_scene = states[new_state]
 
-func set_ui(new_ui: UI)->void:
-	toggle_node(ui_nodes[ui], false)
-	toggle_node(ui_nodes[new_ui], true)
-	ui = new_ui
+	var current_node = main.get_node(current_scene.get_path())
+	print(current_scene) 
+	print(current_node)
+	main.remove_child(current_node)
+	main.add_child(new_scene)
+	current_state = new_state
