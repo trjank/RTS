@@ -13,10 +13,10 @@ var mouse_offset := Vector2.ZERO
 var mirror: PartGrouping = null
 
 func begin_dragging()->void:
-	mouse_offset = get_global_mouse_position() - get_global_position();
+	mouse_offset = get_local_mouse_position() - position
 	dragging = true
 	dragging_started.emit()
-	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN);
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
 func stop_dragging()->void:
 	snap_to_grid()
@@ -32,7 +32,7 @@ func reposition_mirrored()->void:
 	mirror.position.y = position.y
 
 func _on_mouse_selection_selection_ended(selected: Array[Node2D], rect: Rect2)->void:
-	select_parts(selected, rect)
+	select_parts(selected, rect * get_parent().global_transform)
 
 func _on_parts_rotated(quarter_turns: int, duration: float)->void:
 	if mirror: mirror.rotate_parts( -quarter_turns, duration)
@@ -65,7 +65,7 @@ func _input(event: InputEvent)->void:
 
 func handle_drag_input(event: InputEvent)->void:
 	if event is InputEventMouseMotion:
-		global_position = get_global_mouse_position() - mouse_offset
+		global_position = get_local_mouse_position() - mouse_offset
 		reposition_mirrored()
 	if event.is_action_pressed("flip"):
 		flip_parts()

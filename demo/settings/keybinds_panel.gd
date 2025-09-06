@@ -1,87 +1,49 @@
 extends Control
 
+const KEYBIND_SAVE_PATH := "user://keybinds"
+const KEYBIND_ROW_SCENE = preload("res://settings/KeybindRow.tscn")
 
-const KeybindRowScene = preload("res://settings/keybind_row.tscn")
 @onready var keybind_list = %keybind_list 
-#still need to save keybinds, and possibly add a defaults file to read from
 
-const bindable_inputs = {
-	#keymap_key:action
-	"left":"Pan Left",
-	"right":"Pan Right",
-	"up":"Pan Up",
-	"down":"Pan Down", 
-	"in": "Zoom In",
-	"out":"Zoom Out",
-	"select":"Select",
-	"move":"Move",
-	"target":"Target",
-	"stop":"Stop",
-	"line formation":"Enable Line Formation",
-	"v formation":"Enable V Formation",
-	"smooth formation":"Enable Smooth Formation",
-	"precise formation":"Enable Precise Formation",
-	"toggle queue move":"Toggle queue mode",
-	"rotate cw":"Rotate Clockwise",
-	"rotate ccw":"Rotate Counter-Clockwise",
-	"delete":"Delete",
-	"mirror mode":"Toggle mirror mode"
-}
+var _binding := false
+var _old_key: InputEvent
+var _action_to_bind: StringName
 
-var binding = false
-var key_to_bind = ""
-var old_key:InputEvent
+func begin_rebind(action: StringName, old_key: InputEvent)->void:
+	_action_to_bind = action
+	_old_key = old_key
+	_binding = true
 
+func end_rebind()->void:
+	_binding = false
 
-func new_keybind_row(keymap_key,keybind_action, keybind_key, keybind_fn):
-	var new_row = KeybindRowScene.instantiate()
-	new_row.keymap_key = keymap_key
-	new_row.keybind_action = keybind_action
-	new_row.keybind_key = keybind_key
-	new_row.name = keymap_key
-	new_row.keybind_fn = keybind_fn
-	#new_row.update_text()
-	#print(new_row.keybind_button) #.pressed.connect(rebind)
-	return new_row
+func is_custom_action(action: StringName)->bool:
+	return not action.begins_with("ui_")
 
-func update_keybind_row(keymap_key, event):
-	var row = keybind_list.get_node(keymap_key)
-	var new_fn = start_rebind.bind(keymap_key,event)
-	var new_keybind_key = event.as_text()
-	row.update_keybind(new_keybind_key,new_fn)
+func get_actions()->Array:
+	return InputMap.get_actions().filter(is_custom_action)
 
+func add_keybind_row(action: StringName)->void:
+	var key := InputMap.action_get_events(action)[0]
+	var row := KEYBIND_ROW_SCENE.instantiate()
+	row.action = action
+	row.key = key.as_text()
+	row.on_press = begin_rebind.bind(action, key)
+	keybind_list.add_child(row)
 
-func start_rebind(keymap_key, oldkey):
-	print("rebinding "+keymap_key+" ("+oldkey.as_text()+")")
-	key_to_bind = keymap_key
-	old_key = oldkey
-	binding = true
+func update_keybind_row(action: StringName, new_key: InputEvent)->void:
+	var row := keybind_list.get_node(NodePath(action))
+	row.key = new_key.as_text()
+	row.on_press = begin_rebind.bind(action, new_key)
 
-func unbind_key(key_name, key):
-	InputMap.action_erase_event(key_name, key)
+func _ready()->void:
+	for action in get_actions():
+		add_keybind_row(action)
 
-
-func bind_key(key_name, key):
-	InputMap.action_add_event(key_name, key)
-	print("rebound with "+key.as_text())
-
-func end_rebind():
-	print("rebind done")
-	binding = false
-	
-
-#not sure about using a global variable to track what key is being bound..
-func _input(event):
-	#only listen if binding, is a keyboard event, and if key was pressed down
-	if not binding or not event is InputEventKey or not event.pressed: return
-	unbind_key(key_to_bind, old_key)
-	bind_key(key_to_bind, event)
-	update_keybind_row(key_to_bind, event)
+func _input(event: InputEvent)->void:
+	if not _binding or not event is InputEventKey or not event.pressed: return
+	# Rebind the old key to the new event key
+	InputMap.action_erase_event(_action_to_bind, _old_key)
+	InputMap.action_add_event(_action_to_bind, event)
+	update_keybind_row(_action_to_bind, event)
 	end_rebind()
-
-func _ready():
-	for keymap_key in bindable_inputs:
-		var keybind_action = bindable_inputs[keymap_key]
-		var keybind_key = InputMap.action_get_events(keymap_key)[0]
-		var keybind_fn = start_rebind.bind(keymap_key,keybind_key)
-		keybind_list.add_child(new_keybind_row(keymap_key, keybind_action, keybind_key.as_text(), keybind_fn))

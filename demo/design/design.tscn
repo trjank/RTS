@@ -1,31 +1,24 @@
-[gd_scene load_steps=16 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=14 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
-[ext_resource type="Shader" uid="uid://baekawl1v8f2g" path="res://design/grid/grid.gdshader" id="8_bjdq3"]
+[ext_resource type="PackedScene" uid="uid://hi3bwlaeckb5" path="res://design/fleet_container.tscn" id="3_rmp56"]
+[ext_resource type="Shader" uid="uid://cxuhliel45ol6" path="res://design/grid_lines.gdshader" id="5_rmp56"]
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/partslist/parts_container.tscn" id="9_3c8mw"]
-[ext_resource type="Script" uid="uid://bhgc5agngbyp0" path="res://design/panel.gd" id="9_6gxgq"]
 [ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/PartGrouping.gd" id="10_6vk6i"]
-[ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
-[ext_resource type="Shader" uid="uid://ci2cowlt3xued" path="res://design/grid.tres" id="11_licix"]
+[ext_resource type="Script" uid="uid://0peykvq70p5b" path="res://design/MouseSelection.gd" id="11_541lb"]
 [ext_resource type="PackedScene" uid="uid://p3nnscobw38k" path="res://camera.tscn" id="13_rmp56"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="14_qg3uy"]
 [ext_resource type="Texture2D" uid="uid://cvcfx8expolen" path="res://icons/parts_selection_background.png" id="17_qupps"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="18_01mpa"]
 [ext_resource type="Script" uid="uid://bpptswrvnl6dk" path="res://design/popups/RenameFleetPopup.gd" id="19_ract4"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_licix"]
-shader = ExtResource("11_licix")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6gxgq"]
-shader = ExtResource("8_bjdq3")
-shader_parameter/grid = 32.0
-shader_parameter/big_grid_size = 288.0
-shader_parameter/line_color = Color(0, 0.435294, 0.435294, 0)
-shader_parameter/big_line_color = Color(0, 0.635294, 0.635294, 0)
-shader_parameter/panel_color = Color(1, 1, 1, 0.0196078)
-shader_parameter/thickness = 2.0
-shader_parameter/padding = 3.0
-shader_parameter/mouse_pos = Vector2(0, 0)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r41aq"]
+shader = ExtResource("5_rmp56")
+shader_parameter/major_line_tick = 5
+shader_parameter/minor_line_thickness = 0.1
+shader_parameter/major_line_thickness = 0.2
+shader_parameter/square_size_px = Vector2(32, 32)
+shader_parameter/square_color = Color(0, 0, 0, 0.392157)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkia0"]
 content_margin_left = 20.0
@@ -41,24 +34,18 @@ corner_radius_bottom_left = 10
 [node name="Design" type="Node2D" node_paths=PackedStringArray("overlay", "part_grouping", "mirror_axis")]
 script = ExtResource("1_wctwy")
 overlay = NodePath("UI")
-part_grouping = NodePath("UI/margin/HBoxContainer/Grid/PartGrouping")
-mirror_axis = NodePath("UI/margin/HBoxContainer/Grid/MirrorAxis")
+part_grouping = NodePath("Grid/PartGrouping")
+mirror_axis = NodePath("Grid/MirrorAxis")
 metadata/_edit_vertical_guides_ = [136.0]
 
-[node name="UI" type="CanvasLayer" parent="."]
-
-[node name="background" type="Panel" parent="UI"]
-visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="UI" type="CanvasLayer" parent="." groups=["CanvasLayerToggle"]]
 
 [node name="margin" type="MarginContainer" parent="UI"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 500.0
+offset_bottom = 139.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -72,16 +59,20 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 
-[node name="Grid" type="MarginContainer" parent="UI/margin/HBoxContainer"]
+[node name="FleetContainer" parent="UI" instance=ExtResource("3_rmp56")]
 unique_name_in_owner = true
-texture_filter = 3
-texture_repeat = 2
-material = SubResource("ShaderMaterial_licix")
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 5.0
+visible = false
 
-[node name="PartGrouping" type="PartGrouping" parent="UI/margin/HBoxContainer/Grid" node_paths=PackedStringArray("mirror_axis")]
+[node name="Grid" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_r41aq")
+position = Vector2(428, 181)
+texture = ExtResource("14_qg3uy")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 1024, 1024)
+
+[node name="PartGrouping" type="PartGrouping" parent="Grid" node_paths=PackedStringArray("mirror_axis")]
 z_index = 1
 texture_filter = 1
 texture_repeat = 2
@@ -90,24 +81,13 @@ region_enabled = true
 script = ExtResource("10_6vk6i")
 mirror_axis = NodePath("../MirrorAxis")
 
-[node name="MirrorAxis" type="Line2D" parent="UI/margin/HBoxContainer/Grid"]
+[node name="MirrorAxis" type="Line2D" parent="Grid"]
 visible = false
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
 
-[node name="test" type="Sprite2D" parent="UI/margin/HBoxContainer/Grid"]
-unique_name_in_owner = true
-visible = false
-texture = ExtResource("14_qg3uy")
-
-[node name="Panel" type="Panel" parent="UI/margin/HBoxContainer/Grid"]
-material = SubResource("ShaderMaterial_6gxgq")
-custom_minimum_size = Vector2(640, 640)
-layout_mode = 2
-mouse_filter = 2
-script = ExtResource("9_6gxgq")
-
 [node name="MouseSelection" type="MouseSelection" parent="."]
+action = "select"
 z_index = 1
 script = ExtResource("11_541lb")
 
@@ -200,6 +180,10 @@ theme_override_font_sizes/font_size = 26
 text = "This action cannot be undone!"
 
 [node name="Camera" parent="." instance=ExtResource("13_rmp56")]
-visible = false
 
+[connection signal="dragging_ended" from="Grid/PartGrouping" to="Grid/PartGrouping" method="_on_dragging_ended"]
+[connection signal="dragging_ended" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_ended"]
+[connection signal="dragging_started" from="Grid/PartGrouping" to="Grid/PartGrouping" method="_on_dragging_started"]
+[connection signal="dragging_started" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_started"]
+[connection signal="selection_ended" from="MouseSelection" to="Grid/PartGrouping" method="_on_mouse_selection_selection_ended"]
 [connection signal="confirmed" from="RenameFleetPopup" to="RenameFleetPopup" method="_on_confirmed"]

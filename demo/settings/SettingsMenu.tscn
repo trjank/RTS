@@ -1,11 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://cxyn26sy7uyyr"]
 
-[ext_resource type="Script" uid="uid://ocul6wdp2fmr" path="res://settings/settings_menu.gd" id="1_17m10"]
 [ext_resource type="PackedScene" uid="uid://bfjk4a5p0r345" path="res://settings/settings_panel.tscn" id="1_dq6we"]
+[ext_resource type="Script" uid="uid://c1gxo4ms6nvm8" path="res://settings/back_button.gd" id="1_olm1t"]
 [ext_resource type="PackedScene" uid="uid://bnnn7c40rsf6y" path="res://settings/keybinds_panel.tscn" id="1_u45p5"]
 
-[node name="settings_menu" type="CanvasLayer"]
-script = ExtResource("1_17m10")
+[node name="SettingsMenu" type="CanvasLayer"]
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -25,12 +24,12 @@ theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 
 [node name="back_button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "Back
 "
+script = ExtResource("1_olm1t")
 
 [node name="Control" type="Control" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -56,3 +55,5 @@ metadata/_tab_index = 0
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/back_button" to="MarginContainer/HBoxContainer/MarginContainer/back_button" method="_on_pressed"]

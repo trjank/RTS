@@ -120,7 +120,7 @@ void PartGrouping::delete_parts() {
 	emit_signal("parts_deleted");
 }
 bool PartGrouping::spawn_part_at_mouse(Ref<PartData> part_data) {
-	return spawn_part_at(get_global_mouse_position(), part_data);
+	return spawn_part_at(get_local_mouse_position(), part_data);
 }
 bool PartGrouping::spawn_part_at(Vector2 position, Ref<PartData> part_data) {
 	Part* part = Part::create_from(part_data);
@@ -131,8 +131,8 @@ bool PartGrouping::spawn_part_at(Vector2 position, Ref<PartData> part_data) {
 	add_child(part);
 
 	resize( part_data->get_size_px() );
-	set_global_position(position);
-	set_global_rotation(0.0);
+	set_position(position);
+	set_rotation(0.0);
 	return true;
 }
 void PartGrouping::select_parts(TypedArray<Node2D> selection, Rect2 region) {
@@ -141,8 +141,8 @@ void PartGrouping::select_parts(TypedArray<Node2D> selection, Rect2 region) {
 	region.expand_to( grid_snap_floor(region.position) );
 	region.expand_to( grid_snap_ceil( region.get_end() ) );
 
-	set_global_rotation(0.0);
-	set_global_position( region.get_center() );
+	set_rotation(0.0);
+	set_position( region.get_center() );
 	resize(region.size);
 
 	for (int n = 0; n < selection.size(); ++n) {

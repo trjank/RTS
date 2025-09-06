@@ -1,21 +1,15 @@
 extends CanvasLayer
 
-@onready var play_button  = %PlayButton
-@onready var settings_button = %SettingsButton
-@onready var state_manager = $"../StateManager"
-@onready var design_button = %DesignButton
+@onready var mock_battle: Battle = $MockBattle
 
-func _ready():
-	play_button.pressed.connect(go_to_battle)
-	settings_button.pressed.connect(go_to_settings)
-	design_button.pressed.connect(go_to_design)
-	pass # Replace with function body.
+func _on_play_button_pressed()->void:
+	globals.main.state = Main.State.BATTLE
 
-func go_to_settings():
-	state_manager.set_state(state_manager.State.SETTINGS)
+func _on_design_button_pressed()->void:
+	globals.main.state = Main.State.DESIGN
 
-func go_to_battle():
-	state_manager.set_state(state_manager.State.BATTLE)
+func _on_settings_button_pressed()->void:
+	globals.main.state = Main.State.SETTINGS
 
-func go_to_design():
-	state_manager.set_state(state_manager.State.DESIGN)
+func _ready()->void:
+	mock_battle.start()

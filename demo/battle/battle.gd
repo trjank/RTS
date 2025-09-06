@@ -2,7 +2,6 @@ extends Battle
 
 @export var countdown_timer: Timer
 @export var round_timer: Timer
-@onready var state_manager = $"../StateManager"
 @onready var menubutton = %MenuButton 
 @onready var designbutton = %DesignButton
 #@onready var blur = %blur
@@ -107,7 +106,7 @@ func make_map()->void:
 	#clock_seconds_label.text = "%02d" % get_seconds_left()
 
 func design_button_pressed():
-	state_manager.set_state(state_manager.State.DESIGN)
+	globals.main.state = Main.State.DESIGN
 
 func menu_button_pressed():
-	state_manager.set_state(state_manager.State.MAIN_MENU)
+	globals.main.state = Main.State.MAIN_MENU

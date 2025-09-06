@@ -9,12 +9,11 @@ var fleet
 
 @onready var fleets_container = %FleetContainer
 @onready var parts_container = %PartsContainer
-@onready var fleet_dropdown = %FleetDropdown
+#@onready var fleet_dropdown = %FleetDropdown
 @onready var rename_fleet_popup = %RenameFleetPopup
 @onready var grid = %Grid
-@onready var ship_buttons = %ship_buttons
+#@onready var ship_buttons = %ship_buttons
 @onready var ship_button = preload("res://design/fleet_button.tscn")
-@onready var testsprite = %test
 
 const UNSAVED_SHIP_ID := -1
 const UNSAVED_SHIP_NAME := "Untitled"
@@ -23,6 +22,8 @@ const UNSAVED_FLEET_NAME := "*Unsaved"
 const UNSAVED_FLEET_ID := -1
 const DEFAULT_SLOT := 0
 const FLEET_SIZE := 10
+
+var mirror_mode := false
 
 var parts_manager := JSONPartManager.new()
 var current_fleet: FleetID
@@ -117,7 +118,7 @@ func create_ship_buttons():
 	for num in range(FLEET_SIZE):
 		var button = create_ship_button(btn_name,change_slot.bind(num),clear_current_slot)
 		slot_buttons[num] = button
-		ship_buttons.add_child(button)
+		#ship_buttons.add_child(button)
 
 func set_ships(ships):
 	ships.resize(FLEET_SIZE)
@@ -159,8 +160,8 @@ func setup_fleet_buttons():
 		print("No fleets found in database.")
 		return
 	print(fleets)
-	fleet_dropdown.set_fleets(fleets)
-	fleet_dropdown.item_selected.connect(on_selected_fleet)
+	#fleet_dropdown.set_fleets(fleets)
+	#fleet_dropdown.item_selected.connect(on_selected_fleet)
 	rename_fleet_popup.valid_rename.connect(on_valid_rename)
 	
 
@@ -192,12 +193,12 @@ const NO_OPTION := 3
 
 func update_fleet_dropdown():
 	var fleets := ship_db.get_fleets(100)
-	fleet_dropdown.clear()
-	fleet_dropdown.add_item("New Fleet")
-	fleet_dropdown.add_item("Rename Fleet")
-	fleet_dropdown.add_item("Delete Fleet")
-	fleet_dropdown.add_item(" ")
-	fleet_dropdown.set_fleets(fleets)
+	#fleet_dropdown.clear()
+	#fleet_dropdown.add_item("New Fleet")
+	#fleet_dropdown.add_item("Rename Fleet")
+	#fleet_dropdown.add_item("Delete Fleet")
+	#fleet_dropdown.add_item(" ")
+	#fleet_dropdown.set_fleets(fleets)
 
 func on_selected_fleet(option):
 	match option:
@@ -207,13 +208,14 @@ func on_selected_fleet(option):
 			#option_to_rename = selected
 			rename_fleet_popup.show()
 		DELETE_FLEET_OPTION:
-			fleet_dropdown.remove_item(option)
+			return
+			#fleet_dropdown.remove_item(option)
 			#db.remove_fleet_and_ships(current_fleet)
 		NEW_FLEET_OPTION:
 			var new_fleet = ship_db.create_fleet(Fleet.new())
-			fleet_dropdown.fleets.append(new_fleet)
-			fleet_dropdown.add_item("Untitled Fleet", true)
-			fleet_dropdown.select(fleet_dropdown.item_count - 1)
+			#fleet_dropdown.fleets.append(new_fleet)
+			#fleet_dropdown.add_item("Untitled Fleet", true)
+			#fleet_dropdown.select(fleet_dropdown.item_count - 1)
 			
 			#add_item(NO_NAME, 0)
 			#select(item_count - 1)
@@ -224,10 +226,10 @@ func on_selected_fleet(option):
 				return
 			
 			var fleet_index = option - 4
-			var fleet_selected = fleet_dropdown.fleets[fleet_index]
+			#var fleet_selected = fleet_dropdown.fleets[fleet_index]
 			print("Selected fleet:")
-			print(fleet_selected)
-			set_fleet(fleet_selected["id"])
+			#print(fleet_selected)
+			#set_fleet(fleet_selected["id"])
 
 func on_valid_rename(new_name: String)->void:
 	current_fleet.name = new_name

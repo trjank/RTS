@@ -1,0 +1,23 @@
+[gd_scene load_steps=7 format=3 uid="uid://bgx6pbxte11v8"]
+
+[ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main/main.gd" id="1_h0c8p"]
+[ext_resource type="Script" uid="uid://eb6iaeejxdik" path="res://modules.gd" id="2_lquwl"]
+[ext_resource type="PackedScene" uid="uid://c8r8u7e7qkegq" path="res://battle/battle.tscn" id="5_rtafa"]
+[ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]
+[ext_resource type="PackedScene" uid="uid://8b0xosmrmilb" path="res://main_menu/MainMenu.tscn" id="12_ycdy4"]
+[ext_resource type="PackedScene" uid="uid://cxyn26sy7uyyr" path="res://settings/SettingsMenu.tscn" id="13_w48qg"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_h0c8p")
+metadata/_custom_type_script = "uid://bed2cq2pcsh86"
+
+[node name="modules" type="Node" parent="."]
+script = ExtResource("2_lquwl")
+
+[node name="MainMenu" parent="." instance=ExtResource("12_ycdy4")]
+
+[node name="SettingsMenu" parent="." instance=ExtResource("13_w48qg")]
+
+[node name="Design" parent="." instance=ExtResource("11_dg77c")]
+
+[node name="Battle" parent="." instance=ExtResource("5_rtafa")]
