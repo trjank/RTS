@@ -33,8 +33,6 @@ var ship_name := EMPTY_SLOT_NAME
 var slot_buttons := {}
 var unsaved := false
 
-@onready var ship_db: ShipDatabase = $"../modules".db
-
 func resize_grid(size: Vector2)->void:
 	size *= PartData.PX_PER_GRID_SQUARE
 	grid.region_rect.size = size
@@ -53,7 +51,7 @@ func load_ship(ship: ShipData):
 func save_ship(ship_id: ShipDataID)->void:
 	var ship := ship_id.ship_data
 	CPUImageBuilder.build_image(ship)
-	ship_db.save_ship(ship_id)
+	globals.ship_db.save_ship(ship_id)
 	#var current_id = ship_slots[current_ship_slot]
 	#ship.encode_csv(",")
 	#var ship_stats := ship.get_csv()
@@ -95,7 +93,7 @@ func change_slot(slot: String, slot_num: int)->void:
 	current_ship = new_ship_id
 	
 	if new_ship_id.ship_data.is_empty():
-		ship_db.sync_ship(new_ship_id)
+		globals.ship_db.sync_ship(new_ship_id)
 	#slot_buttons[new_slot].delete_button.visible = true
 	#data[SHIP_BUTTON].delete_button.connect(clear_current_slot)
 
@@ -155,7 +153,7 @@ func setup_part_buttons():
 		#	container.add_child(part_display)
 
 func setup_fleet_buttons():
-	var fleets = ship_db.get_fleets(100)
+	var fleets = globals.ship_db.get_fleets(100)
 	if not fleets:
 		print("No fleets found in database.")
 		return
@@ -169,7 +167,7 @@ func resize(new_size: Vector2)->void:
 	grid.region_rect.size = new_size * PartData.PX_PER_GRID_SQUARE
 
 func _ready():
-	ship_db.part_manager = parts_manager
+	globals.ship_db.part_manager = parts_manager
 	#setup global db connection?
 	#resize(Vector2(64, 64))
 	#var ships = db.get_ships_in_fleet(current_fleet)
@@ -192,7 +190,7 @@ const DELETE_FLEET_OPTION := 2
 const NO_OPTION := 3
 
 func update_fleet_dropdown():
-	var fleets := ship_db.get_fleets(100)
+	var fleets := globals.ship_db.get_fleets(100)
 	#fleet_dropdown.clear()
 	#fleet_dropdown.add_item("New Fleet")
 	#fleet_dropdown.add_item("Rename Fleet")
@@ -212,7 +210,7 @@ func on_selected_fleet(option):
 			#fleet_dropdown.remove_item(option)
 			#db.remove_fleet_and_ships(current_fleet)
 		NEW_FLEET_OPTION:
-			var new_fleet = ship_db.create_fleet(Fleet.new())
+			var new_fleet = globals.ship_db.create_fleet(Fleet.new())
 			#fleet_dropdown.fleets.append(new_fleet)
 			#fleet_dropdown.add_item("Untitled Fleet", true)
 			#fleet_dropdown.select(fleet_dropdown.item_count - 1)
@@ -233,5 +231,5 @@ func on_selected_fleet(option):
 
 func on_valid_rename(new_name: String)->void:
 	current_fleet.name = new_name
-	ship_db.save_fleet(current_fleet)
+	globals.ship_db.save_fleet(current_fleet)
 	update_fleet_dropdown()
