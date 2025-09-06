@@ -1,6 +1,5 @@
 extends Control
 
-const KEYBIND_SAVE_PATH := "user://keybinds"
 const KEYBIND_ROW_SCENE = preload("res://settings/KeybindRow.tscn")
 
 @onready var keybind_list = %keybind_list 

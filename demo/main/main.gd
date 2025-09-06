@@ -24,7 +24,7 @@ func set_state(new_state: State)->void:
 	toggle_node(_state_nodes[new_state], true)
 	state = new_state
 
-func _ready():
+func _ready()->void:
 	globals.main = self
 	# Visibility works differently for CanvasLayer nodes
 	for node in get_tree().get_nodes_in_group("CanvasLayerToggle"):
