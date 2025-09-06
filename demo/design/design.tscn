@@ -31,11 +31,10 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[node name="Design" type="Node2D" node_paths=PackedStringArray("overlay", "part_grouping", "mirror_axis")]
+[node name="Design" type="Node2D" node_paths=PackedStringArray("overlay", "part_grouping")]
 script = ExtResource("1_wctwy")
 overlay = NodePath("UI")
 part_grouping = NodePath("Grid/PartGrouping")
-mirror_axis = NodePath("Grid/MirrorAxis")
 metadata/_edit_vertical_guides_ = [136.0]
 
 [node name="UI" type="CanvasLayer" parent="." groups=["CanvasLayerToggle"]]
@@ -72,7 +71,7 @@ centered = false
 region_enabled = true
 region_rect = Rect2(0, 0, 1024, 1024)
 
-[node name="PartGrouping" type="PartGrouping" parent="Grid" node_paths=PackedStringArray("mirror_axis")]
+[node name="PartGrouping" type="PartGrouping" parent="Grid" node_paths=PackedStringArray("mirror_axis", "design")]
 z_index = 1
 texture_filter = 1
 texture_repeat = 2
@@ -80,8 +79,10 @@ texture = ExtResource("17_qupps")
 region_enabled = true
 script = ExtResource("10_6vk6i")
 mirror_axis = NodePath("../MirrorAxis")
+design = NodePath("../..")
 
 [node name="MirrorAxis" type="Line2D" parent="Grid"]
+unique_name_in_owner = true
 visible = false
 points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
 width = 5.0
@@ -185,5 +186,6 @@ text = "This action cannot be undone!"
 [connection signal="dragging_ended" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_ended"]
 [connection signal="dragging_started" from="Grid/PartGrouping" to="Grid/PartGrouping" method="_on_dragging_started"]
 [connection signal="dragging_started" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_started"]
+[connection signal="parts_rotated" from="Grid/PartGrouping" to="Grid/PartGrouping" method="_on_parts_rotated"]
 [connection signal="selection_ended" from="MouseSelection" to="Grid/PartGrouping" method="_on_mouse_selection_selection_ended"]
 [connection signal="confirmed" from="RenameFleetPopup" to="RenameFleetPopup" method="_on_confirmed"]

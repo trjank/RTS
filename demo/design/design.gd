@@ -2,8 +2,6 @@ extends Node2D
 
 @export var overlay: CanvasLayer
 @export var part_grouping: PartGrouping
-@export var mirror_mode_button: TextureButton
-@export var mirror_axis: Line2D
 @export var info_text: Label
 var fleet
 
@@ -23,7 +21,6 @@ const UNSAVED_FLEET_ID := -1
 const DEFAULT_SLOT := 0
 const FLEET_SIZE := 10
 
-var mirror_mode := false
 
 var parts_manager := JSONPartManager.new()
 var current_fleet: FleetID
@@ -32,6 +29,16 @@ var rename := "*Unsaved"
 var ship_name := EMPTY_SLOT_NAME
 var slot_buttons := {}
 var unsaved := false
+
+
+var mirror_mode := false: set = set_mirror_mode
+
+@onready var mirror_axis := %MirrorAxis
+
+func set_mirror_mode(enabled: bool)->void:
+	mirror_mode = enabled
+	mirror_axis.visible = enabled
+
 
 func resize_grid(size: Vector2)->void:
 	size *= PartData.PX_PER_GRID_SQUARE
@@ -70,7 +77,9 @@ func save_ship(ship_id: ShipDataID)->void:
 		#slot_buttons[current_ship_slot].button.text = "Untitled"
 		#slot_buttons[current_ship_slot].delete_button.visible = true
 
-func _input(event)->void:
+func _input(event: InputEvent)->void:
+	if event.is_action_pressed("mirror mode"):
+		mirror_mode = not mirror_mode
 	if event.is_action_pressed("save"):
 		print("saving...")
 		part_grouping.clear_parts() # <-- This is VERY important

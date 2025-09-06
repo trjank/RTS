@@ -6,14 +6,14 @@ signal dragging_ended
 const ROTATION_DURATION_SEC := 0.15
 
 @export var mirror_axis: Line2D
-@export var mirror_button: TextureButton
+@export var design: Node2D
 
 var dragging := false
 var mouse_offset := Vector2.ZERO
 var mirror: PartGrouping = null
 
 func begin_dragging()->void:
-	mouse_offset = get_local_mouse_position() - position
+	mouse_offset = get_parent().get_local_mouse_position() - position
 	dragging = true
 	dragging_started.emit()
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
@@ -38,7 +38,7 @@ func _on_parts_rotated(quarter_turns: int, duration: float)->void:
 	if mirror: mirror.rotate_parts( -quarter_turns, duration)
 
 func _on_dragging_started()->void:
-	if not mirror_button.mirror_mode: return
+	if not design.mirror_mode: return
 	# Create a mirrored version
 	mirror = duplicate()
 	get_parent().add_child(mirror)
@@ -65,7 +65,7 @@ func _input(event: InputEvent)->void:
 
 func handle_drag_input(event: InputEvent)->void:
 	if event is InputEventMouseMotion:
-		global_position = get_local_mouse_position() - mouse_offset
+		position = get_parent().get_local_mouse_position() - mouse_offset
 		reposition_mirrored()
 	if event.is_action_pressed("flip"):
 		flip_parts()
