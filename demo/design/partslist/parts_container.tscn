@@ -9,16 +9,15 @@
 [ext_resource type="Script" uid="uid://i5q68fmq3nhl" path="res://design/partslist/part_tabs.gd" id="7_8jmok"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8jmok"]
-bg_color = Color(0.219608, 0.219608, 0.219608, 0.392157)
+bg_color = Color(0, 0, 0, 0.784314)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0c2qi"]
 shader = ExtResource("1_tdel1")
-shader_parameter/sigma = 3.3
+shader_parameter/sigma = 1.5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_55ppu"]
-bg_color = Color(0, 0, 0, 1)
-border_width_bottom = 3
-border_color = Color(0.352941, 0.411765, 0.470588, 1)
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rrp5i"]
 content_margin_left = 30.0
@@ -39,21 +38,22 @@ content_margin_left = 30.0
 content_margin_top = 30.0
 content_margin_right = 30.0
 content_margin_bottom = 30.0
-bg_color = Color(0.352941, 0.411765, 0.470588, 1)
+bg_color = Color(0, 0, 0, 0.666667)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f44sc"]
 bg_color = Color(1, 1, 1, 0)
 
 [node name="PartsContainer" type="PanelContainer"]
-anchors_preset = 9
+anchors_preset = -1
+anchor_right = 0.1
 anchor_bottom = 1.0
-offset_right = 40.0
-grow_vertical = 2
 theme = ExtResource("1_0c2qi")
 theme_override_styles/panel = SubResource("StyleBoxFlat_8jmok")
 script = ExtResource("2_xb30u")
+metadata/_edit_use_anchors_ = true
 
 [node name="blur" type="Panel" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_0c2qi")
 layout_mode = 2
 
@@ -61,6 +61,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_55ppu")
 
@@ -80,7 +81,6 @@ tab_1/icon = ExtResource("5_rmcst")
 tab_2/icon = ExtResource("6_okk5v")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 20

@@ -7,8 +7,7 @@
 [ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navigator_button_hover.tres" id="3_eayf2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
-bg_color = Color(0, 0, 0, 0.588235)
-border_width_bottom = 2
+bg_color = Color(0, 0, 0, 0.784314)
 border_color = Color(0.772549, 0.611765, 0.85098, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fnf26"]
@@ -24,29 +23,31 @@ expand_margin_bottom = 20.0
 [node name="Nagivator" type="PanelContainer"]
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 95.0
+offset_bottom = 62.0
 grow_horizontal = 2
+size_flags_vertical = 0
 theme = ExtResource("1_cnwya")
 theme_override_styles/panel = SubResource("StyleBoxFlat_ajdbe")
 script = ExtResource("1_rsvkd")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-custom_minimum_size = Vector2(0, 100)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+size_flags_vertical = 0
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_bottom = 10
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 20
-columns = 6
+columns = 5
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/GridContainer"]
 layout_mode = 2
 texture = ExtResource("1_4max0")
-expand_mode = 3
+expand_mode = 2
 
 [node name="MenuButton" type="Button" parent="MarginContainer/GridContainer"]
 layout_mode = 2
@@ -59,6 +60,18 @@ text = "Menu"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="ChatButton" type="Button" parent="MarginContainer/GridContainer"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_styles/focus = ExtResource("3_eayf2")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
+theme_override_styles/pressed = ExtResource("3_eayf2")
+theme_override_styles/normal = ExtResource("2_70ivd")
+text = "
+
+"
 
 [node name="DesignButton" type="Button" parent="MarginContainer/GridContainer"]
 layout_mode = 2
@@ -78,17 +91,7 @@ theme_override_styles/pressed = ExtResource("3_eayf2")
 theme_override_styles/normal = ExtResource("2_70ivd")
 text = "Battle"
 
-[node name="ChatButton" type="Button" parent="MarginContainer/GridContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-theme_override_styles/focus = ExtResource("3_eayf2")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
-theme_override_styles/pressed = ExtResource("3_eayf2")
-theme_override_styles/normal = ExtResource("2_70ivd")
-text = "Chat
-"
-
 [connection signal="pressed" from="MarginContainer/GridContainer/MenuButton" to="." method="_on_menu_button_pressed"]
+[connection signal="pressed" from="MarginContainer/GridContainer/ChatButton" to="MarginContainer/GridContainer/ChatButton" method="_on_pressed"]
 [connection signal="pressed" from="MarginContainer/GridContainer/DesignButton" to="." method="_on_design_button_pressed"]
 [connection signal="pressed" from="MarginContainer/GridContainer/BattleButton" to="." method="_on_battle_button_pressed"]
-[connection signal="pressed" from="MarginContainer/GridContainer/ChatButton" to="MarginContainer/GridContainer/ChatButton" method="_on_pressed"]
