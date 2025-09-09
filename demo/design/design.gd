@@ -1,9 +1,7 @@
 extends Node2D
 
-@export var overlay: CanvasLayer
 @export var part_grouping: PartGrouping
 @export var info_text: Label
-var fleet
 
 @onready var fleets_container = %FleetContainer
 @onready var parts_container = %PartsContainer
@@ -20,7 +18,6 @@ const UNSAVED_FLEET_NAME := "*Unsaved"
 const UNSAVED_FLEET_ID := -1
 const DEFAULT_SLOT := 0
 const FLEET_SIZE := 10
-
 
 var parts_manager := JSONPartManager.new()
 var current_fleet: FleetID
@@ -39,14 +36,14 @@ func set_mirror_mode(enabled: bool)->void:
 	mirror_mode = enabled
 	mirror_axis.visible = enabled
 
+func resize_grid(size: Vector2i)->void:
+	var size_px := Vector2(size * PartData.PX_PER_GRID_SQUARE)
+	grid.region_rect.size = size_px
+	# Move mirror axis to grid midpoint
+	mirror_axis.position.x = 0.5 * size_px.x
+	mirror_axis.points[1].y = size_px.y
 
-func resize_grid(size: Vector2)->void:
-	size *= PartData.PX_PER_GRID_SQUARE
-	grid.region_rect.size = size
-	mirror_axis.position.x = 0.5 * size.x
-	mirror_axis.points[1].y = size.y
-
-func load_ship(ship: ShipData):
+func load_ship(ship: ShipData)->void:
 	for part_id in range(1, 1 + ship.count_parts()):
 		var part := Part.create_from(ship.get_part_data(part_id))
 		var orientation := ship.get_part_orientation(part_id)

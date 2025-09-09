@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://brljyfotbk8le"]
 
 [ext_resource type="StyleBox" uid="uid://cbte42yvegwcv" path="res://ships_bar.tres" id="1_n6wp2"]
-[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icon.svg" id="1_xejf7"]
+[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icons/icon.svg" id="1_xejf7"]
 
 [node name="ShipsBar" type="PanelContainer"]
 size_flags_horizontal = 4

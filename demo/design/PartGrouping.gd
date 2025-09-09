@@ -55,6 +55,12 @@ func _on_dragging_ended()->void:
 	mirror.queue_free()
 	mirror = null
 
+func _process(_dt: float)->void:
+	if not dragging: return
+	# This needs to be handled separately from _input because of camera movement
+	position = get_parent().get_local_mouse_position() - mouse_offset
+	reposition_mirrored()
+
 func _input(event: InputEvent)->void:
 	if event.is_action_released("delete"):
 		delete_parts()
@@ -64,9 +70,6 @@ func _input(event: InputEvent)->void:
 		handle_drag_input(event)
 
 func handle_drag_input(event: InputEvent)->void:
-	if event is InputEventMouseMotion:
-		position = get_parent().get_local_mouse_position() - mouse_offset
-		reposition_mirrored()
 	if event.is_action_pressed("flip"):
 		flip_parts()
 	if event.is_action_pressed("rotate cw"):

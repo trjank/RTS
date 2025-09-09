@@ -101,7 +101,7 @@ private:
    double thrust = 0.0;
    double turnrate = 0.0;
    Vector2 mass_offset = {0.0, 0.0};
-   String name = "<unnamed>";
+   String name = "Unnamed";
    NEVER_NULL Ref<Image> image = get_default<Image>();
    PackedInt32Array unique_parts;
    Vector<PackedPart> parts;
