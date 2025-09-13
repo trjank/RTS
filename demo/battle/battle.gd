@@ -2,9 +2,6 @@ extends Battle
 
 @export var countdown_timer: Timer
 @export var round_timer: Timer
-@onready var menubutton = %MenuButton 
-@onready var designbutton = %DesignButton
-#@onready var blur = %blur
 var client: Player
 var part_manager := JSONPartManager.new()
 
@@ -35,11 +32,11 @@ func _ready()->void:
 	make_map()
 	#round_timer.wait_time = 360.0
 	#countdown_timer.wait_time = 5.0
-	client = connect_player("truejank", Color.ORANGE)
+	client = connect_player(globals.player_name, globals.player_color)
 	start()
 
 func _on_started()->void:
-	return
+	pass
 	#var capital_ship_data := ship_manager.load_ship_csv(64, 64, "user://capital_ship.csv")
 	#var capital_ship := spawn_ship(client, capital_ship_data, Vector2.ZERO)
 	##print(capital_ship_data.get_center_of_mass())
@@ -98,15 +95,13 @@ func make_map()->void:
 	#on_UI_refresh()
 	#set_duration_sec(360)
 	#clock.start(UI_REFRESHES_PER_SEC)
-	designbutton.pressed.connect(design_button_pressed)
-	menubutton.pressed.connect(menu_button_pressed)
 #
 #func on_UI_refresh()->void:
 	#clock_minutes_label.text = "%d"   % get_minutes_left()
 	#clock_seconds_label.text = "%02d" % get_seconds_left()
 
-func design_button_pressed():
+func _on_design_button_pressed()->void:
 	globals.main.state = Main.State.DESIGN
 
-func menu_button_pressed():
+func _on_menu_button_pressed()->void:
 	globals.main.state = Main.State.MAIN_MENU

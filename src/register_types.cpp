@@ -437,6 +437,7 @@ void ShipData::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("collision_check", "point"), &ShipData::add_part_node);
 	ClassDB::bind_method(D_METHOD("find_neighbors", "part_id", "boundary_flags"), &ShipData::find_neighbors);
 	ClassDB::bind_method(D_METHOD("encode_csv", "delimeter"), &ShipData::encode_csv);
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "name"), "set_name", "get_name");
 }
 void Star::_bind_methods() {
 	ClassDB::bind_static_method("Star", D_METHOD("set_star_shader", "shader"), &Star::set_star_shader);

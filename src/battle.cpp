@@ -4,8 +4,9 @@ using namespace godot;
 
 Battle::Battle() {
    Ref<Team> spectators = memnew(Team);
-   winner     = spectators;
-   teams      = {spectators};
+
+   winner = spectators;
+   teams = {spectators};
    teams_left = {spectators};
    team_balance.new_set();
    set_physics_process(false);

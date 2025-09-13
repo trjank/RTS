@@ -31,8 +31,7 @@ gradient = SubResource("Gradient_lt5l7")
 fill_to = Vector2(1, 1)
 
 [node name="Battle" type="Battle" node_paths=PackedStringArray("countdown_timer", "round_timer")]
-seed = -1909400080011345178
-scale = Vector2(0.926987, 1.02323)
+seed = 0
 script = ExtResource("1_2ostc")
 countdown_timer = NodePath("CountdownTimer")
 round_timer = NodePath("RoundTimer")
@@ -166,6 +165,7 @@ z_index = 5
 script = ExtResource("1_777ku")
 
 [node name="MouseSelection" type="MouseSelection" parent="."]
+action = "select"
 
 [node name="Line2D" type="Line2D" parent="."]
 self_modulate = Color(10, 10, 10, 1)
@@ -177,6 +177,8 @@ end_cap_mode = 2
 
 [connection signal="spawned_ship" from="." to="." method="_on_spawned_ship"]
 [connection signal="started" from="." to="." method="_on_started"]
+[connection signal="pressed" from="UI/HBoxContainer/Control/HBoxContainer2/DesignButton" to="." method="_on_design_button_pressed"]
+[connection signal="pressed" from="UI/HBoxContainer/Control/HBoxContainer2/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="path_ended" from="UnitFormation" to="UnitFormation" method="_on_path_ended"]
 [connection signal="path_started" from="UnitFormation" to="UnitFormation" method="_on_path_started"]
 [connection signal="selection_ended" from="MouseSelection" to="UnitFormation" method="_on_mouse_selection_selection_ended"]

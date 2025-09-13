@@ -13,11 +13,11 @@ var state := State.MAIN_MENU: set = set_state
 	State.SERVER_SELECTOR: null
 }
 
-static func toggle_node(node: Node, show: bool)->void:
+static func toggle_node(node: Node, enable: bool)->void:
 	if not node: return
 	# Preserves data and avoids overhead of creating and freeing nodes
-	node.visible = show
-	node.process_mode = Node.PROCESS_MODE_INHERIT if show else Node.PROCESS_MODE_DISABLED
+	node.visible = enable
+	node.process_mode = Node.PROCESS_MODE_INHERIT if enable else Node.PROCESS_MODE_DISABLED
 
 func set_state(new_state: State)->void:
 	toggle_node(_state_nodes[state], false)
