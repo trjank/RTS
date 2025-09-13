@@ -53,7 +53,7 @@ script = ExtResource("2_xb30u")
 metadata/_edit_use_anchors_ = true
 
 [node name="blur" type="Panel" parent="."]
-visible = false
+show_behind_parent = true
 material = SubResource("ShaderMaterial_0c2qi")
 layout_mode = 2
 

@@ -14,3 +14,8 @@ func _on_design_button_pressed()->void:
 
 func _on_menu_button_pressed()->void:
 	globals.main.state = Main.State.MAIN_MENU
+
+
+func _on_ships_button_pressed():
+	globals.main.state = Main.State.FLEET
+	pass # Replace with function body.

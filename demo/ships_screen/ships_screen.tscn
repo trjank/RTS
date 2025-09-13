@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3 uid="uid://owpblejfs8ky"]
+
+[ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="1_db5p6"]
+[ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="1_h1jtk"]
+[ext_resource type="PackedScene" uid="uid://y6chu0p3tois" path="res://ships_screen/ships_container.tscn" id="3_db5p6"]
+[ext_resource type="PackedScene" uid="uid://drmisu1uy2pxt" path="res://ships_screen/fleets_container.tscn" id="3_typxa"]
+
+[node name="ships_screen" type="Node2D"]
+
+[node name="bg" type="CanvasLayer" parent="." groups=["CanvasLayerToggle"]]
+
+[node name="TextureRect" type="TextureRect" parent="bg"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource("1_db5p6")
+expand_mode = 3
+stretch_mode = 6
+
+[node name="ui" type="CanvasLayer" parent="." groups=["CanvasLayerToggle"]]
+
+[node name="MarginContainer" type="MarginContainer" parent="ui"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ui/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Nagivator" parent="ui/MarginContainer/VBoxContainer" instance=ExtResource("1_h1jtk")]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ui/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ui/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="fleets_container" parent="ui/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_typxa")]
+layout_mode = 2
+
+[node name="ships_container" parent="ui/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_db5p6")]
+layout_mode = 2

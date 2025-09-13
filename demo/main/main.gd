@@ -9,7 +9,7 @@ var state := State.MAIN_MENU: set = set_state
 	State.SETTINGS: $SettingsMenu,
 	State.DESIGN: $Design,
 	State.BATTLE: $Battle,
-	State.FLEET: null,
+	State.FLEET: $Fleets,
 	State.SERVER_SELECTOR: null
 }
 
