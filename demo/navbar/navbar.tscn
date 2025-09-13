@@ -3,9 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://peq8hdkkvc37" path="res://icons/logo.png" id="1_4max0"]
 [ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/stardust_theme.tres" id="1_cnwya"]
 [ext_resource type="Script" uid="uid://cjge4l7tp8ps8" path="res://navbar/navbar.gd" id="1_rsvkd"]
-[ext_resource type="StyleBox" uid="uid://7ddhu1wc1g27" path="res://navigator_button.tres" id="2_70ivd"]
+[ext_resource type="StyleBox" uid="uid://cggb6w05ajg1p" path="res://navigator_button.tres" id="2_70ivd"]
 [ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="3_e86oi"]
-[ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navigator_button_hover.tres" id="3_eayf2"]
+[ext_resource type="StyleBox" path="res://navigator_button_hover.tres" id="3_eayf2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
 bg_color = Color(0, 0, 0, 0.470588)

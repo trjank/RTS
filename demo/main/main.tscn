@@ -18,5 +18,7 @@ metadata/_custom_type_script = "uid://bed2cq2pcsh86"
 [node name="Design" parent="." instance=ExtResource("11_dg77c")]
 
 [node name="Battle" parent="." instance=ExtResource("5_rtafa")]
+seed = -1909400080011345178
+scale = Vector2(0.926987, 1.02323)
 
 [node name="Fleets" parent="." instance=ExtResource("6_kfbq2")]
