@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://5yhk4cd760g7"]
+
+[ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet.tscn" id="1_ivq4w"]
+[ext_resource type="Script" uid="uid://b7ip1206r8sxu" path="res://map/star.gd" id="2_qmuoe"]
+
+[node name="Star" instance=ExtResource("1_ivq4w")]
+script = ExtResource("2_qmuoe")

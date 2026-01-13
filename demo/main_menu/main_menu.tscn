@@ -1,0 +1,114 @@
+[gd_scene load_steps=8 format=3 uid="uid://c60au813wrr5i"]
+
+[ext_resource type="Script" uid="uid://76pjt8trd8dg" path="res://main_menu/main_menu.gd" id="1_6tl50"]
+[ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://ships/battle.tscn" id="1_512ns"]
+[ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/main_theme.tres" id="2_nhs7o"]
+[ext_resource type="StyleBox" uid="uid://b7i5b8v0uud2o" path="res://main_menu/main_menu_button.tres" id="3_sl4gw"]
+[ext_resource type="StyleBox" uid="uid://versdykqupxc" path="res://main_menu/main_menu_button_pressed.tres" id="4_a3n4j"]
+[ext_resource type="StyleBox" uid="uid://b3jy7248xbd3j" path="res://main_menu/main_menu_button_hover.tres" id="5_0w23u"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ahnob"]
+content_margin_left = 50.0
+content_margin_top = 50.0
+content_margin_right = 50.0
+content_margin_bottom = 50.0
+bg_color = Color(0, 0, 0, 0.556863)
+
+[node name="MainMenu" instance=ExtResource("1_512ns")]
+script = ExtResource("1_6tl50")
+
+[node name="Control" parent="UI" index="0"]
+visible = false
+
+[node name="PanelContainer" parent="UI" index="1"]
+visible = false
+
+[node name="HBoxContainer" parent="UI" index="2"]
+visible = false
+
+[node name="Options" type="PanelContainer" parent="UI" index="3"]
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -337.0
+offset_top = -340.5
+offset_right = 337.0
+offset_bottom = 340.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_nhs7o")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ahnob")
+
+[node name="GridContainer" type="GridContainer" parent="UI/Options" index="0"]
+layout_mode = 2
+theme_override_constants/v_separation = 50
+
+[node name="Title" type="Label" parent="UI/Options/GridContainer" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 50
+text = "Project Stardust"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Options/GridContainer" index="1"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 25
+metadata/_edit_use_anchors_ = true
+
+[node name="SingleplayerButton" type="Button" parent="UI/Options/GridContainer/VBoxContainer" index="0"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("3_sl4gw")
+theme_override_styles/pressed = ExtResource("4_a3n4j")
+theme_override_styles/hover = ExtResource("5_0w23u")
+text = "Singleplayer"
+alignment = 0
+
+[node name="MultiplayerButton" type="Button" parent="UI/Options/GridContainer/VBoxContainer" index="1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("3_sl4gw")
+theme_override_styles/pressed = ExtResource("4_a3n4j")
+theme_override_styles/hover = ExtResource("5_0w23u")
+text = "Multiplayer
+"
+alignment = 0
+
+[node name="DesignButton" type="Button" parent="UI/Options/GridContainer/VBoxContainer" index="2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("3_sl4gw")
+theme_override_styles/pressed = ExtResource("4_a3n4j")
+theme_override_styles/hover = ExtResource("5_0w23u")
+text = "Design
+"
+alignment = 0
+
+[node name="FleetsButton" type="Button" parent="UI/Options/GridContainer/VBoxContainer" index="3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("3_sl4gw")
+theme_override_styles/pressed = ExtResource("4_a3n4j")
+theme_override_styles/hover = ExtResource("5_0w23u")
+text = "Fleets
+"
+alignment = 0
+
+[node name="SettingsButton" type="Button" parent="UI/Options/GridContainer/VBoxContainer" index="4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("3_sl4gw")
+theme_override_styles/pressed = ExtResource("4_a3n4j")
+theme_override_styles/hover = ExtResource("5_0w23u")
+text = "Settings
+"
+alignment = 0
+
+[connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/DesignButton" to="." method="_on_design_button_pressed"]
+[connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/FleetsButton" to="." method="_on_fleets_button_pressed"]
+[connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]

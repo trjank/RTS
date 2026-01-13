@@ -1,6 +1,30 @@
-[gd_scene load_steps=2 format=3 uid="uid://x7hwc0lotf28"]
+[gd_scene load_steps=2 format=3 uid="uid://dtx1074sgatyg"]
 
-[ext_resource type="Script" uid="uid://b2juxtnjdh7vb" path="res://design/fleet_button.gd" id="1_jv4gm"]
+[sub_resource type="GDScript" id="GDScript_hdnpp"]
+script/source = "extends MarginContainer
+
+@onready var button = %Button
+@onready var delete_button = %Button2
+
+var method: Callable
+var delete_method: Callable
+var button_name = \"Untitled ship\"
+
+func _ready():
+	button.text = button_name
+	button.pressed.connect(method)
+	delete_button.pressed.connect(delete_method)
+
+func rebind(new_method: Callable):
+	button.pressed.disconnect(method)
+	button.pressed.connect(new_method)
+	method = new_method
+
+func rebind_delete(new_method: Callable):
+	delete_button.pressed.disconnect(delete_method)
+	delete_button.pressed.connect(new_method)
+	delete_method = new_method
+"
 
 [node name="MarginContainer" type="MarginContainer"]
 anchors_preset = 15
@@ -8,7 +32,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_jv4gm")
+script = SubResource("GDScript_hdnpp")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2

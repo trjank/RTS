@@ -31,7 +31,7 @@ func _unhandled_input(event: InputEvent)->void:
 		formation = SMOOTH
 	elif event.is_action_pressed("precise formation"):
 		formation = PRECISE
-   
+	 
 	if event.is_action_pressed("lock units"):
 		order_units_to_toggle_lock(0.5)
 	if event.is_action_pressed("toggle queue move"):

@@ -1,241 +1,78 @@
-extends Node2D
+class_name Design extends Node
 
-@export var part_grouping: PartGrouping
-@export var info_text: Label
+signal ship_changed(ship_id: ShipDataID)
 
-@onready var fleets_container = %FleetContainer
-@onready var parts_container = %PartsContainer
-#@onready var fleet_dropdown = %FleetDropdown
-@onready var rename_fleet_popup = %RenameFleetPopup
-@onready var grid = %Grid
-#@onready var ship_buttons = %ship_buttons
-@onready var ship_button = preload("res://design/fleet_button.tscn")
+@export var part_group: PartGroup
+@export var parts_container: PartsContainer
+@export var fleets_container: Node
+@export var mouse_selection: MouseSelection
+@export var grid: Grid
+@export var save_popup: AcceptDialog
 
-const UNSAVED_SHIP_ID := -1
-const UNSAVED_SHIP_NAME := "Untitled"
-const EMPTY_SLOT_NAME := " "
-const UNSAVED_FLEET_NAME := "*Unsaved"
-const UNSAVED_FLEET_ID := -1
-const DEFAULT_SLOT := 0
-const FLEET_SIZE := 10
+@export var assembler: GPUImageAssembler
 
-var parts_manager := JSONPartManager.new()
-var current_fleet: FleetID
-var current_ship: ShipDataID
-var rename := "*Unsaved"
-var ship_name := EMPTY_SLOT_NAME
-var slot_buttons := {}
-var unsaved := false
+var parts_manager := PartManager.new()
 
-
-var mirror_mode := false: set = set_mirror_mode
-
-@onready var mirror_axis := %MirrorAxis
-
-func set_mirror_mode(enabled: bool)->void:
-	mirror_mode = enabled
-	mirror_axis.visible = enabled
-
-func resize_grid(size: Vector2i)->void:
-	var size_px := Vector2(size * PartData.PX_PER_GRID_SQUARE)
-	grid.region_rect.size = size_px
-	# Move mirror axis to grid midpoint
-	mirror_axis.position.x = 0.5 * size_px.x
-	mirror_axis.points[1].y = size_px.y
-
-func load_ship(ship: ShipData)->void:
-	for part_id in range(1, 1 + ship.count_parts()):
-		var part := Part.create_from(ship.get_part_data(part_id))
-		var orientation := ship.get_part_orientation(part_id)
-		grid.add_child(part)
-		part.set_orientation(orientation)
-		# No need to snap to grid since the region is a Rect2i
-		part.position = ship.get_part_region(part_id).position
-
-func save_ship(ship_id: ShipDataID)->void:
-	var ship := ship_id.ship_data
-	CPUImageBuilder.build_image(ship)
-	globals.ship_db.save_ship(ship_id)
-	#var current_id = ship_slots[current_ship_slot]
-	#ship.encode_csv(",")
-	#var ship_stats := ship.get_csv()
-	#if current_id > -1:
-		#print("Updating ship stats for ship id: %d" % current_id)
-		#db.update_ship_stats(current_id, ship_stats)
-		#return
-	#var results = db.create_ship(ship_name, ship_stats)
-
-	#if results.size() > 0:
-		#print("created new ship with id: %d" % results[0]["id"])
-		#var newShip = results[0]
-		#db.add_ship_to_fleet(current_fleet, newShip["id"])
-		#ship_slots[current_ship_slot] = newShip["id"]
-		#print(ship)
-		#slot_buttons[current_ship_slot].button.text = "Untitled"
-		#slot_buttons[current_ship_slot].delete_button.visible = true
-
-func _input(event: InputEvent)->void:
-	if event.is_action_pressed("mirror mode"):
-		mirror_mode = not mirror_mode
-	if event.is_action_pressed("save"):
-		print("saving...")
-		part_grouping.clear_parts() # <-- This is VERY important
-		var ship := ShipData.create(64, 64)
-		for part in grid.get_children():
-			ship.add_part_node(part)
-			print("->", part.rotation, " | ", part.scale.x < 0, " | ", part.get_class())
-		print(ship.count_parts())
-		#save_ship(ship)
-
-func clear_grid()->void:
-	part_grouping.clear_parts()
-	for part in grid.get_children():
-		grid.remove_child(part)
-
-func change_slot(slot: String, slot_num: int)->void:
-	clear_grid()
-	var new_ship_id = current_fleet.slots[slot][slot_num]
-	#slot_buttons[current_ship_slot].delete_button.visible = false
-	current_ship = new_ship_id
-	
-	if new_ship_id.ship_data.is_empty():
-		globals.ship_db.sync_ship(new_ship_id)
-	#slot_buttons[new_slot].delete_button.visible = true
-	#data[SHIP_BUTTON].delete_button.connect(clear_current_slot)
-
-
-func create_ship_button(button_name, method, del_method):
-	var new_button = ship_button.instantiate()
-	new_button.method = method
-	new_button.delete_method = del_method
-	new_button.button_name = button_name
-	return new_button
-
-func clear_current_slot():
-	clear_grid()
-	#ship_slots[current_ship_slot] = UNSAVED_SHIP_ID
-	#slot_buttons[current_ship_slot].button.text = UNSAVED_SHIP_NAME
-	#slot_buttons[current_ship_slot].delete_button.visible = false
-
-func create_ship_buttons():
-	var btn_name = EMPTY_SLOT_NAME
-	for num in range(FLEET_SIZE):
-		var button = create_ship_button(btn_name,change_slot.bind(num),clear_current_slot)
-		slot_buttons[num] = button
-		#ship_buttons.add_child(button)
-
-func set_ships(ships):
-	ships.resize(FLEET_SIZE)
-	#
-	#for num in range(FLEET_SIZE):
-		#var cur_ship = ships[num]
-		#var btn_name = EMPTY_SLOT_NAME
-		#var ship_id = -1
-		#if cur_ship:
-			#btn_name = "Slot "+str(num)+":"+cur_ship["name"]
-			#ship_id = cur_ship["id"]
-		#
-		#slot_buttons[num].button.text = btn_name
-		#ship_slots[num] = ship_id
-
-
-
-func setup_part_buttons():
-	parts_manager.load_json("user://part_data.json")
-	PartButton.part_container = part_grouping
-	for atlas_id in range(1, parts_manager.count_parts()):
-		var part := parts_manager.lookup_id(atlas_id)
-		var tab := part.get_tab()
-		var part_display := PartButton.new()
-		part_display.part_data = part
-		part_display.texture_normal = part.get_texture()
-		part_display.set_display_size( part.get_size() )
-		#part_display.set_stretch_mode(TextureButton.StretchMode.STRETCH_KEEP_ASPECT_CENTERED)
-	
-		parts_container.add_part(tab, part_display)
-		#if not container:
-		#	push_warning("Tab '%s' does not exist" % container)
-		#else:
-		#	container.add_child(part_display)
-
-func setup_fleet_buttons():
-	var fleets = globals.ship_db.get_fleets(100)
-	if not fleets:
-		print("No fleets found in database.")
+func _unhandled_input(event: InputEvent) -> void:
+	if not event.is_action_pressed("save"):
 		return
-	print(fleets)
-	#fleet_dropdown.set_fleets(fleets)
-	#fleet_dropdown.item_selected.connect(on_selected_fleet)
-	rename_fleet_popup.valid_rename.connect(on_valid_rename)
-	
+	part_group.move_parts()
+	var error_message := ""
+	var error_flags := grid.save()
+	if error_flags & ShipData.PartError.IS_NULL:
+		error_message += "- NULL part (PLEASE REPORT THIS BUG)\n"
+	if error_flags & ShipData.PartError.OUT_OF_BOUNDS:
+		error_message += "- Part is out of bounds\n"
+	if error_flags & ShipData.PartError.OVERLAP:
+		error_message += "- Parts are overlapping\n"
+	if not grid.ship.are_parts_connected():
+		error_message += "- Parts are disconnected (%d clusters detected)\n" % grid.ship.count_part_clusters()
+	if error_message != "":
+		save_popup.dialog_text = "Failed to save for the following reasons:\n\n" + error_message
+		save_popup.show()
+	var test1 := assembler.assemble_naive(grid.ship)
+	var test2 := await assembler.assemble(grid.ship)
+	print(test1.save_png("res://design/naive_test.png"))
+	print(test2.save_png("res://design/gpu_test.png"))
+	var f1 := assembler.assemble_naive.bind(grid.ship)
+	var f2 := assembler.assemble.bind(grid.ship)
+	print("naive: ", await Util.benchmark(f1))
+	print("gpu: ", await Util.benchmark(f2))
 
-func resize(new_size: Vector2)->void:
-	grid.region_rect.size = new_size * PartData.PX_PER_GRID_SQUARE
+func _part_clicked(part: PartHitbox) -> void:
+	part_group.select_part(part)
+	part_group.begin_dragging()
 
-func _ready():
-	globals.ship_db.part_manager = parts_manager
-	#setup global db connection?
-	#resize(Vector2(64, 64))
-	#var ships = db.get_ships_in_fleet(current_fleet)
-	#print(ships)
-	#create_ship_buttons()
-	setup_part_buttons()
-	#setup_fleet_buttons()
-	#set_fleet(1)
+func drag_part(part_data: PartData) -> void:
+	part_group.spawn_part_at_mouse(part_data)
+	part_group.begin_dragging()
 
+func create_ship_button(_ship: ShipDataID) -> void:
+	var button := preload("res://design/ship_button.tscn").instantiate()
+	#button.ship_change_requested.connect(select_ship)
+	ship_changed.connect(button.show_selected)
+	fleets_container.add_child(button)
 
-func set_fleet(new_fleet):
-	#var ships = db.get_ships_in_fleet(new_fleet)
-	current_fleet = new_fleet
-	#set_ships(ships)
+func create_part_button(part_data: PartData) -> void:
+	var button := TextureButton.new()
+	button.button_down.connect(drag_part.bind(part_data) )
+	button.texture_normal = part_data.texture
+	button.ignore_texture_size = true
+	button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	button.custom_minimum_size = Grid.TILE_SIZE * part_data.get_size()
+	parts_container.add_part(part_data.tab, button)
 
+func on_global_client_fleet_changed(_new_fleet: FleetID) -> void:
+	grid.ship = null
 
-const NEW_FLEET_OPTION := 0
-const RENAME_FLEET_OPTION := 1
-const DELETE_FLEET_OPTION := 2
-const NO_OPTION := 3
-
-func update_fleet_dropdown():
-	var fleets := globals.ship_db.get_fleets(100)
-	#fleet_dropdown.clear()
-	#fleet_dropdown.add_item("New Fleet")
-	#fleet_dropdown.add_item("Rename Fleet")
-	#fleet_dropdown.add_item("Delete Fleet")
-	#fleet_dropdown.add_item(" ")
-	#fleet_dropdown.set_fleets(fleets)
-
-func on_selected_fleet(option):
-	match option:
-		RENAME_FLEET_OPTION:
-			# Open a popup window with a textbox
-			#select(previous_option)
-			#option_to_rename = selected
-			rename_fleet_popup.show()
-		DELETE_FLEET_OPTION:
-			return
-			#fleet_dropdown.remove_item(option)
-			#db.remove_fleet_and_ships(current_fleet)
-		NEW_FLEET_OPTION:
-			var new_fleet = globals.ship_db.create_fleet(Fleet.new())
-			#fleet_dropdown.fleets.append(new_fleet)
-			#fleet_dropdown.add_item("Untitled Fleet", true)
-			#fleet_dropdown.select(fleet_dropdown.item_count - 1)
-			
-			#add_item(NO_NAME, 0)
-			#select(item_count - 1)
-			#option_to_rename = selected
-			rename_fleet_popup.show()
-		_:
-			if(option < 4):
-				return
-			
-			var fleet_index = option - 4
-			#var fleet_selected = fleet_dropdown.fleets[fleet_index]
-			print("Selected fleet:")
-			#print(fleet_selected)
-			#set_fleet(fleet_selected["id"])
-
-func on_valid_rename(new_name: String)->void:
-	current_fleet.name = new_name
-	globals.ship_db.save_fleet(current_fleet)
-	update_fleet_dropdown()
+func _ready() -> void:
+	part_group.dragging_started.connect(mouse_selection.disable)
+	part_group.dragging_ended.connect(mouse_selection.enable)
+	mouse_selection.selected.connect(part_group.select)
+	globals.client.fleet_changed.connect(on_global_client_fleet_changed)
+	var error := parts_manager.load_json(globals.PARTS_JSON_PATH)
+	print(PartManager.LoadError.find_key(error))
+	for part in parts_manager._parts:
+		create_part_button(part)
+	parts_manager.generate_atlas()
+	parts_manager.atlas.save_png("res://design/atlas_test.png")

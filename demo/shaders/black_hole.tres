@@ -4,8 +4,9 @@
 
 [sub_resource type="Curve" id="Curve_iorop"]
 _limits = [-1.0, 1.0, 0.0, 0.5]
-_data = [Vector2(0.247758, 0.258837), 0.0, 0.0, 0, 0, Vector2(0.363229, -0.195743), 0.0, 0.0, 0, 0, Vector2(0.5, 0.00190043), 0.0, 0.0, 0, 0]
-point_count = 3
+_data = [Vector2(0, 0.20000002), 0.0, 0.0, 0, 0, Vector2(0.3, 0.20000002), 0.0, 0.0, 0, 0, Vector2(0.394033, -0.129685), 0.0, 0.0, 0, 0, Vector2(0.45000002, 1.4901161e-08), 0.0, 0.0, 0, 0]
+point_count = 4
+metadata/_snap_enabled = true
 
 [sub_resource type="CurveTexture" id="CurveTexture_rxlun"]
 curve = SubResource("Curve_iorop")
@@ -13,5 +14,5 @@ curve = SubResource("Curve_iorop")
 [resource]
 shader = ExtResource("1_2rmdj")
 shader_parameter/distortion_curve = SubResource("CurveTexture_rxlun")
-shader_parameter/horizon_radius = 0.298
-shader_parameter/horizon_smoothing = 0.061
+shader_parameter/horizon_radius = 0.38
+shader_parameter/horizon_smoothing = 0.05

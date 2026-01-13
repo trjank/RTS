@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://vkps68y16yi"]
+
+[ext_resource type="Script" uid="uid://oipybd7k0g1l" path="res://ships/gpu_image_assembler.gd" id="1_lbh72"]
+[ext_resource type="Script" uid="uid://qm8dkauq6dqu" path="res://ships/gpu_ship.gd" id="2_v6svx"]
+
+[node name="GPUImageAssembler" type="SubViewport" node_paths=PackedStringArray("ship")]
+disable_3d = true
+transparent_bg = true
+render_target_update_mode = 1
+script = ExtResource("1_lbh72")
+ship = NodePath("Ship")
+
+[node name="Ship" type="Node2D" parent="."]
+script = ExtResource("2_v6svx")

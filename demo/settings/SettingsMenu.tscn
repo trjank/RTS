@@ -4,26 +4,35 @@
 [ext_resource type="Script" uid="uid://c1gxo4ms6nvm8" path="res://settings/back_button.gd" id="1_olm1t"]
 [ext_resource type="PackedScene" uid="uid://bnnn7c40rsf6y" path="res://settings/keybinds_panel.tscn" id="1_u45p5"]
 
-[node name="SettingsMenu" type="CanvasLayer"]
+[node name="SettingsMenu" type="Node"]
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MarginContainer" type="MarginContainer" parent="UI"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 50.0
+offset_bottom = 18.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/MarginContainer"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 
-[node name="back_button" type="Button" parent="MarginContainer/HBoxContainer/MarginContainer"]
+[node name="back_button" type="Button" parent="UI/MarginContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -31,11 +40,11 @@ text = "Back
 "
 script = ExtResource("1_olm1t")
 
-[node name="Control" type="Control" parent="MarginContainer/HBoxContainer"]
+[node name="Control" type="Control" parent="UI/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TabContainer" type="TabContainer" parent="MarginContainer/HBoxContainer/Control"]
+[node name="TabContainer" type="TabContainer" parent="UI/MarginContainer/HBoxContainer/Control"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.05
@@ -47,13 +56,15 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 current_tab = 0
 
-[node name="Keybinds" parent="MarginContainer/HBoxContainer/Control/TabContainer" instance=ExtResource("1_u45p5")]
+[node name="Keybinds" parent="UI/MarginContainer/HBoxContainer/Control/TabContainer" instance=ExtResource("1_u45p5")]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Settings" parent="MarginContainer/HBoxContainer/Control/TabContainer" instance=ExtResource("1_dq6we")]
+[node name="Settings" parent="UI/MarginContainer/HBoxContainer/Control/TabContainer" instance=ExtResource("1_dq6we")]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[connection signal="pressed" from="MarginContainer/HBoxContainer/MarginContainer/back_button" to="MarginContainer/HBoxContainer/MarginContainer/back_button" method="_on_pressed"]
+[node name="World" type="Node2D" parent="."]
+
+[connection signal="pressed" from="UI/MarginContainer/HBoxContainer/MarginContainer/back_button" to="UI/MarginContainer/HBoxContainer/MarginContainer/back_button" method="_on_pressed"]

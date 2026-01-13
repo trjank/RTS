@@ -1,0 +1,71 @@
+[gd_scene load_steps=5 format=3 uid="uid://bvi7rt1l6hfoy"]
+
+[ext_resource type="Script" uid="uid://yubit2roc71n" path="res://map/planet.gd" id="1_3aqce"]
+[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icons/icon.svg" id="1_om5pk"]
+[ext_resource type="Script" uid="uid://c1dmiob7cvmpw" path="res://map/resizeable_sprite_2d.gd" id="3_uj2kf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_euujv"]
+
+[node name="Planet" type="Node2D" node_paths=PackedStringArray("always_upright", "ui", "label", "sprite", "zone", "zone_shape")]
+script = ExtResource("1_3aqce")
+always_upright = NodePath("AlwaysUpright")
+ui = NodePath("AlwaysUpright/UI")
+label = NodePath("AlwaysUpright/UI/Label")
+sprite = NodePath("ResizeableSprite2D")
+zone = NodePath("Area2D")
+zone_shape = NodePath("Area2D/CollisionShape2D")
+metadata/_custom_type_script = "uid://yubit2roc71n"
+
+[node name="AlwaysUpright" type="Node2D" parent="."]
+z_index = 2
+
+[node name="UI" type="VBoxContainer" parent="AlwaysUpright"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -207.0
+offset_top = -239.0
+offset_right = 207.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="AlwaysUpright/UI"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 75
+text = "<Unnamed>"
+horizontal_alignment = 1
+
+[node name="Alloy" type="Label" parent="AlwaysUpright/UI"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 50
+text = "Alloy: 10/s"
+horizontal_alignment = 1
+
+[node name="Energy" type="Label" parent="AlwaysUpright/UI"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 50
+text = "Energy: 10/s"
+horizontal_alignment = 1
+
+[node name="ResizeableSprite2D" type="Sprite2D" parent="."]
+z_index = 1
+texture = ExtResource("1_om5pk")
+region_rect = Rect2(0, 0, 100, 100)
+script = ExtResource("3_uj2kf")
+metadata/_custom_type_script = "uid://c1dmiob7cvmpw"
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_euujv")

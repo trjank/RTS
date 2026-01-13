@@ -1,0 +1,206 @@
+[gd_scene load_steps=9 format=3 uid="uid://clxf0rnk677i8"]
+
+[ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://ships/battle.gd" id="1_nohcx"]
+[ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="2_wu24d"]
+[ext_resource type="Script" uid="uid://butv3bkqoil8c" path="res://ships/unit_formation.gd" id="2_xooj7"]
+[ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://ships/mouse_selection.tscn" id="3_70s20"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wu24d"]
+content_margin_left = 25.0
+content_margin_top = 20.0
+content_margin_right = 25.0
+content_margin_bottom = 20.0
+bg_color = Color(0, 0, 0, 0.5)
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 5
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xooj7"]
+content_margin_left = 25.0
+content_margin_top = 15.0
+content_margin_right = 25.0
+content_margin_bottom = 15.0
+bg_color = Color(0, 0, 0, 0.5)
+
+[sub_resource type="Environment" id="Environment_70s20"]
+background_mode = 3
+glow_enabled = true
+glow_intensity = 0.23
+glow_strength = 0.57
+glow_blend_mode = 1
+glow_hdr_threshold = 2.0
+glow_hdr_luminance_cap = 20.0
+
+[sub_resource type="Curve2D" id="Curve2D_70s20"]
+
+[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container")]
+script = ExtResource("1_nohcx")
+world = NodePath("World")
+round_timer = NodePath("RoundTimer")
+countdown_timer = NodePath("CountdownTimer")
+players_container = NodePath("World/Players")
+metadata/_custom_type_script = "uid://bvfy718iilaa1"
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 1
+anchor_top = 0.75
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 456.0
+offset_bottom = 456.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="panel" type="PanelContainer" parent="UI/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -150.0
+offset_right = 300.0
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/Control/panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -290.5
+offset_right = 290.5
+offset_bottom = 80.0
+grow_horizontal = 2
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_wu24d")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="Alloy" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_colors/default_color = Color(0.654902, 0.792157, 1, 1)
+text = "Alloy: "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="AlloyCount" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+text = "1000"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Energy" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_colors/default_color = Color(1, 1, 0.431373, 1)
+text = "       Energy: "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="EnergyCount" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+text = "1000"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Time" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_colors/default_color = Color(0.43, 1, 0.6675, 1)
+text = "       Time: "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="TimeLeft" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+text = "29m 30s"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+layout_mode = 1
+offset_right = 199.0
+offset_bottom = 48.0
+theme_override_constants/separation = 15
+
+[node name="DesignButton" type="Button" parent="UI/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_xooj7")
+text = "Design"
+icon = ExtResource("2_wu24d")
+
+[node name="MenuButton" type="Button" parent="UI/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_xooj7")
+text = "Menu
+"
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
+environment = SubResource("Environment_70s20")
+
+[node name="Players" type="Node2D" parent="World"]
+
+[node name="UnitFormation" type="Path2D" parent="World"]
+curve = SubResource("Curve2D_70s20")
+script = ExtResource("2_xooj7")
+metadata/_custom_type_script = "uid://butv3bkqoil8c"
+
+[node name="MouseSelection" parent="World" instance=ExtResource("3_70s20")]
+color = Color(1, 0.9254902, 0.87058824, 0.39215687)
+
+[node name="RoundTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="CountdownTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="pressed" from="UI/HBoxContainer/DesignButton" to="." method="_on_design_button_pressed"]
+[connection signal="pressed" from="UI/HBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
+[connection signal="timeout" from="RoundTimer" to="." method="_on_round_timer_timeout"]
+[connection signal="timeout" from="CountdownTimer" to="." method="_on_countdown_timer_timeout"]

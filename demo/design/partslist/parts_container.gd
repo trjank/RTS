@@ -1,10 +1,10 @@
-extends PanelContainer
+class_name PartsContainer extends PanelContainer
 
-@onready var part_tabs := %PartTabs
+@export var part_tabs: TabContainer
 
-func add_part(tab: String, part_button: PartButton)->void:
-	var container := part_tabs.find_child(tab)
-	if not container: 
-		push_warning("Tab '%s' does not exist" % tab)
-	else:
-		container.add_child(part_button)
+func add_part(tab: String, part_button: TextureButton) -> bool:
+	var container := part_tabs.find_child(tab, false)
+	if container == null:
+		return false
+	container.add_child(part_button)
+	return true

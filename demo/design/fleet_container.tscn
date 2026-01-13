@@ -1,12 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://hi3bwlaeckb5"]
+[gd_scene load_steps=6 format=3 uid="uid://hi3bwlaeckb5"]
 
-[ext_resource type="Theme" uid="uid://dgs1qnc6a3qos" path="res://design/partslist/dropdown_theme.tres" id="1_vsli0"]
-[ext_resource type="StyleBox" uid="uid://ch8n48vyodgt" path="res://design/partslist/dropdown.tres" id="2_3s6nq"]
-[ext_resource type="Texture2D" uid="uid://wq8ei1nlxqqq" path="res://icons/fleet_new.png" id="3_41ufd"]
-[ext_resource type="Texture2D" uid="uid://blwjohdbu8pgf" path="res://icons/fleet_rename.png" id="4_8ajl0"]
-[ext_resource type="Texture2D" uid="uid://inbrq5b8ia5x" path="res://icons/fleet_delete.png" id="5_asc7f"]
-[ext_resource type="Script" uid="uid://daw7vfno8mvqr" path="res://design/fleet_selector/fleet_selector.gd" id="6_ijjb2"]
-[ext_resource type="PackedScene" uid="uid://x7hwc0lotf28" path="res://fleet_button.tscn" id="7_6i8cd"]
+[ext_resource type="Script" uid="uid://df7r1lo3a8cdl" path="res://design/fleet_container.gd" id="1_12wau"]
+[ext_resource type="Texture2D" uid="uid://b74sd2enfxbeq" path="res://icons/fleet_switch.png" id="1_o7u1k"]
+[ext_resource type="Texture2D" uid="uid://ccqmnyatvyvno" path="res://icons/fleet_switch_hover.png" id="2_y70oc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bomom"]
 content_margin_left = 0.0
@@ -16,26 +12,24 @@ content_margin_bottom = 0.0
 bg_color = Color(0.262745, 0.305882, 0.368627, 0.392157)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o6k85"]
-content_margin_left = 40.0
-content_margin_top = 20.0
-content_margin_right = 40.0
-content_margin_bottom = 20.0
-bg_color = Color(0.261579, 0.30508, 0.367227, 1)
-border_color = Color(1, 0.678431, 0.984314, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jti52"]
 content_margin_left = 20.0
-content_margin_top = 15.0
-content_margin_right = 60.0
-content_margin_bottom = 15.0
-bg_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(0.1278, 0.14955, 0.18, 1)
+border_width_bottom = 2
+border_color = Color(0.772549, 0.611765, 0.85098, 1)
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgale"]
-
-[node name="FleetContainer" type="PanelContainer"]
+[node name="FleetContainer" type="PanelContainer" node_paths=PackedStringArray("ships_container")]
+custom_minimum_size = Vector2(500, 0)
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 284.0
+grow_vertical = 2
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_bomom")
+script = ExtResource("1_12wau")
+ships_container = NodePath("VBoxContainer/ScrollContainer/ShipButtons")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -44,57 +38,52 @@ layout_mode = 2
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_o6k85")
 
-[node name="FleetDropdown" type="OptionButton" parent="VBoxContainer/PanelContainer"]
-unique_name_in_owner = true
+[node name="VBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
-theme = ExtResource("1_vsli0")
-theme_override_colors/font_hover_color = Color(1, 0.572419, 0.617748, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(1, 0.572549, 0.619608, 1)
-theme_override_constants/h_separation = 15
-theme_override_font_sizes/font_size = 28
-theme_override_styles/focus = ExtResource("2_3s6nq")
-theme_override_styles/hover = ExtResource("2_3s6nq")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_jti52")
-theme_override_styles/normal = ExtResource("2_3s6nq")
-theme_override_constants/arrow_margin = 15
-theme_override_icons/arrow = SubResource("CompressedTexture2D_vgale")
-selected = 3
-item_count = 5
-popup/item_0/text = "NEW FLEET"
-popup/item_0/icon = ExtResource("3_41ufd")
-popup/item_0/id = 0
-popup/item_1/text = "RENAME FLEET"
-popup/item_1/icon = ExtResource("4_8ajl0")
-popup/item_1/id = 1
-popup/item_2/text = "DELETE FLEET"
-popup/item_2/icon = ExtResource("5_asc7f")
-popup/item_2/id = 2
-popup/item_3/text = "Fleets"
-popup/item_3/id = 3
-popup/item_3/separator = true
-popup/item_4/id = 4
-script = ExtResource("6_ijjb2")
+theme_override_constants/separation = 15
+alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+size_flags_vertical = 3
+text = "Fleet:"
+vertical_alignment = 1
+
+[node name="FleetName" type="Label" parent="VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.772549, 0.611765, 0.85098, 1)
+theme_override_colors/font_outline_color = Color(0.77254903, 0.6117647, 0.8509804, 1)
+theme_override_constants/outline_size = 2
+text = "Starter"
+vertical_alignment = 1
+
+[node name="FleetSwapButton" type="TextureButton" parent="VBoxContainer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("1_o7u1k")
+texture_hover = ExtResource("2_y70oc")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
-[node name="ship_buttons" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
-unique_name_in_owner = true
+[node name="ShipButtons" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 15
 
-[node name="MarginContainer" parent="VBoxContainer/ScrollContainer/ship_buttons" instance=ExtResource("7_6i8cd")]
-visible = false
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/ShipButtons"]
+layout_mode = 2
+text = "<ship slot name>"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/ScrollContainer/ShipButtons"]
 layout_mode = 2
 
-[connection signal="item_selected" from="VBoxContainer/PanelContainer/FleetDropdown" to="VBoxContainer/PanelContainer/FleetDropdown" method="_on_item_selected"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/VBoxContainer/FleetSwapButton" to="." method="_on_fleet_swap_button_pressed"]

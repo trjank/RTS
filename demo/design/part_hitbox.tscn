@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://1w6my6ftlx12"]
+
+[ext_resource type="Script" uid="uid://b1jcsb3ib2om2" path="res://design/part_hitbox.gd" id="1_ygxrn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j6w7y"]
+
+[node name="PartHitbox" type="StaticBody2D" node_paths=PackedStringArray("shape")]
+z_as_relative = false
+script = ExtResource("1_ygxrn")
+shape = NodePath("CollisionShape2D")
+metadata/_custom_type_script = "uid://b1jcsb3ib2om2"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_j6w7y")

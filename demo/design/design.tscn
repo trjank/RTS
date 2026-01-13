@@ -2,58 +2,49 @@
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="2_6gxgq"]
-[ext_resource type="Texture2D" uid="uid://bh387tcvwbx50" path="res://images_backgrounds/background.png" id="2_rmp56"]
 [ext_resource type="PackedScene" uid="uid://hi3bwlaeckb5" path="res://design/fleet_container.tscn" id="3_rmp56"]
 [ext_resource type="Shader" uid="uid://cxuhliel45ol6" path="res://design/grid_lines.gdshader" id="5_rmp56"]
+[ext_resource type="Script" uid="uid://rrpw8rs1x5wn" path="res://design/grid.gd" id="8_bjdq3"]
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/partslist/parts_container.tscn" id="9_3c8mw"]
-[ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/PartGrouping.gd" id="10_6vk6i"]
-[ext_resource type="Script" path="res://design/MouseSelection.gd" id="11_541lb"]
-[ext_resource type="PackedScene" uid="uid://p3nnscobw38k" path="res://camera.tscn" id="13_rmp56"]
+[ext_resource type="Texture2D" uid="uid://d4f7cgh3wnd2p" path="res://icons/grid_background.png" id="9_rmp56"]
+[ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/part_group.gd" id="10_6vk6i"]
+[ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://ships/mouse_selection.tscn" id="13_r41aq"]
+[ext_resource type="Script" uid="uid://tejgckuc5ycl" path="res://design/grid_center_marker.gd" id="13_rmp56"]
+[ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="14_7jtw0"]
+[ext_resource type="PackedScene" uid="uid://vkps68y16yi" path="res://ships/gpu_image_assembler.tscn" id="14_q8dch"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icons/icon.svg" id="14_qg3uy"]
-[ext_resource type="Texture2D" uid="uid://cvcfx8expolen" path="res://icons/parts_selection_background.png" id="17_qupps"]
-[ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="18_01mpa"]
-[ext_resource type="Script" uid="uid://bpptswrvnl6dk" path="res://design/popups/RenameFleetPopup.gd" id="19_ract4"]
+[ext_resource type="Texture2D" uid="uid://b7i3ye8e4fjyl" path="res://icons/menu_close.png" id="14_r41aq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r41aq"]
 shader = ExtResource("5_rmp56")
-shader_parameter/major_line_tick = 5
+shader_parameter/major_line_tick = 4
 shader_parameter/minor_line_thickness = 0.1
-shader_parameter/major_line_thickness = 0.2
+shader_parameter/major_line_thickness = 0.250000011875
 shader_parameter/square_size_px = Vector2(32, 32)
-shader_parameter/square_color = Color(0, 0, 0, 0.392157)
+shader_parameter/square_color = Color(1, 0.935, 0.87, 0.101960786)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fkia0"]
-content_margin_left = 20.0
-content_margin_top = 20.0
-content_margin_right = 20.0
-content_margin_bottom = 20.0
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[node name="Design" type="Node2D" node_paths=PackedStringArray("part_grouping")]
+[node name="Design" type="Node" node_paths=PackedStringArray("part_group", "parts_container", "mouse_selection", "grid", "save_popup", "assembler")]
 script = ExtResource("1_wctwy")
-part_grouping = NodePath("Grid/PartGrouping")
+part_group = NodePath("World/Grid/PartGroup")
+parts_container = NodePath("UI/VBoxContainer/HBoxContainer/PartsContainer")
+mouse_selection = NodePath("World/MouseSelection")
+grid = NodePath("World/Grid")
+save_popup = NodePath("SaveShipPopup")
+assembler = NodePath("GPUImageAssembler")
+metadata/_custom_type_script = "uid://cphbaayi2hnoj"
 metadata/_edit_vertical_guides_ = [136.0]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." groups=["CanvasLayerToggle"]]
-layer = -1
-
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_rmp56")
-expand_mode = 3
-stretch_mode = 6
-
-[node name="UI" type="CanvasLayer" parent="." groups=["CanvasLayerToggle"]]
+mouse_filter = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -72,138 +63,54 @@ size_flags_vertical = 3
 theme_override_constants/separation = 0
 
 [node name="FleetContainer" parent="UI/VBoxContainer/HBoxContainer" instance=ExtResource("3_rmp56")]
-unique_name_in_owner = true
 layout_mode = 2
 
 [node name="PartsContainer" parent="UI/VBoxContainer/HBoxContainer" instance=ExtResource("9_3c8mw")]
-unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 2
 
-[node name="Grid" type="Sprite2D" parent="."]
-unique_name_in_owner = true
+[node name="World" type="Node2D" parent="."]
+
+[node name="MouseSelection" parent="World" instance=ExtResource("13_r41aq")]
+color = Color(1, 0.9241667, 0.87, 0.39215687)
+
+[node name="Grid" type="Sprite2D" parent="World"]
 material = SubResource("ShaderMaterial_r41aq")
-scale = Vector2(0.99673, 0.992807)
 texture = ExtResource("14_qg3uy")
 centered = false
 region_enabled = true
 region_rect = Rect2(0, 0, 1024, 1024)
+script = ExtResource("8_bjdq3")
+metadata/_custom_type_script = "uid://rrpw8rs1x5wn"
 
-[node name="PartGrouping" type="PartGrouping" parent="Grid" node_paths=PackedStringArray("mirror_axis", "design")]
-z_index = 1
+[node name="PartGroup" type="Sprite2D" parent="World/Grid" node_paths=PackedStringArray("mouse_selection", "grid")]
+modulate = Color(1, 0.6, 0.6, 1)
+z_index = 100
 texture_filter = 1
 texture_repeat = 2
-texture = ExtResource("17_qupps")
+texture = ExtResource("9_rmp56")
 region_enabled = true
 script = ExtResource("10_6vk6i")
-mirror_axis = NodePath("../MirrorAxis")
-design = NodePath("../..")
+mouse_selection = NodePath("../../MouseSelection")
+grid = NodePath("..")
+metadata/_custom_type_script = "uid://c1y8rv0ogtakj"
 
-[node name="MirrorAxis" type="Line2D" parent="Grid"]
-unique_name_in_owner = true
-visible = false
-points = PackedVector2Array(2.08165e-12, 2.08165e-12, 2.08165e-12, 2000)
-width = 5.0
+[node name="CenterMarker" type="Sprite2D" parent="World/Grid"]
+texture = ExtResource("14_r41aq")
+script = ExtResource("13_rmp56")
 
-[node name="MouseSelection" type="MouseSelection" parent="."]
-action = "select"
-z_index = 1
-script = ExtResource("11_541lb")
-
-[node name="RenameFleetPopup" type="AcceptDialog" parent="." node_paths=PackedStringArray("warning_label", "name_edit")]
-unique_name_in_owner = true
-title = "RENAME FLEET"
+[node name="SaveShipPopup" type="AcceptDialog" parent="."]
+auto_translate_mode = 1
+oversampling_override = 1.0
+title = "ALERT"
 initial_position = 2
-size = Vector2i(648, 364)
+size = Vector2i(735, 230)
 exclusive = false
 unresizable = true
-theme = ExtResource("18_01mpa")
-ok_button_text = "Confirm changes"
-dialog_hide_on_ok = false
-script = ExtResource("19_ract4")
-warning_label = NodePath("VBoxContainer/Warning")
-name_edit = NodePath("VBoxContainer/NewName")
+theme = ExtResource("14_7jtw0")
+ok_button_text = "Return to design"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="RenameFleetPopup"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -274.0
-offset_top = -132.0
-offset_right = 274.0
-offset_bottom = 81.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
+[node name="GPUImageAssembler" parent="." instance=ExtResource("14_q8dch")]
+render_target_update_mode = 4
 
-[node name="Label" type="Label" parent="RenameFleetPopup/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 26
-text = "What would you like your fleet to be called?
-"
-
-[node name="Warning" type="Label" parent="RenameFleetPopup/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.928333, 0.57, 1)
-theme_override_font_sizes/font_size = 26
-text = "No name provided!"
-
-[node name="NewName" type="LineEdit" parent="RenameFleetPopup/VBoxContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 70)
-layout_mode = 2
-theme_override_colors/font_placeholder_color = Color(0.489622, 0.489622, 0.489622, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 26
-theme_override_styles/normal = SubResource("StyleBoxFlat_fkia0")
-placeholder_text = "*Unnamed"
-
-[node name="DeleteFleetPopup" type="AcceptDialog" parent="."]
-unique_name_in_owner = true
-title = "DELETE FLEET"
-initial_position = 2
-size = Vector2i(643, 278)
-exclusive = false
-unresizable = true
-theme = ExtResource("18_01mpa")
-ok_button_text = "Yes, delete this fleet"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="DeleteFleetPopup"]
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -271.5
-offset_top = -89.0
-offset_right = 271.5
-offset_bottom = 38.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
-
-[node name="Label" type="Label" parent="DeleteFleetPopup/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 26
-text = "Are you sure you want to delete your fleet?
-"
-
-[node name="Warning" type="Label" parent="DeleteFleetPopup/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.928333, 0.57, 1)
-theme_override_font_sizes/font_size = 26
-text = "This action cannot be undone!"
-
-[node name="Camera" parent="." instance=ExtResource("13_rmp56")]
-
-[connection signal="dragging_ended" from="Grid/PartGrouping" to="Grid/PartGrouping" method="_on_dragging_ended"]
-[connection signal="dragging_ended" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_ended"]
-[connection signal="dragging_started" from="Grid/PartGrouping" to="Grid/PartGrouping" method="_on_dragging_started"]
-[connection signal="dragging_started" from="Grid/PartGrouping" to="MouseSelection" method="_on_part_grouping_dragging_started"]
-[connection signal="parts_rotated" from="Grid/PartGrouping" to="Grid/PartGrouping" method="_on_parts_rotated"]
-[connection signal="selection_ended" from="MouseSelection" to="Grid/PartGrouping" method="_on_mouse_selection_selection_ended"]
-[connection signal="confirmed" from="RenameFleetPopup" to="RenameFleetPopup" method="_on_confirmed"]
+[connection signal="ship_changed" from="World/Grid" to="World/Grid/CenterMarker" method="_on_grid_ship_changed"]

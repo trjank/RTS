@@ -1,6 +1,6 @@
 [gd_scene load_steps=15 format=3 uid="uid://dfjm11tydfbwt"]
 
-[ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/stardust_theme.tres" id="1_0c2qi"]
+[ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/main_theme.tres" id="1_0c2qi"]
 [ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="1_tdel1"]
 [ext_resource type="Script" uid="uid://1ytf1odlubls" path="res://design/partslist/parts_container.gd" id="2_xb30u"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_l0dbo"]
@@ -13,10 +13,9 @@ bg_color = Color(0, 0, 0, 0.784314)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0c2qi"]
 shader = ExtResource("1_tdel1")
-shader_parameter/sigma = 1.5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_55ppu"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0.25490198, 0.29803923, 0.34117648, 0.39215687)
 border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rrp5i"]
@@ -24,35 +23,39 @@ content_margin_left = 30.0
 content_margin_top = 30.0
 content_margin_right = 30.0
 content_margin_bottom = 30.0
-bg_color = Color(0, 0, 0, 0)
+bg_color = Color(0.255, 0.2975, 0.34, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g5m8g"]
 content_margin_left = 30.0
 content_margin_top = 30.0
 content_margin_right = 30.0
 content_margin_bottom = 30.0
-bg_color = Color(0.352941, 0.411765, 0.470588, 0.392157)
+bg_color = Color(0.3525, 0.41125, 0.47, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xb30u"]
 content_margin_left = 30.0
 content_margin_top = 30.0
 content_margin_right = 30.0
 content_margin_bottom = 30.0
-bg_color = Color(0, 0, 0, 0.666667)
+bg_color = Color(0.255, 0.2975, 0.34, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f44sc"]
 bg_color = Color(1, 1, 1, 0)
 
-[node name="PartsContainer" type="PanelContainer"]
+[node name="PartsContainer" type="PanelContainer" node_paths=PackedStringArray("part_tabs")]
 anchors_preset = -1
 anchor_right = 0.1
 anchor_bottom = 1.0
+offset_right = 184.79999
 theme = ExtResource("1_0c2qi")
 theme_override_styles/panel = SubResource("StyleBoxFlat_8jmok")
 script = ExtResource("2_xb30u")
+part_tabs = NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs")
+metadata/_custom_type_script = "uid://1ytf1odlubls"
 metadata/_edit_use_anchors_ = true
 
 [node name="blur" type="Panel" parent="."]
+visible = false
 show_behind_parent = true
 material = SubResource("ShaderMaterial_0c2qi")
 layout_mode = 2
@@ -61,23 +64,22 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_55ppu")
 
 [node name="TabBar" type="TabBar" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
-theme_override_styles/button_highlight = SubResource("StyleBoxFlat_rrp5i")
-theme_override_styles/button_pressed = SubResource("StyleBoxFlat_rrp5i")
 theme_override_styles/tab_unselected = SubResource("StyleBoxFlat_rrp5i")
 theme_override_styles/tab_hovered = SubResource("StyleBoxFlat_g5m8g")
 theme_override_styles/tab_selected = SubResource("StyleBoxFlat_xb30u")
 theme_override_styles/tab_focus = SubResource("StyleBoxFlat_rrp5i")
+theme_override_styles/button_pressed = SubResource("StyleBoxFlat_rrp5i")
+theme_override_styles/button_highlight = SubResource("StyleBoxFlat_rrp5i")
 current_tab = 0
 clip_tabs = false
 tab_count = 3
-tab_0/icon = ExtResource("4_l0dbo")
-tab_1/icon = ExtResource("5_rmcst")
+tab_0/icon = ExtResource("5_rmcst")
+tab_1/icon = ExtResource("4_l0dbo")
 tab_2/icon = ExtResource("6_okk5v")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
@@ -93,7 +95,6 @@ layout_mode = 2
 horizontal_scroll_mode = 0
 
 [node name="PartTabs" type="TabContainer" parent="VBoxContainer/MarginContainer/ScrollContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_f44sc")
@@ -101,28 +102,25 @@ current_tab = 0
 tabs_visible = false
 script = ExtResource("7_8jmok")
 
-[node name="Energy" type="GridContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
+[node name="Armor" type="HFlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
 layout_mode = 2
-columns = 3
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
 metadata/_tab_index = 0
 
-[node name="Armor" type="GridContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
+[node name="Energy" type="HFlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
 visible = false
 layout_mode = 2
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 20
-columns = 3
 metadata/_tab_index = 1
 
-[node name="Weapons" type="GridContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
+[node name="Weapons" type="HFlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
 visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
-columns = 3
 metadata/_tab_index = 2
 
-[node name="Utility" type="FlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
+[node name="Utility" type="HFlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
 visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 20
