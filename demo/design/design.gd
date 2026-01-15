@@ -9,8 +9,6 @@ signal ship_changed(ship_id: ShipDataID)
 @export var grid: Grid
 @export var save_popup: AcceptDialog
 
-@export var assembler: GPUImageAssembler
-
 var parts_manager := PartManager.new()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -30,14 +28,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if error_message != "":
 		save_popup.dialog_text = "Failed to save for the following reasons:\n\n" + error_message
 		save_popup.show()
-	var test1 := assembler.assemble_naive(grid.ship)
-	var test2 := await assembler.assemble(grid.ship)
-	print(test1.save_png("res://design/naive_test.png"))
-	print(test2.save_png("res://design/gpu_test.png"))
-	var f1 := assembler.assemble_naive.bind(grid.ship)
-	var f2 := assembler.assemble.bind(grid.ship)
-	print("naive: ", await Util.benchmark(f1))
-	print("gpu: ", await Util.benchmark(f2))
+	grid.ship.generate_image()
+	grid.ship.image.save_png("res://design/cpu_test.png")
+	print("image test: ", await Util.benchmark(grid.ship.generate_image))
 
 func _part_clicked(part: PartHitbox) -> void:
 	part_group.select_part(part)
@@ -56,7 +49,7 @@ func create_ship_button(_ship: ShipDataID) -> void:
 func create_part_button(part_data: PartData) -> void:
 	var button := TextureButton.new()
 	button.button_down.connect(drag_part.bind(part_data) )
-	button.texture_normal = part_data.texture
+	button.texture_normal = part_data.get_image().get_texture()
 	button.ignore_texture_size = true
 	button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	button.custom_minimum_size = Grid.TILE_SIZE * part_data.get_size()

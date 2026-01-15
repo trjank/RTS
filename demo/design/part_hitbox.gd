@@ -25,8 +25,8 @@ func get_global_rect() -> Rect2:
 func get_top_left_corner() -> Vector2i:
 	return Vector2i((transform * get_rect()).position / Grid.TILE_SIZE)
 
-func get_placement() -> ShipData.Placement:
-	return ShipData.to_placement(rotation, is_flipped() )
+func get_placement() -> PartImage.Placement:
+	return PartImage.to_placement(rotation, is_flipped() )
 
 func set_data(new_data: PartData) -> void:
 	assert(new_data != null)

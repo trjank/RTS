@@ -36,7 +36,7 @@ func add_part(part: Node) -> bool:
 	part.reparent(_parts)
 	return part is PartHitbox
 
-func create_part(where: Vector2, part_data: PartData, placement := ShipData.Placement.ROT_0_DEG) -> Part:
+func create_part(where: Vector2, part_data: PartData, placement := PartImage.Placement.ROT_0) -> Part:
 	var part := part_data.create_part()
 	_parts.add_child(part)
 	part.placement = placement
@@ -46,11 +46,11 @@ func create_part(where: Vector2, part_data: PartData, placement := ShipData.Plac
 func load_part(ship_part: ShipDataPart) -> bool:
 	if ship_part == null:
 		return true
-	var part := ship_part.data.create_part()
+	var part := ship_part.get_data().create_part()
 	_parts.add_child(part)
 	part.placement = ship_part.placement
 	part.position = ship_part.get_center()
-	return ShipData.is_valid(ship_part.placement)
+	return PartImage.is_placement_valid(ship_part.placement)
 
 func save_part(node: Node) -> ShipData.PartError:
 	var part := node as PartHitbox

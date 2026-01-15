@@ -8,8 +8,8 @@ func set_data(new_data: PartData) -> void:
 		return push_error("Part.data is read only!")
 	data = new_data
 	size = Grid.TILE_SIZE * data.get_size()
-	texture = data.texture
+	texture = data.get_image().get_texture()
 
 func ship_init(ship_part: ShipDataPart) -> void:
 	position = ship_part.get_center()
-	rotation = ShipData.to_quadrant(ship_part.placement) * PI/2
+	rotation = PartImage.placement_to_radians(ship_part.placement)

@@ -1,6 +1,5 @@
 class_name ShipData extends RefCounted
 
-# NOTE: You do not need to use PartError as flags (but we provide the option)
 enum PartError {
 	OK = 0,
 	IS_NULL = 1 << 0,
@@ -16,41 +15,16 @@ enum BoundaryFlags {
 	BOTTOM = 1 << 3,
 	FULL = RIGHT | TOP | LEFT | BOTTOM
 }
-enum Placement {
-	ROT_0_DEG,
-	ROT_90_DEG,
-	ROT_180_DEG,
-	ROT_270_DEG,
-	FLIPPED_ROT_0_DEG,
-	FLIPPED_ROT_90_DEG,
-	FLIPPED_ROT_180_DEG,
-	FLIPPED_ROT_270_DEG,
-	INVALID
-}
 
+const USE_MIPMAPS := false
 const MAX_NAME_LENGTH := 100
-const DEFAULT_NAME := "<unnamed>"
+const DEFAULT_NAME := "Unnamed"
 const NULL_PART_ID := 0
 const BYTES_U8 := 1
 const BYTES_U16 := 2
 const BYTES_UTF32_CHAR := 4
 const BYTES_UTF32_CODE := PartData.CODE_LENGTH * BYTES_UTF32_CHAR
 const BYTES_PER_PART := BYTES_U16 + BYTES_U16 + BYTES_U8 + BYTES_UTF32_CODE
-
-static func is_valid(placement: Placement) -> bool:
-	return 0 <= placement and placement < Placement.INVALID
-
-static func is_flipped(placement: Placement) -> bool:
-	return placement > Placement.ROT_270_DEG
-
-static func to_placement(radians: float, flipped: bool) -> Placement:
-	return (to_quadrant(radians) + (4 if flipped else 0)) as Placement
-
-static func to_radians(placement: Placement) -> bool:
-	return (placement % 4) * PI/2
-
-static func to_quadrant(radians: float) -> int:
-	return int(round(fposmod(radians, TAU) / (PI/2) ) ) % 4
 
 var name := DEFAULT_NAME:
 	set = set_name
@@ -65,9 +39,9 @@ var max_shield := 0.0
 var max_energy := 0.0
 var thrust := 0.0
 var turn_impulse := 0.0
-var image: Image
 var part_counts: Dictionary[PartData, int]
 var center: Vector2
+var image: Image
 
 var _grid_bounds: Rect2i
 var _ship_bounds: Rect2i
@@ -160,7 +134,7 @@ func for_each_part(f: Callable) -> void:
 
 func _connect_neighbor_to_part(neighbor: ShipDataPart, part_id: int) -> void:
 	if neighbor != null:
-		_part_clusters.union_sets(neighbor.id, part_id)
+		_part_clusters.union_sets(neighbor.get_id(), part_id)
 
 func _for_vertical_edge(x: int, y_start: int, y_end: int, f: Callable) -> void:
 	for y in range(y_start, y_end):
@@ -171,7 +145,7 @@ func _for_horizontal_edge(y: int, x_start: int, x_end: int, f: Callable) -> void
 		f.call(get_part_at(Vector2i(x, y) ) )
 
 func for_each_neighbor(part_id: int, boundary_flags: int, f: Callable) -> void:
-	var rect := _parts[part_id].rect
+	var rect := _parts[part_id].get_rect()
 	if boundary_flags & BoundaryFlags.LEFT:
 		_for_vertical_edge(rect.position.x - 1, rect.position.y, rect.end.y, f)
 	if boundary_flags & BoundaryFlags.RIGHT:
@@ -181,24 +155,27 @@ func for_each_neighbor(part_id: int, boundary_flags: int, f: Callable) -> void:
 	if boundary_flags & BoundaryFlags.BOTTOM:
 		_for_horizontal_edge(rect.end.y, rect.position.x, rect.end.x, f)
 
-func add_part(part_data: PartData, top_left_corner: Vector2i, placement := Placement.ROT_0_DEG) -> PartError:
+func add_part(part_data: PartData, top_left_corner: Vector2i, placement := PartImage.Placement.ROT_0) -> PartError:
 	if part_data == null:
 		return PartError.IS_NULL
 	var boundary := part_data.get_boundary(placement)
 	var size := part_data.get_size(placement)
 	var rect := Rect2i(top_left_corner, size)
-	# NOTE: Parts with no boundary can be placed on top of other parts
+	# NOTE: Only parts with no boundary can be placed on top of other parts
 	if not _grid_bounds.encloses(rect):
 		return PartError.OUT_OF_BOUNDS
 	if boundary != BoundaryFlags.NONE and not _part_ids.rect_equals(rect, NULL_PART_ID):
 		return PartError.OVERLAP
+	# NOTE: DisjointSets gives us a near O(1) way to update connectedness
 	var part_id := _part_clusters.create_set()
-	var part := ShipDataPart.new(part_id, part_data, rect, placement)
+	var part := ShipDataPart.new(part_id, part_data, rect, placement, boundary)
 	add_to_part_count(part_data)
 	_parts.push_back(part)
 	_serialize_part(part_id)
 	_ship_bounds = _ship_bounds.merge(rect) if _ship_bounds.has_area() else rect
-	# NOTE: Parts that are connected are automatically put in the same set (very fast)
+	# NOTE: We keep all connected parts in the same set using DisjointSets
+	# It is very fast to add parts to sets, but much harder to remove them
+	# This is one of the reasons there is no remove_part method
 	if boundary == BoundaryFlags.NONE:
 		_part_clusters.union_sets(part_id, NULL_PART_ID)
 	else:
@@ -210,29 +187,44 @@ func serialize() -> PackedByteArray:
 	assert(_bytes.get_size() % BYTES_PER_PART != 0)
 	return _bytes.data_array
 
-func deserialize(from_bytes: PackedByteArray, part_manager: PartManager) -> PartError:
+func deserialize(from_bytes: PackedByteArray, part_manager: PartManager) -> int:
 	assert(part_manager != null)
 	if from_bytes.size() % BYTES_PER_PART != 0:
 		return PartError.INCORRECT_SIZE_BYTES
 	clear()
 	_bytes.data_array = from_bytes
-	var error := PartError.OK
-	while error == PartError.OK and _bytes.get_available_bytes() > 0:
-		error = _deserialize_part(part_manager)
+	var error: int = PartError.OK
+	while _bytes.get_available_bytes() > 0:
+		error |= _deserialize_part(part_manager)
 	return error
 
 func _serialize_part(part_id: int) -> void:
 	var part := _parts[part_id]
-	_bytes.put_u16(part.rect.position.x)
-	_bytes.put_u16(part.rect.position.y)
-	_bytes.put_u8(part.placement)
-	_bytes.put_data(part.data.code.to_utf32_buffer() )
+	_bytes.put_u16(part.get_rect().position.x)
+	_bytes.put_u16(part.get_rect().position.y)
+	_bytes.put_u8(part.get_placement() )
+	_bytes.put_data(part.get_data().get_code().to_utf32_buffer() )
 
 func _deserialize_part(part_manager: PartManager) -> PartError:
 	var top_left_corner := Vector2i(_bytes.get_u16(), _bytes.get_u16() )
-	var placement := _bytes.get_u8() as Placement
+	var placement := _bytes.get_u8() as PartImage.Placement
 	var i := _bytes.get_position()
 	var code := _bytes.data_array.slice(i, i + BYTES_UTF32_CODE).get_string_from_utf32()
 	var part := part_manager.get_part_from_code(code)
 	_bytes.seek(i + BYTES_UTF32_CODE)
 	return add_part(part, top_left_corner, placement)
+
+func generate_image() -> void:
+	var size := PartImage.TILE_SIZE * _ship_bounds.size
+	var offset := PartImage.TILE_SIZE * _ship_bounds.position
+	image = Image.create_empty(size.x, size.y, USE_MIPMAPS, PartImage.FORMAT)
+	for_each_part(_draw_part.bind(offset) )
+
+func _draw_part(part: ShipDataPart, offset: Vector2i) -> void:
+	if part.get_boundary() == BoundaryFlags.NONE:
+		return
+	var part_image := part.get_image()
+	var from := Rect2i(Vector2i.ZERO, part_image.get_size() )
+	var to := PartImage.TILE_SIZE * part.get_rect().position
+	# NOTE: This uses the CPU, but is very fast due to c++ memcpy
+	image.blit_rect(part_image, from, to - offset)

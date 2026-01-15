@@ -1,11 +1,11 @@
 class_name PartManager extends RefCounted
 
 enum LoadError {
-	OK,
-	FILE_NOT_FOUND,
-	INCORRECT_FORMAT,
-	INVALID_PART,
-	INVALID_PART_PROPERTIES
+	OK = 0,
+	FILE_NOT_FOUND = 1 << 0,
+	INCORRECT_FORMAT = 1 << 1,
+	INVALID_PART = 1 << 2,
+	INVALID_PART_PROPERTIES = 1 << 3
 }
 
 # NOTE: You do not have to use all of these properties
@@ -66,37 +66,37 @@ func get_part_from_id(atlas_id: int) -> PartData:
 func get_part_from_code(code: String) -> PartData:
 	return _parts[_code_to_id[code] ]
 
-func create_part(code: String, subtype = "") -> PartData:
+func create_part(code: String, width: int, height: int, subtype = "") -> PartData:
 	if code.length() != PartData.CODE_LENGTH or has_code(code) or not subtype in PartData.subtypes:
 		return null
-	var part := PartData.create_subtype(subtype)
+	var part := PartData.create_subtype(subtype, code, width, height)
 	var atlas_id := _parts.size()
-	part.code = code
 	_code_to_id[code] = atlas_id
 	_parts.push_back(part)
 	return part
 
 func load_part(code: String, properties: Dictionary) -> LoadError:
 	var subtype = properties.get("subtype", "")
-	var part := create_part(code, subtype)
+	var width: int = properties.get("width", PartData.MIN_SIZE)
+	var height: int = properties.get("height", PartData.MIN_SIZE)
+	var part := create_part(code, width, height, subtype)
 	if part == null:
 		return LoadError.INVALID_PART
 	if not Util.type_check(properties, VALID_PART_PROPERTIES, true, Util.CAST_NUMERICS):
 		return LoadError.INVALID_PART_PROPERTIES
 	for property in properties:
-		part[property] = properties[property]
+		part.set(property, properties[property] )
 	return LoadError.OK
 
-func load_dictionary(data: Dictionary) -> LoadError:
+func load_dictionary(data: Dictionary) -> int:
 	if not data.values().all(is_dictionary):
 		return LoadError.INCORRECT_FORMAT
-	var error := LoadError.OK
+	var error: int = LoadError.OK
 	for code in data:
-		var part_error := load_part(code, data[code] )
-		error = part_error if error == LoadError.OK else error
+		error |= load_part(code, data[code] )
 	return error
 
-func load_json(file_path: String) -> LoadError:
+func load_json(file_path: String) -> int:
 	var text := FileAccess.get_file_as_string(file_path)
 	var data = JSON.parse_string(text)
 	if FileAccess.get_open_error() != OK:
@@ -117,10 +117,9 @@ func update_atlas_part_sizes() -> void:
 	for atlas_id in _parts.size():
 		part_sizes[atlas_id] = Vector2(32 * _parts[atlas_id].get_size() )
 
-# NOTE: This may be very slow (drawing with CPU)
 func draw_parts_on_atlas() -> void:
 	for atlas_id in _parts.size():
 		var part := _parts[atlas_id]
 		var rect := Rect2i(Vector2i.ZERO, 32 * part.get_size() )
-		atlas.blit_rect(part.image, rect, atlas_offsets[atlas_id] )
-		part.atlas_rect = Rect2(atlas_offsets[atlas_id], part_sizes[atlas_id])
+		#atlas.blit_rect(part.image, rect, atlas_offsets[atlas_id] )
+		#part.atlas_rect = Rect2(atlas_offsets[atlas_id], part_sizes[atlas_id])

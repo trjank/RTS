@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bent0wniavqo8"
+path="res://.godot/imported/ship_assembly.glsl-2e85fcdc8610d45b7934e31201270162.res"
+
+[deps]
+
+source_file="res://shaders/ship_assembly.glsl"
+dest_files=["res://.godot/imported/ship_assembly.glsl-2e85fcdc8610d45b7934e31201270162.res"]
+
+[params]
+

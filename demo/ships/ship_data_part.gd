@@ -1,35 +1,35 @@
 class_name ShipDataPart extends RefCounted
 
-var id := ShipData.NULL_PART_ID:
-	set = set_id
-var data: PartData:
-	set = set_data
-var rect: Rect2i:
-	set = set_rect
-var placement := ShipData.Placement.INVALID:
-	set = set_placement
+var _id: int
+var _data: PartData
+var _rect: Rect2i
+var _placement: PartImage.Placement
+var _boundary: int
 
-func _init(init_id: int, init_data: PartData, init_rect: Rect2i, init_placement: ShipData.Placement) -> void:
-	id = init_id
-	data = init_data
-	rect = init_rect
-	placement = init_placement
+func _init(init_id: int, init_data: PartData, init_rect: Rect2i, init_placement: PartImage.Placement, init_boundary: int) -> void:
+	_id = init_id
+	_data = init_data
+	_rect = init_rect
+	_placement = init_placement
+	_boundary = init_boundary
 
 func get_center() -> Vector2:
-	return Rect2(rect).get_center()
+	return Rect2(_rect).get_center()
 
-func set_id(new_id: int) -> void:
-	assert(id == ShipData.NULL_PART_ID)
-	id = new_id
+func get_id() -> int:
+	return _id
 
-func set_data(new_data: PartData) -> void:
-	assert(data == null)
-	data = new_data
+func get_data() -> PartData:
+	return _data
 
-func set_rect(new_rect: Rect2i) -> void:
-	assert(rect.size == Vector2i.ZERO)
-	rect = new_rect
+func get_rect() -> Rect2i:
+	return _rect
 
-func set_placement(new_placement: ShipData.Placement) -> void:
-	assert(ShipData.is_valid(new_placement) )
-	placement = new_placement
+func get_placement() -> PartImage.Placement:
+	return _placement
+
+func get_image() -> Image:
+	return _data.get_image().get_image(_placement)
+
+func get_boundary() -> int:
+	return _boundary
