@@ -70,7 +70,8 @@ size_flags_horizontal = 2
 [node name="World" type="Node2D" parent="."]
 
 [node name="MouseSelection" parent="World" instance=ExtResource("13_r41aq")]
-color = Color(1, 0.9241667, 0.87, 0.39215687)
+z_index = 1000
+color = Color(0.63, 0.63, 0.63, 0.5882353)
 
 [node name="Grid" type="Sprite2D" parent="World"]
 material = SubResource("ShaderMaterial_r41aq")

@@ -17,7 +17,6 @@ func _init() -> void:
 	client.name = config.get_value("player", "name", "<unnamed>")
 	client.color = config.get_value("player", "color", Color.WHITE)
 	#client.fleet = config.get_value("player", "fleet_id", -1)
-	# TODO: Load server-side account data
 
 func _notification(what: int) -> void:
 	# We need to save account data before the game closes
@@ -28,3 +27,12 @@ func _notification(what: int) -> void:
 	config.set_value("player", "color", client.color)
 	#config.set_value("player", "fleet_id", client.fleet.id)
 	config.save(CONFIG_PATH)
+
+func benchmark(f: Callable, iterations := 100) -> float:
+	var start := Time.get_ticks_usec()
+	for i in iterations:
+		await f.call()
+	var end := Time.get_ticks_usec()
+	var dt := float(end - start)
+	# Return average time in microseconds
+	return dt / iterations

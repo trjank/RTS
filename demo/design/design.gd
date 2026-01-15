@@ -30,7 +30,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		save_popup.show()
 	grid.ship.generate_image()
 	grid.ship.image.save_png("res://design/cpu_test.png")
-	print("image test: ", await Util.benchmark(grid.ship.generate_image))
+	print("image test: ", await globals.benchmark(grid.ship.generate_image))
 
 func _part_clicked(part: PartHitbox) -> void:
 	part_group.select_part(part)

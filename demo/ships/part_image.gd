@@ -31,10 +31,6 @@ static func is_placement_flipped(placement: Placement) -> bool:
 static func placement_to_radians(placement: Placement) -> float:
 	return (placement % 4) * ROTATION_INCREMENT
 
-static func to_placement(radians: float, flipped := false) -> Placement:
-	var quadrant := int(round(fposmod(radians, TAU) / ROTATION_INCREMENT) ) % 4
-	return ( (quadrant + 4) if flipped else quadrant) as Placement
-
 func _init(path: String, tiles_wide := 1, tiles_tall := 1) -> void:
 	if path.contains("..") or not path.begins_with(FOLDER_PATH):
 		push_error("PartImage path '%s' is invalid" % path)
@@ -53,15 +49,16 @@ func get_texture() -> Texture2D:
 
 func get_image(placement := Placement.ROT_0) -> Image:
 	if not is_placement_valid(placement):
-		push_warning("Placement '%d' is invalid" % placement)
+		push_error("Placement '%d' is invalid" % placement)
 		return _cached_images[Placement.ROT_0]
 	if _cached_images[placement] != null:
 		return _cached_images[placement]
 	var image := _cached_images[Placement.ROT_0].duplicate()
 	if is_placement_flipped(placement):
 		image.flip_x()
+	print(placement, is_placement_flipped(placement))
 	match placement:
-		Placement.ROT_90, Placement.FLIP_ROT_0:
+		Placement.ROT_90, Placement.FLIP_ROT_90:
 			image.rotate_90(CLOCKWISE)
 		Placement.ROT_180, Placement.FLIP_ROT_180:
 			image.rotate_180()

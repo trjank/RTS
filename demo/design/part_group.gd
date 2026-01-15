@@ -107,7 +107,7 @@ func copy_part(node: Node) -> bool:
 		return false
 	var new_part := PartHitbox.create()
 	add_child(new_part)
-	new_part.position = part.position
+	new_part.transform = part.transform
 	new_part.data = part.data
 	return grid.add_part(new_part)
 

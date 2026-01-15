@@ -44,13 +44,14 @@ var center: Vector2
 var image: Image
 
 var _grid_bounds: Rect2i
-var _ship_bounds: Rect2i
+var _ship_bounds := Rect2i(0, 0, 1, 1)
 var _part_ids: Int32Grid
 var _parts: Array[ShipDataPart] = [null]
 var _part_clusters := DisjointSets.new()
 var _bytes := StreamPeerBuffer.new()
 
 func _init(width: int, height: int) -> void:
+	assert(width > 0 and height > 0)
 	_grid_bounds = Rect2i(0, 0, width, height)
 	_part_ids = Int32Grid.new(width, height)
 	_part_ids.fill(NULL_PART_ID)
@@ -61,6 +62,9 @@ func set_name(new_name: String) -> void:
 
 func is_named() -> bool:
 	return name != DEFAULT_NAME
+
+func is_empty() -> bool:
+	return _parts.size() <= 1
 
 func count_parts() -> int:
 	return _parts.size() - 1
@@ -169,10 +173,10 @@ func add_part(part_data: PartData, top_left_corner: Vector2i, placement := PartI
 	# NOTE: DisjointSets gives us a near O(1) way to update connectedness
 	var part_id := _part_clusters.create_set()
 	var part := ShipDataPart.new(part_id, part_data, rect, placement, boundary)
-	add_to_part_count(part_data)
+	_ship_bounds = rect if is_empty() else _ship_bounds.merge(rect)
 	_parts.push_back(part)
 	_serialize_part(part_id)
-	_ship_bounds = _ship_bounds.merge(rect) if _ship_bounds.has_area() else rect
+	add_to_part_count(part_data)
 	# NOTE: We keep all connected parts in the same set using DisjointSets
 	# It is very fast to add parts to sets, but much harder to remove them
 	# This is one of the reasons there is no remove_part method

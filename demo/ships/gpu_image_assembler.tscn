@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://djcb0v265hkj0"]
+
+[sub_resource type="GDScript" id="GDScript_5rywk"]
+script/source = "class_name GPUImageAssembler extends SubViewport
+
+@export var ship: Node2D
+
+func assemble(ship_data: ShipData) -> Image:
+	size = 32 * ship_data.get_ship_rect().size
+	ship.data = ship_data
+	ship.queue_redraw()
+	await RenderingServer.frame_post_draw
+	return get_texture().get_image()
+
+func assemble_naive(ship_data: ShipData) -> Image:
+	var xy0 := ship_data.get_ship_rect().position
+	var dim := 32 * ship_data.get_ship_rect().size
+	var image := Image.create_empty(dim.x, dim.y, false, Image.FORMAT_RGBA8)
+	ship_data.for_each_part(func (part: ShipDataPart) -> void:
+		var rect := Rect2i(Vector2i.ZERO, 32 * part.get_rect().size)
+		#image.rotate_90(CLOCKWISE)
+		image.blit_rect(part.get_image(), rect, 32 * (part.get_rect().position - xy0))
+	)
+	return image
+"
+
+[sub_resource type="GDScript" id="GDScript_1h0t8"]
+script/source = "extends Node2D
+
+const ATLAS := preload(\"res://design/atlas_test.png\")
+
+var data: ShipData
+
+func _draw() -> void:
+	if data == null:
+		return
+	var xy0 := 32 * data.get_ship_rect().position
+	data.for_each_part(func (part: ShipDataPart) -> void:
+		#var size := 32 * part.rect.size
+		#var rect := Rect2(32 * part.rect.position - xy0, size)
+		#draw_texture_rect_region(ATLAS, rect, part.data.atlas_rect)
+		var rect := part.get_rect()
+		rect.position *= 32
+		rect.position -= xy0
+		rect.size *= 32
+		draw_texture_rect(part.get_data().get_image().get_texture(), rect, false)
+	)
+"
+
+[node name="GPUImageAssembler" type="SubViewport" node_paths=PackedStringArray("ship")]
+disable_3d = true
+transparent_bg = true
+render_target_update_mode = 1
+script = SubResource("GDScript_5rywk")
+ship = NodePath("Ship")
+
+[node name="Ship" type="Node2D" parent="."]
+script = SubResource("GDScript_1h0t8")
