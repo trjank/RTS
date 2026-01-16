@@ -1,5 +1,7 @@
 class_name ShipData extends RefCounted
 
+signal image_changed(new_image: Image)
+
 enum PartError {
 	OK = 0,
 	IS_NULL = 1 << 0,
@@ -223,6 +225,7 @@ func generate_image() -> void:
 	var offset := PartImage.TILE_SIZE * _ship_bounds.position
 	image = Image.create_empty(size.x, size.y, USE_MIPMAPS, PartImage.FORMAT)
 	for_each_part(_draw_part.bind(offset) )
+	image_changed.emit(image)
 
 func _draw_part(part: ShipDataPart, offset: Vector2i) -> void:
 	if part.get_boundary() == BoundaryFlags.NONE:

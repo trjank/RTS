@@ -4,6 +4,7 @@ const MIN_SIZE := 1
 const MAX_SIZE := 16
 const CODE_LENGTH := 4
 const FALLBACK_CODE := "NULL"
+const MAX_Z_INDEX := 100
 
 static var subtypes: Dictionary[String, Callable] = {
 	"": PartData.new,
@@ -17,7 +18,8 @@ static func create_subtype(part_subtype: String, part_code: String, part_width :
 	return subtypes.get(part_subtype, PartData.new).call(part_code, part_width, part_height)
 
 var atlas_id := -1
-var z_index := 0
+var z_index := 0:
+	set = set_z_index
 var name := ""
 var tab := ""
 var description := ""
@@ -70,6 +72,9 @@ func get_size(placement := PartImage.Placement.ROT_0) -> Vector2i:
 
 func get_boundary(_placement := PartImage.Placement.ROT_0) -> int:
 	return ShipData.BoundaryFlags.FULL
+
+func set_z_index(new_z_index: int) -> void:
+	z_index = mini(new_z_index, MAX_Z_INDEX)
 
 func set_image_path(new_image_path: String) -> void:
 	image_path = new_image_path

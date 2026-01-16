@@ -13,7 +13,6 @@ enum Placement {
 	NUM_PLACEMENTS
 }
 
-const ROTATION_INCREMENT := deg_to_rad(90.)
 const TILE_SIZE := 32
 const FORMAT := Image.FORMAT_RGBA8
 const FOLDER_PATH := "res://part_images/"
@@ -24,12 +23,6 @@ var _cached_images: Array[Image] = []
 
 static func is_placement_valid(placement: Placement) -> bool:
 	return 0 <= placement and placement < Placement.NUM_PLACEMENTS
-
-static func is_placement_flipped(placement: Placement) -> bool:
-	return placement > Placement.ROT_270
-
-static func placement_to_radians(placement: Placement) -> float:
-	return (placement % 4) * ROTATION_INCREMENT
 
 func _init(path: String, tiles_wide := 1, tiles_tall := 1) -> void:
 	if path.contains("..") or not path.begins_with(FOLDER_PATH):
@@ -54,15 +47,13 @@ func get_image(placement := Placement.ROT_0) -> Image:
 	if _cached_images[placement] != null:
 		return _cached_images[placement]
 	var image := _cached_images[Placement.ROT_0].duplicate()
-	if is_placement_flipped(placement):
-		image.flip_x()
-	print(placement, is_placement_flipped(placement))
 	match placement:
-		Placement.ROT_90, Placement.FLIP_ROT_90:
-			image.rotate_90(CLOCKWISE)
-		Placement.ROT_180, Placement.FLIP_ROT_180:
-			image.rotate_180()
-		Placement.ROT_270, Placement.FLIP_ROT_270:
-			image.rotate_90(COUNTERCLOCKWISE)
+		Placement.FLIP_ROT_0: image.flip_x()
+		Placement.ROT_90: image.rotate_90(CLOCKWISE)
+		Placement.FLIP_ROT_90: image.flip_x(); image.rotate_90(CLOCKWISE)
+		Placement.ROT_180: image.rotate_180()
+		Placement.FLIP_ROT_180: image.flip_x(); image.rotate_180()
+		Placement.ROT_270: image.rotate_90(COUNTERCLOCKWISE)
+		Placement.FLIP_ROT_270: image.flip_x(); image.rotate_90(COUNTERCLOCKWISE)
 	_cached_images[placement] = image
 	return image

@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS ships (
 const CREATE_FLEETS_TABLE_QUERY := """
 CREATE TABLE IF NOT EXISTS fleets (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	name TEXT NOT NULL
+	name TEXT NOT NULL,
+	size INTEGER NOT NULL
 );"""
 const CREATE_SHIP_FLEET_PAIRS_TABLE_QUERY := """
 CREATE TABLE IF NOT EXISTS ship_fleet_pairs (
@@ -34,10 +35,10 @@ var part_manager: PartManager
 
 func load_file(path: String) -> bool:
 	db.path = path
-	var success := db.open_db()
-	db.query(CREATE_SHIPS_TABLE_QUERY)
-	db.query(CREATE_FLEETS_TABLE_QUERY)
-	db.query(CREATE_SHIP_FLEET_PAIRS_TABLE_QUERY)
+	var success := db.open_db() \
+	and db.query(CREATE_SHIPS_TABLE_QUERY) \
+	and db.query(CREATE_FLEETS_TABLE_QUERY) \
+	and db.query(CREATE_SHIP_FLEET_PAIRS_TABLE_QUERY)
 	return success
 
 func get_ships(limit: int) -> Array:
@@ -123,7 +124,10 @@ func delete_fleet(fleet: FleetID) -> void:
 	db.delete_rows("ship_fleet_pairs", "fleet_id == %d" % fleet.id)
 
 func fleet_to_query(fleet: Fleet) -> Dictionary:
-	return {"name": fleet.name}
+	return {
+		"name": fleet.name,
+		"size": fleet.ships.size()
+	}
 
 func ship_to_query(ship: ShipData) -> Dictionary:
 	return {

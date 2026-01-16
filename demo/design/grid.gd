@@ -54,11 +54,15 @@ func load_part(ship_part: ShipDataPart) -> bool:
 
 func save_part(node: Node) -> ShipData.PartError:
 	var part := node as PartHitbox
-	return ship.add_part(
+	if part == null:
+		return ShipData.PartError.IS_NULL
+	var error := ship.add_part(
 		part.data,
 		part.get_top_left_corner(),
 		part.get_placement()
-	) if part != null else ShipData.PartError.IS_NULL
+	)
+	part.overlapping = error == ShipData.PartError.OVERLAP
+	return error
 
 func save() -> int:
 	ship.clear()

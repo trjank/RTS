@@ -12,4 +12,4 @@ func set_data(new_data: PartData) -> void:
 
 func ship_init(ship_part: ShipDataPart) -> void:
 	position = ship_part.get_center()
-	rotation = PartImage.placement_to_radians(ship_part.placement)
+	rotation = (ship_part.placement & 3) * PI/2

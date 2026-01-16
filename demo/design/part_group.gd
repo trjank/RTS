@@ -64,9 +64,13 @@ func stop_dragging() -> void:
 	dragging_ended.emit()
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-func add_part(part: Node) -> bool:
+func add_part(node: Node) -> bool:
+	var part := node as PartHitbox
+	if part == null:
+		return false
 	part.reparent(self)
-	return part is PartHitbox
+	part.overlapping = false
+	return true
 
 func delete_part(part: Node) -> bool:
 	part.queue_free()
@@ -81,7 +85,7 @@ func delete_parts() -> bool:
 	return get_children().all(delete_part)
 
 func select_part(part: PartHitbox) -> bool:
-	return select( [part], part.get_global_rect())
+	return select( [part], part.get_global_rect() )
 
 func select_part_at(where: Vector2) -> bool:
 	var parts := mouse_selection.sorted_query(

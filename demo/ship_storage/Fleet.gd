@@ -1,26 +1,23 @@
 class_name Fleet extends RefCounted
 
-const DEFAULT_NAME := "<unnamed>"
+const DEFAULT_NAME := "Unnamed"
+const CAPITAL_SHIP := 0
 
 var name: String
-var slots: Dictionary[String, Array] = {}
+var ships: Array[ShipDataID] = []
 
-func _init(init_name := DEFAULT_NAME) -> void:
+func _init(init_name := DEFAULT_NAME, init_num_ships := 10) -> void:
 	name = init_name
+	ships.resize(init_num_ships)
 
 func is_unnamed() -> bool:
 	return name == DEFAULT_NAME
 
-func create_slot(slot_name: String, num_ships: int) -> bool:
-	if slots.has(slot_name) or num_ships <= 0:
-		return false
-	var ships: Array[ShipDataID] = []
-	ships.resize(num_ships)
-	return slots.set(slot_name, ships)
+func count_ships() -> int:
+	return ships.size() - ships.count(null)
 
-func set_ship(slot_name: String, slot_num: int, ship: ShipDataID) -> bool:
-	var ships := slots[slot_name]
-	if ships == null or slot_num < 0 or ships.size() <= slot_num:
-		return false
-	ships[slot_num] = ship
-	return true
+func has_slot(i: int) -> bool:
+	return 0 <= i and i < ships.size()
+
+func get_slot_name(i: int) -> String:
+	return "CAPITAL" if i == 0 else ""
