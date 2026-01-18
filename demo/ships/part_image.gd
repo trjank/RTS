@@ -47,6 +47,11 @@ func get_image(placement := Placement.ROT_0) -> Image:
 	if _cached_images[placement] != null:
 		return _cached_images[placement]
 	var image := _cached_images[Placement.ROT_0].duplicate()
+	_transform_image(image, placement)
+	_cached_images[placement] = image
+	return image
+
+func _transform_image(image: Image, placement: Placement) -> void:
 	match placement:
 		Placement.FLIP_ROT_0: image.flip_x()
 		Placement.ROT_90: image.rotate_90(CLOCKWISE)
@@ -55,5 +60,3 @@ func get_image(placement := Placement.ROT_0) -> Image:
 		Placement.FLIP_ROT_180: image.flip_x(); image.rotate_180()
 		Placement.ROT_270: image.rotate_90(COUNTERCLOCKWISE)
 		Placement.FLIP_ROT_270: image.flip_x(); image.rotate_90(COUNTERCLOCKWISE)
-	_cached_images[placement] = image
-	return image

@@ -42,7 +42,7 @@ bg_color = Color(0.255, 0.2975, 0.34, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f44sc"]
 bg_color = Color(1, 1, 1, 0)
 
-[node name="PartsContainer" type="PanelContainer" node_paths=PackedStringArray("part_tabs")]
+[node name="PartsContainer" type="PanelContainer" node_paths=PackedStringArray("tabs")]
 anchors_preset = -1
 anchor_right = 0.1
 anchor_bottom = 1.0
@@ -50,7 +50,12 @@ offset_right = 184.79999
 theme = ExtResource("1_0c2qi")
 theme_override_styles/panel = SubResource("StyleBoxFlat_8jmok")
 script = ExtResource("2_xb30u")
-part_tabs = NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs")
+tabs = {
+"armor": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Armor"),
+"energy": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Energy"),
+"utility": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Utility"),
+"weapons": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Weapons")
+}
 metadata/_custom_type_script = "uid://1ytf1odlubls"
 metadata/_edit_use_anchors_ = true
 

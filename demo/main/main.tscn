@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=10 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main/main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="2_67ri8"]
+[ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="3_grrlh"]
 [ext_resource type="Script" uid="uid://d0ywx41ac1yn8" path="res://main/camera_2d.gd" id="4_grrlh"]
 [ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://ships/battle.tscn" id="4_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://c60au813wrr5i" path="res://main_menu/main_menu.tscn" id="6_4dugh"]
@@ -38,6 +39,10 @@ size_flags_vertical = 3
 texture = ExtResource("2_67ri8")
 expand_mode = 3
 stretch_mode = 6
+
+[node name="Chat" parent="." instance=ExtResource("3_grrlh")]
+layer = 2
+visible = false
 
 [node name="UI" type="CanvasLayer" parent="."]
 

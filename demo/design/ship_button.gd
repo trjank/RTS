@@ -1,38 +1,43 @@
-extends PanelContainer
+class_name ShipButton extends Button
 
-signal ship_change_requested(ship: ShipDataID)
-
-const OPACITY_SELECTED := 1.0
-const OPACITY_DESELECTED := 0.5
+@export var id: Label
+@export var unsaved_indicator: Label
+@export var name_edit: LineEdit
 
 var ship: ShipDataID:
 	set = set_ship
 
-func _on_texture_button_pressed() -> void:
-	ship_change_requested.emit(ship)
+static func create() -> ShipButton:
+	return preload("res://design/ship_button.tscn").instantiate() as ShipButton
 
-func show_save_status(is_saved: bool) -> void:
-	%UnsavedAsterisk.visible = not is_saved
-
-func show_ship_icon(ship_data: ShipData) -> void:
-	%TextureButton.texture_normal = ship_data.get_image()
-
-func show_selected(selected_ship: ShipDataID) -> void:
-	modulate.a = OPACITY_SELECTED if selected_ship == ship else OPACITY_SELECTED
+func _ready() -> void:
+	update_ui()
 
 func set_ship(new_ship: ShipDataID) -> void:
-	if new_ship == ship:
-		return
 	if ship != null:
-		# Prevent past ships from messing up the UI
-		ship.ship_changed.disconnect(show_ship_icon)
-		ship.save_changed.disconnect(show_save_status)
-	if new_ship != null:
-		# Ensure updates to current ship automatically update the UI
-		ship = new_ship
-		show_ship_icon(ship.ship_data)
-		show_save_status(ship.is_saved)
-		ship.ship_changed.connect(show_ship_icon)
-		ship.save_changed.connect(show_save_status)
+		ship.ship_changed.disconnect(update_ui)
+	if new_ship == null:
+		name_edit.editable = false
+		name_edit.text = ""
 	else:
-		pass
+		name_edit.editable = true
+		ship.ship_changed.connect(update_ui)
+	ship = new_ship
+	update_ui()
+
+func update_ui() -> void:
+	if ship == null or not is_node_ready():
+		return
+	icon = ship.ship_data.texture
+	name_edit.text = ship.ship_data.name
+	id.text = "#%d" % ship.get_id()
+
+func _on_name_text_submitted(new_text: String) -> void:
+	print("BRUH!")
+	ship.ship_data.name = new_text
+	ship.save()
+
+func _on_name_focus_exited() -> void:
+	return
+	ship.ship_data.name = name_edit.text
+	ship.save()

@@ -1,45 +1,74 @@
-[gd_scene load_steps=4 format=3 uid="uid://b16j7q31que40"]
+[gd_scene load_steps=5 format=3 uid="uid://bll4613yi8yxk"]
 
-[ext_resource type="Script" uid="uid://jc7rmxcw61cp" path="res://design/ship_button.gd" id="1_66b2u"]
-[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icons/icon.svg" id="1_xomhk"]
+[ext_resource type="Script" uid="uid://gn43e8awh35b" path="res://design/ship_button.gd" id="2_oyyh1"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m7vxw"]
-content_margin_left = 15.0
-content_margin_top = 15.0
-content_margin_right = 15.0
-content_margin_bottom = 15.0
-bg_color = Color(0, 0.709297, 0.495394, 0.392157)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_12wau"]
+bg_color = Color(0.7706668, 0.61200005, 0.85, 0.19607843)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
 
-[node name="ShipButton" type="PanelContainer"]
-theme_override_styles/panel = SubResource("StyleBoxFlat_m7vxw")
-script = ExtResource("1_66b2u")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xomhk"]
+bg_color = Color(0.8800378, 0.79104805, 0.9251374, 0.19607843)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y70oc"]
+content_margin_left = 0.0
+content_margin_top = 5.0
+content_margin_right = 0.0
+content_margin_bottom = 5.0
+bg_color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" node_paths=PackedStringArray("id", "unsaved_indicator", "name_edit")]
+custom_minimum_size = Vector2(400, 400)
+offset_right = 400.0
+offset_bottom = 400.0
+theme_override_constants/icon_max_width = 300
+theme_override_styles/normal = SubResource("StyleBoxFlat_12wau")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xomhk")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("2_oyyh1")
+id = NodePath("PanelContainer/HBoxContainer/ID")
+unsaved_indicator = NodePath("PanelContainer/HBoxContainer/UnsavedIndicator")
+name_edit = NodePath("PanelContainer/HBoxContainer/Name")
+metadata/_custom_type_script = "uid://gn43e8awh35b"
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 58.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_y70oc")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
 layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
+theme_override_constants/separation = 10
 alignment = 1
 
-[node name="UnsavedAsterisk" type="Label" parent="VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
+[node name="ID" type="Label" parent="PanelContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
-theme_override_colors/font_color = Color(1, 0.49, 0.49, 1)
-theme_override_colors/font_outline_color = Color(1, 0.490196, 0.490196, 1)
-theme_override_constants/outline_size = 1
-text = "*"
 
-[node name="ShipName" type="Label" parent="VBoxContainer/HBoxContainer"]
+[node name="UnsavedIndicator" type="Label" parent="PanelContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
-text = "Unnamed"
+theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 30
+text = " Unsaved"
 
-[node name="TextureButton" type="TextureButton" parent="VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 200)
+[node name="Name" type="LineEdit" parent="PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-texture_normal = ExtResource("1_xomhk")
-ignore_texture_size = true
-stretch_mode = 5
+placeholder_text = "Unnamed"
+max_length = 50
 
-[connection signal="pressed" from="VBoxContainer/TextureButton" to="." method="_on_texture_button_pressed"]
+[connection signal="focus_exited" from="PanelContainer/HBoxContainer/Name" to="." method="_on_name_focus_exited"]
+[connection signal="text_submitted" from="PanelContainer/HBoxContainer/Name" to="." method="_on_name_text_submitted"]

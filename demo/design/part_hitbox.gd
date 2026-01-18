@@ -5,6 +5,9 @@ const SCENE := preload("res://design/part_hitbox.tscn")
 
 @export var shape: CollisionShape2D
 
+var placement: PartImage.Placement:
+	get = get_placement,
+	set = set_placement
 var overlapping := false:
 	set = set_overlapping
 var data: PartData:
@@ -42,6 +45,9 @@ func get_placement() -> PartImage.Placement:
 	# Maps ≈0º -> 0, ≈90º -> 1, ≈180º -> 2, ≈270º -> 3
 	var rot := int(round(rotation / (PI/2) ) ) & 3
 	return (4 + rot if flipped else rot) as PartImage.Placement
+
+func set_placement(new_placement: PartImage.Placement) -> void:
+	rotation = (new_placement & 3) * (PI/2)
 
 func set_overlapping(is_overlapping: bool) -> void:
 	z_index = PartData.MAX_Z_INDEX + 1 if is_overlapping else data.z_index

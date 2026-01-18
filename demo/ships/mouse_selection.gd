@@ -13,8 +13,13 @@ static func z_sorter(a: Node2D, b: Node2D) -> bool:
 	assert(not a.z_as_relative and not b.z_as_relative)
 	return a.z_index > b.z_index
 
-static func distance_sorter(a: Node2D, b: Node2D, where: Vector2) -> bool:
-	return a.global_position.distance_squared_to(where) > b.global_position.distance_squared_to(where)
+static func distance_sorter(a: Node2D, b: Node2D, from: Vector2) -> bool:
+	return a.global_position.distance_squared_to(from) > b.global_position.distance_squared_to(from)
+
+func _ready() -> void:
+	_rect.size = Vector2.ZERO
+	_resize_hitbox()
+	set_physics_process(false)
 
 func is_selecting() -> bool:
 	return is_physics_processing()
@@ -29,10 +34,23 @@ func disable() -> void:
 	set_process_unhandled_input(false)
 	_stop_selection()
 
-func _ready() -> void:
-	_rect.size = Vector2.ZERO
-	_resize_hitbox()
-	set_physics_process(false)
+func _to_collider(result: Dictionary) -> Node2D:
+	return result["collider"]
+
+func sorted_query(where: Vector2, sorter := z_sorter, max_distance := 0.0, max_results := 32) -> Array:
+	var query := PhysicsShapeQueryParameters2D.new()
+	var shape := CircleShape2D.new()
+	# A circle should be sufficient for most applications
+	query.transform = Transform2D(0.0, where)
+	query.collision_mask = collision_mask
+	query.shape = shape
+	shape.radius = max_distance
+	# NOTE: Ensure collision_mask is correctly set!
+	var results := get_world_2d().direct_space_state.intersect_shape(query, max_results)
+	var nodes := results.map(_to_collider)
+	if sorter != null:
+		nodes.sort_custom(sorter)
+	return nodes
 
 func _resize_hitbox() -> void:
 	global_scale = Vector2.ONE
@@ -68,18 +86,3 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_released("multiselect") and is_selecting():
 		selected.emit(get_overlapping_bodies(), _rect.abs() )
 		_stop_selection()
-
-func sorted_query(where: Vector2, sorter := z_sorter, max_distance := 0.0, max_results := 32) -> Array:
-	var query := PhysicsShapeQueryParameters2D.new()
-	var shape := CircleShape2D.new()
-	query.transform = Transform2D(0.0, where)
-	query.collision_mask = collision_mask
-	query.shape = shape
-	shape.radius = max_distance
-	var results := get_world_2d().direct_space_state.intersect_shape(query, max_results)
-	var nodes := results.map(func (result: Dictionary) -> Node2D:
-		return result.collider
-	)
-	if sorter != null:
-		nodes.sort_custom(sorter)
-	return nodes

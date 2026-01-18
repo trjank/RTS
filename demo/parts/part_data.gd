@@ -1,5 +1,7 @@
 class_name PartData extends RefCounted
 
+signal image_changed
+
 const MIN_SIZE := 1
 const MAX_SIZE := 16
 const CODE_LENGTH := 4
@@ -14,8 +16,8 @@ static var subtypes: Dictionary[String, Callable] = {
 	"thruster": ThrusterData.new
 }
 
-static func create_subtype(part_subtype: String, part_code: String, part_width := MIN_SIZE, part_height := MIN_SIZE) -> PartData:
-	return subtypes.get(part_subtype, PartData.new).call(part_code, part_width, part_height)
+static func create_subtype(part_subtype: String, part_code: String, part_image_path: String, part_width := MIN_SIZE, part_height := MIN_SIZE) -> PartData:
+	return subtypes.get(part_subtype, PartData.new).call(part_code, part_image_path, part_width, part_height)
 
 var atlas_id := -1
 var z_index := 0:
@@ -43,9 +45,10 @@ var _code: String
 var _size: Vector2i
 var _image: PartImage
 
-func _init(init_code: String, init_width := MIN_SIZE, init_height := MIN_SIZE) -> void:
+func _init(init_code: String, init_image_path: String, init_width := MIN_SIZE, init_height := MIN_SIZE) -> void:
 	_code = init_code if init_code.length() == CODE_LENGTH else FALLBACK_CODE
 	_size = Vector2i(init_width, init_height).clampi(MIN_SIZE, MAX_SIZE)
+	image_path = init_image_path
 
 func becomes_node_on_ship() -> bool:
 	return false
@@ -77,5 +80,8 @@ func set_z_index(new_z_index: int) -> void:
 	z_index = mini(new_z_index, MAX_Z_INDEX)
 
 func set_image_path(new_image_path: String) -> void:
+	if image_path == new_image_path:
+		return
 	image_path = new_image_path
 	_image = PartImage.new(new_image_path, _size.x, _size.y)
+	image_changed.emit()

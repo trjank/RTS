@@ -22,10 +22,11 @@ shader_parameter/major_line_thickness = 0.250000011875
 shader_parameter/square_size_px = Vector2(32, 32)
 shader_parameter/square_color = Color(1, 0.935, 0.87, 0.101960786)
 
-[node name="Design" type="Node" node_paths=PackedStringArray("part_group", "parts_container", "mouse_selection", "grid", "save_popup")]
+[node name="Design" type="Node" node_paths=PackedStringArray("part_group", "parts_container", "fleet_container", "mouse_selection", "grid", "save_popup")]
 script = ExtResource("1_wctwy")
 part_group = NodePath("World/Grid/PartGroup")
 parts_container = NodePath("UI/VBoxContainer/HBoxContainer/PartsContainer")
+fleet_container = NodePath("UI/VBoxContainer/HBoxContainer/FleetContainer")
 mouse_selection = NodePath("World/MouseSelection")
 grid = NodePath("World/Grid")
 save_popup = NodePath("SaveShipPopup")
@@ -63,9 +64,15 @@ theme_override_constants/separation = 0
 [node name="FleetContainer" parent="UI/VBoxContainer/HBoxContainer" instance=ExtResource("3_rmp56")]
 layout_mode = 2
 
-[node name="PartsContainer" parent="UI/VBoxContainer/HBoxContainer" instance=ExtResource("9_3c8mw")]
+[node name="PartsContainer" parent="UI/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("tabs") instance=ExtResource("9_3c8mw")]
 layout_mode = 2
 size_flags_horizontal = 2
+tabs = {
+"armor": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Armor"),
+"energy": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Energy"),
+"utility": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Utility"),
+"weapons": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Weapons")
+}
 
 [node name="World" type="Node2D" parent="."]
 
@@ -98,6 +105,14 @@ metadata/_custom_type_script = "uid://c1y8rv0ogtakj"
 texture = ExtResource("14_r41aq")
 script = ExtResource("13_rmp56")
 
+[node name="ShipStats" type="Label" parent="World/Grid"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_right = -173.0
+grow_vertical = 2
+text = "STATS WILL DISPLAY HERE"
+
 [node name="SaveShipPopup" type="AcceptDialog" parent="."]
 auto_translate_mode = 1
 oversampling_override = 1.0
@@ -109,4 +124,7 @@ unresizable = true
 theme = ExtResource("14_7jtw0")
 ok_button_text = "Return to design"
 
+[connection signal="save_changed" from="." to="UI/VBoxContainer/HBoxContainer/FleetContainer" method="_on_design_save_changed"]
+[connection signal="part_clicked" from="UI/VBoxContainer/HBoxContainer/PartsContainer" to="." method="_on_parts_container_part_clicked"]
+[connection signal="save_changed" from="World/Grid" to="." method="_on_grid_save_changed"]
 [connection signal="ship_changed" from="World/Grid" to="World/Grid/CenterMarker" method="_on_grid_ship_changed"]

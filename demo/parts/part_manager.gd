@@ -1,5 +1,7 @@
 class_name PartManager extends RefCounted
 
+signal part_created(part_data: PartData)
+
 enum LoadError {
 	OK = 0,
 	FILE_NOT_FOUND = 1 << 0,
@@ -66,20 +68,23 @@ func get_part_from_id(atlas_id: int) -> PartData:
 func get_part_from_code(code: String) -> PartData:
 	return _parts[_code_to_id[code] ]
 
-func create_part(code: String, width: int, height: int, subtype = "") -> PartData:
+func create_part(code: String, image_path: String, width: int, height: int, subtype = "") -> PartData:
 	if code.length() != PartData.CODE_LENGTH or has_code(code) or not subtype in PartData.subtypes:
 		return null
-	var part := PartData.create_subtype(subtype, code, width, height)
+	var part := PartData.create_subtype(subtype, code, image_path, width, height)
 	var atlas_id := _parts.size()
 	_code_to_id[code] = atlas_id
 	_parts.push_back(part)
+	part_created.emit(part)
 	return part
 
 func load_part(code: String, properties: Dictionary) -> LoadError:
 	var subtype = properties.get("subtype", "")
 	var width: int = properties.get("width", PartData.MIN_SIZE)
 	var height: int = properties.get("height", PartData.MIN_SIZE)
-	var part := create_part(code, width, height, subtype)
+	var image_path: String = properties.get("image_path", "")
+	# TODO: add image path in constructor here
+	var part := create_part(code, image_path, width, height, subtype)
 	if part == null:
 		return LoadError.INVALID_PART
 	if not Util.type_check(properties, VALID_PART_PROPERTIES, true, Util.CAST_NUMERICS):
@@ -104,6 +109,10 @@ func load_json(file_path: String) -> int:
 	if not data is Dictionary:
 		return LoadError.INCORRECT_FORMAT
 	return load_dictionary(data)
+
+func for_each_part(f: Callable) -> void:
+	for part in _parts:
+		f.call(part)
 
 func generate_atlas() -> void:
 	update_atlas_part_sizes()

@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddcv3ni2f8bud"]
+
+[ext_resource type="Texture2D" uid="uid://xmt7t8to3f6j" path="res://icons/texture_not_found.png" id="1_5nmv2"]
+[ext_resource type="Script" uid="uid://cbsj4q2b7tpj4" path="res://design/part_button.gd" id="2_s6kb7"]
+
+[node name="PartButton" type="TextureButton"]
+texture_filter = 1
+custom_minimum_size = Vector2(32, 32)
+offset_right = 32.0
+offset_bottom = 32.0
+texture_normal = ExtResource("1_5nmv2")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("2_s6kb7")
+metadata/_custom_type_script = "uid://cbsj4q2b7tpj4"
