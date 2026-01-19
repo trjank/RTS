@@ -1,6 +1,6 @@
 class_name ShipsScreen extends Node
 
-const BUTTON_SIZE := Vector2(300.0, 300.0)
+const BUTTON_SIZE := Vector2(250.0, 250.0)
 
 @export var ships_box: HFlowContainer
 @export var fleets_box: VBoxContainer

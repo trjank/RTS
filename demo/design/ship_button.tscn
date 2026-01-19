@@ -25,7 +25,7 @@ content_margin_right = 0.0
 content_margin_bottom = 5.0
 bg_color = Color(0, 0, 0, 1)
 
-[node name="Button" type="Button" node_paths=PackedStringArray("id", "unsaved_indicator", "name_edit")]
+[node name="Button" type="Button" node_paths=PackedStringArray("id", "unsaved_indicator", "name_edit", "custom_icon")]
 custom_minimum_size = Vector2(300, 300)
 offset_right = 200.0
 offset_bottom = 10.0
@@ -38,6 +38,7 @@ script = ExtResource("2_oyyh1")
 id = NodePath("PanelContainer/HBoxContainer/ID")
 unsaved_indicator = NodePath("PanelContainer/HBoxContainer/UnsavedIndicator")
 name_edit = NodePath("PanelContainer/HBoxContainer/Name")
+custom_icon = NodePath("CustomIcon")
 metadata/_custom_type_script = "uid://gn43e8awh35b"
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
@@ -68,7 +69,17 @@ text = " Unsaved"
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 placeholder_text = "EMPTY"
+alignment = 1
 max_length = 50
+
+[node name="CustomIcon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+expand_mode = 3
 
 [connection signal="focus_exited" from="PanelContainer/HBoxContainer/Name" to="." method="_on_name_focus_exited"]
 [connection signal="text_submitted" from="PanelContainer/HBoxContainer/Name" to="." method="_on_name_text_submitted"]

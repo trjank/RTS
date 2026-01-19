@@ -2,6 +2,11 @@ class_name FleetContainer extends PanelContainer
 
 signal slot_clicked(slot: int)
 
+const MINI_ICONS: Dictionary[int, Texture] = {
+	Fleet.CAPITAL_SHIP_SLOT: preload("res://icons/tab_armor.png")
+}
+
+@export var button_size := Vector2(250.0, 250.0)
 @export var ship_buttons: Control
 @export var fleet_name: LineEdit
 
@@ -45,6 +50,8 @@ func _add_ship(ship: ShipDataID, slot: int) -> void:
 	var button := ShipButton.create()
 	button.ship = ship
 	button.in_fleet = true
+	button.mini_icon = MINI_ICONS.get(slot)
+	button.custom_minimum_size = button_size
 	button.pressed.connect(slot_clicked.emit.bind(slot) )
 	ship_buttons.add_child(button)
 

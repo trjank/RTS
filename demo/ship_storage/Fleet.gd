@@ -6,7 +6,7 @@ signal ship_changed(slot: int, new_ship: ShipDataID)
 const MAX_NAME_LENGTH := 30
 const DEFAULT_NAME := "Unnamed"
 const DEFAULT_SIZE := 10
-const CAPITAL_SHIP := 0
+const CAPITAL_SHIP_SLOT := 0
 
 var name: String:
 	set = set_name

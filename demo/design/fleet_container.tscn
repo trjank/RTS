@@ -29,6 +29,7 @@ grow_vertical = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_bomom")
 script = ExtResource("1_12wau")
+button_size = Vector2(400, 400)
 ship_buttons = NodePath("VBoxContainer/ScrollContainer/ShipButtons")
 fleet_name = NodePath("VBoxContainer/PanelContainer/VBoxContainer/FleetName")
 metadata/_custom_type_script = "uid://df7r1lo3a8cdl"

@@ -31,12 +31,22 @@ bg_color = Color(0, 0, 0, 0.470588)
 shader = ExtResource("3_6c8ko")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q8tbq"]
-content_margin_left = 65.0
+content_margin_left = 38.0
 bg_color = Color(0, 0, 0, 0.39215687)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_km3n6"]
-content_margin_left = 65.0
+content_margin_left = 38.0
 bg_color = Color(0, 0, 0, 0.5882353)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
 
 [node name="ShipsScreen" type="Node" node_paths=PackedStringArray("ships_box", "fleets_box")]
 script = ExtResource("1_ek2hs")
@@ -76,7 +86,7 @@ layout_mode = 2
 theme_override_constants/separation = 25
 
 [node name="Fleets" type="PanelContainer" parent="UI/VBoxContainer/MarginContainer/HSplitContainer"]
-custom_minimum_size = Vector2(500, 0)
+custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_qim6h")
@@ -137,7 +147,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="CreateShipButton" type="Button" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer"]
-custom_minimum_size = Vector2(300, 300)
+custom_minimum_size = Vector2(250, 250)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/h_separation = 15
