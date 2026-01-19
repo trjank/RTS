@@ -3,7 +3,7 @@ class_name FleetContainer extends PanelContainer
 signal slot_clicked(slot: int)
 
 const MINI_ICONS: Dictionary[int, Texture] = {
-	Fleet.CAPITAL_SHIP_SLOT: preload("res://icons/tab_armor.png")
+	Fleet.CAPITAL_SHIP_SLOT: preload("res://icons/flag.png")
 }
 
 @export var button_size := Vector2(250.0, 250.0)

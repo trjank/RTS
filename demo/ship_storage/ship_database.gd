@@ -144,14 +144,14 @@ func save_fleet(fleet: FleetID) -> bool:
 
 func delete_ship(ship: ShipDataID) -> bool:
 	return ship != null \
-	and _db.delete_rows("ships", "id == %d" % ship.id) \
-	and _db.delete_rows("fleet_slots", "ship_id == %d" % ship.id) \
+	and _db.delete_rows("ships", "id == %d" % ship.get_id() ) \
+	and _db.delete_rows("fleet_slots", "ship_id == %d" % ship.get_id() ) \
 	and _loaded_ships.erase(ship.get_id() )
 
 func delete_fleet(fleet: FleetID) -> bool:
 	return fleet != null \
-	and _db.delete_rows("fleets", "id == %d" % fleet.id) \
-	and _db.delete_rows("fleet_slots", "fleet_id == %d" % fleet.id) \
+	and _db.delete_rows("fleets", "id == %d" % fleet.get_id() ) \
+	and _db.delete_rows("fleet_slots", "fleet_id == %d" % fleet.get_id() ) \
 	and _loaded_fleets.erase(fleet.get_id() )
 
 func _result_to_fleet(result: Dictionary) -> Fleet:

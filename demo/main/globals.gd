@@ -4,8 +4,8 @@ extends Node
 const CONFIG_PATH := "user://settings_DO_NOT_FILESHARE.cfg"
 const PARTS_JSON_PATH := "user://part_data.json"
 const SHIP_DB_PATH := "user://ship_db.db"
-const LOAD_LIMIT_SHIPS := 10
-const LOAD_LIMIT_FLEETS := 10
+const LOAD_LIMIT_SHIPS := 100
+const LOAD_LIMIT_FLEETS := 100
 
 var main: Main
 var client := Client.new()

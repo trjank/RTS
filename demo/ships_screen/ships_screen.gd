@@ -4,6 +4,8 @@ const BUTTON_SIZE := Vector2(250.0, 250.0)
 
 @export var ships_box: HFlowContainer
 @export var fleets_box: VBoxContainer
+@export var create_ship_button: Button
+@export var delete_ship_box: TextureRect
 
 var ship_db: ShipDatabase:
 	set = set_ship_db
@@ -35,6 +37,11 @@ func load_ships_and_fleets() -> void:
 	for fleet in ship_db.get_loaded_fleets():
 		load_fleet(fleet)
 
+func _reorder_children() -> void:
+	# NOTE: This orders the ships to be BEFORE these nodes
+	create_ship_button.move_to_front()
+	delete_ship_box.move_to_front()
+
 func load_ship(ship: ShipDataID) -> void:
 	if ship in _ship_buttons:
 		return
@@ -42,6 +49,7 @@ func load_ship(ship: ShipDataID) -> void:
 	button.custom_minimum_size = BUTTON_SIZE
 	button.ship = ship
 	ships_box.add_child(button)
+	_reorder_children()
 	_ship_buttons[ship] = button
 
 func load_fleet(fleet: FleetID) -> void:
@@ -76,3 +84,6 @@ func _on_create_ship_button_pressed() -> void:
 func _on_create_fleet_button_pressed() -> void:
 	var new_fleet := ship_db.create_fleet(Fleet.new() )
 	load_fleet(new_fleet)
+
+func _on_delete_ship_delete_requested(ship: ShipDataID) -> void:
+	delete_ship(ship)

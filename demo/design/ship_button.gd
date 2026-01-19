@@ -4,10 +4,10 @@ class_name ShipButton extends Button
 @export var unsaved_indicator: Label
 @export var name_edit: LineEdit
 @export var custom_icon: TextureRect
-
-var in_fleet := false
-var mini_icon: Texture:
+@export var in_fleet := false
+@export var mini_icon: Texture:
 	set = set_mini_icon
+
 var ship: ShipDataID:
 	set = set_ship
 
@@ -61,10 +61,15 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	ship = new_ship
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
-	var preview := duplicate()
+	if ship == null:
+		return
+	var preview: ShipButton = duplicate()
 	var center_preview := Control.new()
+	# NOTE: By default, previews have their top left corner at mouse
 	center_preview.add_child(preview)
 	preview.position = -preview.size / 2
+	# NOTE: duplicate() does not copy the ship (we must do it manually)
+	preview.ship = ship
 	set_drag_preview(center_preview)
 	return self
 

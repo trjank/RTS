@@ -8,7 +8,7 @@ content_margin_left = 20.0
 content_margin_top = 20.0
 content_margin_right = 20.0
 content_margin_bottom = 20.0
-bg_color = Color(0.241156, 0.241156, 0.241156, 1)
+bg_color = Color(0.15839998, 0.35671994, 0.48, 1)
 
 [node name="EditableFleetContainer" type="PanelContainer" node_paths=PackedStringArray("ship_buttons", "fleet_name")]
 anchors_preset = 10
@@ -24,10 +24,21 @@ metadata/_custom_type_script = "uid://bobmiseb876vj"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+theme_override_constants/separation = 15
 
 [node name="HFlowContainer" type="HFlowContainer" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 15
+
+[node name="FleetName" type="LineEdit" parent="VBoxContainer/HFlowContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.772549, 0.611765, 0.85098, 1)
+theme_override_colors/font_outline_color = Color(0.77254903, 0.6117647, 0.8509804, 1)
+theme_override_constants/outline_size = 2
+text = "Starter Fleet"
+placeholder_text = "Unnamed"
+max_length = 30
+expand_to_text_length = true
 
 [node name="DeleteFleet" type="TextureButton" parent="VBoxContainer/HFlowContainer"]
 layout_mode = 2
@@ -35,18 +46,11 @@ texture_normal = ExtResource("2_kagd1")
 
 [node name="Selected" type="Label" parent="VBoxContainer/HFlowContainer"]
 layout_mode = 2
-text = "SELECTED"
-
-[node name="FleetName" type="LineEdit" parent="VBoxContainer/HFlowContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.772549, 0.611765, 0.85098, 1)
-text = "Starter Fleet"
-placeholder_text = "Unnamed"
-max_length = 30
-expand_to_text_length = true
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
-layout_mode = 2
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+text = "Selected"
 
 [node name="ShipButtons" type="HFlowContainer" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_constants/h_separation = -2
+theme_override_constants/v_separation = -2
