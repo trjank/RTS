@@ -44,6 +44,7 @@ var turn_impulse := 0.0
 var part_counts: Dictionary[PartData, int]
 var center: Vector2
 var image: Image
+var texture: ImageTexture
 
 var _grid_bounds: Rect2i
 var _ship_bounds := Rect2i(0, 0, 1, 1)
@@ -190,7 +191,7 @@ func add_part(part_data: PartData, top_left_corner: Vector2i, placement := PartI
 	return PartError.OK
 
 func serialize() -> PackedByteArray:
-	assert(_bytes.get_size() % BYTES_PER_PART != 0)
+	assert(_bytes.get_size() % BYTES_PER_PART == 0)
 	return _bytes.data_array
 
 func deserialize(from_bytes: PackedByteArray, part_manager: PartManager) -> int:
@@ -225,6 +226,7 @@ func generate_image() -> void:
 	var offset := PartImage.TILE_SIZE * _ship_bounds.position
 	image = Image.create_empty(size.x, size.y, USE_MIPMAPS, PartImage.FORMAT)
 	for_each_part(_draw_part.bind(offset) )
+	texture = ImageTexture.create_from_image(image)
 	image_changed.emit(image)
 
 func _draw_part(part: ShipDataPart, offset: Vector2i) -> void:

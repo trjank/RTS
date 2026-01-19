@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS ships (
 	grid_height INTEGER NOT NULL,
 	image_width INTEGER NOT NULL,
 	image_height INTEGER NOT NULL,
-	parts BLOB NOT NULL,
+	parts BLOB,
 	image BLOB
 );
 """
@@ -59,7 +59,7 @@ func get_loaded_ships() -> Array:
 	return _loaded_ships.values()
 
 func get_loaded_fleets() -> Array:
-	return _loaded_ships.values()
+	return _loaded_fleets.values()
 
 func _load_ship(result: Dictionary) -> ShipDataID:
 	var ship_id: int = result["id"]
@@ -164,7 +164,9 @@ func _result_to_ship(result: Dictionary) -> ShipData:
 	if image_bytes != null:
 		ship.image = Image.create_from_data(result.image_width, result.image_height, ShipData.USE_MIPMAPS, PartImage.FORMAT, image_bytes)
 	# TODO: Possible deferred deserialization to speed up load times
-	var error := ship.deserialize(result["parts"], part_manager)
+	var parts = result["parts"]
+	parts = parts if parts != null else PackedByteArray()
+	var error := ship.deserialize(parts, part_manager)
 	var id: int = result["id"]
 	if error & ShipData.PartError.INCORRECT_SIZE_BYTES:
 		push_error("(ShipDatabase) Failed to load #%d: corrupted parts" % id)
@@ -184,7 +186,8 @@ func _fleet_slot_to_query(slot: int, fleet: FleetID) -> Dictionary:
 
 func _ship_to_query(ship: ShipData) -> Dictionary:
 	var grid_size := ship.get_grid_rect().size
-	var image_size := ship.image.get_size()
+	var image_size := Vector2i.ZERO if ship.image == null else ship.image.get_size()
+	var data := PackedByteArray() if ship.image == null else ship.image.get_data()
 	return {
 		"name": ship.name,
 		"parts": ship.serialize(),
@@ -192,5 +195,5 @@ func _ship_to_query(ship: ShipData) -> Dictionary:
 		"grid_height": grid_size.y,
 		"image_width": image_size.x,
 		"image_height": image_size.y,
-		"image": ship.image.get_data()
+		"image": data
 	}

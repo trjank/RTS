@@ -21,7 +21,7 @@ func set_ship(new_ship: ShipDataID) -> void:
 		name_edit.text = ""
 	else:
 		name_edit.editable = true
-		ship.ship_changed.connect(update_ui)
+		new_ship.ship_changed.connect(update_ui)
 	ship = new_ship
 	update_ui()
 
@@ -33,7 +33,6 @@ func update_ui() -> void:
 	id.text = "#%d" % ship.get_id()
 
 func _on_name_text_submitted(new_text: String) -> void:
-	print("BRUH!")
 	ship.ship_data.name = new_text
 	ship.save()
 

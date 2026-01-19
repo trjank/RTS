@@ -26,9 +26,9 @@ content_margin_bottom = 5.0
 bg_color = Color(0, 0, 0, 1)
 
 [node name="Button" type="Button" node_paths=PackedStringArray("id", "unsaved_indicator", "name_edit")]
-custom_minimum_size = Vector2(400, 400)
-offset_right = 400.0
-offset_bottom = 400.0
+custom_minimum_size = Vector2(300, 300)
+offset_right = 200.0
+offset_bottom = 10.0
 theme_override_constants/icon_max_width = 300
 theme_override_styles/normal = SubResource("StyleBoxFlat_12wau")
 theme_override_styles/hover = SubResource("StyleBoxFlat_xomhk")

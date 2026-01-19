@@ -1,11 +1,48 @@
-[gd_scene load_steps=5 format=3 uid="uid://owpblejfs8ky"]
+[gd_scene load_steps=16 format=3 uid="uid://owpblejfs8ky"]
 
+[ext_resource type="Script" uid="uid://deruid3t574n3" path="res://ships_screen/ships_screen.gd" id="1_ek2hs"]
 [ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="1_h1jtk"]
-[ext_resource type="PackedScene" uid="uid://y6chu0p3tois" path="res://ships_screen/ships_container.tscn" id="3_db5p6"]
-[ext_resource type="PackedScene" uid="uid://drmisu1uy2pxt" path="res://ships_screen/fleets_container.tscn" id="3_typxa"]
+[ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="3_6c8ko"]
+[ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/editable_fleet_container.tscn" id="4_o2i5n"]
+[ext_resource type="Texture2D" uid="uid://wq8ei1nlxqqq" path="res://icons/fleet_new.png" id="5_ii65h"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="5_tw06j"]
+[ext_resource type="Script" uid="uid://d1fjb3xasyf1u" path="res://ships_screen/create_ship_button.gd" id="8_nq66v"]
 
-[node name="ShipsScreen" type="Node"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qim6h"]
+bg_color = Color(0, 0, 0, 0.470588)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_il8ml"]
+shader = ExtResource("3_6c8ko")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g71wc"]
+border_width_bottom = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11rmj"]
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cui26"]
+bg_color = Color(0, 0, 0, 0.470588)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nn22w"]
+shader = ExtResource("3_6c8ko")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q8tbq"]
+content_margin_left = 65.0
+bg_color = Color(0, 0, 0, 0.39215687)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_km3n6"]
+content_margin_left = 65.0
+bg_color = Color(0, 0, 0, 0.5882353)
+
+[node name="ShipsScreen" type="Node" node_paths=PackedStringArray("ships_box", "fleets_box", "create_ship_button", "create_fleet_button")]
+script = ExtResource("1_ek2hs")
+ships_box = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer")
+fleets_box = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer")
+create_ship_button = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer/CreateShipButton")
+create_fleet_button = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer/CreateFleetButton")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -20,8 +57,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 618.0
-offset_bottom = 241.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
@@ -37,16 +72,84 @@ theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/MarginContainer"]
+[node name="HSplitContainer" type="HSplitContainer" parent="UI/VBoxContainer/MarginContainer"]
 layout_mode = 2
-size_flags_vertical = 3
 theme_override_constants/separation = 25
 
-[node name="fleets_container" parent="UI/VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_typxa")]
+[node name="Fleets" type="PanelContainer" parent="UI/VBoxContainer/MarginContainer/HSplitContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_qim6h")
+
+[node name="Blur" type="Panel" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets"]
+visible = false
+show_behind_parent = true
+material = SubResource("ShaderMaterial_il8ml")
 layout_mode = 2
 
-[node name="ships_container" parent="UI/VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("3_db5p6")]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets"]
 layout_mode = 2
+
+[node name="CurrentFleet" type="PanelContainer" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_g71wc")
+
+[node name="AH" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/CurrentFleet" instance=ExtResource("4_o2i5n")]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="AllFleets" type="ScrollContainer" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_11rmj")
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Fleet" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer" instance=ExtResource("4_o2i5n")]
+layout_mode = 2
+
+[node name="CreateFleetButton" type="Button" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Create New Fleet"
+icon = ExtResource("5_ii65h")
+
+[node name="Ships" type="PanelContainer" parent="UI/VBoxContainer/MarginContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_cui26")
+
+[node name="Blur" type="Panel" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships"]
+visible = false
+show_behind_parent = true
+material = SubResource("ShaderMaterial_nn22w")
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="HFlowContainer" type="HFlowContainer" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CreateShipButton" type="Button" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/h_separation = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_q8tbq")
+theme_override_styles/hover = SubResource("StyleBoxFlat_km3n6")
+text = "New Ship"
+icon = ExtResource("5_ii65h")
+alignment = 0
+script = ExtResource("8_nq66v")
 
 [node name="World" type="Node2D" parent="."]
 
@@ -96,3 +199,7 @@ theme_override_font_sizes/font_size = 26
 text = "This action cannot be undone!
 "
 horizontal_alignment = 1
+
+[connection signal="pressed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer/CreateFleetButton" to="." method="_on_create_fleet_button_pressed"]
+[connection signal="child_order_changed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer" to="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer/CreateShipButton" method="_on_grid_container_child_order_changed"]
+[connection signal="pressed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer/CreateShipButton" to="." method="_on_create_ship_button_pressed"]
