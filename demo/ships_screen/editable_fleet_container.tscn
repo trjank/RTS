@@ -10,7 +10,7 @@ content_margin_right = 20.0
 content_margin_bottom = 20.0
 bg_color = Color(0.241156, 0.241156, 0.241156, 1)
 
-[node name="EditableFleetContainer" type="PanelContainer"]
+[node name="EditableFleetContainer" type="PanelContainer" node_paths=PackedStringArray("ship_buttons", "fleet_name")]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 100.0
@@ -18,6 +18,8 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ouaej")
 script = ExtResource("1_y7emp")
+ship_buttons = NodePath("VBoxContainer/ShipButtons")
+fleet_name = NodePath("VBoxContainer/HFlowContainer/FleetName")
 metadata/_custom_type_script = "uid://bobmiseb876vj"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -32,9 +34,8 @@ layout_mode = 2
 texture_normal = ExtResource("2_kagd1")
 
 [node name="Selected" type="Label" parent="VBoxContainer/HFlowContainer"]
-unique_name_in_owner = true
 layout_mode = 2
-text = "(Selected)"
+text = "SELECTED"
 
 [node name="FleetName" type="LineEdit" parent="VBoxContainer/HFlowContainer"]
 layout_mode = 2
@@ -47,6 +48,5 @@ expand_to_text_length = true
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="Ships" type="HFlowContainer" parent="VBoxContainer"]
-unique_name_in_owner = true
+[node name="ShipButtons" type="HFlowContainer" parent="VBoxContainer"]
 layout_mode = 2

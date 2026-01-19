@@ -4,8 +4,6 @@ const BUTTON_SIZE := Vector2(300.0, 300.0)
 
 @export var ships_box: HFlowContainer
 @export var fleets_box: VBoxContainer
-@export var create_ship_button: Button
-@export var create_fleet_button: Button
 
 var ship_db: ShipDatabase:
 	set = set_ship_db
@@ -40,7 +38,7 @@ func load_ships_and_fleets() -> void:
 func load_ship(ship: ShipDataID) -> void:
 	if ship in _ship_buttons:
 		return
-	var button := DraggableShipButton.create()
+	var button := ShipButton.create()
 	button.custom_minimum_size = BUTTON_SIZE
 	button.ship = ship
 	ships_box.add_child(button)
@@ -49,7 +47,8 @@ func load_ship(ship: ShipDataID) -> void:
 func load_fleet(fleet: FleetID) -> void:
 	if fleet in _editable_fleets:
 		return
-	var editable_fleet := EditableFleetContainer.new()
+	var editable_fleet := EditableFleetContainer.create()
+	editable_fleet.fleet = fleet
 	fleets_box.add_child(editable_fleet)
 	_editable_fleets[fleet] = editable_fleet
 

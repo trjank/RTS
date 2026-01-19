@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://owpblejfs8ky"]
+[gd_scene load_steps=17 format=3 uid="uid://owpblejfs8ky"]
 
 [ext_resource type="Script" uid="uid://deruid3t574n3" path="res://ships_screen/ships_screen.gd" id="1_ek2hs"]
 [ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="1_h1jtk"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/editable_fleet_container.tscn" id="4_o2i5n"]
 [ext_resource type="Texture2D" uid="uid://wq8ei1nlxqqq" path="res://icons/fleet_new.png" id="5_ii65h"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="5_tw06j"]
+[ext_resource type="Script" uid="uid://di7m7harsscok" path="res://ships_screen/create_fleet_button.gd" id="6_km3n6"]
 [ext_resource type="Script" uid="uid://d1fjb3xasyf1u" path="res://ships_screen/create_ship_button.gd" id="8_nq66v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qim6h"]
@@ -37,12 +38,10 @@ bg_color = Color(0, 0, 0, 0.39215687)
 content_margin_left = 65.0
 bg_color = Color(0, 0, 0, 0.5882353)
 
-[node name="ShipsScreen" type="Node" node_paths=PackedStringArray("ships_box", "fleets_box", "create_ship_button", "create_fleet_button")]
+[node name="ShipsScreen" type="Node" node_paths=PackedStringArray("ships_box", "fleets_box")]
 script = ExtResource("1_ek2hs")
 ships_box = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer")
 fleets_box = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer")
-create_ship_button = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer/CreateShipButton")
-create_fleet_button = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer/CreateFleetButton")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -110,14 +109,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Fleet" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer" instance=ExtResource("4_o2i5n")]
-layout_mode = 2
-
 [node name="CreateFleetButton" type="Button" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Create New Fleet"
 icon = ExtResource("5_ii65h")
+script = ExtResource("6_km3n6")
 
 [node name="Ships" type="PanelContainer" parent="UI/VBoxContainer/MarginContainer/HSplitContainer"]
 layout_mode = 2
@@ -200,6 +197,7 @@ text = "This action cannot be undone!
 "
 horizontal_alignment = 1
 
+[connection signal="child_order_changed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer" to="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer/CreateFleetButton" method="_on_v_box_container_child_order_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer/CreateFleetButton" to="." method="_on_create_fleet_button_pressed"]
 [connection signal="child_order_changed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer" to="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer/CreateShipButton" method="_on_grid_container_child_order_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Ships/ScrollContainer/HFlowContainer/CreateShipButton" to="." method="_on_create_ship_button_pressed"]

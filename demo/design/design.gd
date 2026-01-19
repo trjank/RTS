@@ -30,7 +30,7 @@ func set_fleet(new_fleet: FleetID) -> void:
 	if fleet == new_fleet:
 		return
 	fleet = new_fleet
-	fleet_container.set_fleet(fleet.fleet)
+	fleet_container.fleet = fleet
 	grid.clear_cache()
 
 func set_slot(new_slot: int) -> void:

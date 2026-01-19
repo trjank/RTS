@@ -4,11 +4,15 @@ class_name ShipButton extends Button
 @export var unsaved_indicator: Label
 @export var name_edit: LineEdit
 
+var in_fleet := false
 var ship: ShipDataID:
 	set = set_ship
 
+static func can_swap(button: ShipButton, other_button: ShipButton) -> bool:
+	return button.in_fleet == other_button.in_fleet
+
 static func create() -> ShipButton:
-	return preload("res://design/ship_button.tscn").instantiate() as ShipButton
+	return preload("res://design/ship_button.tscn").instantiate()
 
 func _ready() -> void:
 	update_ui()
@@ -16,12 +20,13 @@ func _ready() -> void:
 func set_ship(new_ship: ShipDataID) -> void:
 	if ship != null:
 		ship.ship_changed.disconnect(update_ui)
-	if new_ship == null:
-		name_edit.editable = false
-		name_edit.text = ""
-	else:
+	if new_ship != null:
 		name_edit.editable = true
 		new_ship.ship_changed.connect(update_ui)
+	else:
+		name_edit.editable = false
+		name_edit.text = ""
+		id.text = ""
 	ship = new_ship
 	update_ui()
 
@@ -31,6 +36,23 @@ func update_ui() -> void:
 	icon = ship.ship_data.texture
 	name_edit.text = ship.ship_data.name
 	id.text = "#%d" % ship.get_id()
+
+func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	return data is ShipButton
+
+func _get_drag_data(_at_position: Vector2) -> Variant:
+	var preview := duplicate()
+	var center_preview := Control.new()
+	center_preview.add_child(preview)
+	preview.position = -preview.size / 2
+	set_drag_preview(center_preview)
+	return self
+
+func _drop_data(_at_position: Vector2, data: Variant) -> void:
+	var new_ship = data.ship
+	if can_swap(self, data):
+		data.ship = ship
+	ship = new_ship
 
 func _on_name_text_submitted(new_text: String) -> void:
 	ship.ship_data.name = new_text

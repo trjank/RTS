@@ -1,7 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://cg2dvx3fcmfjq"]
-
-[ext_resource type="PackedScene" uid="uid://bll4613yi8yxk" path="res://design/ship_button.tscn" id="1_j070h"]
-[ext_resource type="Script" uid="uid://t4ttlffc8rii" path="res://ships_screen/draggable_ship_button.gd" id="2_h4a8h"]
-
-[node name="DraggableShipButton" instance=ExtResource("1_j070h")]
-script = ExtResource("2_h4a8h")

@@ -67,7 +67,7 @@ text = " Unsaved"
 [node name="Name" type="LineEdit" parent="PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-placeholder_text = "Unnamed"
+placeholder_text = "EMPTY"
 max_length = 50
 
 [connection signal="focus_exited" from="PanelContainer/HBoxContainer/Name" to="." method="_on_name_focus_exited"]
