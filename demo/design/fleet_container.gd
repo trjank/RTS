@@ -3,7 +3,7 @@ class_name FleetContainer extends PanelContainer
 signal slot_clicked(slot: int)
 
 const MINI_ICONS: Dictionary[int, Texture] = {
-	Fleet.CAPITAL_SHIP_SLOT: preload("res://icons/flag.png")
+	Fleet.CAPITAL_SHIP_SLOT: preload("res://icons/capital_ship.png")
 }
 
 @export var button_size := Vector2(250.0, 250.0)
@@ -20,6 +20,8 @@ func get_button(slot: int) -> ShipButton:
 	return ship_buttons.get_child(slot) as ShipButton
 
 func set_fleet(new_fleet: FleetID) -> void:
+	if fleet == new_fleet:
+		return
 	if fleet != null:
 		fleet.fleet_changed.disconnect(_set_fleet)
 	if new_fleet != null:
@@ -46,6 +48,11 @@ func _connect_new_fleet(new_fleet: Fleet) -> void:
 	new_fleet.ship_changed.connect(_on_fleet_ship_changed)
 	new_fleet.renamed.connect(_rename)
 
+func _update_slot(new_ship: ShipDataID, slot: int) -> void:
+	fleet.fleet.set_ship(slot, new_ship)
+	var dt := await globals.benchmark(fleet.save_ships, 1)
+	print(dt, "<-----")
+
 func _add_ship(ship: ShipDataID, slot: int) -> void:
 	var button := ShipButton.create()
 	button.ship = ship
@@ -53,13 +60,14 @@ func _add_ship(ship: ShipDataID, slot: int) -> void:
 	button.mini_icon = MINI_ICONS.get(slot)
 	button.custom_minimum_size = button_size
 	button.pressed.connect(slot_clicked.emit.bind(slot) )
+	button.ship_changed.connect(_update_slot.bind(slot) )
 	ship_buttons.add_child(button)
 
 func _rename(new_name: String) -> void:
 	fleet_name.text = new_name
 
 func _on_fleet_ship_changed(slot: int, new_ship: ShipDataID) -> void:
-	get_button(slot).ship_data = new_ship.ship_data
+	get_button(slot).ship = new_ship
 
 func _on_design_save_changed(slot: int, saved: bool) -> void:
 	get_button(slot).unsaved_indicator.visible = saved

@@ -70,6 +70,7 @@ func _load_ship(result: Dictionary) -> ShipDataID:
 func _load_fleet(result: Dictionary) -> FleetID:
 	var fleet_id: int = result["id"]
 	var fleet := FleetID.new(_result_to_fleet(result), self, fleet_id)
+	sync_fleet_ships(fleet)
 	_loaded_fleets[fleet_id] = fleet
 	return fleet
 
@@ -123,15 +124,15 @@ func sync_fleet(fleet: FleetID) -> bool:
 	return sync_fleet_metadata(fleet) and sync_fleet_ships(fleet)
 
 func save_ship(ship: ShipDataID) -> bool:
-	return ship != null and _db.update_rows("ships", "id == %d" % ship.id, _ship_to_query(ship.ship_data) )
+	return ship != null and _db.update_rows("ships", "id == %d" % ship.get_id(), _ship_to_query(ship.ship_data) )
 
 func save_fleet_metadata(fleet: FleetID) -> bool:
-	return fleet != null and _db.update_rows("fleets", "id == %d" % fleet.id, _fleet_to_query(fleet.fleet) )
+	return fleet != null and _db.update_rows("fleets", "id == %d" % fleet.get_id(), _fleet_to_query(fleet.fleet) )
 
 func save_fleet_ships(fleet: FleetID) -> bool:
 	if fleet == null:
 		return false
-	_db.delete_rows("fleet_slots", "fleet_id == %d" % fleet.id)
+	_db.delete_rows("fleet_slots", "fleet_id == %d" % fleet.get_id() )
 	var ships := range(fleet.fleet.size() ) \
 		.filter(fleet.fleet.has_ship_in_slot) \
 		.map(_fleet_slot_to_query.bind(fleet) )

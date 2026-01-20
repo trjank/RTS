@@ -1,5 +1,7 @@
 class_name ShipButton extends Button
 
+signal ship_changed(new_ship: ShipDataID)
+
 @export var id: Label
 @export var unsaved_indicator: Label
 @export var name_edit: LineEdit
@@ -21,12 +23,15 @@ func _ready() -> void:
 	update_ui()
 
 func set_ship(new_ship: ShipDataID) -> void:
+	if ship == new_ship:
+		return
 	if ship != null:
 		ship.ship_changed.disconnect(update_ui)
 	if new_ship != null:
 		new_ship.ship_changed.connect(update_ui)
 	ship = new_ship
 	update_ui()
+	ship_changed.emit(ship)
 
 func set_mini_icon(new_mini_icon: Texture) -> void:
 	mini_icon = new_mini_icon
@@ -45,10 +50,12 @@ func _create_ship_ui() -> void:
 	icon = ship.ship_data.texture
 	id.text = "#%d" % ship.get_id()
 	name_edit.text = ship.ship_data.name
+	name_edit.editable = true
 
 func _clear_ui() -> void:
 	icon = null
 	id.text = ""
+	name_edit.editable = false
 	name_edit.text = ""
 
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:

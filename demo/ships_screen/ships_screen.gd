@@ -1,5 +1,7 @@
 class_name ShipsScreen extends Node
 
+signal fleet_changed(new_fleet: FleetID)
+
 const BUTTON_SIZE := Vector2(250.0, 250.0)
 
 @export var ships_box: HFlowContainer
@@ -7,6 +9,8 @@ const BUTTON_SIZE := Vector2(250.0, 250.0)
 @export var create_ship_button: Button
 @export var delete_ship_box: TextureRect
 
+var fleet: FleetID:
+	set = set_fleet
 var ship_db: ShipDatabase:
 	set = set_ship_db
 
@@ -20,6 +24,13 @@ func set_ship_db(new_ship_db: ShipDatabase) -> void:
 	ship_db = new_ship_db
 	load_ships_and_fleets()
 
+func set_fleet(new_fleet: FleetID) -> void:
+	if fleet == new_fleet:
+		return
+	globals.client.fleet = new_fleet
+	fleet = new_fleet
+	fleet_changed.emit(fleet)
+
 func clear() -> void:
 	for ship_button in _ship_buttons.values():
 		ship_button.queue_free()
@@ -32,49 +43,52 @@ func load_ships_and_fleets() -> void:
 	clear()
 	if ship_db == null:
 		return
-	for ship in ship_db.get_loaded_ships():
-		load_ship(ship)
-	for fleet in ship_db.get_loaded_fleets():
-		load_fleet(fleet)
+	for new_ship in ship_db.get_loaded_ships():
+		load_ship(new_ship)
+	for new_fleet in ship_db.get_loaded_fleets():
+		load_fleet(new_fleet)
 
 func _reorder_children() -> void:
 	# NOTE: This orders the ships to be BEFORE these nodes
 	create_ship_button.move_to_front()
 	delete_ship_box.move_to_front()
 
-func load_ship(ship: ShipDataID) -> void:
-	if ship in _ship_buttons:
+func load_ship(new_ship: ShipDataID) -> void:
+	if new_ship in _ship_buttons:
 		return
 	var button := ShipButton.create()
 	button.custom_minimum_size = BUTTON_SIZE
-	button.ship = ship
+	button.ship = new_ship
 	ships_box.add_child(button)
 	_reorder_children()
-	_ship_buttons[ship] = button
+	_ship_buttons[new_ship] = button
 
-func load_fleet(fleet: FleetID) -> void:
-	if fleet in _editable_fleets:
+func load_fleet(new_fleet: FleetID) -> void:
+	if new_fleet in _editable_fleets:
 		return
 	var editable_fleet := EditableFleetContainer.create()
-	editable_fleet.fleet = fleet
+	editable_fleet.fleet = new_fleet
+	editable_fleet.selected.connect(set_fleet)
+	editable_fleet.delete_requested.connect(delete_fleet)
+	fleet_changed.connect(editable_fleet._on_fleet_changed)
 	fleets_box.add_child(editable_fleet)
-	_editable_fleets[fleet] = editable_fleet
+	_editable_fleets[new_fleet] = editable_fleet
 
-func delete_ship(ship: ShipDataID) -> bool:
-	if not ship in _ship_buttons:
+func delete_ship(old_ship: ShipDataID) -> bool:
+	if not old_ship in _ship_buttons:
 		return false
 	# NOTE: This deletion is permanent (BE CAREFUL)
-	_ship_buttons[ship].queue_free()
-	_ship_buttons.erase(ship)
-	return ship_db.delete_ship(ship)
+	_ship_buttons[old_ship].queue_free()
+	_ship_buttons.erase(old_ship)
+	return ship_db.delete_ship(old_ship)
 
-func delete_fleet(fleet: FleetID) -> bool:
-	if not fleet in _editable_fleets:
+func delete_fleet(old_fleet: FleetID) -> bool:
+	if not old_fleet in _editable_fleets:
 		return false
 	# NOTE: This deletion is permanent (BE CAREFUL)
-	_editable_fleets[fleet].queue_free()
-	_editable_fleets.erase(fleet)
-	return ship_db.delete_fleet(fleet)
+	_editable_fleets[old_fleet].queue_free()
+	_editable_fleets.erase(old_fleet)
+	return ship_db.delete_fleet(old_fleet)
 
 func _on_create_ship_button_pressed() -> void:
 	var new_ship_data := ShipData.new(32, 32)
