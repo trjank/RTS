@@ -1,15 +1,14 @@
 class_name Client extends RefCounted
 
-signal fleet_changed(new_fleet: FleetID)
+signal fleet_changed(new_fleet: Fleet)
 
 var rank: int
 var name: String
 var color: Color
-var fleet: FleetID:
+var fleet: Fleet:
 	set = set_fleet
-var fleets: Dictionary[int, FleetID]
 
-func set_fleet(new_fleet: FleetID) -> void:
+func set_fleet(new_fleet: Fleet) -> void:
 	if fleet == new_fleet:
 		return
 	fleet = new_fleet

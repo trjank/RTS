@@ -10,6 +10,9 @@ func _init(width: int, height: int) -> void:
 func debug_export_as_png(save_path: String) -> Error:
 	return _image.save_png(save_path)
 
+func resize(width: int, height: int) -> void:
+	_image.resize(width, height, Image.INTERPOLATE_NEAREST)
+
 func encode_int(value: int) -> Color:
 	return Color(float(value), 0, 0, 1)
 

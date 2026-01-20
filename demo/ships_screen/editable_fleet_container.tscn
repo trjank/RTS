@@ -50,7 +50,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="EditableFleetContainer" type="PanelContainer" node_paths=PackedStringArray("ship_buttons", "fleet_name")]
+[node name="EditableFleetContainer" type="PanelContainer" node_paths=PackedStringArray("fleet_id", "fleet_name", "ship_buttons")]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 100.0
@@ -58,8 +58,9 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_kagd1")
 script = ExtResource("1_y7emp")
-ship_buttons = NodePath("VBoxContainer/MarginContainer/ShipButtons")
+fleet_id = NodePath("VBoxContainer/PanelContainer/VBoxContainer/FleetID")
 fleet_name = NodePath("VBoxContainer/PanelContainer/VBoxContainer/FleetName")
+ship_buttons = NodePath("VBoxContainer/MarginContainer/ShipButtons")
 metadata/_custom_type_script = "uid://bobmiseb876vj"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -74,7 +75,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_rt1o0")
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="FleetID" type="Label" parent="VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Fleet"

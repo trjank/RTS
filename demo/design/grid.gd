@@ -17,7 +17,7 @@ var ship_data: ShipData:
 
 func _ready() -> void:
 	region_enabled = true
-	ship_data = ShipData.new(32, 32)
+	ship_data = ShipData.new()
 
 func is_saved() -> bool:
 	return _error_cache[ship_data] == ShipData.PartError.OK

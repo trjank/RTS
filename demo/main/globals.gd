@@ -27,7 +27,8 @@ func _init() -> void:
 	if fleet != null:
 		client.fleet = fleet
 	elif fleets.is_empty():
-		client.fleet = ship_db.create_fleet(Fleet.new() )
+		client.fleet = Fleet.new()
+		ship_db.create_fleet(client.fleet)
 	else:
 		client.fleet = fleets[0]
 

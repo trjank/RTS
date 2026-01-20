@@ -12,7 +12,7 @@ signal save_changed(ship_slot: int, saved: bool)
 
 var slot := 0:
 	set = set_slot
-var fleet: FleetID:
+var fleet: Fleet:
 	set = set_fleet
 
 func _ready() -> void:
@@ -23,10 +23,10 @@ func _ready() -> void:
 	fleet = globals.client.fleet
 	parts_container.part_manager = globals.part_manager
 
-func get_ship() -> ShipDataID:
-	return fleet.fleet.get_ship(slot)
+func get_ship() -> ShipData:
+	return fleet.get_ship(slot)
 
-func set_fleet(new_fleet: FleetID) -> void:
+func set_fleet(new_fleet: Fleet) -> void:
 	if fleet == new_fleet:
 		return
 	fleet = new_fleet

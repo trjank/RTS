@@ -32,9 +32,9 @@ const ALL_COLUMNS := ["*"]
 
 var part_manager: PartManager
 
-# NOTE: ShipDataIDs and FleetIDs kept unique to prevent bugs and wasteful copying
-var _loaded_ships: Dictionary[int, ShipDataID] = {}
-var _loaded_fleets: Dictionary[int, FleetID] = {}
+# NOTE: Ships and fleets are kept unique to prevent bugs and wasteful copying
+var _loaded_ships: Dictionary[int, ShipData] = {}
+var _loaded_fleets: Dictionary[int, Fleet] = {}
 var _db := SQLite.new()
 
 func load_file(path: String) -> bool:
@@ -62,51 +62,59 @@ func get_loaded_ships() -> Array:
 func get_loaded_fleets() -> Array:
 	return _loaded_fleets.values()
 
-func _load_ship(result: Dictionary) -> ShipDataID:
-	var ship_id: int = result["id"]
-	var ship := ShipDataID.new(_result_to_ship(result), self, ship_id)
-	_loaded_ships[ship_id] = ship
+func _load_ship(result: Dictionary) -> ShipData:
+	var ship := ShipData.new()
+	ship._db = self
+	ship._id = result["id"]
+	ship.grid_size = Vector2i(result["grid_width"], result["grid_height"] )
+	_parse_ship_from_result(ship, result)
+	_loaded_ships[ship._id] = ship
 	return ship
 
-func _load_fleet(result: Dictionary) -> FleetID:
-	var fleet_id: int = result["id"]
-	var fleet := FleetID.new(_result_to_fleet(result), self, fleet_id)
+func _load_fleet(result: Dictionary) -> Fleet:
+	var fleet := Fleet.new()
+	fleet._db = self
+	fleet._id = result["id"]
+	fleet.size = result["size"]
+	fleet.name = result["name"]
 	sync_fleet_ships(fleet)
-	_loaded_fleets[fleet_id] = fleet
+	_loaded_fleets[fleet._id] = fleet
 	return fleet
 
-func get_ship(ship_id: int) -> ShipDataID:
+func get_ship(ship_id: int) -> ShipData:
 	if ship_id in _loaded_ships:
 		return _loaded_ships[ship_id]
 	var results := _db.select_rows("ships", "id == %d" % ship_id, ALL_COLUMNS)
 	return null if results.is_empty() else _load_ship(results[0] )
 
-func get_fleet(fleet_id: int) -> FleetID:
+func get_fleet(fleet_id: int) -> Fleet:
 	if fleet_id in _loaded_fleets:
 		return _loaded_fleets[fleet_id]
 	var results := _db.select_rows("fleets", "id == %d" % fleet_id, ALL_COLUMNS)
 	return null if results.is_empty() else _load_fleet(results[0] )
 
-func create_ship(ship: ShipData) -> ShipDataID:
-	if ship == null or not _db.insert_row("ships", _ship_to_query(ship) ):
-		return null
-	var ship_id := _db.last_insert_rowid
-	return ShipDataID.new(ship, self, ship_id)
+func create_ship(ship: ShipData) -> bool:
+	if ship == null or ship._db != null or not _db.insert_row("ships", _ship_to_query(ship) ):
+		return false
+	ship._db = self
+	ship._id = _db.last_insert_rowid
+	return true
 
-func create_fleet(fleet: Fleet) -> FleetID:
-	if fleet == null or not _db.insert_row("fleets", _fleet_to_query(fleet) ):
-		return null
-	var fleet_id := _db.last_insert_rowid
-	return FleetID.new(fleet, self, fleet_id)
+func create_fleet(fleet: Fleet) -> bool:
+	if fleet == null or fleet._db != null or not _db.insert_row("fleets", _fleet_to_query(fleet) ):
+		return false
+	fleet._db = self
+	fleet._id = _db.last_insert_rowid
+	return true
 
-func sync_ship(ship: ShipDataID) -> bool:
+func sync_ship(ship: ShipData) -> bool:
 	if ship == null or not ship.get_id() in _loaded_ships:
 		return false
 	var results := _db.select_rows("ships", "ship_id == %d" % ship.get_id(), ALL_COLUMNS)
-	ship.ship_data = _result_to_ship(results[0] )
+	_parse_ship_from_result(ship, results[0] )
 	return true
 
-func sync_fleet_metadata(fleet: FleetID) -> bool:
+func sync_fleet_metadata(fleet: Fleet) -> bool:
 	if fleet == null or not fleet.get_id() in _loaded_fleets:
 		return false
 	var results := _db.select_rows("fleets", "fleet_id == %d" % fleet.get_id(), ALL_COLUMNS)
@@ -114,88 +122,82 @@ func sync_fleet_metadata(fleet: FleetID) -> bool:
 	fleet.fleet.name = result["name"]
 	return fleet.fleet.ships.resize(result["size"] ) == OK
 
-func sync_fleet_ships(fleet: FleetID) -> bool:
+func sync_fleet_ships(fleet: Fleet) -> bool:
 	var results := _db.select_rows("fleet_slots", "fleet_id == %d" % fleet.get_id(), ALL_COLUMNS)
-	return results.all(_sync_fleet_ship.bind(fleet.fleet) )
+	for result in results:
+		var ship := get_ship(result["ship_id"] )
+		fleet.set_ship(result["slot"], ship)
+	return fleet.size == results.size()
 
-func _sync_fleet_ship(result: Dictionary, fleet: Fleet) -> bool:
-	return fleet.set_ship(result["slot"], get_ship(result["ship_id"] ) )
-
-func sync_fleet(fleet: FleetID) -> bool:
+func sync_fleet(fleet: Fleet) -> bool:
 	return sync_fleet_metadata(fleet) and sync_fleet_ships(fleet)
 
-func save_ship(ship: ShipDataID) -> bool:
-	return ship != null and _db.update_rows("ships", "id == %d" % ship.get_id(), _ship_to_query(ship.ship_data) )
+func save_ship(ship: ShipData) -> bool:
+	return ship != null and _db.update_rows("ships", "id == %d" % ship.get_id(), _ship_to_query(ship) )
 
-func save_fleet_metadata(fleet: FleetID) -> bool:
-	return fleet != null and _db.update_rows("fleets", "id == %d" % fleet.get_id(), _fleet_to_query(fleet.fleet) )
+func save_fleet_metadata(fleet: Fleet) -> bool:
+	return fleet != null and _db.update_rows("fleets", "id == %d" % fleet.get_id(), _fleet_to_query(fleet) )
 
-func save_fleet_ships(fleet: FleetID) -> bool:
+func save_fleet_ships(fleet: Fleet) -> bool:
 	if fleet == null:
 		return false
 	_db.delete_rows("fleet_slots", "fleet_id == %d" % fleet.get_id() )
-	var ships := range(fleet.fleet.size() ) \
-		.filter(fleet.fleet.has_ship_in_slot) \
-		.map(_fleet_slot_to_query.bind(fleet) )
+	var ships := range(fleet.size).filter(fleet.has_ship_in_slot).map(_fleet_slot_to_query.bind(fleet) )
 	return _db.insert_rows("fleet_slots", ships)
 
-func save_fleet(fleet: FleetID) -> bool:
-	return fleet != null \
-	and save_fleet_ships(fleet) \
-	and save_fleet_metadata(fleet)
+func save_fleet(fleet: Fleet) -> bool:
+	return fleet != null and save_fleet_ships(fleet) and save_fleet_metadata(fleet)
 
-func delete_ship(ship: ShipDataID) -> bool:
+func delete_ship(ship: ShipData) -> bool:
 	return ship != null \
 	and _db.delete_rows("ships", "id == %d" % ship.get_id() ) \
 	and _db.delete_rows("fleet_slots", "ship_id == %d" % ship.get_id() ) \
 	and _loaded_ships.erase(ship.get_id() )
 
-func delete_fleet(fleet: FleetID) -> bool:
+func delete_fleet(fleet: Fleet) -> bool:
 	return fleet != null \
 	and _db.delete_rows("fleets", "id == %d" % fleet.get_id() ) \
 	and _db.delete_rows("fleet_slots", "fleet_id == %d" % fleet.get_id() ) \
 	and _loaded_fleets.erase(fleet.get_id() )
 
-func _result_to_fleet(result: Dictionary) -> Fleet:
-	return Fleet.new(result["name"], result["size"] )
-
-func _result_to_ship(result: Dictionary) -> ShipData:
-	var ship := ShipData.new(result["grid_width"], result["grid_height"] )
-	var image_bytes = result.get("image")
-	ship.name = result.name
-	if image_bytes != null:
+func _parse_ship_from_result(ship: ShipData, result: Dictionary) -> void:
+	var image_bytes = result["image"]
+	if image_bytes == null:
+		ship.image = null
+		ship.texture = null
+	else:
 		ship.image = Image.create_from_data(result.image_width, result.image_height, ShipData.USE_MIPMAPS, PartImage.FORMAT, image_bytes)
-	# TODO: Possible deferred deserialization to speed up load times
+		ship.texture = ImageTexture.create_from_image(ship.image)
 	var parts = result["parts"]
-	parts = parts if parts != null else PackedByteArray()
-	var error := ship.deserialize(parts, part_manager)
-	var id: int = result["id"]
+	var error := ship.deserialize(parts if parts != null else PackedByteArray(), part_manager)
+	handle_deserialization_error(error, result["id"] )
+	ship.name = result["name"]
+
+func handle_deserialization_error(error: int, ship_id: int) -> void:
 	if error & ShipData.PartError.INCORRECT_SIZE_BYTES:
-		push_error("(ShipDatabase) Failed to load #%d: corrupted parts" % id)
+		push_error("(ShipDatabase) Failed to load #%d: corrupted parts" % ship_id)
 	if error & ShipData.PartError.IS_NULL:
-		push_error("(ShipDatabase) Failed to load #%d: part is null" % id)
+		push_error("(ShipDatabase) Failed to load #%d: part is null" % ship_id)
 	if error & ShipData.PartError.OUT_OF_BOUNDS:
-		push_error("(ShipDatabase) Failed to load #%d: part is out of bounds" % id)
+		push_error("(ShipDatabase) Failed to load #%d: part is out of bounds" % ship_id)
 	if error & ShipData.PartError.OVERLAP:
-		push_error("(ShipDatabase) Failed to load #%d: parts are overlapping" % id)
-	return ship
+		push_error("(ShipDatabase) Failed to load #%d: parts are overlapping" % ship_id)
 
 func _fleet_to_query(fleet: Fleet) -> Dictionary:
-	return {"name": fleet.name, "size": fleet.size() }
+	return { "name": fleet.name,"size": fleet.size }
 
-func _fleet_slot_to_query(slot: int, fleet: FleetID) -> Dictionary:
-	return {"fleet_id": fleet.get_id(), "ship_id": fleet.fleet._ships[slot].get_id(), "slot": slot }
+func _fleet_slot_to_query(slot: int, fleet: Fleet) -> Dictionary:
+	return { "fleet_id": fleet.get_id(), "ship_id": fleet._ships[slot].get_id(), "slot": slot}
 
 func _ship_to_query(ship: ShipData) -> Dictionary:
-	var grid_size := ship.get_grid_rect().size
-	var image_size := Vector2i.ZERO if ship.image == null else ship.image.get_size()
-	var data := PackedByteArray() if ship.image == null else ship.image.get_data()
+	var image_size := ship.image.get_size() if ship.image != null else Vector2i.ZERO
+	var image_data := ship.image.get_data() if ship.image != null else PackedByteArray()
 	return {
 		"name": ship.name,
 		"parts": ship.serialize(),
-		"grid_width": grid_size.x,
-		"grid_height": grid_size.y,
+		"grid_width": ship.grid_size.x,
+		"grid_height": ship.grid_size.y,
 		"image_width": image_size.x,
 		"image_height": image_size.y,
-		"image": data
+		"image": image_data
 	}

@@ -1,6 +1,9 @@
 class_name ShipData extends RefCounted
 
-signal image_changed(new_image: Image)
+signal ui_update
+signal renamed(new_name: String)
+signal resized(new_grid_size: Vector2i)
+signal generated_image(new_image: Image, new_texture: ImageTexture)
 
 enum PartError {
 	OK = 0,
@@ -18,9 +21,10 @@ enum BoundaryFlags {
 	FULL = RIGHT | TOP | LEFT | BOTTOM
 }
 
+const MIN_GRID_SIZE := Vector2i.ONE
+const MAX_GRID_SIZE := Vector2i(256, 256)
 const USE_MIPMAPS := false
 const MAX_NAME_LENGTH := 100
-const DEFAULT_NAME := "Unnamed"
 const NULL_PART_ID := 0
 const BYTES_U8 := 1
 const BYTES_U16 := 2
@@ -28,8 +32,11 @@ const BYTES_UTF32_CHAR := 4
 const BYTES_UTF32_CODE := PartData.CODE_LENGTH * BYTES_UTF32_CHAR
 const BYTES_PER_PART := BYTES_U16 + BYTES_U16 + BYTES_U8 + BYTES_UTF32_CODE
 
-var name := DEFAULT_NAME:
+var name := "":
 	set = set_name
+var grid_size: Vector2i:
+	get = get_grid_size,
+	set = set_grid_size
 var cost := 0
 var mass := 0.0
 var warp_per_sec := 0.0
@@ -47,24 +54,25 @@ var image: Image
 var texture: ImageTexture
 
 var _grid_bounds: Rect2i
-var _ship_bounds := Rect2i(0, 0, 1, 1)
-var _part_ids: Int32Grid
+var _ship_bounds := Rect2i(Vector2i.ZERO, MIN_GRID_SIZE)
+var _part_ids := Int32Grid.new(MIN_GRID_SIZE.x, MIN_GRID_SIZE.y)
 var _parts: Array[ShipDataPart] = [null]
 var _part_clusters := DisjointSets.new()
 var _bytes := StreamPeerBuffer.new()
+var _db: ShipDatabase
+var _id := -1
 
-func _init(width: int, height: int) -> void:
-	assert(width > 0 and height > 0)
-	_grid_bounds = Rect2i(0, 0, width, height)
-	_part_ids = Int32Grid.new(width, height)
-	_part_ids.fill(NULL_PART_ID)
-	_part_clusters.create_set()
+func get_db() -> ShipDatabase:
+	return _db
 
-func set_name(new_name: String) -> void:
-	name = new_name.substr(0, MAX_NAME_LENGTH)
+func get_id() -> int:
+	return _id
+	
+func sync() -> bool:
+	return _db != null and _db.sync_ship(self)
 
-func is_named() -> bool:
-	return name != DEFAULT_NAME
+func save() -> bool:
+	return _db != null and _db.save_ship(self)
 
 func is_empty() -> bool:
 	return _parts.size() <= 1
@@ -96,12 +104,42 @@ func get_ship_rect() -> Rect2i:
 func get_center() -> Vector2:
 	return Rect2(_ship_bounds).get_center()
 
+func get_grid_size() -> Vector2i:
+	return _grid_bounds.size
+
+func set_name(new_name: String) -> bool:
+	new_name = new_name.substr(0, MAX_NAME_LENGTH)
+	if name == new_name:
+		return false
+	# NOTE:    ^^^^^ This allows for one-line set and save
+	# (var success := set_name(..) and save() )
+	name = new_name
+	renamed.emit(name)
+	ui_update.emit()
+	return true
+
+func set_grid_size(new_grid_size: Vector2i) -> bool:
+	new_grid_size = new_grid_size.clamp(MIN_GRID_SIZE, MAX_GRID_SIZE)
+	if get_grid_size() == new_grid_size:
+		return false
+	# NOTE:    ^^^^^ This allows for one-line set and save
+	# (var success := set_grid_size(..) and save() )
+	_grid_bounds.size = new_grid_size
+	_part_ids.resize(new_grid_size.x, new_grid_size.y)
+	clear()
+	resized.emit(new_grid_size)
+	return true
+
 func clear() -> void:
-	reset_stats()
-	_bytes.clear()
+	image = null
+	texture = null
 	_parts = [null]
 	_part_ids.fill(NULL_PART_ID)
 	_part_clusters.resize(1)
+	_part_clusters.reset()
+	_bytes.clear()
+	reset_stats()
+	ui_update.emit()
 
 func reset_stats() -> void:
 	cost           = 0
@@ -221,13 +259,15 @@ func _deserialize_part(part_manager: PartManager) -> PartError:
 	_bytes.seek(i + BYTES_UTF32_CODE)
 	return add_part(part, top_left_corner, placement)
 
-func generate_image() -> void:
+func generate_image(autosave := true) -> bool:
 	var size := PartImage.TILE_SIZE * _ship_bounds.size
 	var offset := PartImage.TILE_SIZE * _ship_bounds.position
 	image = Image.create_empty(size.x, size.y, USE_MIPMAPS, PartImage.FORMAT)
 	for_each_part(_draw_part.bind(offset) )
 	texture = ImageTexture.create_from_image(image)
-	image_changed.emit(image)
+	generated_image.emit(image, texture)
+	ui_update.emit()
+	return not autosave or save()
 
 func _draw_part(part: ShipDataPart, offset: Vector2i) -> void:
 	if part.get_boundary() == BoundaryFlags.NONE:

@@ -21,7 +21,7 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
 
-[node name="Button" type="Button" node_paths=PackedStringArray("id", "unsaved_indicator", "name_edit", "custom_icon")]
+[node name="Button" type="Button" node_paths=PackedStringArray("ship_id", "unsaved_indicator", "name_edit", "custom_icon")]
 custom_minimum_size = Vector2(300, 300)
 offset_right = 200.0
 offset_bottom = 10.0
@@ -31,7 +31,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_xomhk")
 icon_alignment = 1
 expand_icon = true
 script = ExtResource("2_oyyh1")
-id = NodePath("PanelContainer/HBoxContainer/ID")
+in_fleet = null
+ship_id = NodePath("PanelContainer/HBoxContainer/ID")
 unsaved_indicator = NodePath("PanelContainer/HBoxContainer/UnsavedIndicator")
 name_edit = NodePath("PanelContainer/HBoxContainer/Name")
 custom_icon = NodePath("MarginContainer/CustomIcon")
