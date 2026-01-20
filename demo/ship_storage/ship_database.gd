@@ -22,9 +22,10 @@ CREATE TABLE IF NOT EXISTS fleets (
 """
 const CREATE_FLEET_SLOTS_TABLE_QUERY := """
 CREATE TABLE IF NOT EXISTS fleet_slots (
-	ship_id INTEGER PRIMARY KEY,
 	fleet_id INTEGER,
-	slot INTEGER NOT NULL
+	ship_id INTEGER,
+	slot INTEGER NOT NULL,
+	PRIMARY KEY (fleet_id, slot)
 );
 """
 const ALL_COLUMNS := ["*"]
