@@ -1,10 +1,17 @@
-[gd_scene load_steps=10 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=12 format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="2_wu24d"]
 [ext_resource type="Script" uid="uid://butv3bkqoil8c" path="res://ships/unit_formation.gd" id="2_xooj7"]
 [ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://ships/mouse_selection.tscn" id="3_70s20"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1kiu"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.26270002, 0.30561998, 0.37, 0.39215687)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wu24d"]
 content_margin_left = 25.0
@@ -23,6 +30,13 @@ content_margin_right = 25.0
 content_margin_bottom = 15.0
 bg_color = Color(0, 0, 0, 0.5)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mnim"]
+content_margin_left = 25.0
+content_margin_top = 15.0
+content_margin_right = 25.0
+content_margin_bottom = 15.0
+bg_color = Color(0, 0, 0, 0.78431374)
+
 [sub_resource type="Environment" id="Environment_70s20"]
 background_mode = 3
 glow_enabled = true
@@ -34,12 +48,13 @@ glow_hdr_luminance_cap = 20.0
 
 [sub_resource type="Curve2D" id="Curve2D_70s20"]
 
-[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container")]
+[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container")]
 script = ExtResource("1_nohcx")
 world = NodePath("World")
 round_timer = NodePath("RoundTimer")
 countdown_timer = NodePath("CountdownTimer")
 players_container = NodePath("World/Players")
+fleet_container = NodePath("UI/FleetContainer")
 metadata/_custom_type_script = "uid://bvfy718iilaa1"
 
 [node name="UI" type="Control" parent="."]
@@ -50,7 +65,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="EditableFleetContainer" parent="UI" instance=ExtResource("2_4mnim")]
+[node name="FleetContainer" parent="UI" instance=ExtResource("2_4mnim")]
+modulate = Color(1, 1, 1, 0.78431374)
+custom_minimum_size = Vector2(750, 0)
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -61,6 +78,17 @@ offset_right = 478.0
 offset_bottom = 0.0
 grow_horizontal = 1
 grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_l1kiu")
+
+[node name="PanelContainer" parent="UI/FleetContainer/VBoxContainer" index="0"]
+visible = false
+
+[node name="MarginContainer" parent="UI/FleetContainer/VBoxContainer" index="1"]
+size_flags_vertical = 3
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="UI"]
 layout_mode = 1
@@ -156,6 +184,7 @@ layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 64
 theme_override_styles/normal = SubResource("StyleBoxFlat_xooj7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_4mnim")
 text = "Design"
 icon = ExtResource("2_wu24d")
 
@@ -163,6 +192,7 @@ icon = ExtResource("2_wu24d")
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_xooj7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_4mnim")
 text = "Menu
 "
 
@@ -191,3 +221,5 @@ one_shot = true
 [connection signal="pressed" from="UI/HBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="timeout" from="RoundTimer" to="." method="_on_round_timer_timeout"]
 [connection signal="timeout" from="CountdownTimer" to="." method="_on_countdown_timer_timeout"]
+
+[editable path="UI/FleetContainer"]

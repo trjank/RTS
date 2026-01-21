@@ -17,7 +17,7 @@ bg_color = Color(0, 0, 0, 0.556863)
 [node name="MainMenu" instance=ExtResource("1_512ns")]
 script = ExtResource("1_6tl50")
 
-[node name="Control" parent="UI" index="0"]
+[node name="FleetContainer" parent="UI" index="0"]
 visible = false
 
 [node name="PanelContainer" parent="UI" index="1"]
@@ -112,3 +112,5 @@ alignment = 0
 [connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/DesignButton" to="." method="_on_design_button_pressed"]
 [connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/FleetsButton" to="." method="_on_fleets_button_pressed"]
 [connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+
+[editable path="UI/FleetContainer"]

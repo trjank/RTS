@@ -34,6 +34,7 @@ func _on_settings_button_pressed() -> void:
 	globals.main.state = Main.State.SETTINGS
 
 func _ready() -> void:
+	super._ready()
 	map = Map.new("Star")
 	map.preset = BLACK_HOLE_PRESET
 	var planet1 := Map.new("Planet")

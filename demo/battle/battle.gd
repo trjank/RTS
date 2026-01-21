@@ -24,6 +24,7 @@ const MAX_NUM_PLAYERS := 10
 @export var round_timer: Timer
 @export var countdown_timer: Timer
 @export var players_container: Node2D
+@export var fleet_container: FleetContainer
 
 var players: Dictionary[String, Player] = {}
 var teams: Dictionary[String, Team] = {}
@@ -41,6 +42,11 @@ static func is_team_alive(team: Team) -> bool:
 func _init() -> void:
 	create_team(DEFAULT_TEAM_NAME)
 	set_physics_process(false)
+
+func _ready() -> void:
+	globals.client.fleet_changed.connect(fleet_container.set_fleet)
+	fleet_container.set_fleet(globals.client.fleet)
+	fleet_container.get_button(Fleet.CAPITAL_SHIP_SLOT).hide()
 
 func are_teams_balanced() -> bool:
 	return true
