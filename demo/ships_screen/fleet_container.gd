@@ -1,6 +1,9 @@
 class_name FleetContainer extends PanelContainer
 
 signal fleet_changed(new_fleet: Fleet)
+signal button_pressed(slot: int)
+signal pressed(fleet: Fleet)
+signal delete_requested(fleet: Fleet)
 
 const MINI_ICONS: Dictionary[int, Texture] = {
 	Fleet.CAPITAL_SHIP_SLOT: preload("res://icons/capital_ship.png")
@@ -8,11 +11,14 @@ const MINI_ICONS: Dictionary[int, Texture] = {
 
 @export var button_size := Vector2(250.0, 250.0)
 @export var fleet_id: Label
-@export var fleet_name: LineEdit
-@export var ship_buttons: Control
+@export var name_edit: LineEdit
+@export var ship_buttons: Container
 
 var fleet: Fleet:
 	set = set_fleet
+
+static func create() -> FleetContainer:
+	return preload("res://ships_screen/fleet_container.tscn").instantiate()
 
 func _ready() -> void:
 	update_ui()
@@ -61,13 +67,13 @@ func update_ui() -> void:
 
 func _create_fleet_ui() -> void:
 	fleet_id.text = "Fleet #%d" % fleet.get_id()
-	fleet_name.text = fleet.name
-	fleet_name.editable = true
+	name_edit.text = fleet.name
+	name_edit.editable = true
 
 func _clear_ui() -> void:
 	fleet_id.text = ""
-	fleet_name.text = ""
-	fleet_name.editable = false
+	name_edit.text = ""
+	name_edit.editable = false
 
 func _update_slot(new_ship: ShipData, slot: int) -> bool:
 	return fleet.set_ship(slot, new_ship) and fleet.save_ships()
@@ -79,13 +85,27 @@ func _add_ship(ship: ShipData, slot: int) -> void:
 	button.mini_icon = MINI_ICONS.get(slot)
 	button.custom_minimum_size = button_size
 	button.ship_changed.connect(_update_slot.bind(slot) )
+	button.pressed.connect(button_pressed.emit.bind(slot) )
 	ship_buttons.add_child(button)
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+		pressed.emit(fleet)
+
+func _on_delete_fleet_pressed() -> void:
+	delete_requested.emit(fleet)
+
+func _on_name_focus_exited() -> void:
+	_on_name_text_submitted(name_edit.text)
+
+func _on_name_text_submitted(new_text: String) -> bool:
+	return fleet.set_name(new_text) and fleet.save_metadata()
+
+func _on_fleet_swap_button_pressed() -> void:
+	globals.main.state = Main.State.FLEET
 
 func _on_fleet_ship_changed(new_ship: ShipData, slot: int) -> void:
 	get_button(slot).ship = new_ship
 
 func _on_design_save_changed(slot: int, saved: bool) -> void:
 	get_button(slot).saved = saved
-
-func _on_fleet_swap_button_pressed() -> void:
-	globals.main.state = Main.State.FLEET

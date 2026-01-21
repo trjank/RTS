@@ -19,7 +19,7 @@ static func can_swap(button: ShipButton, other_button: ShipButton) -> bool:
 	return button.in_fleet == other_button.in_fleet
 
 static func create() -> ShipButton:
-	return preload("res://design/ship_button.tscn").instantiate()
+	return preload("res://ships_screen/ship_button.tscn").instantiate()
 
 func _ready() -> void:
 	update_ui()
@@ -63,7 +63,7 @@ func _clear_ui() -> void:
 	icon = null
 	ship_id.text = ""
 	name_edit.editable = false
-	name_edit.text = ""
+	name_edit.text = "Empty"
 	unsaved_indicator.visible = false
 
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
@@ -82,8 +82,8 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	# NOTE: By default, previews have their top left corner at mouse
 	var center_preview := Control.new()
 	center_preview.add_child(preview)
-	preview.position = -preview.size / 2
 	preview.ship = ship
+	preview.position = -size / 2
 	set_drag_preview(center_preview)
 	return self
 

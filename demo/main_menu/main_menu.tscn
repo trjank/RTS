@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://c60au813wrr5i"]
 
 [ext_resource type="Script" uid="uid://76pjt8trd8dg" path="res://main_menu/main_menu.gd" id="1_6tl50"]
-[ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://ships/battle.tscn" id="1_512ns"]
+[ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://battle/battle.tscn" id="1_512ns"]
 [ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/main_theme.tres" id="2_nhs7o"]
 [ext_resource type="StyleBox" uid="uid://b7i5b8v0uud2o" path="res://main_menu/main_menu_button.tres" id="3_sl4gw"]
 [ext_resource type="StyleBox" uid="uid://versdykqupxc" path="res://main_menu/main_menu_button_pressed.tres" id="4_a3n4j"]

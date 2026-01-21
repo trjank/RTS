@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=10 format=3 uid="uid://clxf0rnk677i8"]
 
-[ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://ships/battle.gd" id="1_nohcx"]
+[ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
+[ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="2_wu24d"]
 [ext_resource type="Script" uid="uid://butv3bkqoil8c" path="res://ships/unit_formation.gd" id="2_xooj7"]
 [ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://ships/mouse_selection.tscn" id="3_70s20"]
@@ -49,31 +50,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Control" type="Control" parent="UI"]
+[node name="EditableFleetContainer" parent="UI" instance=ExtResource("2_4mnim")]
 layout_mode = 1
-anchor_top = 0.75
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 456.0
-offset_bottom = 456.0
-grow_vertical = 0
-mouse_filter = 2
-
-[node name="panel" type="PanelContainer" parent="UI/Control"]
-layout_mode = 1
-anchors_preset = -1
+anchors_preset = 2
 anchor_top = 1.0
+anchor_right = 0.0
 anchor_bottom = 1.0
 offset_top = -150.0
-offset_right = 300.0
+offset_right = 478.0
+offset_bottom = 0.0
+grow_horizontal = 1
 grow_vertical = 0
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/Control/panel"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
 
 [node name="PanelContainer" type="PanelContainer" parent="UI"]
 layout_mode = 1

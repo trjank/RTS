@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="2_67ri8"]
 [ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="3_grrlh"]
 [ext_resource type="Script" uid="uid://d0ywx41ac1yn8" path="res://main/camera_2d.gd" id="4_grrlh"]
-[ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://ships/battle.tscn" id="4_kfbq2"]
+[ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://battle/battle.tscn" id="4_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://c60au813wrr5i" path="res://main_menu/main_menu.tscn" id="6_4dugh"]
 [ext_resource type="PackedScene" uid="uid://owpblejfs8ky" path="res://ships_screen/ships_screen.tscn" id="6_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]

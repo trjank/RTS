@@ -1,8 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=17 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="2_6gxgq"]
-[ext_resource type="PackedScene" uid="uid://hi3bwlaeckb5" path="res://design/fleet_container.tscn" id="3_rmp56"]
+[ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="3_rmp56"]
 [ext_resource type="Shader" uid="uid://cxuhliel45ol6" path="res://design/grid_lines.gdshader" id="5_rmp56"]
 [ext_resource type="Script" uid="uid://rrpw8rs1x5wn" path="res://design/grid.gd" id="8_bjdq3"]
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/partslist/parts_container.tscn" id="9_3c8mw"]
@@ -13,6 +13,22 @@
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="14_7jtw0"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icons/icon.svg" id="14_qg3uy"]
 [ext_resource type="Texture2D" uid="uid://b7i3ye8e4fjyl" path="res://icons/menu_close.png" id="14_r41aq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r41aq"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.262745, 0.305882, 0.368627, 0.392157)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmp56"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(0.1278, 0.14955, 0.18, 1)
+border_width_bottom = 5
+border_color = Color(0.772549, 0.611765, 0.85098, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r41aq"]
 shader = ExtResource("5_rmp56")
@@ -61,8 +77,40 @@ size_flags_horizontal = 0
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 
-[node name="FleetContainer" parent="UI/VBoxContainer/HBoxContainer" instance=ExtResource("3_rmp56")]
+[node name="FleetContainer" parent="UI/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("ship_buttons") instance=ExtResource("3_rmp56")]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_r41aq")
+button_size = Vector2(400, 400)
+ship_buttons = NodePath("VBoxContainer/ScrollContainer/ShipButtons")
+
+[node name="PanelContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_rmp56")
+
+[node name="Name" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VBoxContainer" index="1"]
+custom_minimum_size = Vector2(150, 0)
+
+[node name="FleetSwapButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VBoxContainer" index="2"]
+visible = true
+
+[node name="DeleteButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VBoxContainer" index="3"]
+visible = false
+
+[node name="MarginContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer" index="1"]
+visible = false
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer" index="2"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="ShipButtons" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 20
 
 [node name="PartsContainer" parent="UI/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("tabs") instance=ExtResource("9_3c8mw")]
 layout_mode = 2
@@ -124,7 +172,8 @@ unresizable = true
 theme = ExtResource("14_7jtw0")
 ok_button_text = "Return to design"
 
-[connection signal="save_changed" from="." to="UI/VBoxContainer/HBoxContainer/FleetContainer" method="_on_design_save_changed"]
 [connection signal="part_clicked" from="UI/VBoxContainer/HBoxContainer/PartsContainer" to="." method="_on_parts_container_part_clicked"]
 [connection signal="save_changed" from="World/Grid" to="." method="_on_grid_save_changed"]
 [connection signal="ship_changed" from="World/Grid" to="World/Grid/CenterMarker" method="_on_grid_ship_changed"]
+
+[editable path="UI/VBoxContainer/HBoxContainer/FleetContainer"]

@@ -3,6 +3,7 @@ class_name ShipsScreen extends Node
 signal fleet_changed(new_fleet: Fleet)
 
 const BUTTON_SIZE := Vector2(250.0, 250.0)
+const SELECTED_COLOR := Color(2.454, 1.027, 1.027, 1.0)
 
 @export var ships_box: HFlowContainer
 @export var fleets_box: VBoxContainer
@@ -15,7 +16,7 @@ var ship_db: ShipDatabase:
 	set = set_ship_db
 
 var _ship_buttons: Dictionary[ShipData, ShipButton] = {}
-var _editable_fleets: Dictionary[Fleet, EditableFleetContainer] = {}
+var _fleet_containers: Dictionary[Fleet, FleetContainer] = {}
 
 func _ready() -> void:
 	ship_db = globals.ship_db
@@ -28,6 +29,10 @@ func set_ship_db(new_ship_db: ShipDatabase) -> void:
 func set_fleet(new_fleet: Fleet) -> void:
 	if fleet == new_fleet:
 		return
+	if fleet in _fleet_containers:
+		_fleet_containers[fleet].self_modulate = Color.WHITE
+	if new_fleet in _fleet_containers:
+		_fleet_containers[new_fleet].self_modulate = SELECTED_COLOR
 	globals.client.fleet = new_fleet
 	fleet = new_fleet
 	fleet_changed.emit(fleet)
@@ -35,10 +40,10 @@ func set_fleet(new_fleet: Fleet) -> void:
 func clear() -> void:
 	for ship_button in _ship_buttons.values():
 		ship_button.queue_free()
-	for editable_fleet in _editable_fleets.values():
-		editable_fleet.queue_free()
+	for fleet_container in _fleet_containers.values():
+		fleet_container.queue_free()
 	_ship_buttons.clear()
-	_editable_fleets.clear()
+	_fleet_containers.clear()
 
 func load_ships_and_fleets() -> void:
 	clear()
@@ -65,15 +70,14 @@ func load_ship(new_ship: ShipData) -> void:
 	_ship_buttons[new_ship] = button
 
 func load_fleet(new_fleet: Fleet) -> void:
-	if new_fleet in _editable_fleets:
+	if new_fleet in _fleet_containers:
 		return
-	var editable_fleet := EditableFleetContainer.create()
-	editable_fleet.fleet = new_fleet
-	editable_fleet.selected.connect(set_fleet)
-	editable_fleet.delete_requested.connect(delete_fleet)
-	fleet_changed.connect(editable_fleet._on_fleet_changed)
-	fleets_box.add_child(editable_fleet)
-	_editable_fleets[new_fleet] = editable_fleet
+	var fleet_container := FleetContainer.create()
+	fleet_container.fleet = new_fleet
+	fleet_container.pressed.connect(set_fleet)
+	fleet_container.delete_requested.connect(delete_fleet)
+	fleets_box.add_child(fleet_container)
+	_fleet_containers[new_fleet] = fleet_container
 
 ## NOTE: This deletion is permanent (BE CAREFUL)
 func delete_ship(old_ship: ShipData) -> bool:
@@ -85,10 +89,10 @@ func delete_ship(old_ship: ShipData) -> bool:
 
 ## NOTE: This deletion is permanent (BE CAREFUL)
 func delete_fleet(old_fleet: Fleet) -> bool:
-	if not old_fleet in _editable_fleets:
+	if not old_fleet in _fleet_containers:
 		return false
-	_editable_fleets[old_fleet].queue_free()
-	_editable_fleets.erase(old_fleet)
+	_fleet_containers[old_fleet].queue_free()
+	_fleet_containers.erase(old_fleet)
 	return ship_db.delete_fleet(old_fleet)
 
 func _on_create_ship_button_pressed() -> void:

@@ -83,7 +83,6 @@ func load_part(code: String, properties: Dictionary) -> LoadError:
 	var width: int = properties.get("width", PartData.MIN_SIZE)
 	var height: int = properties.get("height", PartData.MIN_SIZE)
 	var image_path: String = properties.get("image_path", "")
-	# TODO: add image path in constructor here
 	var part := create_part(code, image_path, width, height, subtype)
 	if part == null:
 		return LoadError.INVALID_PART

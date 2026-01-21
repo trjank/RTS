@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bll4613yi8yxk"]
 
-[ext_resource type="Script" uid="uid://gn43e8awh35b" path="res://design/ship_button.gd" id="2_oyyh1"]
+[ext_resource type="Script" uid="uid://gn43e8awh35b" path="res://ships_screen/ship_button.gd" id="2_oyyh1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xomhk"]
 bg_color = Color(1, 1, 1, 0.078431375)
@@ -31,7 +31,6 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_xomhk")
 icon_alignment = 1
 expand_icon = true
 script = ExtResource("2_oyyh1")
-in_fleet = null
 ship_id = NodePath("PanelContainer/HBoxContainer/ID")
 unsaved_indicator = NodePath("PanelContainer/HBoxContainer/UnsavedIndicator")
 name_edit = NodePath("PanelContainer/HBoxContainer/Name")
@@ -65,7 +64,7 @@ text = " Unsaved"
 [node name="Name" type="LineEdit" parent="PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-placeholder_text = "Empty"
+placeholder_text = "Unnamed"
 alignment = 1
 max_length = 50
 
