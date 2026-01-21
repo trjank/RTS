@@ -38,8 +38,7 @@ func snap_to_grid() -> void:
 	region_rect.size = (rect * transform).size
 
 func spawn_part(where: Vector2, part_data: PartData) -> PartHitbox:
-	var successful_move := move_parts()
-	assert(successful_move)
+	move_parts()
 	var part := PartHitbox.create()
 	part.data = part_data
 	region_rect.size = part.get_size()
@@ -76,9 +75,10 @@ func delete_part(part: Node) -> bool:
 	part.queue_free()
 	return part is PartHitbox
 
-func move_parts() -> bool:
+func move_parts() -> void:
 	region_rect.size = Vector2.ZERO
-	return get_children().all(grid.add_part)
+	for node in get_children():
+		grid.add_part(node)
 
 func delete_parts() -> bool:
 	region_rect.size = Vector2.ZERO
@@ -97,13 +97,13 @@ func select_part_at(where: Vector2) -> bool:
 	return not parts.is_empty() and select_part(parts[0] )
 
 func select(selection: Array[Node2D], global_rect: Rect2) -> bool:
-	var successful_move := move_parts()
+	move_parts()
 	scale.x = absf(scale.x)
 	global_rotation = 0.0
 	global_position = global_rect.get_center()
 	region_rect.size = global_rect.size / global_scale
 	snap_to_grid()
-	return successful_move and selection.all(add_part)
+	return selection.all(add_part)
 
 func copy_part(node: Node) -> bool:
 	var part := node as PartHitbox
@@ -113,7 +113,8 @@ func copy_part(node: Node) -> bool:
 	add_child(new_part)
 	new_part.transform = part.transform
 	new_part.data = part.data
-	return grid.add_part(new_part)
+	grid.add_part(new_part)
+	return true
 
 func copy_to(where: Vector2) -> void:
 	get_children().all(copy_part)

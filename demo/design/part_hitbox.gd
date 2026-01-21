@@ -1,7 +1,6 @@
 class_name PartHitbox extends StaticBody2D
 
 const OVERLAP_COLOR := Color.RED
-const SCENE := preload("res://design/part_hitbox.tscn")
 
 @export var shape: CollisionShape2D
 
@@ -16,7 +15,7 @@ var data: PartData:
 var _part: Part
 
 static func create() -> PartHitbox:
-	return SCENE.instantiate() as PartHitbox
+	return preload("res://design/part_hitbox.tscn").instantiate()
 
 func get_size() -> Vector2:
 	return Grid.TILE_SIZE * data.get_size()
@@ -50,11 +49,12 @@ func set_placement(new_placement: PartImage.Placement) -> void:
 	rotation = (new_placement & 3) * (PI/2)
 
 func set_overlapping(is_overlapping: bool) -> void:
-	z_index = PartData.MAX_Z_INDEX + 1 if is_overlapping else data.z_index
+	z_index = (PartData.MAX_Z_INDEX + 1) if is_overlapping else data.z_index
 	modulate = OVERLAP_COLOR if is_overlapping else Color.WHITE
 
 func set_data(new_data: PartData) -> void:
 	assert(new_data != null)
+	# This just wraps an instance of the Part class
 	if _part != null:
 		_part.queue_free()
 	data = new_data

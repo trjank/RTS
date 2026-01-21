@@ -67,7 +67,7 @@ grow_vertical = 2
 
 [node name="FleetContainer" parent="UI" instance=ExtResource("2_4mnim")]
 modulate = Color(1, 1, 1, 0.78431374)
-custom_minimum_size = Vector2(750, 0)
+custom_minimum_size = Vector2(746, 0)
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0

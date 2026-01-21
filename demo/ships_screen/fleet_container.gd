@@ -83,6 +83,7 @@ func _add_ship(ship: ShipData, slot: int) -> void:
 	button.ship = ship
 	button.in_fleet = true
 	button.mini_icon = MINI_ICONS.get(slot)
+	# NOTE: Updating button_size does not automatically resize all the buttons
 	button.custom_minimum_size = button_size
 	button.ship_changed.connect(_update_slot.bind(slot) )
 	button.pressed.connect(button_pressed.emit.bind(slot) )
@@ -106,6 +107,3 @@ func _on_fleet_swap_button_pressed() -> void:
 
 func _on_fleet_ship_changed(new_ship: ShipData, slot: int) -> void:
 	get_button(slot).ship = new_ship
-
-func _on_design_save_changed(slot: int, saved: bool) -> void:
-	get_button(slot).saved = saved

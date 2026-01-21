@@ -6,13 +6,13 @@
 [ext_resource type="Shader" uid="uid://cxuhliel45ol6" path="res://design/grid_lines.gdshader" id="5_rmp56"]
 [ext_resource type="Script" uid="uid://rrpw8rs1x5wn" path="res://design/grid.gd" id="8_bjdq3"]
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/partslist/parts_container.tscn" id="9_3c8mw"]
-[ext_resource type="Texture2D" uid="uid://d4f7cgh3wnd2p" path="res://icons/grid_background.png" id="9_rmp56"]
+[ext_resource type="Texture2D" uid="uid://d4f7cgh3wnd2p" path="res://icons/striped_background.png" id="9_rmp56"]
 [ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/part_group.gd" id="10_6vk6i"]
+[ext_resource type="PackedScene" uid="uid://cyxuko5kc8x27" path="res://battle/stats_box.tscn" id="12_rmp56"]
+[ext_resource type="Texture2D" uid="uid://x8g3f3sy4rf7" path="res://icons/move_marker.png" id="13_7jtw0"]
 [ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://ships/mouse_selection.tscn" id="13_r41aq"]
-[ext_resource type="Script" uid="uid://tejgckuc5ycl" path="res://design/grid_center_marker.gd" id="13_rmp56"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="14_7jtw0"]
 [ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icons/icon.svg" id="14_qg3uy"]
-[ext_resource type="Texture2D" uid="uid://b7i3ye8e4fjyl" path="res://icons/menu_close.png" id="14_r41aq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r41aq"]
 content_margin_left = 0.0
@@ -133,7 +133,6 @@ material = SubResource("ShaderMaterial_r41aq")
 texture = ExtResource("14_qg3uy")
 centered = false
 region_enabled = true
-region_rect = Rect2(0, 0, 1024, 1024)
 script = ExtResource("8_bjdq3")
 metadata/_custom_type_script = "uid://rrpw8rs1x5wn"
 
@@ -149,17 +148,38 @@ mouse_selection = NodePath("../../MouseSelection")
 grid = NodePath("..")
 metadata/_custom_type_script = "uid://c1y8rv0ogtakj"
 
-[node name="CenterMarker" type="Sprite2D" parent="World/Grid"]
-texture = ExtResource("14_r41aq")
-script = ExtResource("13_rmp56")
-
-[node name="ShipStats" type="Label" parent="World/Grid"]
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_left = -400.0
-offset_right = -173.0
+[node name="CenterMarker" type="TextureRect" parent="World/Grid"]
+custom_minimum_size = Vector2(25, 25)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -12.5
+offset_top = -12.5
+offset_right = 12.5
+offset_bottom = 12.5
+grow_horizontal = 2
 grow_vertical = 2
-text = "STATS WILL DISPLAY HERE"
+texture = ExtResource("13_7jtw0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Control" type="Control" parent="World/Grid"]
+z_index = 1001
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+
+[node name="StatsBox" parent="World/Grid/Control" instance=ExtResource("12_rmp56")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="SaveShipPopup" type="AcceptDialog" parent="."]
 auto_translate_mode = 1
@@ -172,8 +192,8 @@ unresizable = true
 theme = ExtResource("14_7jtw0")
 ok_button_text = "Return to design"
 
+[connection signal="button_pressed" from="UI/VBoxContainer/HBoxContainer/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
 [connection signal="part_clicked" from="UI/VBoxContainer/HBoxContainer/PartsContainer" to="." method="_on_parts_container_part_clicked"]
 [connection signal="save_changed" from="World/Grid" to="." method="_on_grid_save_changed"]
-[connection signal="ship_changed" from="World/Grid" to="World/Grid/CenterMarker" method="_on_grid_ship_changed"]
 
 [editable path="UI/VBoxContainer/HBoxContainer/FleetContainer"]

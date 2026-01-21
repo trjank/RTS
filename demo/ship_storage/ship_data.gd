@@ -50,15 +50,16 @@ var thrust := 0.0
 var turn_impulse := 0.0
 var part_counts: Dictionary[PartData, int]
 var center: Vector2
-var image: Image
-var texture: ImageTexture
 
-var _grid_bounds: Rect2i
-var _ship_bounds := Rect2i(Vector2i.ZERO, MIN_GRID_SIZE)
+var _image: Image
+var _texture: ImageTexture
+var _grid_bounds := Rect2i(Vector2i.ZERO, MIN_GRID_SIZE)
+var _ship_bounds := Rect2i()
 var _part_ids := Int32Grid.new(MIN_GRID_SIZE.x, MIN_GRID_SIZE.y)
 var _parts: Array[ShipDataPart] = [null]
 var _part_clusters := DisjointSets.new()
 var _bytes := StreamPeerBuffer.new()
+var _serialize_parts := true
 var _db: ShipDatabase
 var _id := -1
 
@@ -73,6 +74,12 @@ func sync() -> bool:
 
 func save() -> bool:
 	return _db != null and _db.save_ship(self)
+
+func get_image() -> Image:
+	return _image
+
+func get_texture() -> Texture:
+	return _texture
 
 func is_empty() -> bool:
 	return _parts.size() <= 1
@@ -131,8 +138,8 @@ func set_grid_size(new_grid_size: Vector2i) -> bool:
 	return true
 
 func clear() -> void:
-	image = null
-	texture = null
+	_image = null
+	_texture = null
 	_parts = [null]
 	_part_ids.fill(NULL_PART_ID)
 	_part_clusters.resize(1)
@@ -239,11 +246,15 @@ func deserialize(from_bytes: PackedByteArray, part_manager: PartManager) -> int:
 	clear()
 	_bytes.data_array = from_bytes
 	var error: int = PartError.OK
+	_serialize_parts = false
 	while _bytes.get_available_bytes() > 0:
 		error |= _deserialize_part(part_manager)
+	_serialize_parts = true
 	return error
 
 func _serialize_part(part_id: int) -> void:
+	if not _serialize_parts:
+		return
 	var part := _parts[part_id]
 	_bytes.put_u16(part.get_rect().position.x)
 	_bytes.put_u16(part.get_rect().position.y)
@@ -259,15 +270,16 @@ func _deserialize_part(part_manager: PartManager) -> PartError:
 	_bytes.seek(i + BYTES_UTF32_CODE)
 	return add_part(part, top_left_corner, placement)
 
-func generate_image(autosave := true) -> bool:
+func generate_image() -> void:
 	var size := PartImage.TILE_SIZE * _ship_bounds.size
 	var offset := PartImage.TILE_SIZE * _ship_bounds.position
-	image = Image.create_empty(size.x, size.y, USE_MIPMAPS, PartImage.FORMAT)
+	_image = Image.create_empty(size.x, size.y, USE_MIPMAPS, PartImage.FORMAT)
+	# NOTE: Draw order does not matter because they are guaranteed to not overlap
 	for_each_part(_draw_part.bind(offset) )
-	texture = ImageTexture.create_from_image(image)
-	generated_image.emit(image, texture)
+	# Generate the texture immediately, since UI will immediately need it
+	_texture = ImageTexture.create_from_image(_image)
+	generated_image.emit(_image, _texture)
 	ui_update.emit()
-	return not autosave or save()
 
 func _draw_part(part: ShipDataPart, offset: Vector2i) -> void:
 	if part.get_boundary() == BoundaryFlags.NONE:
@@ -276,4 +288,4 @@ func _draw_part(part: ShipDataPart, offset: Vector2i) -> void:
 	var from := Rect2i(Vector2i.ZERO, part_image.get_size() )
 	var to := PartImage.TILE_SIZE * part.get_rect().position
 	# NOTE: This uses the CPU, but is very fast due to c++ memcpy
-	image.blit_rect(part_image, from, to - offset)
+	_image.blit_rect(part_image, from, to - offset)

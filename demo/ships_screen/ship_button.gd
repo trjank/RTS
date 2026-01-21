@@ -53,7 +53,7 @@ func update_ui() -> void:
 	custom_icon.texture = mini_icon
 
 func _create_ship_ui() -> void:
-	icon = ship.texture
+	icon = ship.get_texture()
 	ship_id.text = "#%d" % ship.get_id()
 	name_edit.text = ship.name
 	name_edit.editable = true

@@ -5,7 +5,7 @@
 [ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="3_6c8ko"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="5_tw06j"]
 [ext_resource type="Script" uid="uid://di7m7harsscok" path="res://ships_screen/create_fleet_button.gd" id="6_km3n6"]
-[ext_resource type="Texture2D" uid="uid://d4f7cgh3wnd2p" path="res://icons/grid_background.png" id="6_q8tbq"]
+[ext_resource type="Texture2D" uid="uid://d4f7cgh3wnd2p" path="res://icons/striped_background.png" id="6_q8tbq"]
 [ext_resource type="Script" uid="uid://c782vhcgkfnaj" path="res://ships_screen/delete_ship.gd" id="7_km3n6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qim6h"]

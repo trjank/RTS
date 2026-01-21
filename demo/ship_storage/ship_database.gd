@@ -162,16 +162,16 @@ func delete_fleet(fleet: Fleet) -> bool:
 
 func _parse_ship_from_result(ship: ShipData, result: Dictionary) -> void:
 	var image_bytes = result["image"]
-	if image_bytes == null:
-		ship.image = null
-		ship.texture = null
-	else:
-		ship.image = Image.create_from_data(result.image_width, result.image_height, ShipData.USE_MIPMAPS, PartImage.FORMAT, image_bytes)
-		ship.texture = ImageTexture.create_from_image(ship.image)
 	var parts = result["parts"]
 	var error := ship.deserialize(parts if parts != null else PackedByteArray(), part_manager)
 	handle_deserialization_error(error, result["id"] )
 	ship.name = result["name"]
+	if image_bytes == null:
+		ship._image = null
+		ship._texture = null
+	else:
+		ship._image = Image.create_from_data(result.image_width, result.image_height, ShipData.USE_MIPMAPS, PartImage.FORMAT, image_bytes)
+		ship._texture = ImageTexture.create_from_image(ship._image)
 
 func handle_deserialization_error(error: int, ship_id: int) -> void:
 	if error & ShipData.PartError.INCORRECT_SIZE_BYTES:
@@ -190,8 +190,8 @@ func _fleet_slot_to_query(slot: int, fleet: Fleet) -> Dictionary:
 	return { "fleet_id": fleet.get_id(), "ship_id": fleet._ships[slot].get_id(), "slot": slot}
 
 func _ship_to_query(ship: ShipData) -> Dictionary:
-	var image_size := ship.image.get_size() if ship.image != null else Vector2i.ZERO
-	var image_data := ship.image.get_data() if ship.image != null else PackedByteArray()
+	var image_size := ship.get_image().get_size() if ship.get_image() != null else Vector2i.ZERO
+	var image_data := ship.get_image().get_data() if ship.get_image() != null else PackedByteArray()
 	return {
 		"name": ship.name,
 		"parts": ship.serialize(),

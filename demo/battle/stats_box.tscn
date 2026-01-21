@@ -1,0 +1,137 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyxuko5kc8x27"]
+
+[ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="1_fb3w0"]
+
+[node name="StatsBox" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 100
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+text = "Summary"
+
+[node name="HP" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Icon" type="TextureRect" parent="VBoxContainer/HP"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("1_fb3w0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Property" type="Label" parent="VBoxContainer/HP"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "HP:"
+
+[node name="Value" type="Label" parent="VBoxContainer/HP"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.55, 0.55, 1)
+theme_override_colors/font_outline_color = Color(1, 0.54901963, 0.54901963, 1)
+theme_override_constants/outline_size = 2
+text = "100"
+
+[node name="Cost" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Icon" type="TextureRect" parent="VBoxContainer/Cost"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("1_fb3w0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Property" type="Label" parent="VBoxContainer/Cost"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Cost:"
+
+[node name="Value" type="Label" parent="VBoxContainer/Cost"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 1, 0.5575, 1)
+theme_override_colors/font_outline_color = Color(0.54901963, 1, 0.5568628, 1)
+theme_override_constants/outline_size = 2
+text = "1000"
+
+[node name="Mass" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Icon" type="TextureRect" parent="VBoxContainer/Mass"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("1_fb3w0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Property" type="Label" parent="VBoxContainer/Mass"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Mass:"
+
+[node name="Value" type="Label" parent="VBoxContainer/Mass"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.55, 1)
+theme_override_colors/font_outline_color = Color(1, 0.8784314, 0.54901963, 1)
+theme_override_constants/outline_size = 2
+text = "100"
+
+[node name="Thrust" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Icon" type="TextureRect" parent="VBoxContainer/Thrust"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("1_fb3w0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Property" type="Label" parent="VBoxContainer/Thrust"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Thrust:"
+
+[node name="Value" type="Label" parent="VBoxContainer/Thrust"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.55, 0.55, 1)
+theme_override_colors/font_outline_color = Color(1, 0.54901963, 0.54901963, 1)
+theme_override_constants/outline_size = 2
+text = "100"
+
+[node name="TurnImpulse" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Icon" type="TextureRect" parent="VBoxContainer/TurnImpulse"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("1_fb3w0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Property" type="Label" parent="VBoxContainer/TurnImpulse"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Turnrate:"
+
+[node name="Value" type="Label" parent="VBoxContainer/TurnImpulse"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65999997, 0.6883333, 1, 1)
+theme_override_colors/font_outline_color = Color(0.65882355, 0.6901961, 1, 1)
+theme_override_constants/outline_size = 2
+text = "100"
