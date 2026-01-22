@@ -11,6 +11,7 @@ const STANDARD_SHIP_SIZE := Vector2i(16, 16)
 @export var mouse_selection: MouseSelection
 @export var grid: Grid
 @export var save_popup: AcceptDialog
+@export var stats_box: StatsBox
 
 var slot := -1:
 	set = set_slot
@@ -49,6 +50,7 @@ func set_slot(new_slot: int) -> void:
 	slot = new_slot
 	grid.ship = get_ship()
 	grid.cache()
+	stats_box.ship = get_ship()
 	slot_changed.emit(slot)
 
 func save() -> void:
@@ -57,6 +59,7 @@ func save() -> void:
 	if error_flags == ShipData.PartError.OK and grid.ship.are_parts_connected():
 		grid.ship.generate_image()
 		grid.ship.save()
+		grid.ship.calculate_stats()
 	else:
 		popup_error_message(error_flags)
 	print(error_flags)
@@ -101,6 +104,7 @@ func _on_fleet_ship_changed(new_ship: ShipData, which_slot: int) -> void:
 		return
 	grid.ship = new_ship
 	grid.cache()
+	stats_box.ship = new_ship
 
 func _on_fleet_container_button_pressed(new_slot: int) -> void:
 	slot = new_slot

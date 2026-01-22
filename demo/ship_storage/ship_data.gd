@@ -4,6 +4,7 @@ signal ui_update
 signal renamed(new_name: String)
 signal resized(new_grid_size: Vector2i)
 signal generated_image(new_image: Image, new_texture: ImageTexture)
+signal stats_updated
 
 enum PartError {
 	OK = 0,
@@ -145,10 +146,11 @@ func clear() -> void:
 	_part_clusters.resize(1)
 	_part_clusters.reset()
 	_bytes.clear()
-	reset_stats()
+	_reset_stats()
+	part_counts.clear()
 	ui_update.emit()
 
-func reset_stats() -> void:
+func _reset_stats() -> void:
 	cost           = 0
 	thrust         = 0.0
 	mass           = 0.0
@@ -176,9 +178,10 @@ func add_to_part_count(part_data: PartData, count := 1) -> void:
 	part_counts[part_data] = part_counts.get(part_data, 0) + count
 
 func calculate_stats() -> void:
-	reset_stats()
+	_reset_stats()
 	for part in part_counts:
 		add_part_stats(part, part_counts[part] )
+	stats_updated.emit()
 
 func for_each_part(f: Callable) -> void:
 	for part_id in range(1, _parts.size() ):

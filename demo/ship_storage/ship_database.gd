@@ -165,6 +165,7 @@ func _parse_ship_from_result(ship: ShipData, result: Dictionary) -> void:
 	var parts = result["parts"]
 	var error := ship.deserialize(parts if parts != null else PackedByteArray(), part_manager)
 	handle_deserialization_error(error, result["id"] )
+	ship.calculate_stats()
 	ship.name = result["name"]
 	if image_bytes == null:
 		ship._image = null

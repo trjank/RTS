@@ -38,7 +38,7 @@ shader_parameter/major_line_thickness = 0.250000011875
 shader_parameter/square_size_px = Vector2(32, 32)
 shader_parameter/square_color = Color(1, 0.935, 0.87, 0.101960786)
 
-[node name="Design" type="Node" node_paths=PackedStringArray("part_group", "parts_container", "fleet_container", "mouse_selection", "grid", "save_popup")]
+[node name="Design" type="Node" node_paths=PackedStringArray("part_group", "parts_container", "fleet_container", "mouse_selection", "grid", "save_popup", "stats_box")]
 script = ExtResource("1_wctwy")
 part_group = NodePath("World/Grid/PartGroup")
 parts_container = NodePath("UI/VBoxContainer/HBoxContainer/PartsContainer")
@@ -46,6 +46,7 @@ fleet_container = NodePath("UI/VBoxContainer/HBoxContainer/FleetContainer")
 mouse_selection = NodePath("World/MouseSelection")
 grid = NodePath("World/Grid")
 save_popup = NodePath("SaveShipPopup")
+stats_box = NodePath("World/Grid/Control/StatsBox")
 metadata/_custom_type_script = "uid://cphbaayi2hnoj"
 metadata/_edit_vertical_guides_ = [136.0]
 
