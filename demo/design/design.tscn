@@ -87,14 +87,14 @@ ship_buttons = NodePath("VBoxContainer/ScrollContainer/ShipButtons")
 [node name="PanelContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer" index="0"]
 theme_override_styles/panel = SubResource("StyleBoxFlat_rmp56")
 
-[node name="Name" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VBoxContainer" index="1"]
-custom_minimum_size = Vector2(150, 0)
-
-[node name="FleetSwapButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VBoxContainer" index="2"]
-visible = true
-
-[node name="DeleteButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VBoxContainer" index="3"]
+[node name="DeleteButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VBoxContainer" index="0"]
 visible = false
+
+[node name="Name" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VBoxContainer" index="2"]
+expand_to_text_length = false
+
+[node name="FleetSwapButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/VBoxContainer" index="3"]
+visible = true
 
 [node name="MarginContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer" index="1"]
 visible = false

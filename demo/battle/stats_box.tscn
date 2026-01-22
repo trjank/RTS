@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://cyxuko5kc8x27"]
+[gd_scene load_steps=7 format=3 uid="uid://cyxuko5kc8x27"]
 
-[ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="1_fb3w0"]
+[ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="1_qxu5l"]
+[ext_resource type="Texture2D" uid="uid://dmu4kvuuj6yn8" path="res://icons/stats_thrust.png" id="2_1d526"]
+[ext_resource type="Texture2D" uid="uid://cd8t3je15dn86" path="res://icons/stats_cost.png" id="2_2bu56"]
+[ext_resource type="Texture2D" uid="uid://ib8wr8wi2qss" path="res://icons/stats_mass.png" id="3_033vo"]
+[ext_resource type="Texture2D" uid="uid://c8qr63h7bcxn2" path="res://icons/stats_turnrate.png" id="5_033vo"]
+[ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="6_xuk2r"]
 
 [node name="StatsBox" type="MarginContainer"]
 anchors_preset = 15
@@ -28,7 +33,7 @@ theme_override_constants/separation = 15
 [node name="Icon" type="TextureRect" parent="VBoxContainer/HP"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-texture = ExtResource("1_fb3w0")
+texture = ExtResource("1_qxu5l")
 expand_mode = 1
 stretch_mode = 5
 
@@ -51,7 +56,7 @@ theme_override_constants/separation = 15
 [node name="Icon" type="TextureRect" parent="VBoxContainer/Cost"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-texture = ExtResource("1_fb3w0")
+texture = ExtResource("2_2bu56")
 expand_mode = 1
 stretch_mode = 5
 
@@ -74,7 +79,7 @@ theme_override_constants/separation = 15
 [node name="Icon" type="TextureRect" parent="VBoxContainer/Mass"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-texture = ExtResource("1_fb3w0")
+texture = ExtResource("3_033vo")
 expand_mode = 1
 stretch_mode = 5
 
@@ -97,7 +102,7 @@ theme_override_constants/separation = 15
 [node name="Icon" type="TextureRect" parent="VBoxContainer/Thrust"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-texture = ExtResource("1_fb3w0")
+texture = ExtResource("2_1d526")
 expand_mode = 1
 stretch_mode = 5
 
@@ -120,7 +125,7 @@ theme_override_constants/separation = 15
 [node name="Icon" type="TextureRect" parent="VBoxContainer/TurnImpulse"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-texture = ExtResource("1_fb3w0")
+texture = ExtResource("5_033vo")
 expand_mode = 1
 stretch_mode = 5
 
@@ -135,3 +140,33 @@ theme_override_colors/font_color = Color(0.65999997, 0.6883333, 1, 1)
 theme_override_colors/font_outline_color = Color(0.65882355, 0.6901961, 1, 1)
 theme_override_constants/outline_size = 2
 text = "100"
+
+[node name="Energy" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Icon" type="TextureRect" parent="VBoxContainer/Energy"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("6_xuk2r")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Property" type="Label" parent="VBoxContainer/Energy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Energy:"
+
+[node name="Value" type="Label" parent="VBoxContainer/Energy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65999997, 0.6883333, 1, 1)
+theme_override_colors/font_outline_color = Color(0.65882355, 0.6901961, 1, 1)
+theme_override_constants/outline_size = 2
+text = "100"
+
+[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer/Energy"]
+custom_minimum_size = Vector2(500, 32)
+layout_mode = 2
+value = 50.0
+allow_greater = true
+show_percentage = false

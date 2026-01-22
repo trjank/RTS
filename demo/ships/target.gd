@@ -1,4 +1,4 @@
-class_name Target2 extends RefCounted
+class_name Target extends RefCounted
 
 const NO_INTERSECTION := -1.0
 
@@ -16,10 +16,10 @@ func is_alive() -> bool:
 func get_intersection_point(intersection_time: float) -> Vector2:
 	return position + intersection_time * velocity
 
-func get_approx_intersect_time(other_target: Target2) -> float:
+func get_approx_intersect_time(other_target: Target) -> float:
 	return other_target.get_approx_intersect_time_from(position, speed)
 
-func get_intersect_time(other_target: Target2) -> float:
+func get_intersect_time(other_target: Target) -> float:
 	return other_target.get_intersect_time_from(position, speed)
 
 func get_approx_intersect_time_from(from: Vector2, other_speed: float) -> float:

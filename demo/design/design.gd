@@ -54,11 +54,12 @@ func set_slot(new_slot: int) -> void:
 func save() -> void:
 	part_group.move_parts()
 	var error_flags := grid.save()
-	if error_flags == ShipData.PartError.OK:
+	if error_flags == ShipData.PartError.OK and grid.ship.are_parts_connected():
 		grid.ship.generate_image()
 		grid.ship.save()
 	else:
 		popup_error_message(error_flags)
+	print(error_flags)
 
 func popup_error_message(error_flags: int) -> void:
 	var error_message := "Failed to save for the following reasons:\n\n"
@@ -69,7 +70,7 @@ func popup_error_message(error_flags: int) -> void:
 	if error_flags & ShipData.PartError.OVERLAP:
 		error_message += "☐ Parts are overlapping\n"
 	elif not grid.ship.are_parts_connected():
-		error_message += "☐ Parts are disconnected (%d clusters detected)\n" % grid.ship_data.count_part_clusters()
+		error_message += "☐ Parts are disconnected (%d clusters detected)\n" % grid.ship.count_part_clusters()
 	save_popup.dialog_text = error_message
 	save_popup.show()
 
@@ -96,9 +97,10 @@ func _on_parts_container_part_clicked(part_data: PartData) -> void:
 	part_group.begin_dragging()
 
 func _on_fleet_ship_changed(new_ship: ShipData, which_slot: int) -> void:
-	if slot == which_slot:
-		grid.ship = new_ship
-	grid.uncache(new_ship)
+	if slot != which_slot:
+		return
+	grid.ship = new_ship
+	grid.cache()
 
 func _on_fleet_container_button_pressed(new_slot: int) -> void:
 	slot = new_slot

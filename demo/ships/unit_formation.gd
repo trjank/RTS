@@ -1,4 +1,4 @@
-class_name UnitFormation2 extends Path2D
+class_name UnitFormation extends Path2D
 
 enum Formation {
 	LINE = 2,
@@ -16,26 +16,26 @@ const PREVENT_DIV_ZERO := 0.001
 @export var target_draw_size := 100.0
 @export var target_draw_color := Color.WHITE
 
-var targets: Array[Target2] = []
-var units: Array[RadarSignature2] = []
+var targets: Array[Target] = []
+var units: Array[RadarSignature] = []
 var center_targets: Vector2
 var center_units: Vector2
 var sort_axis: Vector2
 var search_shape := CircleShape2D.new()
 
-static func is_unit_locked(unit: RadarSignature2) -> bool:
+static func is_unit_locked(unit: RadarSignature) -> bool:
 	return unit.is_alive() and unit.as_unit().movement_locked
 
 # NOTE: Pass this function to command_units (you may need to bind lock_units)
-static func movement_lock_command(unit: RadarSignature2, _target: Target2, lock_units := true) -> void:
+static func movement_lock_command(unit: RadarSignature, _target: Target, lock_units := true) -> void:
 	unit.as_unit().movement_locked = lock_units
 
 # NOTE: Pass this function to command_units
-static func target_command(unit: RadarSignature2, target: Target2) -> void:
+static func target_command(unit: RadarSignature, target: Target) -> void:
 	unit.as_unit().target(target)
 
 # NOTE: Pass this function to command_units
-static func move_command(unit: RadarSignature2, target: Target2) -> void:
+static func move_command(unit: RadarSignature, target: Target) -> void:
 	unit.as_unit().queue_waypoint(target)
 
 func command_units(command: Callable) -> void:
@@ -58,7 +58,7 @@ func begin_curve(start: Vector2) -> void:
 	for i in int(formation):
 		curve.add_point(start)
 	for i in units.size():
-		targets.push_back(Target2.new(start))
+		targets.push_back(Target.new(start))
 
 func move_curve(new_endpoint: Vector2) -> void:
 	var length := curve.get_baked_length()
@@ -110,7 +110,7 @@ func snap_targets() -> void:
 		if nearest != null:
 			targets[i] = nearest.get_radar_signature()
 
-func get_nearest_unit(from_position: Vector2, collision_mask: int) -> Unit2:
+func get_nearest_unit(from_position: Vector2, collision_mask: int) -> Unit:
 	assert(search_shape.radius > 0)
 	var physics := get_world_2d().direct_space_state
 	var query := PhysicsShapeQueryParameters2D.new()
@@ -118,7 +118,7 @@ func get_nearest_unit(from_position: Vector2, collision_mask: int) -> Unit2:
 	query.shape = search_shape
 	query.transform = Transform2D(0.0, from_position)
 	var colliders := physics.intersect_shape(query, 1)
-	return null if colliders.is_empty() else (colliders[0].collider as Unit2)
+	return null if colliders.is_empty() else (colliders[0].collider as Unit)
 
 func calculate_center_units() -> void:
 	var sum := Vector2.ZERO
@@ -129,12 +129,12 @@ func calculate_center_units() -> void:
 func calculate_center_targets() -> void:
 	center_targets = 0.5 * (curve.sample_baked(0.33) + curve.sample_baked(0.66))
 
-func unit_axis_sorter(a: RadarSignature2, b: RadarSignature2) -> bool:
+func unit_axis_sorter(a: RadarSignature, b: RadarSignature) -> bool:
 	var a_offset := a.future_position - center_units
 	var b_offset := b.future_position - center_units
 	return a_offset.cross(sort_axis) < b_offset.cross(sort_axis)
 
-func target_axis_sorter(a: Target2, b: Target2) -> bool:
+func target_axis_sorter(a: Target, b: Target) -> bool:
 	var a_offset := a.position - center_targets
 	var b_offset := b.position - center_targets
 	return a_offset.cross(sort_axis) < b_offset.cross(sort_axis)

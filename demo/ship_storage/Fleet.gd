@@ -50,6 +50,9 @@ func save() -> bool:
 func has_slot(slot: int) -> bool:
 	return 0 <= slot and slot < _ships.size()
 
+func has_ship(ship: ShipData) -> bool:
+	return ship in _ships
+
 func has_ship_in_slot(slot: int) -> bool:
 	return _ships[slot] != null
 

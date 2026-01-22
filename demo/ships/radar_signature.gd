@@ -1,4 +1,4 @@
-class_name RadarSignature2 extends Target2
+class_name RadarSignature extends Target
 
 enum State {
 	DEAD,
@@ -9,7 +9,7 @@ enum State {
 var future_position := Vector2.ZERO
 
 var _state := State.DEAD
-var _unit: Unit2
+var _unit: Unit
 
 func get_state() -> State:
 	return _state
@@ -17,6 +17,6 @@ func get_state() -> State:
 func is_alive() -> bool:
 	return _state != State.DEAD
 
-func as_unit() -> Unit2:
+func as_unit() -> Unit:
 	assert(_state != State.DEAD)
 	return _unit

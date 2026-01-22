@@ -1,4 +1,4 @@
-class_name Unit2 extends RigidBody2D
+class_name Unit extends RigidBody2D
 
 const MAX_NUM_WAYPOINTS := 5
 const TURN_JERKINESS := 10.0
@@ -30,15 +30,15 @@ var _angle_to_target := 0.0
 var _time_to_turn := 0.0
 var _time_to_move := 0.0
 var _distance_to_target := 0.0
-var _radar_signature := RadarSignature2.new()
-var _waypoints: Array[Target2] = []
-var _attack_position := Target2.new()
+var _radar_signature := RadarSignature.new()
+var _waypoints: Array[Target] = []
+var _attack_position := Target.new()
 var _path: Line2D
 var _image: Sprite2D
 
 func _ready() -> void:
 	_radar_signature.unit = self
-	_radar_signature.state = RadarSignature2.State.ALIVE
+	_radar_signature.state = RadarSignature.State.ALIVE
 	_path.add_point(Vector2.ZERO)
 	_path.texture_mode = Line2D.LineTextureMode.LINE_TEXTURE_TILE
 	_path.texture_repeat = CanvasItem.TextureRepeat.TEXTURE_REPEAT_ENABLED
@@ -47,7 +47,7 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	_radar_signature.unit = null
-	_radar_signature.state = RadarSignature2.State.DEAD
+	_radar_signature.state = RadarSignature.State.DEAD
 
 func get_speed() -> float:
 	return linear_velocity.length()
@@ -66,14 +66,14 @@ func hit(damage: float, from: Player = null) -> void:
 func get_forward_direction() -> Vector2:
 	return -transform.y
 
-func get_waypoint(waypoint_num := 0) -> Target2:
+func get_waypoint(waypoint_num := 0) -> Target:
 	return _waypoints[waypoint_num]
 
-func get_attack_position() -> Target2:
+func get_attack_position() -> Target:
 	return _attack_position
 
 # NOTE: Do not modify the radar signature while using it
-func get_radar_signature() -> RadarSignature2:
+func get_radar_signature() -> RadarSignature:
 	return _radar_signature
 
 func set_selected(is_selected: bool) -> void:
@@ -86,11 +86,11 @@ func set_texture(new_texture: Texture2D) -> void:
 	_image.reset_to_default_size()
 
 func cloak() -> void:
-	_radar_signature.state = RadarSignature2.State.CLOAKED
+	_radar_signature.state = RadarSignature.State.CLOAKED
 	modulate = cloak_color
 
 func decloak() -> void:
-	_radar_signature.state = RadarSignature2.State.ALIVE
+	_radar_signature.state = RadarSignature.State.ALIVE
 	modulate = Color.WHITE
 
 func kill() -> void:
@@ -104,7 +104,7 @@ func clear_movement_queue() -> void:
 	_path.clear_points()
 	_path.add_point(global_position)
 
-func queue_waypoint(waypoint: Target2) -> bool:
+func queue_waypoint(waypoint: Target) -> bool:
 	if waypoint == null:
 		return false
 	if _waypoints.size() >= MAX_NUM_WAYPOINTS:
@@ -115,7 +115,7 @@ func queue_waypoint(waypoint: Target2) -> bool:
 	_waypoints.push_back(waypoint)
 	return true
 
-func set_target(new_target: Target2) -> void:
+func set_target(new_target: Target) -> void:
 	# Placeholder behavior: move to target
 	clear_movement_queue()
 	queue_waypoint(new_target)
@@ -123,7 +123,7 @@ func set_target(new_target: Target2) -> void:
 func order_attack() -> void:
 	ram(get_waypoint())
 
-func pop_waypoint() -> Target2:
+func pop_waypoint() -> Target:
 	if _waypoints.is_empty():
 		return null
 	_path.remove_point(2)
@@ -149,21 +149,21 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 func move_to(new_position: Vector2) -> void:
 	_attack_position.position = new_position
 
-func ram(target: Target2) -> void:
+func ram(target: Target) -> void:
 	move_to(target.get_position())
 
-func flee(target: Target2, safe_distance: float) -> void:
+func flee(target: Target, safe_distance: float) -> void:
 	var direction := (global_position - target.position).normalized()
 	move_to(global_position + safe_distance * direction)
 
-func track(target: Target2) -> void:
+func track(target: Target) -> void:
 	var time_intersect := _radar_signature.get_intersect_time(target)
-	if time_intersect == Target2.NO_INTERSECTION:
+	if time_intersect == Target.NO_INTERSECTION:
 		ram(target)
 	else:
 		move_to(target.get_intersection_point(time_intersect))
 
-func kite(target: Target2, min_distance: float, max_distance: float) -> void:
+func kite(target: Target, min_distance: float, max_distance: float) -> void:
 	if _distance_to_target < min_distance:
 		flee(target, max_distance)
 		movement_locked = false
@@ -196,7 +196,7 @@ func _move_to_target() -> void:
 		pop_waypoint()
 
 func _update_radar_signature() -> void:
-	if _radar_signature.state == RadarSignature2.State.CLOAKED:
+	if _radar_signature.state == RadarSignature.State.CLOAKED:
 		return
 	_radar_signature.speed = speed
 	_radar_signature.velocity = linear_velocity

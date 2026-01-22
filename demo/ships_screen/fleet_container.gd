@@ -100,7 +100,7 @@ func _on_name_focus_exited() -> void:
 	_on_name_text_submitted(name_edit.text)
 
 func _on_name_text_submitted(new_text: String) -> bool:
-	return fleet.set_name(new_text) and fleet.save_metadata()
+	return fleet != null and fleet.set_name(new_text) and fleet.save_metadata()
 
 func _on_fleet_swap_button_pressed() -> void:
 	globals.main.state = Main.State.FLEET

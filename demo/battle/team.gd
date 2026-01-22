@@ -26,11 +26,11 @@ func is_alive() -> bool:
 func get_alive_players() -> Array[Player]:
 	return players.filter(is_player_alive)
 
-func register_kill(unit: Unit2) -> void:
+func register_kill(unit: Unit) -> void:
 	units_killed += 1
 	value_killed += unit.value
 
-func register_loss(unit: Unit2) -> void:
+func register_loss(unit: Unit) -> void:
 	units_lost += 1
 	value_lost += unit.value
 

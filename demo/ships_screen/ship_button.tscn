@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://bll4613yi8yxk"]
+[gd_scene load_steps=5 format=3 uid="uid://bll4613yi8yxk"]
 
 [ext_resource type="Script" uid="uid://gn43e8awh35b" path="res://ships_screen/ship_button.gd" id="2_oyyh1"]
 
@@ -18,8 +18,10 @@ bg_color = Color(0.1, 0.1, 0.1, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
-border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqj0r"]
+bg_color = Color(0, 0, 0, 0)
 
 [node name="Button" type="Button" node_paths=PackedStringArray("ship_id", "unsaved_indicator", "name_edit", "custom_icon")]
 custom_minimum_size = Vector2(300, 300)
@@ -64,6 +66,9 @@ text = " Unsaved"
 [node name="Name" type="LineEdit" parent="PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_gqj0r")
+theme_override_styles/read_only = SubResource("StyleBoxFlat_gqj0r")
+theme_override_styles/focus = SubResource("StyleBoxFlat_gqj0r")
 placeholder_text = "Unnamed"
 alignment = 1
 max_length = 50

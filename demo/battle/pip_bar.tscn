@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://x0uqbyqx11lv"]
+
+[ext_resource type="Script" uid="uid://bnrcm6w6acecr" path="res://battle/pip_bar.gd" id="1_lexbn"]
+
+[sub_resource type="Gradient" id="Gradient_jqcho"]
+colors = PackedColorArray(0.2, 0.2, 0.2, 1, 0.2, 0.2, 0.2, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g08vb"]
+gradient = SubResource("Gradient_jqcho")
+width = 16
+height = 32
+
+[sub_resource type="Gradient" id="Gradient_n6m1k"]
+colors = PackedColorArray(0.7, 0.20300001, 0.20300001, 1, 1, 0.56, 0.56, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lexbn"]
+gradient = SubResource("Gradient_n6m1k")
+width = 16
+height = 32
+
+[node name="PipBar" type="TextureProgressBar"]
+custom_minimum_size = Vector2(128, 32)
+offset_right = 10.0
+offset_bottom = 32.0
+max_value = 800.0
+value = 750.0
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture2D_g08vb")
+texture_progress = SubResource("GradientTexture2D_lexbn")
+script = ExtResource("1_lexbn")

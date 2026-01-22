@@ -91,4 +91,4 @@ func _on_name_focus_exited() -> void:
 	_on_name_text_submitted(name_edit.text)
 
 func _on_name_text_submitted(new_text: String) -> bool:
-	return ship.set_name(new_text) and ship.save()
+	return ship != null and ship.set_name(new_text) and ship.save()

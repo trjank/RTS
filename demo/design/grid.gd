@@ -3,6 +3,7 @@ class_name Grid extends Sprite2D
 signal ship_changed(grid: Grid)
 signal save_changed(some_ship: ShipData, saved: bool)
 
+const MAX_CACHE_SIZE := 30
 const TILE_SIZE := 32.0
 const RECALCULATE_ERROR := -1
 
@@ -22,22 +23,20 @@ func set_size(new_size: Vector2i) -> void:
 func is_cached(which_ship := ship) -> bool:
 	return which_ship in _parts_cache
 
-func cache() -> bool:
-	return ship != null and _parts != null and _add_parts_to_cache()
+func cache() -> void:
+	if MAX_CACHE_SIZE <= _parts_cache.size():
+		_parts_cache.erase(_parts_cache.keys()[0] )
+	if ship != null and _parts != null:
+		_parts_cache[ship] = _parts
 
-func uncache(which_ship := ship) -> bool:
-	return _parts_cache.erase(which_ship) and (which_ship == ship or _destroy_parts_in_cache(which_ship) )
+func uncache(which_ship := ship) -> void:
+	if not which_ship in _parts_cache:
+		return
+	_parts_cache[which_ship].queue_free()
+	_parts_cache.erase(which_ship)
 
 func clear_cache() -> void:
 	_parts_cache.keys().all(uncache)
-
-func _add_parts_to_cache() -> bool:
-	_parts_cache[ship] = _parts
-	return true # <- Allows for some nice short-circuit syntax
-
-func _destroy_parts_in_cache(which_ship: ShipData) -> bool:
-	_parts_cache[which_ship].queue_free()
-	return true # <- Allows for some nice short-circuit syntax
 
 func set_ship(new_ship: ShipData) -> void:
 	if ship == new_ship:
