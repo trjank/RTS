@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="3_rmp56"]
 [ext_resource type="Shader" uid="uid://cxuhliel45ol6" path="res://design/grid_lines.gdshader" id="5_rmp56"]
 [ext_resource type="Script" uid="uid://rrpw8rs1x5wn" path="res://design/grid.gd" id="8_bjdq3"]
-[ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/partslist/parts_container.tscn" id="9_3c8mw"]
+[ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/parts_container.tscn" id="9_3c8mw"]
 [ext_resource type="Texture2D" uid="uid://d4f7cgh3wnd2p" path="res://icons/striped_background.png" id="9_rmp56"]
 [ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/part_group.gd" id="10_6vk6i"]
 [ext_resource type="PackedScene" uid="uid://cyxuko5kc8x27" path="res://battle/stats_box.tscn" id="12_rmp56"]
@@ -46,7 +46,7 @@ fleet_container = NodePath("UI/VBoxContainer/HBoxContainer/FleetContainer")
 mouse_selection = NodePath("World/MouseSelection")
 grid = NodePath("World/Grid")
 save_popup = NodePath("SaveShipPopup")
-stats_box = NodePath("World/Grid/Control/StatsBox")
+stats_box = NodePath("World/Grid/Stats/StatsBox")
 metadata/_custom_type_script = "uid://cphbaayi2hnoj"
 metadata/_edit_vertical_guides_ = [136.0]
 
@@ -74,13 +74,13 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer"]
 clip_contents = true
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 
 [node name="FleetContainer" parent="UI/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("ship_buttons") instance=ExtResource("3_rmp56")]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+size_flags_horizontal = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_r41aq")
 button_size = Vector2(400, 400)
 ship_buttons = NodePath("VBoxContainer/ScrollContainer/ShipButtons")
@@ -115,13 +115,19 @@ theme_override_constants/separation = 20
 
 [node name="PartsContainer" parent="UI/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("tabs") instance=ExtResource("9_3c8mw")]
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 0
 tabs = {
 "armor": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Armor"),
 "energy": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Energy"),
-"utility": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Utility"),
+"movement": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Movement"),
 "weapons": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Weapons")
 }
+
+[node name="TestButton" type="Button" parent="UI/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 0
+text = "Test it out!"
 
 [node name="World" type="Node2D" parent="."]
 
@@ -166,7 +172,7 @@ texture = ExtResource("13_7jtw0")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Control" type="Control" parent="World/Grid"]
+[node name="Stats" type="Control" parent="World/Grid"]
 z_index = 1001
 layout_mode = 3
 anchors_preset = 1
@@ -174,11 +180,13 @@ anchor_left = 1.0
 anchor_right = 1.0
 grow_horizontal = 0
 
-[node name="StatsBox" parent="World/Grid/Control" instance=ExtResource("12_rmp56")]
+[node name="StatsBox" parent="World/Grid/Stats" instance=ExtResource("12_rmp56")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
+offset_right = 846.0
+offset_bottom = 490.0
 grow_horizontal = 1
 grow_vertical = 1
 
@@ -195,6 +203,7 @@ ok_button_text = "Return to design"
 
 [connection signal="button_pressed" from="UI/VBoxContainer/HBoxContainer/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
 [connection signal="part_clicked" from="UI/VBoxContainer/HBoxContainer/PartsContainer" to="." method="_on_parts_container_part_clicked"]
+[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/TestButton" to="." method="_on_test_button_pressed"]
 [connection signal="save_changed" from="World/Grid" to="." method="_on_grid_save_changed"]
 
 [editable path="UI/VBoxContainer/HBoxContainer/FleetContainer"]

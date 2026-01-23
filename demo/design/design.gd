@@ -108,3 +108,6 @@ func _on_fleet_ship_changed(new_ship: ShipData, which_slot: int) -> void:
 
 func _on_fleet_container_button_pressed(new_slot: int) -> void:
 	slot = new_slot
+
+func _on_test_button_pressed() -> void:
+	print("testing!")

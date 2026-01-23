@@ -1,6 +1,7 @@
+@tool
 class_name ResizeableSprite2D extends Sprite2D
 
-var size := Vector2.ZERO:
+@export var size := Vector2.ZERO:
 	set = set_size
 
 func _init() -> void:

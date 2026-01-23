@@ -1,3 +1,4 @@
+@tool
 class_name Part extends ResizeableSprite2D
 
 var data: PartData:

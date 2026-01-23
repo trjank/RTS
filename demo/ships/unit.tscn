@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://dt0p75hngjhet"]
+
+[ext_resource type="Script" uid="uid://3tjt6gih8io4" path="res://ships/unit.gd" id="1_fynol"]
+[ext_resource type="Curve" uid="uid://b7qyd7arpaaeg" path="res://ships/torque_limit_curve.tres" id="2_7uomk"]
+[ext_resource type="Texture2D" uid="uid://xmt7t8to3f6j" path="res://icons/texture_not_found.png" id="2_kf62j"]
+[ext_resource type="Script" uid="uid://c1dmiob7cvmpw" path="res://map/resizeable_sprite_2d.gd" id="2_puhrm"]
+[ext_resource type="Texture2D" uid="uid://doivo757q2pdj" path="res://icons/unit_path.png" id="4_kf62j"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kf62j"]
+radius = 100.0
+
+[node name="Unit" type="RigidBody2D" node_paths=PackedStringArray("path", "sprite")]
+mass = 10.0
+gravity_scale = 0.0
+inertia = 1.0
+linear_damp = 2.0
+angular_damp = 10.0
+script = ExtResource("1_fynol")
+path = NodePath("Path")
+sprite = NodePath("ResizableSprite2D")
+torque_limit_curve = ExtResource("2_7uomk")
+metadata/_custom_type_script = "uid://3tjt6gih8io4"
+
+[node name="Path" type="Line2D" parent="."]
+texture_repeat = 2
+points = PackedVector2Array(0, 0)
+width = 64.0
+texture = ExtResource("4_kf62j")
+texture_mode = 1
+
+[node name="ResizableSprite2D" type="Sprite2D" parent="."]
+scale = Vector2(7.8125, 7.8125)
+texture = ExtResource("2_kf62j")
+script = ExtResource("2_puhrm")
+size = Vector2(250, 250)
+metadata/_custom_type_script = "uid://c1dmiob7cvmpw"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_kf62j")

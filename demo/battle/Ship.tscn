@@ -1,7 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://bb6bj8b6mhosi"]
+[gd_scene load_steps=13 format=3 uid="uid://bclfkleo04c2s"]
 
+[ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://ships/unit.tscn" id="1_aujvj"]
 [ext_resource type="Script" uid="uid://c1kpbbaqx8xxa" path="res://battle/ship.gd" id="1_n6m1k"]
-[ext_resource type="Texture2D" uid="uid://c5u6e65pn52m" path="res://icons/icon.svg" id="2_jqcho"]
 [ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="3_h2j6u"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_aujvj"]
 [ext_resource type="PackedScene" uid="uid://x0uqbyqx11lv" path="res://battle/pip_bar.tscn" id="4_jqcho"]
@@ -11,7 +11,7 @@
 offsets = PackedFloat32Array(0.516908, 0.676328, 0.717391)
 colors = PackedColorArray(0, 0, 0, 0, 0.231373, 0.901961, 0.682353, 1, 0, 0, 0, 0)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_tuogq"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tetda"]
 gradient = SubResource("Gradient_wnxci")
 width = 256
 height = 256
@@ -19,12 +19,10 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 metadata/_snap_enabled = true
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_j187u"]
-
 [sub_resource type="Gradient" id="Gradient_n6m1k"]
 colors = PackedColorArray(0.46768677, 0.3723, 0.73, 1, 0.342, 0.5871, 0.6, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_jqcho"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_h2j6u"]
 gradient = SubResource("Gradient_n6m1k")
 width = 16
 height = 32
@@ -33,36 +31,32 @@ height = 32
 offsets = PackedFloat32Array(0.004716981, 1)
 colors = PackedColorArray(0.8, 0.73520005, 0.368, 1, 0.8, 0.73333335, 0.36862746, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_aujvj"]
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6juyh"]
 gradient = SubResource("Gradient_h2j6u")
 width = 16
 height = 32
 
-[node name="Ship" type="RigidBody2D"]
-collision_mask = 0
-linear_damp_mode = 1
-angular_damp_mode = 1
+[node name="Ship" node_paths=PackedStringArray("bar_hp", "bar_shield", "bar_energy", "always_upright") instance=ExtResource("1_aujvj")]
 script = ExtResource("1_n6m1k")
-metadata/_custom_type_script = "uid://c1kpbbaqx8xxa"
+bar_hp = NodePath("AlwaysUpright/GridContainer/PipBarHP")
+bar_shield = NodePath("AlwaysUpright/GridContainer/PipBarShield")
+bar_energy = NodePath("AlwaysUpright/GridContainer/PipBarEnergy")
+always_upright = NodePath("AlwaysUpright")
 
-[node name="WarpRadius" type="Sprite2D" parent="."]
-texture = SubResource("GradientTexture2D_tuogq")
+[node name="WarpRadius" type="Sprite2D" parent="." index="3"]
+texture = SubResource("GradientTexture2D_tetda")
 
-[node name="Image" type="Sprite2D" parent="."]
-texture = ExtResource("2_jqcho")
+[node name="AlwaysUpright" type="Node2D" parent="." index="4"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_j187u")
-
-[node name="GridContainer" type="GridContainer" parent="."]
+[node name="GridContainer" type="GridContainer" parent="AlwaysUpright" index="0"]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -148.0
+offset_left = -153.0
 offset_top = -309.0
-offset_right = 149.0
+offset_right = 154.0
 offset_bottom = -159.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -70,55 +64,55 @@ theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 15
 columns = 3
 
-[node name="ShieldIcon" type="TextureRect" parent="GridContainer"]
+[node name="ShieldIcon" type="TextureRect" parent="AlwaysUpright/GridContainer" index="0"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("3_h2j6u")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shield" type="Label" parent="GridContainer"]
+[node name="Shield" type="Label" parent="AlwaysUpright/GridContainer" index="1"]
 layout_mode = 2
 text = "500"
 
-[node name="PipBarShield" parent="GridContainer" instance=ExtResource("4_jqcho")]
+[node name="PipBarShield" parent="AlwaysUpright/GridContainer" index="2" instance=ExtResource("4_jqcho")]
 custom_minimum_size = Vector2(190, 32)
 layout_mode = 2
 size_flags_horizontal = 0
 max_value = 950.0
-texture_progress = SubResource("GradientTexture2D_jqcho")
+texture_progress = SubResource("GradientTexture2D_h2j6u")
 
-[node name="HPIcon" type="TextureRect" parent="GridContainer"]
+[node name="HPIcon" type="TextureRect" parent="AlwaysUpright/GridContainer" index="3"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("5_aujvj")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HP" type="Label" parent="GridContainer"]
+[node name="HP" type="Label" parent="AlwaysUpright/GridContainer" index="4"]
 layout_mode = 2
 text = "500"
 
-[node name="PipBarHP" parent="GridContainer" instance=ExtResource("4_jqcho")]
+[node name="PipBarHP" parent="AlwaysUpright/GridContainer" index="5" instance=ExtResource("4_jqcho")]
 custom_minimum_size = Vector2(84, 32)
 layout_mode = 2
 size_flags_horizontal = 0
 max_value = 2100.0
 value = 800.0
 
-[node name="EnergyIcon" type="TextureRect" parent="GridContainer"]
+[node name="EnergyIcon" type="TextureRect" parent="AlwaysUpright/GridContainer" index="6"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("4_aujvj")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Energy" type="Label" parent="GridContainer"]
+[node name="Energy" type="Label" parent="AlwaysUpright/GridContainer" index="7"]
 layout_mode = 2
 text = "500"
 
-[node name="PipBarEnergy" parent="GridContainer" instance=ExtResource("4_jqcho")]
+[node name="PipBarEnergy" parent="AlwaysUpright/GridContainer" index="8" instance=ExtResource("4_jqcho")]
 custom_minimum_size = Vector2(160, 32)
 layout_mode = 2
 size_flags_horizontal = 0
-texture_progress = SubResource("GradientTexture2D_aujvj")
+texture_progress = SubResource("GradientTexture2D_6juyh")

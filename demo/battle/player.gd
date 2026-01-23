@@ -37,24 +37,33 @@ func set_team(new_team: Team) -> void:
 	if team != null:
 		team.players.erase(self)
 	if new_team != null:
-		team.players.push_back(self)
+		new_team.players.push_back(self)
 	team = new_team
 
-#func spawn_ship(ship_data: ShipData2) -> Ship2:
-	#var ship := Ship2.create_from(ship_data)
-	#if ship == null:
-		#return null
-	#add_child(ship)
-	#ship.player_owner = self
-	#ship.position = spawnpoint
-	#spawned_ship.emit(ship)
-	#return ship
+func spawn_ship(ship_data: ShipData, spawnpoint := Vector2.ZERO) -> Ship:
+	var ship := Ship.create()
+	add_child(ship)
+	ship.data = ship_data
+	ship.player_owner = self
+	ship.position = spawnpoint
+	return ship
+
+func register_loss(unit: Unit) -> void:
+	if team != null:
+		team.register_loss(unit)
+	# TODO: Additional penalties?
+
+func register_kill(unit: Unit) -> void:
+	if team != null:
+		team.register_kill(unit)
+	# TODO: Bounty system?
 
 func reset_resources() -> void:
 	energy = team.initial_energy
 	alloy = team.initial_alloy
 
 func _physics_process(dt: float) -> void:
+	return
 	assert(alive)
 	alloy += team.alloy_per_sec * dt
 	energy += team.energy_per_sec * dt

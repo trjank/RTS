@@ -32,6 +32,7 @@ var rng := RandomNumberGenerator.new()
 var scenery: Array[Scenery] = []
 var map: Map
 var map_depth_limit := 5
+var me: Player
 
 var _state := State.STOPPED
 var _map_root: Scenery
@@ -47,6 +48,7 @@ func _ready() -> void:
 	globals.client.fleet_changed.connect(fleet_container.set_fleet)
 	fleet_container.set_fleet(globals.client.fleet)
 	fleet_container.get_button(Fleet.CAPITAL_SHIP_SLOT).hide()
+	me = connect_player("dev")
 
 func are_teams_balanced() -> bool:
 	return true
@@ -102,6 +104,7 @@ func stop() -> bool:
 
 func connect_player(player_name: String, color := Color.WHITE) -> Player:
 	assert(DEFAULT_TEAM_NAME in teams)
+	#      ^^^^^^^^^^^^^^^^^ DO NOT DELETE THIS TEAM!
 	if player_name in players:
 		return players[player_name]
 	if MAX_NUM_PLAYERS <= players.size():
@@ -109,6 +112,7 @@ func connect_player(player_name: String, color := Color.WHITE) -> Player:
 	var player := Player.new(player_name, color)
 	players[player_name] = player
 	player.team = teams[DEFAULT_TEAM_NAME]
+	players_container.add_child(player, false, Node.INTERNAL_MODE_BACK)
 	player_joined.emit(player)
 	return player
 
@@ -132,6 +136,7 @@ func create_team(team_name: String, color := Color.WHITE) -> Team:
 
 func remove_team(team_name: String) -> bool:
 	assert(DEFAULT_TEAM_NAME in teams)
+	#      ^^^^^^^^^^^^^^^^^ DO NOT DELETE THIS TEAM!
 	if team_name == DEFAULT_TEAM_NAME or not team_name in teams:
 		return false
 	var team := teams[team_name]
@@ -160,3 +165,8 @@ func _on_design_button_pressed() -> void:
 
 func _on_menu_button_pressed() -> void:
 	globals.main.state = Main.State.MAIN_MENU
+
+func _on_fleet_container_button_pressed(slot: int) -> void:
+	var ship := me.spawn_ship(globals.client.fleet.get_ship(slot) )
+	ship.queue_waypoint(Target.new(Vector2(2000, 500)))
+	ship.queue_waypoint(Target.new(Vector2(-2000, -500)))
