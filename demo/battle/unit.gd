@@ -86,6 +86,9 @@ func is_turning() -> bool:
 func is_at_target() -> bool:
 	return _distance_to_target <= MOVE_LAZINESS * _stop_distance
 
+func is_queue_empty() -> bool:
+	return _waypoints.is_empty()
+
 func can_warp() -> bool:
 	return (_distance_to_target <= warp and _waypoints.size() == 1) or MIN_WARP_TURN_ANGLE <= absf(_angle_to_target)
 
@@ -198,6 +201,7 @@ func queue_waypoint(waypoint: Target) -> bool:
 		return set_waypoint(_waypoints.size() - 1, waypoint)
 	_add_path_point(waypoint)
 	_waypoints.push_back(waypoint)
+	sleeping = false
 	return true
 
 func pop_waypoint() -> void:

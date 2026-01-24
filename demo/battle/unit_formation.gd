@@ -31,8 +31,8 @@ const NO_DIVIDE_ZERO := 0.001
 
 @export var draw_curve := true
 @export var curve_draw_width := 2.0
-@export var curve_draw_color := Color.RED
-@export var target_draw_size := 100.0
+@export var curve_draw_color := Color.WHITE
+@export var target_draw_size := 10.0
 @export var target_draw_color := Color.WHITE
 @export var mouse_selection: MouseSelection
 
@@ -114,11 +114,16 @@ func select_units(selection: Array) -> void:
 	set_units_selected(true)
 
 func begin_dragging() -> void:
+	if _units.is_empty():
+		return
+	mouse_selection.disable()
 	begin_curve(get_global_mouse_position() )
 	set_process(true)
 
 func stop_dragging() -> void:
 	set_process(false)
+	end_curve()
+	mouse_selection.enable()
 
 func begin_curve(start: Vector2) -> void:
 	curve.clear_points()
@@ -129,7 +134,7 @@ func begin_curve(start: Vector2) -> void:
 
 func move_curve(new_endpoint: Vector2) -> void:
 	var length := curve.get_baked_length()
-	curve.set_point_position(-1, new_endpoint)
+	curve.set_point_position(curve.point_count - 1, new_endpoint)
 	if length <= UNSTABLE_CURVE_LENGTH:
 		return
 	var targets_step := length / (_targets.size() - 1 + NO_DIVIDE_ZERO)
@@ -138,6 +143,7 @@ func move_curve(new_endpoint: Vector2) -> void:
 		curve.set_point_position(i, curve.sample_baked(i * segment_length) )
 	for i in _targets.size():
 		_targets[i].position = curve.sample_baked(i * targets_step)
+	queue_redraw()
 
 func end_curve() -> void:
 	_center_units = calculate_center(_units, _center_calculation_units)
@@ -154,7 +160,7 @@ func _center_calculation_targets(sum: Vector2, unit: Target) -> Vector2:
 	return sum + unit.position
 
 func _center_calculation_units(sum: Vector2, unit: RadarSignature) -> Vector2:
-	return sum + unit.future_position
+	return sum + unit.get_future_position()
 
 func cleanup_path_intersections() -> int:
 	var iterations := 0
@@ -178,20 +184,20 @@ func _swap_path_endpoints(i: int, j: int) -> bool:
 
 func _do_paths_intersect(i: int, j: int) -> bool:
 	return Geometry2D.segment_intersects_segment(
-		_units[i].future_position,
+		_units[i].get_future_position(),
 		_targets[i].position,
-		_units[j].future_position,
+		_units[j].get_future_position(),
 		_targets[j].position
 	) != null
-
-func snap_targets() -> void:
-	for i in _targets.size():
-		_targets[i] = get_nearest_unit(_targets[i].position)
 
 func get_nearest_unit(to: Vector2) -> RadarSignature:
 	var sorter := MouseSelection.distance_sorter.bind(to)
 	var units := mouse_selection.sorted_query(to, sorter, MAX_SELECTION_DISTANCE)
 	return null if units.is_empty() else units[0].get_radar_signature()
+
+func snap_targets() -> void:
+	for i in _targets.size():
+		_targets[i] = get_nearest_unit(_targets[i].position)
 
 func _snap_target_to_nearest_unit(i: int) -> void:
 	_targets[i] = get_nearest_unit(_targets[i].position)
@@ -204,8 +210,8 @@ func _draw() -> void:
 	#   ^^^^^^^^^^^ TODO: Use textures instead?
 
 func _axis_sorter_units(a: RadarSignature, b: RadarSignature) -> bool:
-	var a_offset := a.future_position - _center_units
-	var b_offset := b.future_position - _center_units
+	var a_offset := a.get_future_position() - _center_units
+	var b_offset := b.get_future_position() - _center_units
 	return a_offset.cross(_sort_axis) < b_offset.cross(_sort_axis)
 
 func _axis_sorter_targets(a: Target, b: Target) -> bool:
@@ -235,26 +241,30 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("select"):
 		var unit := get_nearest_unit(get_global_mouse_position() )
 		select_units( [unit] )
+	if event.is_action_pressed("lock units"):
+		toggle_units_movement_lock()
+	if event.is_action_released("stop"):
+		command_units_to_stop()
 	if action == Action.QUEUE_MOVE and event.is_action_released("queue move"):
 		command_units_to_stop()
-		end_curve()
+		stop_dragging()
 		command_units_to_move()
 		action = Action.NONE
 	if action == Action.MOVE and event.is_action_released("move"):
-		end_curve()
+		stop_dragging()
 		command_units_to_move()
 		action = Action.NONE
 	if action == Action.NONE and event.is_action_pressed("queue move"):
-		begin_curve(get_global_mouse_position() )
+		begin_dragging()
 		action = Action.QUEUE_MOVE
 	if action == Action.NONE and event.is_action_pressed("move"):
-		begin_curve(get_global_mouse_position() )
+		begin_dragging()
 		action = Action.MOVE
 	if action == Action.TARGET and event.is_action_released("target"):
-		end_curve()
+		stop_dragging()
 		command_units_to_target()
 		action = Action.NONE
 	if action == Action.NONE and event.is_action_pressed("target"):
-		begin_curve(get_global_mouse_position() )
+		begin_dragging()
 		action = Action.TARGET
 	_handle_formation_input(event)

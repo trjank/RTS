@@ -68,6 +68,7 @@ func destroy_map() -> void:
 
 func generate_map() -> void:
 	assert(map != null)
+	#
 	destroy_map()
 	_map_root = map.generate(world, rng, scenery, map_depth_limit)
 
@@ -154,10 +155,12 @@ func reset_teams() -> void:
 
 func _on_countdown_timer_timeout() -> void:
 	var start_error := start()
+	#
 	assert(start_error == StartError.OK)
 
 func _on_round_timer_timeout() -> void:
 	var can_stop := stop()
+	#
 	assert(can_stop)
 
 func _on_design_button_pressed() -> void:
@@ -170,5 +173,3 @@ func _on_fleet_container_button_pressed(slot: int) -> void:
 	if globals.client.fleet.get_ship(slot) == null:
 		return
 	var ship := me.spawn_ship(globals.client.fleet.get_ship(slot) )
-	ship.queue_waypoint(Target.new(Vector2(2000, 500)))
-	ship.queue_waypoint(Target.new(Vector2(-2000, -500)))
