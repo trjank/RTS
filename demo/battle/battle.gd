@@ -167,6 +167,8 @@ func _on_menu_button_pressed() -> void:
 	globals.main.state = Main.State.MAIN_MENU
 
 func _on_fleet_container_button_pressed(slot: int) -> void:
+	if globals.client.fleet.get_ship(slot) == null:
+		return
 	var ship := me.spawn_ship(globals.client.fleet.get_ship(slot) )
 	ship.queue_waypoint(Target.new(Vector2(2000, 500)))
 	ship.queue_waypoint(Target.new(Vector2(-2000, -500)))

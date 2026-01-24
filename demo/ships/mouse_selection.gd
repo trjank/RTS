@@ -11,6 +11,7 @@ var _rect := Rect2()
 
 static func z_sorter(a: Node2D, b: Node2D) -> bool:
 	assert(not a.z_as_relative and not b.z_as_relative)
+	#
 	return a.z_index > b.z_index
 
 static func distance_sorter(a: Node2D, b: Node2D, from: Vector2) -> bool:
@@ -48,8 +49,7 @@ func sorted_query(where: Vector2, sorter := z_sorter, max_distance := 0.0, max_r
 	# NOTE: Ensure collision_mask is correctly set!
 	var results := get_world_2d().direct_space_state.intersect_shape(query, max_results)
 	var nodes := results.map(_to_collider)
-	if sorter != null:
-		nodes.sort_custom(sorter)
+	nodes.sort_custom(sorter)
 	return nodes
 
 func _resize_hitbox() -> void:

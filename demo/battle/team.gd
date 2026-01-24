@@ -23,7 +23,7 @@ func _init(init_name := "", init_color := Color.WHITE) -> void:
 func is_alive() -> bool:
 	return players.any(is_player_alive)
 
-func get_alive_players() -> Array[Player]:
+func get_alive_players() -> Array:
 	return players.filter(is_player_alive)
 
 func register_kill(unit: Unit) -> void:
