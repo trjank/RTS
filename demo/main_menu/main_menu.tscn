@@ -109,6 +109,7 @@ text = "Settings
 "
 alignment = 0
 
+[connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/SingleplayerButton" to="." method="_on_singleplayer_button_pressed"]
 [connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/DesignButton" to="." method="_on_design_button_pressed"]
 [connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/FleetsButton" to="." method="_on_fleets_button_pressed"]
 [connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]

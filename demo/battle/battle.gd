@@ -66,6 +66,10 @@ func destroy_map() -> void:
 	_map_root = null
 	scenery.clear()
 
+func set_map(new_map:Map) -> void: 
+	destroy_map()
+	map = new_map
+	
 func generate_map() -> void:
 	assert(map != null)
 	destroy_map()

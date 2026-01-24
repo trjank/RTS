@@ -6,7 +6,8 @@ enum State {
 	DESIGN,
 	BATTLE,
 	FLEET,
-	SERVER_SELECTOR
+	SERVER_SELECTOR,
+	CAMPAIGN_LEVEL_SELECT
 }
 
 @export var nodes: Dictionary[State, Node]

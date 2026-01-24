@@ -32,7 +32,10 @@ func _on_fleets_button_pressed() -> void:
 
 func _on_settings_button_pressed() -> void:
 	globals.main.state = Main.State.SETTINGS
-
+	
+func _on_singleplayer_button_pressed():
+	globals.main.state = Main.State.CAMPAIGN_LEVEL_SELECT
+	pass # Re
 func _ready() -> void:
 	super._ready()
 	map = Map.new("Star")

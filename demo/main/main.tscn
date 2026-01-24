@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=11 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main/main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="2_67ri8"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://battle/battle.tscn" id="4_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://c60au813wrr5i" path="res://main_menu/main_menu.tscn" id="6_4dugh"]
 [ext_resource type="PackedScene" uid="uid://owpblejfs8ky" path="res://ships_screen/ships_screen.tscn" id="6_kfbq2"]
+[ext_resource type="PackedScene" uid="uid://8nud1f6r77iw" path="res://level_select.tscn" id="10_0i4oc"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]
 [ext_resource type="PackedScene" uid="uid://cxyn26sy7uyyr" path="res://settings/SettingsMenu.tscn" id="13_w48qg"]
 
@@ -17,7 +18,8 @@ nodes = {
 1: NodePath("SettingsMenu"),
 2: NodePath("Design"),
 3: NodePath("Battle"),
-4: NodePath("Fleets")
+4: NodePath("Fleets"),
+6: NodePath("LevelSelect")
 }
 camera = NodePath("Camera2D")
 world = NodePath("World")
@@ -63,3 +65,5 @@ speed = Vector3(4000, 4000, 1)
 [node name="Fleets" parent="." instance=ExtResource("6_kfbq2")]
 
 [node name="MainMenu" parent="." instance=ExtResource("6_4dugh")]
+
+[node name="LevelSelect" parent="." instance=ExtResource("10_0i4oc")]

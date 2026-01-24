@@ -1,0 +1,94 @@
+[gd_scene load_steps=7 format=3 uid="uid://8nud1f6r77iw"]
+
+[ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/main_theme.tres" id="1_apu6u"]
+[ext_resource type="Script" uid="uid://bwwm25621pc1e" path="res://level_select.gd" id="1_bv7n5"]
+[ext_resource type="StyleBox" uid="uid://b7i5b8v0uud2o" path="res://main_menu/main_menu_button.tres" id="2_bv7n5"]
+[ext_resource type="StyleBox" uid="uid://versdykqupxc" path="res://main_menu/main_menu_button_pressed.tres" id="3_lmhjs"]
+[ext_resource type="StyleBox" uid="uid://b3jy7248xbd3j" path="res://main_menu/main_menu_button_hover.tres" id="4_1iyaf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1wnlg"]
+content_margin_left = 50.0
+content_margin_top = 50.0
+content_margin_right = 50.0
+content_margin_bottom = 50.0
+bg_color = Color(0, 0, 0, 0.556863)
+
+[node name="LevelSelect" type="Node"]
+script = ExtResource("1_bv7n5")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Options" type="PanelContainer" parent="UI"]
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -337.0
+offset_top = -340.5
+offset_right = 337.0
+offset_bottom = 340.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_apu6u")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1wnlg")
+
+[node name="GridContainer" type="GridContainer" parent="UI/Options"]
+layout_mode = 2
+theme_override_constants/v_separation = 50
+
+[node name="Title" type="Label" parent="UI/Options/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 50
+text = "Level Select"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Options/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 25
+metadata/_edit_use_anchors_ = true
+
+[node name="MainMenu" type="Button" parent="UI/Options/GridContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("2_bv7n5")
+theme_override_styles/pressed = ExtResource("3_lmhjs")
+theme_override_styles/hover = ExtResource("4_1iyaf")
+text = "Back to main menu"
+alignment = 0
+
+[node name="Level1" type="Button" parent="UI/Options/GridContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("2_bv7n5")
+theme_override_styles/pressed = ExtResource("3_lmhjs")
+theme_override_styles/hover = ExtResource("4_1iyaf")
+text = "Level 1
+"
+alignment = 0
+
+[node name="Level2" type="Button" parent="UI/Options/GridContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("2_bv7n5")
+theme_override_styles/pressed = ExtResource("3_lmhjs")
+theme_override_styles/hover = ExtResource("4_1iyaf")
+text = "Level 2
+"
+alignment = 0
+
+[node name="World" type="Node2D" parent="."]
+
+[connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/MainMenu" to="." method="_on_main_menu_pressed"]
+[connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/Level1" to="." method="_on_level_1_pressed"]
+[connection signal="pressed" from="UI/Options/GridContainer/VBoxContainer/Level2" to="." method="_on_level_2_pressed"]
