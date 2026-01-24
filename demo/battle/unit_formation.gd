@@ -16,7 +16,7 @@ enum Formation {
 	PRECISE = 30
 }
 
-const MOUSE_CURSORS := {
+const MOUSE_CURSORS: Dictionary[Action, Resource] = {
 	Action.NONE: preload("res://icons/cursor_default.png"),
 	Action.MOVE: preload("res://icons/cursor_move.png"),
 	Action.QUEUE_MOVE: preload("res://icons/cursor_move.png"),
@@ -246,11 +246,11 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_released("stop"):
 		command_units_to_stop()
 	if action == Action.QUEUE_MOVE and event.is_action_released("queue move"):
-		command_units_to_stop()
 		stop_dragging()
 		command_units_to_move()
 		action = Action.NONE
 	if action == Action.MOVE and event.is_action_released("move"):
+		command_units_to_stop()
 		stop_dragging()
 		command_units_to_move()
 		action = Action.NONE
