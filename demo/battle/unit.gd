@@ -2,30 +2,37 @@ class_name Unit extends RigidBody2D
 
 signal warped(from: Vector2, to: Vector2)
 
-enum Behavior {
-	RAM,
-	FLEE,
-	TRACK,
-	KITE
+enum BehaviorFlags {
+	NONE = 0,
+	ATTACK = 1 << 0,
+	FLEE = 1 << 1,
+	TRACK = 1 << 2,
+	BROADSIDE = 1 << 3,
+	KITE = 1 << 4
 }
 
+const RAMMING_DISTANCE := 0.0
+const BIG_NUMBER := 10_000.0
 const MAX_NUM_WAYPOINTS := 5
 const MOVE_LAZINESS := 1.0
 const MIN_WARP_TURN_ANGLE := deg_to_rad(135.0)
+const BROADSIDE_CORRECTION_ANGLE := deg_to_rad(100.0)
 
 static var enable_warp_trails := true
 static var color_cloak := Color.GREEN
 static var color_selected := Color.RED
 
 static func create() -> Unit:
-	return preload("res://ships/unit.tscn").instantiate()
+	return preload("res://battle/unit.tscn").instantiate()
 
 # DO NOT EDIT PATH POINTS AT ALL!
 @export var path: Line2D
+@export var attack_path: Line2D
 @export var sprite: ResizeableSprite2D
 @export var texture: Texture:
 	set = set_texture
 @export var torque_limit_curve: Curve
+@export var broadside_curve: Curve
 
 var path_arc := 0.3
 var value := 0.0
@@ -33,25 +40,29 @@ var hp := 0.0:
 	set = set_hp
 var warp := 500.0
 var thrust := 10000.0
-var turnrate := 10.0
+var turnrate := 100.0
 var player_owner: Player
 var movement_locked := false
 var selected := true:
 	set = set_selected
-var warp_keep_momentum := true
+var warp_keep_momentum := false
 var kill_credit: Player
 
 var _stop_distance := 0.0
 var _stop_rotation := 0.0
+var _angle_to_waypoint := 0.0
 var _angle_to_target := 0.0
-var _direction_to_target: Vector2
+var _direction_to_waypoint := Vector2.UP
+var _direction_to_target := Vector2.UP
+var _distance_to_waypoint := 0.0
+var _distance_to_target := INF
 var _time_to_turn := 0.0
 var _time_to_move := 0.0
-var _distance_to_target := 0.0
 var _radar_signature := RadarSignature.new()
 var _waypoints: Array[Target] = []
-var _attack_position := Target.new()
-var _behavior := Behavior.RAM
+var _attack_position := Vector2.ZERO
+var _behavior_flags: int = BehaviorFlags.NONE
+var _internal_movement_locked := false
 
 func _ready() -> void:
 	_radar_signature._unit = self
@@ -63,7 +74,7 @@ func _exit_tree() -> void:
 	_radar_signature._state = RadarSignature.State.DEAD
 
 func is_moving() -> bool:
-	return not movement_locked and _time_to_turn <= path_arc * _time_to_move
+	return not movement_locked and not _internal_movement_locked and _time_to_turn <= path_arc * _time_to_move
 
 func is_turning() -> bool:
 	return absf(_angle_to_target) > absf(_stop_rotation)
@@ -72,10 +83,22 @@ func is_at_target() -> bool:
 	return _distance_to_target <= MOVE_LAZINESS * _stop_distance
 
 func can_warp() -> bool:
-	return _distance_to_target <= warp or MIN_WARP_TURN_ANGLE <= absf(_angle_to_target)
+	return (_distance_to_target <= warp and _waypoints.size() == 1) or MIN_WARP_TURN_ANGLE <= absf(_angle_to_target)
 
-func get_behavior() -> Behavior:
-	return _behavior
+func get_behavior_flags() -> int:
+	return _behavior_flags
+
+func get_distance_to_target() -> float:
+	return _distance_to_target
+
+func get_distance_to_waypoint() -> float:
+	return _distance_to_waypoint
+
+func get_global_direction_to_target() -> Vector2:
+	return _direction_to_target
+
+func get_global_direction_to_waypoint() -> Vector2:
+	return _direction_to_waypoint
 
 func get_speed() -> float:
 	return linear_velocity.length()
@@ -92,7 +115,7 @@ func get_global_forward_direction() -> Vector2:
 func get_waypoint(waypoint_num := 0) -> Target:
 	return _waypoints[waypoint_num]
 
-func get_attack_position() -> Target:
+func get_attack_position() -> Vector2:
 	return _attack_position
 
 func get_radar_signature() -> RadarSignature:
@@ -166,14 +189,13 @@ func queue_waypoint(waypoint: Target) -> void:
 	_add_path_point(waypoint)
 	_waypoints.push_back(waypoint)
 
-func pop_waypoint() -> Target:
+func pop_waypoint() -> void:
 	if _waypoints.is_empty():
-		return null
+		return
+	_behavior_flags = BehaviorFlags.NONE
+	_distance_to_target = INF
 	_remove_path_point(1)
-	return _waypoints.pop_front()
-
-func order_attack() -> void:
-	ram(get_waypoint() )
+	_waypoints.pop_front()
 
 func kill() -> void:
 	if kill_credit != null:
@@ -182,14 +204,9 @@ func kill() -> void:
 		player_owner.register_loss(self)
 	queue_free()
 
-func _physics_process(_dt: float) -> void:
-	_move_to_target()
-	_update_radar_signature()
-	_update_path()
-
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	assert(is_equal_approx(state.inverse_inertia, 1.0) )
-	#   Allows us to treat torque as acceleration ^^^
+	# We can treat torque as angular acceleration ^^^
 	if _waypoints.is_empty():
 		return
 	if is_turning():
@@ -199,34 +216,51 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 		_warp_to_attack_position(state)
 		state.apply_central_force(thrust * get_forward_direction() )
 
-func ram(target: Target) -> void:
-	_behavior = Behavior.RAM
-	_attack_position.position = target.position
+func _physics_process(_dt: float) -> void:
+	_move_to_target()
+	_update_radar_signature()
+	_update_path()
 
-func flee(target: Target, safe_distance: float) -> void:
-	var direction := (global_position - target.position).normalized()
-	_behavior = Behavior.FLEE
-	_attack_position.position = global_position + safe_distance * direction
+func order_attack() -> void:
+	attack()
 
-func track(target: Target) -> void:
-	var dt := _radar_signature.get_intersect_time(target)
-	if dt == Target.NO_INTERSECTION:
-		return ram(target)
-	_behavior = Behavior.TRACK
-	_attack_position.position = target.get_intersection_point(dt)
+## NOTE: This rams by default
+func attack(min_distance := RAMMING_DISTANCE) -> void:
+	_attack_position = get_waypoint().position
+	_behavior_flags |= BehaviorFlags.ATTACK
+	_internal_movement_locked = _distance_to_waypoint <= min_distance
 
-func circle(target: Target) -> void:
-	pass
+## NOTE: When safe_distance is reached, the current waypoint is popped
+func flee(safe_distance := BIG_NUMBER) -> void:
+	_attack_position = get_waypoint().position - safe_distance * _direction_to_waypoint
+	_behavior_flags |= BehaviorFlags.FLEE
+	_internal_movement_locked = false
 
-func kite(target: Target, min_distance: float, max_distance: float) -> void:
-	if _distance_to_target < min_distance:
-		flee(target, max_distance)
-		movement_locked = false
-	elif _distance_to_target > max_distance:
-		ram(target)
-		movement_locked = false
-	else:
-		movement_locked = true
+## NOTE: This is similar to attack(), but has better prediction for nukes and melee
+func track() -> void:
+	var dt := _radar_signature.get_intersect_time(get_waypoint() )
+	_behavior_flags |= BehaviorFlags.TRACK
+	if dt <= 0:
+		return attack()
+	_attack_position = get_waypoint().get_intersection_point(dt)
+	_internal_movement_locked = false
+
+func broadside(distance: float, approach_angle := deg_to_rad(45.0) ) -> void:
+	assert(approach_angle < deg_to_rad(90.0) )
+	#
+	_behavior_flags |= BehaviorFlags.BROADSIDE
+	#
+	var smooth_factor := broadside_curve.sample_baked(_distance_to_waypoint - distance)
+	approach_angle = -signf(_angle_to_waypoint) * lerpf(BROADSIDE_CORRECTION_ANGLE, approach_angle, smooth_factor)
+	_attack_position = global_position + BIG_NUMBER * _direction_to_waypoint.rotated(approach_angle)
+	_internal_movement_locked = false
+
+func kite(min_distance: float, max_distance: float) -> void:
+	_behavior_flags |= BehaviorFlags.KITE
+	#
+	if _distance_to_waypoint < min_distance:
+		return flee()
+	attack(max_distance)
 
 func _clear_path() -> void:
 	path.clear_points()
@@ -255,30 +289,46 @@ func _update_path() -> void:
 	path.set_point_position(0, global_position)
 	path.global_transform = Transform2D.IDENTITY
 
-func _calculate_trajectory() -> void:
-	var dx := _attack_position.position - global_position
-	_direction_to_target = dx.normalized()
-	_distance_to_target = dx.length()
-	_angle_to_target = get_global_forward_direction().angle_to(dx)
+func _update_attack_path() -> void:
+	if not attack_path.visible:
+		return
+	attack_path.set_point_position(0, global_position)
+	attack_path.set_point_position(1, _attack_position)
+	attack_path.global_transform = Transform2D.IDENTITY
+
+func _calculate_trajectory_to_target() -> void:
+	var to_target := _attack_position - global_position
+	_distance_to_target = to_target.length()
+	_direction_to_target = to_target.normalized()
+	_angle_to_target = get_global_forward_direction().angle_to(to_target)
+
+func _calculate_trajectory_to_waypoint() -> void:
+	var to_waypoint := get_waypoint().position - global_position
+	_distance_to_waypoint = to_waypoint.length()
+	_direction_to_waypoint = to_waypoint.normalized()
+	_angle_to_waypoint = get_global_forward_direction().angle_to(to_waypoint)
 	# NOTE: This comes from solving the differential equation:
-	#    x'' = -damp * x'
+	#    x'' = -damp * x' [This is how Godot calculates damp force]
 	# -> x' = v_0 * exp(-damp * t)
 	# -> x = x_0 + (v_0 / damp) * (1 - exp(-damp * t) )
 	# -> x = x_0 + (v_0 / damp) [as t goes to infinity]
 	# -> Δx = v_0 / damp
 	_stop_distance = linear_velocity.dot(_direction_to_target) / linear_damp
 	_stop_rotation = angular_velocity / angular_damp
-	# NOTE: This is just an approximation (but it works well in most cases)
+	# This is just an approximation (but it works well in most cases)
 	_time_to_move = _distance_to_target / get_max_speed()
 	_time_to_turn = absf(_angle_to_target) / get_max_angular_velocity()
 
 func _move_to_target() -> void:
 	if _waypoints.is_empty():
 		return
+	if not get_waypoint().is_alive() or is_at_target():
+		return pop_waypoint()
+	_calculate_trajectory_to_waypoint()
+	_behavior_flags = BehaviorFlags.NONE
 	order_attack()
-	_calculate_trajectory()
-	if is_at_target() or not get_waypoint().is_alive():
-		pop_waypoint()
+	_calculate_trajectory_to_target()
+	_update_attack_path()
 
 func _update_radar_signature() -> void:
 	if _radar_signature.get_state() == RadarSignature.State.CLOAKED:

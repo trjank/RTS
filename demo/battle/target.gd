@@ -27,9 +27,9 @@ func get_approx_intersect_time_from(from: Vector2, other_speed: float) -> float:
 
 func get_intersect_time_from(from: Vector2, other_speed: float) -> float:
 	# Need to apply the quadratic formula
-	var dx := from - position
+	var dx := position - from
 	var v_dot_dx := velocity.dot(dx)
 	var dspeed_sq := other_speed * other_speed - velocity.length_squared()
 	var discriminant := v_dot_dx * v_dot_dx + dspeed_sq * dx.length_squared()
-	# Return the positive time solution, if exists
-	return (v_dot_dx + sqrt(discriminant)) / dspeed_sq if discriminant < 0 else NO_INTERSECTION
+	# Return one of the solutions, if it exists
+	return (v_dot_dx + sqrt(discriminant) ) / dspeed_sq if 0 <= discriminant else NO_INTERSECTION

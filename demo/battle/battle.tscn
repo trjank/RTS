@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="2_wu24d"]
-[ext_resource type="Script" uid="uid://butv3bkqoil8c" path="res://ships/unit_formation.gd" id="2_xooj7"]
+[ext_resource type="Script" uid="uid://butv3bkqoil8c" path="res://battle/unit_formation.gd" id="2_xooj7"]
 [ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://ships/mouse_selection.tscn" id="3_70s20"]
 [ext_resource type="Texture2D" uid="uid://x8g3f3sy4rf7" path="res://icons/move_marker.png" id="6_l1kiu"]
 
