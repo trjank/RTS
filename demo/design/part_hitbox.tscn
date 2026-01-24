@@ -6,6 +6,8 @@
 
 [node name="PartHitbox" type="StaticBody2D" node_paths=PackedStringArray("shape")]
 z_as_relative = false
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("1_ygxrn")
 shape = NodePath("CollisionShape2D")
 metadata/_custom_type_script = "uid://b1jcsb3ib2om2"

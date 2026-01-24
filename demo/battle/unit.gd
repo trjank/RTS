@@ -20,7 +20,7 @@ const BROADSIDE_CORRECTION_ANGLE := deg_to_rad(100.0)
 
 static var enable_warp_trails := true
 static var color_cloak := Color.GREEN
-static var color_selected := Color.RED
+static var color_selected := Color(1.0, 0.4, 0.4, 1.0)
 
 static func create() -> Unit:
 	return preload("res://battle/unit.tscn").instantiate()
@@ -43,7 +43,7 @@ var thrust := 10000.0
 var turnrate := 100.0
 var player_owner: Player
 var movement_locked := false
-var selected := true:
+var selected := false:
 	set = set_selected
 var warp_keep_momentum := false
 var kill_credit: Player
@@ -63,6 +63,10 @@ var _waypoints: Array[Target] = []
 var _attack_position := Vector2.ZERO
 var _behavior_flags: int = BehaviorFlags.NONE
 var _internal_movement_locked := false
+
+## NOTE: This is useful for Array.map
+static func to_radar_signature(unit: Unit) -> RadarSignature:
+	return unit.get_radar_signature()
 
 func _ready() -> void:
 	_radar_signature._unit = self
@@ -143,9 +147,9 @@ func set_selected(is_selected: bool) -> void:
 	selected = is_selected
 	update_ui()
 
-func set_target(new_target: Target) -> void:
+func set_target(new_target: Target) -> bool:
 	clear_waypoints()
-	queue_waypoint(new_target)
+	return queue_waypoint(new_target)
 
 func set_hp(new_hp: float) -> void:
 	hp = new_hp
@@ -162,6 +166,7 @@ func update_ui() -> void:
 	sprite.texture = texture
 	sprite.modulate = color_selected if selected else Color.WHITE
 	path.visible = selected
+	attack_path.visible = selected
 
 func cloak() -> void:
 	_radar_signature.state = RadarSignature.State.CLOAKED
@@ -175,19 +180,25 @@ func clear_waypoints() -> void:
 	_waypoints.clear()
 	_clear_path()
 
-func set_waypoint(waypoint: Target, i := 0) -> void:
-	if i < 0 or _waypoints.size() < i:
-		return
+func count_waypoints() -> int:
+	return _waypoints.size()
+
+## NOTE: i must be non-negative
+func set_waypoint(i: int, waypoint: Target) -> bool:
+	if waypoint == null or waypoint == self._radar_signature or i < 0 or _waypoints.size() <= i:
+		return false
 	_waypoints[i] = waypoint
 	_update_path_point(i + 1, waypoint)
+	return true
 
-func queue_waypoint(waypoint: Target) -> void:
-	if waypoint == null:
-		return
+func queue_waypoint(waypoint: Target) -> bool:
+	if waypoint == null or waypoint == self._radar_signature:
+		return false
 	if MAX_NUM_WAYPOINTS <= _waypoints.size():
-		return set_waypoint(waypoint, _waypoints.size() - 1)
+		return set_waypoint(_waypoints.size() - 1, waypoint)
 	_add_path_point(waypoint)
 	_waypoints.push_back(waypoint)
+	return true
 
 func pop_waypoint() -> void:
 	if _waypoints.is_empty():
@@ -226,20 +237,23 @@ func order_attack() -> void:
 
 ## NOTE: This rams by default
 func attack(min_distance := RAMMING_DISTANCE) -> void:
-	_attack_position = get_waypoint().position
 	_behavior_flags |= BehaviorFlags.ATTACK
+	#
+	_attack_position = get_waypoint().position
 	_internal_movement_locked = _distance_to_waypoint <= min_distance
 
 ## NOTE: When safe_distance is reached, the current waypoint is popped
 func flee(safe_distance := BIG_NUMBER) -> void:
-	_attack_position = get_waypoint().position - safe_distance * _direction_to_waypoint
 	_behavior_flags |= BehaviorFlags.FLEE
+	#
+	_attack_position = get_waypoint().position - safe_distance * _direction_to_waypoint
 	_internal_movement_locked = false
 
 ## NOTE: This is similar to attack(), but has better prediction for nukes and melee
 func track() -> void:
-	var dt := _radar_signature.get_intersect_time(get_waypoint() )
 	_behavior_flags |= BehaviorFlags.TRACK
+	#
+	var dt := _radar_signature.get_intersect_time(get_waypoint() )
 	if dt <= 0:
 		return attack()
 	_attack_position = get_waypoint().get_intersection_point(dt)

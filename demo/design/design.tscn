@@ -133,6 +133,8 @@ text = "Test it out!"
 
 [node name="MouseSelection" parent="World" instance=ExtResource("13_r41aq")]
 z_index = 1000
+collision_layer = 2
+collision_mask = 2
 color = Color(0.63, 0.63, 0.63, 0.5882353)
 
 [node name="Grid" type="Sprite2D" parent="World"]

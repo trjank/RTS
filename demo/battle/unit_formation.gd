@@ -1,5 +1,14 @@
 class_name UnitFormation extends Path2D
 
+signal formation_changed(new_formation: Formation)
+signal action_changed(new_action: Action)
+
+enum Action {
+	NONE,
+	MOVE,
+	QUEUE_MOVE,
+	TARGET
+}
 enum Formation {
 	LINE = 2,
 	V = 3,
@@ -7,151 +16,245 @@ enum Formation {
 	PRECISE = 30
 }
 
+const MOUSE_CURSORS := {
+	Action.NONE: preload("res://icons/cursor_default.png"),
+	Action.MOVE: preload("res://icons/cursor_move.png"),
+	Action.QUEUE_MOVE: preload("res://icons/cursor_move.png"),
+	Action.TARGET: preload("res://icons/cursor_target.png")
+}
+const MOUSE_CURSOR_CENTER := Vector2(16.0, 16.0)
+const MAX_SELECTION_DISTANCE := 100.0
 const MAX_CLEANUP_ITERATIONS := 10
+# NOTE: These are used in move_curve()
 const UNSTABLE_CURVE_LENGTH := 0.1
-const PREVENT_DIV_ZERO := 0.001
+const NO_DIVIDE_ZERO := 0.001
 
-@export var formation := Formation.LINE
+@export var draw_curve := true
+@export var curve_draw_width := 2.0
+@export var curve_draw_color := Color.RED
 @export var target_draw_size := 100.0
 @export var target_draw_color := Color.WHITE
+@export var mouse_selection: MouseSelection
 
-var targets: Array[Target] = []
-var units: Array[RadarSignature] = []
-var search_shape := CircleShape2D.new()
+var action := Action.NONE:
+	set = set_action
+var formation := Formation.LINE:
+	set = set_formation
 
+var _targets: Array[Target] = []
+var _units: Array[RadarSignature] = []
 var _sort_axis := Vector2.RIGHT
 var _center_targets := Vector2.ZERO
 var _center_units := Vector2.ZERO
 
-static func is_unit_locked(unit: RadarSignature) -> bool:
+func _ready() -> void:
+	set_process(false)
+
+func is_dragging() -> bool:
+	return is_processing()
+
+func get_unit(i: int) -> RadarSignature:
+	return _units[i]
+
+func get_target(i: int) -> Target:
+	return _targets[i]
+
+func set_action(new_action: Action) -> void:
+	action = new_action
+	action_changed.emit(action)
+	Input.set_custom_mouse_cursor(MOUSE_CURSORS[action], Input.CURSOR_ARROW, MOUSE_CURSOR_CENTER)
+
+func set_formation(new_formation: Formation) -> void:
+	# NOTE: This prevents bad integer casts from causing errors
+	formation = maxi(new_formation, Formation.LINE) as Formation
+	formation_changed.emit(formation)
+
+func count_locked_units() -> int:
+	return _units.filter(_is_unit_locked).size()
+
+func _is_unit_locked(unit: RadarSignature) -> bool:
 	return unit.is_alive() and unit.as_unit().movement_locked
 
-# NOTE: Pass this function to command_units (you may need to bind lock_units)
-static func movement_lock_command(unit: RadarSignature, _target: Target, lock_units := true) -> void:
-	unit.as_unit().movement_locked = lock_units
+func _command_unit(num_failed: int, i: int, f: Callable) -> int:
+	var unit := _units[i]
+	var target := _targets[i]
+	return num_failed + int(f.call(unit, target) == false) if unit.is_alive() else num_failed
 
-# NOTE: Pass this function to command_units
-static func target_command(unit: RadarSignature, target: Target) -> void:
-	unit.as_unit().target(target)
-
-# NOTE: Pass this function to command_units
-static func move_command(unit: RadarSignature, target: Target) -> void:
-	unit.as_unit().queue_waypoint(target)
-
-func command_units(command: Callable) -> void:
-	assert(units.size() == targets.size() )
+func command_units(f: Callable) -> int:
+	assert(_units.size() == _targets.size() )
 	#
-	for i in units.size():
-		if units[i].is_alive():
-			command.call(units[i], targets[i])
+	return range(_units.size() ).reduce(_command_unit.bind(f), 0)
+
+func command_units_to_stop() -> void:
+	return command_units(func (unit: RadarSignature, __: Target) -> void: unit.as_unit().clear_waypoints() )
+
+func command_units_to_move() -> int:
+	return command_units(func (unit: RadarSignature, target: Target) -> bool: return unit.as_unit().queue_waypoint(target) )
+
+func command_units_to_target() -> int:
+	return command_units(func (unit: RadarSignature, target: Target) -> bool: return unit.as_unit().set_target(target) )
+
+func set_units_selected(selected: bool) -> void:
+	command_units(func (unit: RadarSignature, __: Target) -> void: unit.as_unit().selected = selected)
+
+func set_units_movement_lock(lock: bool) -> void:
+	command_units(func (unit: RadarSignature, __: Target) -> void: unit.as_unit().movement_locked = lock)
 
 func toggle_units_movement_lock(threshold := 0.5) -> void:
 	assert(0.0 <= threshold and threshold <= 1.0)
 	#
-	var num_locked := units.filter(is_unit_locked).size()
-	var lock_units := num_locked <= threshold * units.size()
-	command_units(movement_lock_command.bind(lock_units) )
+	set_units_movement_lock(count_locked_units() <= threshold * _units.size() )
+
+func select_units(selection: Array) -> void:
+	if null in selection:
+		selection = []
+	set_units_selected(false)
+	_units.assign(selection)
+	_targets.resize(_units.size() )
+	set_units_selected(true)
+
+func begin_dragging() -> void:
+	begin_curve(get_global_mouse_position() )
+	set_process(true)
+
+func stop_dragging() -> void:
+	set_process(false)
 
 func begin_curve(start: Vector2) -> void:
 	curve.clear_points()
-	targets.clear()
 	for i in int(formation):
 		curve.add_point(start)
-	for i in units.size():
-		targets.push_back(Target.new(start) )
+	for i in _targets.size():
+		_targets[i] = Target.new(start)
 
 func move_curve(new_endpoint: Vector2) -> void:
 	var length := curve.get_baked_length()
 	curve.set_point_position(-1, new_endpoint)
 	if length <= UNSTABLE_CURVE_LENGTH:
 		return
-	var targets_step := length / (targets.size() - 1 + PREVENT_DIV_ZERO)
+	var targets_step := length / (_targets.size() - 1 + NO_DIVIDE_ZERO)
 	var segment_length := length / (curve.point_count - 1)
 	for i in range(1, curve.point_count - 1):
-		curve.set_point_position(i, curve.sample_baked(i * segment_length))
-	for i in targets.size():
-		targets[i].position = curve.sample_baked(i * targets_step)
+		curve.set_point_position(i, curve.sample_baked(i * segment_length) )
+	for i in _targets.size():
+		_targets[i].position = curve.sample_baked(i * targets_step)
 
 func end_curve() -> void:
-	calculate_center_units()
-	calculate_center_targets()
+	_center_units = calculate_center(_units, _center_calculation_units)
+	_center_targets = calculate_center(_targets, _center_calculation_targets)
 	_sort_axis = _center_targets - _center_units
-	units.sort_custom(unit_axis_sorter)
-	targets.sort_custom(target_axis_sorter)
+	_units.sort_custom(_axis_sorter_units)
+	_targets.sort_custom(_axis_sorter_targets)
 	cleanup_path_intersections()
 
-func paths_intersect(i: int, j: int) -> bool:
-	return Geometry2D.segment_intersects_segment(
-		units[i].future_position,
-		targets[i].position,
-		units[j].future_position,
-		targets[j].position
-	)
+func calculate_center(objects: Array, calculation: Callable) -> Vector2:
+	return objects.reduce(calculation, Vector2.ZERO) / objects.size()
 
-func _swap_path_endpoints(i: int, j: int) -> bool:
-	if not paths_intersect(i, j):
-		return false
-	var temp := targets[i]
-	targets[i] = targets[j]
-	targets[j] = temp
-	return true
+func _center_calculation_targets(sum: Vector2, unit: Target) -> Vector2:
+	return sum + unit.position
 
-func _path_cleanup_iteration() -> bool:
+func _center_calculation_units(sum: Vector2, unit: RadarSignature) -> Vector2:
+	return sum + unit.future_position
+
+func cleanup_path_intersections() -> int:
+	var iterations := 0
+	while iterations < MAX_CLEANUP_ITERATIONS and _try_to_swap():
+		iterations += 1
+	return iterations
+
+func _try_to_swap() -> bool:
 	var swapped := false
-	for i in targets.size() - 1:
+	for i in _targets.size() - 1:
 		swapped = swapped or _swap_path_endpoints(i, i + 1)
 	return swapped
 
-func cleanup_path_intersections() -> int:
-	var swapped := true
-	var iteration := 0
-	while swapped and iteration < MAX_CLEANUP_ITERATIONS:
-		swapped = _path_cleanup_iteration()
-		iteration += 1
-	return iteration
+func _swap_path_endpoints(i: int, j: int) -> bool:
+	if not _do_paths_intersect(i, j):
+		return false
+	var temp := _targets[i]
+	_targets[i] = _targets[j]
+	_targets[j] = temp
+	return true
+
+func _do_paths_intersect(i: int, j: int) -> bool:
+	return Geometry2D.segment_intersects_segment(
+		_units[i].future_position,
+		_targets[i].position,
+		_units[j].future_position,
+		_targets[j].position
+	) != null
 
 func snap_targets() -> void:
-	for i in targets.size():
-		var nearest := get_nearest_unit(targets[i].position, 0)
-		if nearest != null:
-			targets[i] = nearest.get_radar_signature()
+	for i in _targets.size():
+		_targets[i] = get_nearest_unit(_targets[i].position)
 
-func get_nearest_unit(from_position: Vector2, collision_mask: int) -> Unit:
-	assert(search_shape.radius > 0)
-	#
-	var physics := get_world_2d().direct_space_state
-	var query := PhysicsShapeQueryParameters2D.new()
-	query.collision_mask = collision_mask
-	query.shape = search_shape
-	query.transform = Transform2D(0.0, from_position)
-	var colliders := physics.intersect_shape(query, 1)
-	return null if colliders.is_empty() else (colliders[0].collider as Unit)
+func get_nearest_unit(to: Vector2) -> RadarSignature:
+	var sorter := MouseSelection.distance_sorter.bind(to)
+	var units := mouse_selection.sorted_query(to, sorter, MAX_SELECTION_DISTANCE)
+	return null if units.is_empty() else units[0].get_radar_signature()
 
-func _center_calculation(sum: Vector2, unit: RadarSignature) -> Vector2:
-	# NOTE: You can factor in mass here, but it is unecessary for most situations
-	return sum + unit.future_position
+func _snap_target_to_nearest_unit(i: int) -> void:
+	_targets[i] = get_nearest_unit(_targets[i].position)
 
 func _draw() -> void:
-	for target in targets:
+	if draw_curve:
+		draw_polyline(curve.get_baked_points(), curve_draw_color, curve_draw_width)
+	for target in _targets:
 		draw_circle(target.position, target_draw_size, target_draw_color)
+	#   ^^^^^^^^^^^ TODO: Use textures instead?
 
-func calculate_center_units() -> void:
-	_center_units = units.reduce(_center_calculation, Vector2.ZERO) / units.size()
-
-func calculate_center_targets() -> void:
-	_center_targets = 0.5 * (curve.sample_baked(0.33) + curve.sample_baked(0.66) )
-
-func unit_axis_sorter(a: RadarSignature, b: RadarSignature) -> bool:
+func _axis_sorter_units(a: RadarSignature, b: RadarSignature) -> bool:
 	var a_offset := a.future_position - _center_units
 	var b_offset := b.future_position - _center_units
 	return a_offset.cross(_sort_axis) < b_offset.cross(_sort_axis)
 
-func target_axis_sorter(a: Target, b: Target) -> bool:
+func _axis_sorter_targets(a: Target, b: Target) -> bool:
 	var a_offset := a.position - _center_targets
 	var b_offset := b.position - _center_targets
 	return a_offset.cross(_sort_axis) < b_offset.cross(_sort_axis)
 
 func _on_mouse_selection_selected(bodies: Array[Node2D], _rect: Rect2) -> void:
-	#deselect
-	units.clear()
-	#select
+	select_units(bodies.map(Unit.to_radar_signature) )
+
+func _process(_dt: float) -> void:
+	move_curve(get_global_mouse_position() )
+
+func _handle_formation_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		return
+	if event.is_action_pressed("line formation"):
+		formation = Formation.LINE
+	elif event.is_action_pressed("v formation"):
+		formation = Formation.V
+	elif event.is_action_pressed("smooth formation"):
+		formation = Formation.SMOOTH
+	elif event.is_action_pressed("precise formation"):
+		formation = Formation.PRECISE
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("select"):
+		var unit := get_nearest_unit(get_global_mouse_position() )
+		select_units( [unit] )
+	if action == Action.QUEUE_MOVE and event.is_action_released("queue move"):
+		command_units_to_stop()
+		end_curve()
+		command_units_to_move()
+		action = Action.NONE
+	if action == Action.MOVE and event.is_action_released("move"):
+		end_curve()
+		command_units_to_move()
+		action = Action.NONE
+	if action == Action.NONE and event.is_action_pressed("queue move"):
+		begin_curve(get_global_mouse_position() )
+		action = Action.QUEUE_MOVE
+	if action == Action.NONE and event.is_action_pressed("move"):
+		begin_curve(get_global_mouse_position() )
+		action = Action.MOVE
+	if action == Action.TARGET and event.is_action_released("target"):
+		end_curve()
+		command_units_to_target()
+		action = Action.NONE
+	if action == Action.NONE and event.is_action_pressed("target"):
+		begin_curve(get_global_mouse_position() )
+		action = Action.TARGET
+	_handle_formation_input(event)

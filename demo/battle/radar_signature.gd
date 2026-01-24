@@ -11,6 +11,10 @@ var future_position := Vector2.ZERO
 var _state := State.DEAD
 var _unit: Unit
 
+## NOTE: This is useful for Array.map
+static func to_unit(radar_signature: RadarSignature) -> Unit:
+	return radar_signature.as_unit() 
+
 func get_state() -> State:
 	return _state
 
@@ -19,4 +23,5 @@ func is_alive() -> bool:
 
 func as_unit() -> Unit:
 	assert(_state != State.DEAD)
+	#
 	return _unit

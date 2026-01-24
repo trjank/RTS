@@ -15,7 +15,7 @@ static func z_sorter(a: Node2D, b: Node2D) -> bool:
 	return a.z_index > b.z_index
 
 static func distance_sorter(a: Node2D, b: Node2D, from: Vector2) -> bool:
-	return a.global_position.distance_squared_to(from) > b.global_position.distance_squared_to(from)
+	return a.global_position.distance_squared_to(from) < b.global_position.distance_squared_to(from)
 
 func _ready() -> void:
 	_rect.size = Vector2.ZERO
@@ -41,7 +41,7 @@ func _to_collider(result: Dictionary) -> Node2D:
 func sorted_query(where: Vector2, sorter := z_sorter, max_distance := 0.0, max_results := 32) -> Array:
 	var query := PhysicsShapeQueryParameters2D.new()
 	var shape := CircleShape2D.new()
-	# A circle should be sufficient for most applications
+	# TODO: Reuse shape?
 	query.transform = Transform2D(0.0, where)
 	query.collision_mask = collision_mask
 	query.shape = shape
