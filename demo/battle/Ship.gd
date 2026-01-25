@@ -1,5 +1,7 @@
 class_name Ship extends Unit
 
+static var ui_scale_z_curve := preload("res://battle/curve_camera_z_ui_scale.tres")
+
 @export var bar_hp: PipBar
 @export var bar_shield: PipBar
 @export var bar_energy: PipBar
@@ -38,16 +40,22 @@ func set_data(new_data: ShipData) -> void:
 	for part in part_nodes.get_children():
 		part.queue_free()
 	if data == null:
-		return
+		return clear_stats()
 	for ship_part in data.node_parts:
 		_create_part_node(ship_part)
 	texture = data.get_texture()
 	size = Grid.TILE_SIZE * data.get_ship_rect().size
+	reset_stats()
+
+func clear_stats() -> void:
+	thrust = 0.0
+	mass = 1.0
 
 func reset_stats() -> void:
 	if data == null:
 		return
-	# TODO
+	thrust = data.thrust
+	mass = data.mass
 
 func _create_part_node(ship_part: ShipDataPart) -> void:
 	assert(ship_part.get_data().becomes_node_on_ship() )
@@ -86,6 +94,7 @@ func update_behavior_indicator() -> void:
 func _process(_dt: float) -> void:
 	update_behavior_indicator()
 	always_upright.global_rotation = 0.0
+	always_upright.global_scale = Vector2.ONE * ui_scale_z_curve.sample_baked(globals.main.camera.z)
 	#bar_hp.value = hp
 	#bar_shield.value = shield
 	#bar_energy.value = energy

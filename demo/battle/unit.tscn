@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://dt0p75hngjhet"]
 
 [ext_resource type="Script" uid="uid://3tjt6gih8io4" path="res://battle/unit.gd" id="1_fynol"]
-[ext_resource type="Curve" uid="uid://b7qyd7arpaaeg" path="res://battle/torque_limit_curve.tres" id="2_7uomk"]
+[ext_resource type="Curve" uid="uid://b7qyd7arpaaeg" path="res://battle/curve_torque_limit.tres" id="2_7uomk"]
 [ext_resource type="Texture2D" uid="uid://xmt7t8to3f6j" path="res://icons/texture_not_found.png" id="2_kf62j"]
 [ext_resource type="Script" uid="uid://c1dmiob7cvmpw" path="res://map/resizeable_sprite_2d.gd" id="2_puhrm"]
-[ext_resource type="Curve" uid="uid://ug5bfatr3v6x" path="res://battle/broadside_curve.tres" id="3_01nh1"]
+[ext_resource type="Curve" uid="uid://ug5bfatr3v6x" path="res://battle/curve_broadside.tres" id="3_01nh1"]
 [ext_resource type="Texture2D" uid="uid://doivo757q2pdj" path="res://icons/unit_path.png" id="4_kf62j"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kf62j"]

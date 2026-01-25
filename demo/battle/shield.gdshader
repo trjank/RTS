@@ -1,5 +1,7 @@
 shader_type canvas_item;
 
+// TODO: Use per-instance parameters
+
 uniform sampler2D noise: repeat_enable;
 uniform float animation_speed;
 uniform vec2 size = vec2(2.0, 1.0);

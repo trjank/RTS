@@ -9,6 +9,6 @@ trail = NodePath("Trail")
 metadata/_custom_type_script = "uid://cppt8clgthcoh"
 
 [node name="Trail" type="Sprite2D" parent="."]
-position = Vector2(-32, 0)
+position = Vector2(-64, 0)
 texture = ExtResource("2_nlv1p")
 centered = false

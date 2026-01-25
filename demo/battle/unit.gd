@@ -39,7 +39,7 @@ var value := 0.0
 var hp := 0.0:
 	set = set_hp
 var warp := 500.0
-var thrust := 10000.0
+var thrust := 0.0
 var turnrate := 100.0
 var player_owner: Player
 var movement_locked := false

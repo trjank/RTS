@@ -1,3 +1,4 @@
+@tool
 class_name Thruster extends Part
 
 @export var trail: Sprite2D
