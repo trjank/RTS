@@ -172,4 +172,4 @@ func _on_menu_button_pressed() -> void:
 func _on_fleet_container_button_pressed(slot: int) -> void:
 	if globals.client.fleet.get_ship(slot) == null:
 		return
-	var ship := me.spawn_ship(globals.client.fleet.get_ship(slot) )
+	me.spawn_ship(globals.client.fleet.get_ship(slot) )

@@ -43,6 +43,8 @@ var thrust := 10000.0
 var turnrate := 100.0
 var player_owner: Player
 var movement_locked := false
+var size := Vector2.ZERO:
+	set = set_size
 var selected := false:
 	set = set_selected
 var warp_keep_momentum := false
@@ -142,6 +144,10 @@ func get_max_angular_velocity() -> float:
 	# -> |v_max| = turnrate / angular_damp
 	return turnrate / angular_damp
 
+func set_size(new_size: Vector2) -> void:
+	size = new_size
+	update_ui()
+
 func set_texture(new_texture: Texture) -> void:
 	texture = new_texture
 	update_ui()
@@ -167,6 +173,7 @@ func update_ui() -> void:
 	if not is_node_ready():
 		return
 	sprite.texture = texture
+	sprite.size = size
 	sprite.modulate = color_selected if selected else Color.WHITE
 	path.visible = selected
 	attack_path.visible = selected
@@ -218,23 +225,6 @@ func kill() -> void:
 	if player_owner != null:
 		player_owner.register_loss(self)
 	queue_free()
-
-func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
-	assert(is_equal_approx(state.inverse_inertia, 1.0) )
-	# We can treat torque as angular acceleration ^^^
-	if _waypoints.is_empty():
-		return
-	if is_turning():
-		var torque := minf(turnrate, get_torque_limit() )
-		state.apply_torque(signf(_angle_to_target) * torque)
-	if is_moving():
-		_warp_to_attack_position(state)
-		state.apply_central_force(thrust * get_forward_direction() )
-
-func _physics_process(_dt: float) -> void:
-	_move_to_target()
-	_update_radar_signature()
-	_update_path()
 
 func order_attack() -> void:
 	attack()
@@ -336,6 +326,23 @@ func _calculate_trajectory_to_waypoint() -> void:
 	# This is just an approximation (but it works well in most cases)
 	_time_to_move = _distance_to_target / get_max_speed()
 	_time_to_turn = absf(_angle_to_target) / get_max_angular_velocity()
+
+func _physics_process(_dt: float) -> void:
+	_move_to_target()
+	_update_radar_signature()
+	_update_path()
+
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+	assert(is_equal_approx(state.inverse_inertia, 1.0) )
+	# We can treat torque as angular acceleration ^^^
+	if _waypoints.is_empty():
+		return
+	if is_turning():
+		var torque := minf(turnrate, get_torque_limit() )
+		state.apply_torque(signf(_angle_to_target) * torque)
+	if is_moving():
+		_warp_to_attack_position(state)
+		state.apply_central_force(thrust * get_forward_direction() )
 
 func _move_to_target() -> void:
 	if _waypoints.is_empty():

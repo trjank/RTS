@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8uw3iqvl7agb"]
+
+[ext_resource type="Script" uid="uid://cppt8clgthcoh" path="res://parts/thruster.gd" id="1_766rx"]
+[ext_resource type="Texture2D" uid="uid://ctdiiy8g28x8p" path="res://icons/thruster_trail.png" id="2_nlv1p"]
+
+[node name="Thruster" type="Sprite2D" node_paths=PackedStringArray("trail")]
+script = ExtResource("1_766rx")
+trail = NodePath("Trail")
+metadata/_custom_type_script = "uid://cppt8clgthcoh"
+
+[node name="Trail" type="Sprite2D" parent="."]
+position = Vector2(-32, 0)
+texture = ExtResource("2_nlv1p")
+centered = false

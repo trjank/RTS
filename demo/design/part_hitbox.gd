@@ -47,6 +47,7 @@ func get_placement() -> PartImage.Placement:
 
 func set_placement(new_placement: PartImage.Placement) -> void:
 	rotation = (new_placement & 3) * (PI/2)
+	scale.x = -1.0 if PartImage.Placement.FLIP_ROT_0 <= new_placement else 1.0 
 
 func set_overlapping(is_overlapping: bool) -> void:
 	z_index = (PartData.MAX_Z_INDEX + 1) if is_overlapping else data.z_index

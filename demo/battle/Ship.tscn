@@ -36,18 +36,20 @@ gradient = SubResource("Gradient_h2j6u")
 width = 16
 height = 32
 
-[node name="Ship" node_paths=PackedStringArray("bar_hp", "bar_shield", "bar_energy", "always_upright", "behavior_indicator") instance=ExtResource("1_aujvj")]
+[node name="Ship" node_paths=PackedStringArray("bar_hp", "bar_shield", "bar_energy", "always_upright", "behavior_indicator", "part_nodes") instance=ExtResource("1_aujvj")]
 script = ExtResource("1_n6m1k")
 bar_hp = NodePath("AlwaysUpright/GridContainer/PipBarHP")
 bar_shield = NodePath("AlwaysUpright/GridContainer/PipBarShield")
 bar_energy = NodePath("AlwaysUpright/GridContainer/PipBarEnergy")
 always_upright = NodePath("AlwaysUpright")
 behavior_indicator = NodePath("AlwaysUpright/BehaviorIndicator")
+part_nodes = NodePath("PartNodes")
 
-[node name="WarpRadius" type="Sprite2D" parent="." index="3"]
+[node name="WarpRadius" type="Sprite2D" parent="." index="4"]
+visible = false
 texture = SubResource("GradientTexture2D_tetda")
 
-[node name="AlwaysUpright" type="Node2D" parent="." index="4"]
+[node name="AlwaysUpright" type="Node2D" parent="." index="5"]
 
 [node name="GridContainer" type="GridContainer" parent="AlwaysUpright" index="0"]
 anchors_preset = 7
@@ -124,3 +126,5 @@ offset_top = -386.0
 offset_right = 57.0
 offset_bottom = -346.0
 text = "TEST"
+
+[node name="PartNodes" type="Node2D" parent="." index="6"]

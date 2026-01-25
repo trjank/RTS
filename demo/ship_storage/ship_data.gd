@@ -51,6 +51,7 @@ var thrust := 0.0
 var turn_impulse := 0.0
 var part_counts: Dictionary[PartData, int]
 var center: Vector2
+var node_parts: Array[ShipDataPart] = []
 
 var _image: Image
 var _texture: ImageTexture
@@ -60,7 +61,6 @@ var _part_ids := Int32Grid.new(MIN_GRID_SIZE.x, MIN_GRID_SIZE.y)
 var _parts: Array[ShipDataPart] = [null]
 var _part_clusters := DisjointSets.new()
 var _bytes := StreamPeerBuffer.new()
-var _serialize_parts := true
 var _db: ShipDatabase
 var _id := -1
 
@@ -145,8 +145,10 @@ func clear() -> void:
 	_part_ids.fill(NULL_PART_ID)
 	_part_clusters.resize(1)
 	_part_clusters.reset()
+	_ship_bounds = Rect2i()
 	_bytes.clear()
 	_reset_stats()
+	node_parts.clear()
 	part_counts.clear()
 	ui_update.emit()
 
@@ -187,10 +189,6 @@ func for_each_part(f: Callable) -> void:
 	for part_id in range(1, _parts.size() ):
 		f.call(_parts[part_id] )
 
-func _connect_neighbor_to_part(neighbor: ShipDataPart, part_id: int) -> void:
-	if neighbor != null:
-		_part_clusters.union_sets(neighbor.get_id(), part_id)
-
 func _for_vertical_edge(x: int, y_start: int, y_end: int, f: Callable) -> void:
 	for y in range(y_start, y_end):
 		f.call(get_part_at(Vector2i(x, y) ) )
@@ -210,7 +208,7 @@ func for_each_neighbor(part_id: int, boundary_flags: int, f: Callable) -> void:
 	if boundary_flags & BoundaryFlags.BOTTOM:
 		_for_horizontal_edge(rect.end.y, rect.position.x, rect.end.x, f)
 
-func add_part(part_data: PartData, top_left_corner: Vector2i, placement := PartImage.Placement.ROT_0) -> PartError:
+func add_part(part_data: PartData, top_left_corner: Vector2i, placement := PartImage.Placement.ROT_0, serialize_part := true) -> PartError:
 	if part_data == null:
 		return PartError.IS_NULL
 	var boundary := part_data.get_boundary(placement)
@@ -221,43 +219,59 @@ func add_part(part_data: PartData, top_left_corner: Vector2i, placement := PartI
 		return PartError.OUT_OF_BOUNDS
 	if boundary != BoundaryFlags.NONE and not _part_ids.rect_equals(rect, NULL_PART_ID):
 		return PartError.OVERLAP
-	# NOTE: DisjointSets gives us a near O(1) way to update connectedness
 	var part_id := _part_clusters.create_set()
 	var part := ShipDataPart.new(part_id, part_data, rect, placement, boundary)
-	_ship_bounds = rect if is_empty() else _ship_bounds.merge(rect)
 	_parts.push_back(part)
-	_serialize_part(part_id)
+	if part_data.becomes_node_on_ship():
+		node_parts.push_back(part)
+	if serialize_part:
+		_serialize_part(part_id)
 	add_to_part_count(part_data)
-	# NOTE: We keep all connected parts in the same set using DisjointSets
-	# It is very fast to add parts to sets, but much harder to remove them
-	# This is one of the reasons there is no remove_part method
-	if boundary == BoundaryFlags.NONE:
-		_part_clusters.union_sets(part_id, NULL_PART_ID)
-	else:
-		_part_ids.fill_rect(rect, part_id)
-		for_each_neighbor(part_id, boundary, _connect_neighbor_to_part.bind(part_id) )
+	_connect_part_to_grid(part_id, boundary, rect)
 	return PartError.OK
+
+func _create_part(part_data: PartData, rect: Rect2i, placement: PartImage.Placement, boundary: int, serialize_part: bool) -> void:
+	var part_id := _part_clusters.create_set()
+	var part := ShipDataPart.new(part_id, part_data, rect, placement, boundary)
+	_parts.push_back(part)
+	if part_data.becomes_node_on_ship():
+		node_parts.push_back(part)
+	if serialize_part:
+		_serialize_part(part_id)
+	add_to_part_count(part_data)
+	_connect_part_to_grid(part_id, boundary, rect)
+
+func _connect_part_to_grid(part_id: int, boundary: int, rect: Rect2i) -> void:
+	_ship_bounds = rect if _ship_bounds.size == Vector2i.ZERO else _ship_bounds.merge(rect)
+	if boundary == BoundaryFlags.NONE:
+		return _part_clusters.union_sets(part_id, NULL_PART_ID)
+	_part_ids.fill_rect(rect, part_id)
+	# NOTE: DisjointSets gives us a near O(1) way to update connectedness
+	for_each_neighbor(part_id, boundary, _connect_neighbor_to_part.bind(part_id) )
+
+func _connect_neighbor_to_part(neighbor: ShipDataPart, part_id: int) -> void:
+	if neighbor != null:
+		_part_clusters.union_sets(neighbor.get_id(), part_id)
+	#                  ^^^^^^^^^^ VERY fast, but hard to undo (so no remove_part method)
 
 func serialize() -> PackedByteArray:
 	assert(_bytes.get_size() % BYTES_PER_PART == 0)
+	#
 	return _bytes.data_array
 
 func deserialize(from_bytes: PackedByteArray, part_manager: PartManager) -> int:
 	assert(part_manager != null)
+	#
 	if from_bytes.size() % BYTES_PER_PART != 0:
 		return PartError.INCORRECT_SIZE_BYTES
 	clear()
 	_bytes.data_array = from_bytes
 	var error: int = PartError.OK
-	_serialize_parts = false
 	while _bytes.get_available_bytes() > 0:
 		error |= _deserialize_part(part_manager)
-	_serialize_parts = true
 	return error
 
 func _serialize_part(part_id: int) -> void:
-	if not _serialize_parts:
-		return
 	var part := _parts[part_id]
 	_bytes.put_u16(part.get_rect().position.x)
 	_bytes.put_u16(part.get_rect().position.y)
@@ -271,7 +285,7 @@ func _deserialize_part(part_manager: PartManager) -> PartError:
 	var code := _bytes.data_array.slice(i, i + BYTES_UTF32_CODE).get_string_from_utf32()
 	var part := part_manager.get_part_from_code(code)
 	_bytes.seek(i + BYTES_UTF32_CODE)
-	return add_part(part, top_left_corner, placement)
+	return add_part(part, top_left_corner, placement, false)
 
 func generate_image() -> void:
 	var size := PartImage.TILE_SIZE * _ship_bounds.size

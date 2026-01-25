@@ -51,7 +51,7 @@ func _init(init_code: String, init_image_path: String, init_width := MIN_SIZE, i
 	image_path = init_image_path
 
 func becomes_node_on_ship() -> bool:
-	return false
+	return false # <- MUST BE CONSTANT
 
 func create_part() -> Part:
 	var part := Part.new()

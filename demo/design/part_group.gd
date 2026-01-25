@@ -53,6 +53,8 @@ func spawn_part_at_mouse(part_data: PartData) -> PartHitbox:
 
 func begin_dragging() -> void:
 	_mouse_offset = get_global_mouse_position() - global_position
+	# Need this because we are moving around internal nodes
+	grid._update_error(Grid.RECALCULATE_ERROR)
 	set_process(true)
 	dragging_started.emit()
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
