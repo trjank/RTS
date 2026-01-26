@@ -65,5 +65,6 @@ func reset_resources() -> void:
 func _physics_process(dt: float) -> void:
 	return
 	assert(alive)
+	#
 	alloy += team.alloy_per_sec * dt
 	energy += team.energy_per_sec * dt

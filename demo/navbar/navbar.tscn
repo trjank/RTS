@@ -1,23 +1,19 @@
-[gd_scene load_steps=11 format=3 uid="uid://bfjh4qh7fjvbt"]
+[gd_scene load_steps=9 format=3 uid="uid://bfjh4qh7fjvbt"]
 
 [ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/main_theme.tres" id="1_cnwya"]
 [ext_resource type="Script" uid="uid://cjge4l7tp8ps8" path="res://navbar/navbar.gd" id="1_rsvkd"]
 [ext_resource type="StyleBox" uid="uid://cggb6w05ajg1p" path="res://navigator_button.tres" id="2_70ivd"]
-[ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="3_e86oi"]
+[ext_resource type="Material" uid="uid://bpeukeun10hch" path="res://navbar/blur.tres" id="3_e86oi"]
 [ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navbar/navigator_button_hover.tres" id="3_eayf2"]
-[ext_resource type="Texture2D" uid="uid://dnnr5sj72yquv" path="res://icons/logo_64x64.png" id="5_e86oi"]
+[ext_resource type="Texture2D" uid="uid://cx7lh1wwowlht" path="res://icons/menu.png" id="4_e86oi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
 content_margin_left = 0.0
 content_margin_top = 0.0
-content_margin_right = 25.0
+content_margin_right = 0.0
 content_margin_bottom = 0.0
-bg_color = Color(0, 0, 0, 0.470588)
-border_width_bottom = 3
+bg_color = Color(0.400975, 0.23650001, 0.43, 0.19607843)
 border_color = Color(0, 0, 0, 1)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0jq38"]
-shader = ExtResource("3_e86oi")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jeq1j"]
 content_margin_left = 25.0
@@ -26,33 +22,23 @@ content_margin_right = 25.0
 content_margin_bottom = 15.0
 bg_color = Color(0, 0, 0, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fnf26"]
-content_margin_left = 20.0
-content_margin_top = 0.0
-content_margin_right = 20.0
-content_margin_bottom = 0.0
-bg_color = Color(0, 0, 0, 0)
-border_width_bottom = 5
-border_color = Color(0.772549, 0.611765, 0.85098, 1)
-
 [node name="Nagivator" type="PanelContainer"]
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 63.0
+offset_bottom = 94.0
 grow_horizontal = 2
 theme = ExtResource("1_cnwya")
 theme_override_styles/panel = SubResource("StyleBoxFlat_ajdbe")
 script = ExtResource("1_rsvkd")
 
-[node name="blur" type="Panel" parent="."]
-visible = false
-show_behind_parent = true
-material = SubResource("ShaderMaterial_0jq38")
+[node name="Blur" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0.019607844)
+material = ExtResource("3_e86oi")
 layout_mode = 2
-mouse_filter = 2
 
 [node name="HFlowContainer" type="HFlowContainer" parent="."]
 layout_mode = 2
+size_flags_vertical = 4
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 
@@ -63,13 +49,14 @@ theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 2
 theme_override_constants/h_separation = 20
+theme_override_constants/icon_max_width = 32
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_jeq1j")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_jeq1j")
 theme_override_styles/hover = SubResource("StyleBoxFlat_jeq1j")
 theme_override_styles/focus = SubResource("StyleBoxFlat_jeq1j")
 text = "Menu"
-icon = ExtResource("5_e86oi")
+icon = ExtResource("4_e86oi")
 
 [node name="CenterContainer" type="CenterContainer" parent="HFlowContainer"]
 layout_mode = 2
@@ -77,35 +64,42 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="DesignButton" type="Button" parent="HFlowContainer"]
+custom_minimum_size = Vector2(0, 95)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 25
 theme_override_styles/normal = ExtResource("2_70ivd")
 theme_override_styles/pressed = ExtResource("3_eayf2")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
+theme_override_styles/hover = ExtResource("3_eayf2")
 theme_override_styles/focus = ExtResource("3_eayf2")
 text = "Design"
 
 [node name="ShipsButton" type="Button" parent="HFlowContainer"]
+custom_minimum_size = Vector2(0, 95)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 25
 theme_override_styles/normal = ExtResource("2_70ivd")
 theme_override_styles/pressed = ExtResource("3_eayf2")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
+theme_override_styles/hover = ExtResource("3_eayf2")
 theme_override_styles/focus = ExtResource("3_eayf2")
 text = "Ships
 "
 
 [node name="BattleButton" type="Button" parent="HFlowContainer"]
+custom_minimum_size = Vector2(0, 95)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 25
 theme_override_styles/normal = ExtResource("2_70ivd")
 theme_override_styles/pressed = ExtResource("3_eayf2")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fnf26")
+theme_override_styles/hover = ExtResource("3_eayf2")
 theme_override_styles/focus = ExtResource("3_eayf2")
 text = "Battle"
+
+[node name="Control" type="Control" parent="HFlowContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
 
 [connection signal="pressed" from="HFlowContainer/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="pressed" from="HFlowContainer/DesignButton" to="." method="_on_design_button_pressed"]

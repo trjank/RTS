@@ -28,6 +28,7 @@ func create_projectile(from: Part, to: Target) -> void:
 func _create_laser(from: Vector2, from_ship: Ship, to: Target, chains_left: int) -> void:
 	if from == null or to == null or chains_left < 0:
 		return
+	# TODO: Reuse nodes?
 	var laser := Line2D.new()
 	laser.width = Grid.TILE_SIZE * display_width
 	#laser.texture = _image.get_texture()

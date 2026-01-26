@@ -74,6 +74,9 @@ func _create_part_node(ship_part: ShipDataPart) -> void:
 	part_nodes.add_child(part)
 	part._ship_init(ship_part, self)
 
+func get_nearest(_something: Callable) -> void:
+	pass
+
 func hit_shield(damage: float) -> float:
 	var new_shield := shield - damage
 	shield = new_shield

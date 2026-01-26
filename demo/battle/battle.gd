@@ -47,7 +47,6 @@ func _init() -> void:
 func _ready() -> void:
 	globals.client.fleet_changed.connect(fleet_container.set_fleet)
 	fleet_container.set_fleet(globals.client.fleet)
-	fleet_container.get_button(Fleet.CAPITAL_SHIP_SLOT).hide()
 	me = connect_player("dev")
 
 func are_teams_balanced() -> bool:

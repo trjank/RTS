@@ -1,7 +1,6 @@
-[gd_scene load_steps=17 format=3 uid="uid://dfjm11tydfbwt"]
+[gd_scene load_steps=15 format=3 uid="uid://dfjm11tydfbwt"]
 
 [ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/main_theme.tres" id="1_0c2qi"]
-[ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="1_tdel1"]
 [ext_resource type="Script" uid="uid://1ytf1odlubls" path="res://design/parts_container.gd" id="2_xb30u"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_l0dbo"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="5_rmcst"]
@@ -11,9 +10,6 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8jmok"]
 bg_color = Color(0, 0, 0, 0.784314)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0c2qi"]
-shader = ExtResource("1_tdel1")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_55ppu"]
 bg_color = Color(0.25490198, 0.29803923, 0.34117648, 0.39215687)
@@ -62,12 +58,6 @@ tabs = {
 }
 metadata/_custom_type_script = "uid://1ytf1odlubls"
 metadata/_edit_use_anchors_ = true
-
-[node name="blur" type="Panel" parent="."]
-visible = false
-show_behind_parent = true
-material = SubResource("ShaderMaterial_0c2qi")
-layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
