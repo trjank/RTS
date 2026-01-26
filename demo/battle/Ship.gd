@@ -1,5 +1,7 @@
 class_name Ship extends Unit
 
+signal target_changed(new_target: Target)
+
 static var ui_scale_z_curve := preload("res://battle/curve_camera_z_ui_scale.tres")
 
 @export var bar_hp: PipBar
@@ -13,6 +15,7 @@ var shield := 0.0:
 	set = set_shield
 var energy := 0.0:
 	set = set_energy
+var target: Target
 
 var _max_hp := 0.0
 var _max_shield := 0.0
@@ -26,6 +29,11 @@ var data: ShipData:
 
 func set_hp(new_hp: float) -> void:
 	super.set_hp(minf(new_hp, _max_hp) )
+
+func set_target(new_target: Target) -> bool:
+	target = new_target
+	target_changed.emit(target)
+	return true
 
 func set_shield(new_shield: float) -> void:
 	shield = clampf(new_shield, 0.0, _max_shield)

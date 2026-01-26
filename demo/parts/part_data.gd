@@ -44,6 +44,7 @@ var image_path: String:
 var _code: String
 var _size: Vector2i
 var _image: PartImage
+var _manager: PartManager
 
 func _init(init_code: String, init_image_path: String, init_width := MIN_SIZE, init_height := MIN_SIZE) -> void:
 	_code = init_code if init_code.length() == CODE_LENGTH else FALLBACK_CODE
@@ -57,6 +58,9 @@ func create_part() -> Part:
 	var part := Part.new()
 	part.data = self
 	return part
+
+func get_manager() -> PartManager:
+	return _manager
 
 func get_image() -> PartImage:
 	return _image

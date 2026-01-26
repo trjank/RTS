@@ -33,7 +33,16 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"width": TYPE_INT,
 	"height": TYPE_INT,
 	"z_index": TYPE_INT,
-	"image_path": TYPE_STRING
+	"image_path": TYPE_STRING,
+	# For WeaponModifierData below
+	"flat_range": TYPE_FLOAT,
+	"flat_energy": TYPE_FLOAT,
+	"flat_speed": TYPE_FLOAT,
+	"flat_cooldown": TYPE_FLOAT,
+	"multiplier_range": TYPE_FLOAT,
+	"multiplier_energy": TYPE_FLOAT,
+	"multiplier_speed": TYPE_FLOAT,
+	"multiplier_cooldown": TYPE_FLOAT
 }
 
 var part_sizes := PackedVector2Array()
@@ -75,6 +84,7 @@ func create_part(code: String, image_path: String, width: int, height: int, subt
 	var atlas_id := _parts.size()
 	_code_to_id[code] = atlas_id
 	_parts.push_back(part)
+	part._manager = self
 	part_created.emit(part)
 	return part
 
@@ -82,6 +92,7 @@ func load_part(code: String, properties: Dictionary) -> LoadError:
 	var subtype = properties.get("subtype", "")
 	var width: int = properties.get("width", PartData.MIN_SIZE)
 	var height: int = properties.get("height", PartData.MIN_SIZE)
+	#   ^^^^^^ These are all constant parameters, so we cannot use set
 	var image_path: String = properties.get("image_path", "")
 	var part := create_part(code, image_path, width, height, subtype)
 	if part == null:

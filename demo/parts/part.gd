@@ -6,6 +6,15 @@ var data: PartData:
 
 var _ship: Ship
 
+func get_ship() -> Ship:
+	return _ship
+
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_PARENTED or _ship == null:
+		return
+	push_warning("Ship part reparented")
+	_ship = null
+
 func set_data(new_data: PartData) -> void:
 	if data != null:
 		return push_error("Part.data is read only!")
