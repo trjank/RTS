@@ -13,7 +13,9 @@ static var subtypes: Dictionary[String, Callable] = {
 	"weapon": WeaponData.new,
 	"weapon_mount": WeaponMountData.new,
 	"weapon_modifier": WeaponModifierData.new,
-	"thruster": ThrusterData.new
+	"thruster": ThrusterData.new,
+	"laser": LaserData.new,
+	"bullet": BulletData.new
 }
 
 static func create_subtype(part_subtype: String, part_code: String, part_image_path: String, part_width := MIN_SIZE, part_height := MIN_SIZE) -> PartData:

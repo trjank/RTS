@@ -42,7 +42,14 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"multiplier_range": TYPE_FLOAT,
 	"multiplier_energy": TYPE_FLOAT,
 	"multiplier_speed": TYPE_FLOAT,
-	"multiplier_cooldown": TYPE_FLOAT
+	"multiplier_cooldown": TYPE_FLOAT,
+	# For LaserData below
+	"color": TYPE_COLOR,
+	"glow": TYPE_FLOAT,
+	"lifetime_sec": TYPE_FLOAT,
+	"max_chains": TYPE_INT,
+	"chain_multiplier": TYPE_FLOAT,
+	"display_width": TYPE_FLOAT
 }
 
 var part_sizes := PackedVector2Array()

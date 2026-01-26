@@ -119,6 +119,7 @@ size_flags_horizontal = 0
 tabs = {
 "armor": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Armor"),
 "energy": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Energy"),
+"hidden": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Hidden"),
 "movement": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Movement"),
 "weapons": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Weapons")
 }

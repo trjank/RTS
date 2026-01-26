@@ -31,6 +31,8 @@ func set_hp(new_hp: float) -> void:
 	super.set_hp(minf(new_hp, _max_hp) )
 
 func set_target(new_target: Target) -> bool:
+	if target == new_target:
+		return true
 	target = new_target
 	target_changed.emit(target)
 	return true

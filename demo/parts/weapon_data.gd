@@ -1,6 +1,11 @@
 class_name WeaponData extends PartData
 
-var projectile_code := "NULL"
+var projectile_code := "GPB1"
+
+func create_part() -> Part:
+	var weapon := Weapon.new()
+	weapon.data = self
+	return weapon
 
 func becomes_node_on_ship() -> bool:
 	return true # <- MUST BE CONSTANT

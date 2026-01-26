@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dfjm11tydfbwt"]
+[gd_scene load_steps=17 format=3 uid="uid://dfjm11tydfbwt"]
 
 [ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/main_theme.tres" id="1_0c2qi"]
 [ext_resource type="Shader" uid="uid://60fxvlsa2ptp" path="res://shaders/blur.gdshader" id="1_tdel1"]
@@ -40,6 +40,8 @@ content_margin_right = 30.0
 content_margin_bottom = 30.0
 bg_color = Color(0.255, 0.2975, 0.34, 1)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a14qr"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f44sc"]
 bg_color = Color(1, 1, 1, 0)
 
@@ -54,6 +56,7 @@ script = ExtResource("2_xb30u")
 tabs = {
 "armor": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Armor"),
 "energy": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Energy"),
+"hidden": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Hidden"),
 "movement": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Movement"),
 "weapons": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Weapons")
 }
@@ -79,16 +82,18 @@ theme_override_constants/icon_max_width = 32
 theme_override_styles/tab_unselected = SubResource("StyleBoxFlat_rrp5i")
 theme_override_styles/tab_hovered = SubResource("StyleBoxFlat_g5m8g")
 theme_override_styles/tab_selected = SubResource("StyleBoxFlat_xb30u")
+theme_override_styles/tab_disabled = SubResource("StyleBoxEmpty_a14qr")
 theme_override_styles/tab_focus = SubResource("StyleBoxFlat_rrp5i")
 theme_override_styles/button_pressed = SubResource("StyleBoxFlat_rrp5i")
 theme_override_styles/button_highlight = SubResource("StyleBoxFlat_rrp5i")
 current_tab = 0
 clip_tabs = false
-tab_count = 4
+tab_count = 5
 tab_0/icon = ExtResource("5_rmcst")
 tab_1/icon = ExtResource("4_l0dbo")
 tab_2/icon = ExtResource("6_okk5v")
 tab_3/icon = ExtResource("7_rrp5i")
+tab_4/disabled = true
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -134,5 +139,12 @@ layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 metadata/_tab_index = 3
+
+[node name="Hidden" type="HFlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+metadata/_tab_index = 4
 
 [connection signal="tab_changed" from="VBoxContainer/PanelContainer/TabBar" to="VBoxContainer/MarginContainer/ScrollContainer/PartTabs" method="_on_tab_bar_tab_changed"]
