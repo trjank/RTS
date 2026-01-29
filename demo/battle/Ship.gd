@@ -10,6 +10,7 @@ static var ui_scale_z_curve := preload("res://battle/curve_camera_z_ui_scale.tre
 @export var always_upright: Node2D
 @export var behavior_indicator: Label
 @export var part_nodes: Node2D
+@export var detection: Area2D
 
 var shield := 0.0:
 	set = set_shield
@@ -20,6 +21,7 @@ var target: Target
 var _max_hp := 0.0
 var _max_shield := 0.0
 var _max_energy := 0.0
+var _detection_cache := []
 
 static func create() -> Ship:
 	return preload("res://battle/ship.tscn").instantiate()
@@ -60,12 +62,15 @@ func set_data(new_data: ShipData) -> void:
 func clear_stats() -> void:
 	thrust = 0.0
 	mass = 1.0
+	hp = 1.0
 
 func reset_stats() -> void:
 	if data == null:
 		return
 	thrust = data.thrust
 	mass = data.mass
+	_max_hp = data.max_hp
+	hp = data.max_hp
 
 func _create_part_node(ship_part: ShipDataPart) -> void:
 	assert(ship_part.get_data().becomes_node_on_ship() )
@@ -74,8 +79,24 @@ func _create_part_node(ship_part: ShipDataPart) -> void:
 	part_nodes.add_child(part)
 	part._ship_init(ship_part, self)
 
-func get_nearest(_something: Callable) -> void:
-	pass
+func is_enemy(unit: Unit) -> bool:
+	return player_owner == null or unit.player_owner == null or player_owner.team != unit.player_owner.team
+
+func is_friend(unit: Unit) -> bool:
+	return unit != self and not is_enemy(unit)
+
+func _update_detection_cache() -> void:
+	_detection_cache = detection.get_overlapping_bodies()
+	_detection_cache.sort_custom(distance_sorter)
+
+func filter_nearest(predicate: Callable) -> Array:
+	_update_detection_cache()
+	return _detection_cache.filter(predicate)
+
+func get_nearest(predicate: Callable) -> Unit:
+	_update_detection_cache()
+	var i := _detection_cache.find_custom(predicate, 1)
+	return _detection_cache[i] if i != -1 else null
 
 func hit_shield(damage: float) -> float:
 	var new_shield := shield - damage
@@ -88,6 +109,9 @@ func hit(damage: float, from: Player = null, shield_penetration := 0.0) -> void:
 	var shield_damage := shield_penetration * damage
 	var shield_overkill := hit_shield(shield_damage)
 	super.hit(damage - shield_damage + shield_overkill, from)
+
+func distance_sorter(a: Node2D, b: Node2D) -> bool:
+	return a.global_position.distance_squared_to(global_position) < b.global_position.distance_squared_to(global_position)
 
 func update_behavior_indicator() -> void:
 	var behavior := get_behavior_flags()

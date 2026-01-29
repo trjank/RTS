@@ -169,6 +169,7 @@ func add_part_stats(part_data: PartData, count := 1) -> void:
 	cost           += count * part_data.cost
 	mass           += count * part_data.mass
 	turn_impulse   += count * part_data.turn_impulse
+	max_hp         += count * part_data.hp
 	max_warp       += count * part_data.warp
 	max_shield     += count * part_data.shield
 	max_energy     += count * part_data.energy

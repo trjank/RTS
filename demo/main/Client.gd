@@ -1,4 +1,4 @@
-class_name Client extends RefCounted
+class_name Client2 extends RefCounted
 
 signal fleet_changed(new_fleet: Fleet)
 

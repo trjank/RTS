@@ -8,7 +8,7 @@ const LOAD_LIMIT_SHIPS := 100
 const LOAD_LIMIT_FLEETS := 100
 
 var main: Main
-var client := Client.new()
+var client := Client2.new()
 var config := ConfigFile.new()
 var ship_db := ShipDatabase.new()
 var part_manager := PartManager.new()

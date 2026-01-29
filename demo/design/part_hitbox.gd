@@ -55,7 +55,7 @@ func set_overlapping(is_overlapping: bool) -> void:
 
 func set_data(new_data: PartData) -> void:
 	assert(new_data != null)
-	# This just wraps an instance of the Part class
+	#
 	if _part != null:
 		_part.queue_free()
 	data = new_data

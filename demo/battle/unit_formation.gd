@@ -7,7 +7,8 @@ enum Action {
 	NONE,
 	MOVE,
 	QUEUE_MOVE,
-	TARGET
+	TARGET,
+	SNAP_TARGET
 }
 enum Formation {
 	LINE = 2,
@@ -16,11 +17,19 @@ enum Formation {
 	PRECISE = 30
 }
 
-const MOUSE_CURSORS: Dictionary[Action, Resource] = {
+const MOUSE_CURSORS: Dictionary[Action, Texture2D] = {
 	Action.NONE: preload("res://icons/cursor_default.png"),
 	Action.MOVE: preload("res://icons/cursor_move.png"),
 	Action.QUEUE_MOVE: preload("res://icons/cursor_move.png"),
-	Action.TARGET: preload("res://icons/cursor_target.png")
+	Action.TARGET: preload("res://icons/cursor_target.png"),
+	Action.SNAP_TARGET: preload("res://icons/cursor_target.png")
+}
+const ICONS: Dictionary[Action, Texture2D] = {
+	Action.NONE: null,
+	Action.MOVE: preload("res://icons/formation_move.png"),
+	Action.QUEUE_MOVE: preload("res://icons/formation_move.png"),
+	Action.TARGET: preload("res://icons/formation_target.png"),
+	Action.SNAP_TARGET: preload("res://icons/formation_target.png")
 }
 const MOUSE_CURSOR_CENTER := Vector2(16.0, 16.0)
 const MAX_SELECTION_DISTANCE := 100.0
@@ -29,11 +38,9 @@ const MAX_CLEANUP_ITERATIONS := 10
 const UNSTABLE_CURVE_LENGTH := 0.1
 const NO_DIVIDE_ZERO := 0.001
 
-@export var draw_curve := true
+@export var draw_curve := false
 @export var curve_draw_width := 2.0
 @export var curve_draw_color := Color.WHITE
-@export var target_draw_size := 10.0
-@export var target_draw_color := Color.WHITE
 @export var mouse_selection: MouseSelection
 
 var action := Action.NONE:
@@ -124,6 +131,7 @@ func stop_dragging() -> void:
 	set_process(false)
 	end_curve()
 	mouse_selection.enable()
+	queue_redraw()
 
 func begin_curve(start: Vector2) -> void:
 	curve.clear_points()
@@ -131,6 +139,7 @@ func begin_curve(start: Vector2) -> void:
 		curve.add_point(start)
 	for i in _targets.size():
 		_targets[i] = Target.new(start)
+	queue_redraw()
 
 func move_curve(new_endpoint: Vector2) -> void:
 	var length := curve.get_baked_length()
@@ -198,16 +207,25 @@ func get_nearest_unit(to: Vector2) -> RadarSignature:
 func snap_targets() -> void:
 	for i in _targets.size():
 		_targets[i] = get_nearest_unit(_targets[i].position)
+	queue_redraw()
 
 func _snap_target_to_nearest_unit(i: int) -> void:
 	_targets[i] = get_nearest_unit(_targets[i].position)
 
+func _draw_target(target: Target) -> void:
+	if target == null:
+		return
+	var icon := ICONS[action]
+	draw_texture(icon, target.position - icon.get_size() / 2)
+
 func _draw() -> void:
+	if not is_dragging():
+		return
+	draw_set_transform_matrix(global_transform.affine_inverse() )
 	if draw_curve:
 		draw_polyline(curve.get_baked_points(), curve_draw_color, curve_draw_width)
 	for target in _targets:
-		draw_circle(target.position, target_draw_size, target_draw_color)
-	#   ^^^^^^^^^^^ TODO: Use textures instead?
+		_draw_target(target)
 
 func _axis_sorter_units(a: RadarSignature, b: RadarSignature) -> bool:
 	var a_offset := a.get_future_position() - _center_units
@@ -225,9 +243,45 @@ func _on_mouse_selection_selected(bodies: Array[Node2D], _rect: Rect2) -> void:
 func _process(_dt: float) -> void:
 	move_curve(get_global_mouse_position() )
 
+func _handle_target_input(event: InputEvent) -> void:
+	if action == Action.NONE and event.is_action_pressed("target"):
+		begin_dragging()
+		action = Action.TARGET
+	if action == Action.TARGET and event.is_action_released("target"):
+		stop_dragging()
+		command_units_to_target()
+		action = Action.NONE
+
+func _handle_snap_target_input(event: InputEvent) -> void:
+	if action == Action.NONE and event.is_action_pressed("snap target"):
+		begin_dragging()
+		action = Action.SNAP_TARGET
+	if action == Action.SNAP_TARGET and event.is_action_released("snap target"):
+		stop_dragging()
+		snap_targets()
+		command_units_to_target()
+		action = Action.NONE
+
+func _handle_move_input(event: InputEvent) -> void:
+	if action == Action.NONE and event.is_action_pressed("move"):
+		begin_dragging()
+		action = Action.MOVE
+	if action == Action.MOVE and event.is_action_released("move"):
+		command_units_to_stop()
+		stop_dragging()
+		command_units_to_move()
+		action = Action.NONE
+
+func _handle_queue_move_input(event: InputEvent) -> void:
+	if action == Action.NONE and event.is_action_pressed("queue move"):
+		begin_dragging()
+		action = Action.QUEUE_MOVE
+	if action == Action.QUEUE_MOVE and event.is_action_released("queue move"):
+		stop_dragging()
+		command_units_to_move()
+		action = Action.NONE
+
 func _handle_formation_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
-		return
 	if event.is_action_pressed("line formation"):
 		formation = Formation.LINE
 	elif event.is_action_pressed("v formation"):
@@ -238,6 +292,8 @@ func _handle_formation_input(event: InputEvent) -> void:
 		formation = Formation.PRECISE
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		return
 	if event.is_action_pressed("select"):
 		var unit := get_nearest_unit(get_global_mouse_position() )
 		select_units( [unit] )
@@ -245,26 +301,8 @@ func _input(event: InputEvent) -> void:
 		toggle_units_movement_lock()
 	if event.is_action_released("stop"):
 		command_units_to_stop()
-	if action == Action.QUEUE_MOVE and event.is_action_released("queue move"):
-		stop_dragging()
-		command_units_to_move()
-		action = Action.NONE
-	if action == Action.MOVE and event.is_action_released("move"):
-		command_units_to_stop()
-		stop_dragging()
-		command_units_to_move()
-		action = Action.NONE
-	if action == Action.NONE and event.is_action_pressed("queue move"):
-		begin_dragging()
-		action = Action.QUEUE_MOVE
-	if action == Action.NONE and event.is_action_pressed("move"):
-		begin_dragging()
-		action = Action.MOVE
-	if action == Action.TARGET and event.is_action_released("target"):
-		stop_dragging()
-		command_units_to_target()
-		action = Action.NONE
-	if action == Action.NONE and event.is_action_pressed("target"):
-		begin_dragging()
-		action = Action.TARGET
+	_handle_move_input(event)
+	_handle_queue_move_input(event)
+	_handle_target_input(event)
+	_handle_snap_target_input(event)
 	_handle_formation_input(event)

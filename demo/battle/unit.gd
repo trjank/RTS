@@ -36,7 +36,7 @@ static func create() -> Unit:
 
 var path_arc := 0.3
 var value := 0.0
-var hp := 0.0:
+var hp := 1.0:
 	set = set_hp
 var warp := 500.0
 var thrust := 0.0
@@ -49,6 +49,7 @@ var selected := false:
 	set = set_selected
 var warp_keep_momentum := false
 var kill_credit: Player
+var death_explosion := Explosion.BRIGHT
 
 var _stop_distance := 0.0
 var _stop_rotation := 0.0
@@ -65,6 +66,7 @@ var _waypoints: Array[Target] = []
 var _attack_position := Vector2.ZERO
 var _behavior_flags: int = BehaviorFlags.NONE
 var _internal_movement_locked := false
+var _dying := false
 
 ## NOTE: This is useful for Array.map
 static func to_radar_signature(unit: Unit) -> RadarSignature:
@@ -162,7 +164,7 @@ func set_target(new_target: Target) -> bool:
 
 func set_hp(new_hp: float) -> void:
 	hp = new_hp
-	if new_hp <= 0:
+	if hp <= 0:
 		kill()
 
 func hit(damage: float, from: Player = null) -> void:
@@ -224,7 +226,11 @@ func kill() -> void:
 		kill_credit.register_kill(self)
 	if player_owner != null:
 		player_owner.register_loss(self)
-	queue_free()
+	if death_explosion.is_empty() or not is_node_ready():
+		queue_free()
+	elif not _dying:
+		Explosion.explode(sprite, death_explosion, 10.0, 2.0).connect(queue_free)
+		_dying = true
 
 func order_attack() -> void:
 	attack()

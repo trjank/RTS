@@ -2,7 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://battle/unit.tscn" id="1_aujvj"]
 [ext_resource type="Script" uid="uid://c1kpbbaqx8xxa" path="res://battle/ship.gd" id="1_n6m1k"]
-[ext_resource type="Material" uid="uid://busja35hdv13e" path="res://battle/shield.tres" id="3_6juyh"]
 [ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="3_h2j6u"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_aujvj"]
 [ext_resource type="PackedScene" uid="uid://x0uqbyqx11lv" path="res://battle/pip_bar.tscn" id="4_jqcho"]
@@ -37,8 +36,10 @@ gradient = SubResource("Gradient_h2j6u")
 width = 16
 height = 32
 
-[node name="Ship" node_paths=PackedStringArray("bar_hp", "bar_shield", "bar_energy", "always_upright", "behavior_indicator", "part_nodes") instance=ExtResource("1_aujvj")]
-material = ExtResource("3_6juyh")
+[sub_resource type="CircleShape2D" id="CircleShape2D_6juyh"]
+radius = 500.0
+
+[node name="Ship" node_paths=PackedStringArray("bar_hp", "bar_shield", "bar_energy", "always_upright", "behavior_indicator", "part_nodes", "detection") instance=ExtResource("1_aujvj")]
 script = ExtResource("1_n6m1k")
 bar_hp = NodePath("AlwaysUpright/GridContainer/PipBarHP")
 bar_shield = NodePath("AlwaysUpright/GridContainer/PipBarShield")
@@ -46,9 +47,7 @@ bar_energy = NodePath("AlwaysUpright/GridContainer/PipBarEnergy")
 always_upright = NodePath("AlwaysUpright")
 behavior_indicator = NodePath("AlwaysUpright/BehaviorIndicator")
 part_nodes = NodePath("PartNodes")
-
-[node name="ResizableSprite2D" parent="." index="2"]
-use_parent_material = true
+detection = NodePath("Detection")
 
 [node name="WarpRadius" type="Sprite2D" parent="." index="4"]
 visible = false
@@ -133,3 +132,10 @@ offset_bottom = -346.0
 text = "TEST"
 
 [node name="PartNodes" type="Node2D" parent="." index="6"]
+
+[node name="Detection" type="Area2D" parent="." index="7"]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detection" index="0"]
+shape = SubResource("CircleShape2D_6juyh")

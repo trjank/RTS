@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://drat1q3kmt8rl"]
+
+[ext_resource type="Shader" uid="uid://crgnsuf60u2uf" path="res://explosion/explosion.gdshader" id="1_ja8un"]
+[ext_resource type="Texture2D" uid="uid://b3bs7atd77c6v" path="res://explosion/crack_noise.tres" id="2_a2jkp"]
+[ext_resource type="Texture2D" uid="uid://beeu5rl74xlrn" path="res://explosion/explosion_noise.tres" id="3_m1mxe"]
+
+[resource]
+shader = ExtResource("1_ja8un")
+shader_parameter/crack_noise = ExtResource("2_a2jkp")
+shader_parameter/explosion_noise = ExtResource("3_m1mxe")
