@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://dgmp64e8gidtt"]
+
+[ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://battle/unit.tscn" id="1_d4ogn"]
+[ext_resource type="Script" uid="uid://1li4eghsm5c5" path="res://projectiles/bullet.gd" id="2_yvssa"]
+
+[node name="Bullet" instance=ExtResource("1_d4ogn")]
+collision_layer = 0
+collision_mask = 0
+linear_damp = 0.5
+script = ExtResource("2_yvssa")
+
+[node name="Area2D" type="Area2D" parent="." index="4"]

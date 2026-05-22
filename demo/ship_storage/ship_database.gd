@@ -48,11 +48,13 @@ func load_file(path: String) -> bool:
 
 func load_ships(limit: int) -> Array:
 	assert(_loaded_ships.is_empty(), "Run load_ships BEFORE anything else")
+	#
 	_db.query("SELECT * FROM ships LIMIT %d;" % limit)
 	return _db.query_result.map(_load_ship)
 
 func load_fleets(limit: int) -> Array:
 	assert(_loaded_fleets.is_empty(), "Run load_fleets BEFORE anything else")
+	#
 	_db.query("SELECT * FROM fleets LIMIT %d;" % limit)
 	return _db.query_result.map(_load_fleet)
 

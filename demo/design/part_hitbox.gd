@@ -1,10 +1,14 @@
-class_name PartHitbox extends StaticBody2D
+class_name PartHitbox extends StaticBody3D
 
 const OVERLAP_COLOR := Color.RED
+const OVERLAP_Y_LEVEL := PartData.MAX_Y_LEVEL + 0.1
 
-@export var shape: CollisionShape2D
+signal selected
+signal deselected
 
-var placement: PartImage.Placement:
+@export var collision_shape: CollisionShape3D
+
+var placement: Grid.PartPlacement:
 	get = get_placement,
 	set = set_placement
 var overlapping := false:
@@ -17,41 +21,39 @@ var _part: Part
 static func create() -> PartHitbox:
 	return preload("res://design/part_hitbox.tscn").instantiate()
 
-func get_size() -> Vector2:
-	return Grid.TILE_SIZE * data.get_size()
+func get_size_2d() -> Vector2:
+	return Grid.METERS_PER_TILE * data.get_size()
 
-func get_rect() -> Rect2:
-	return _part.get_rect()
+func get_size() -> Vector3:
+	var size_2d := get_size_2d()
+	return Vector3(size_2d.x, 0.0, size_2d.y)
 
-func get_global_rect() -> Rect2:
-	return global_transform * _part.get_rect()
-
-func remove_y_flip() -> void:
-	if scale.y > 0:
-		return
-	scale = -scale
-	rotation += PI
-
+## NOTE: This returns position in grid tiles, NOT meters or pixels
 func get_top_left_corner() -> Vector2i:
-	var rect := transform * get_rect()
-	var corner := rect.position.snappedf(Grid.TILE_SIZE)
-	# Return grid coordinates, not world coordinates
-	return Vector2i(corner / Grid.TILE_SIZE)
+	var corner := transform * (-0.5 * get_size() )
+	var corner_2d := Grid.TILES_PER_METER * Vector2(corner.x, corner.z)
+	return Vector2i(corner_2d.round() )
 
-func get_placement() -> PartImage.Placement:
-	remove_y_flip()
-	var flipped := scale.x < 0
-	# Maps ≈0º -> 0, ≈90º -> 1, ≈180º -> 2, ≈270º -> 3
-	var rot := int(round(rotation / (PI/2) ) ) & 3
-	return (4 + rot if flipped else rot) as PartImage.Placement
+func get_placement() -> Grid.PartPlacement:
+	var h_flip := scale.x < 0
+	var v_flip := scale.z < 0
+	var h_rotation := rotation.y + PI if v_flip else rotation.y
+	# NOTE: Godot's transform implementation often flips negative signs
+	return Grid.to_placement(h_flip and v_flip, Vector3(0.0, h_rotation, 0.0) )
 
-func set_placement(new_placement: PartImage.Placement) -> void:
-	rotation = (new_placement & 3) * (PI/2)
-	scale.x = -1.0 if PartImage.Placement.FLIP_ROT_0 <= new_placement else 1.0 
+func set_placement(new_placement: Grid.PartPlacement) -> void:
+	rotation = Grid.placement_to_rotation(new_placement)
+	scale.x = -1.0 if Grid.is_placement_flipped(new_placement) else 1.0 
 
 func set_overlapping(is_overlapping: bool) -> void:
-	z_index = (PartData.MAX_Z_INDEX + 1) if is_overlapping else data.z_index
-	modulate = OVERLAP_COLOR if is_overlapping else Color.WHITE
+	position.y = OVERLAP_Y_LEVEL if is_overlapping else data.y_level
+	#modulate = OVERLAP_COLOR if is_overlapping else Color.WHITE
+
+func _input_event(_camera: Camera3D, _event: InputEvent, _event_position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
+	if Input.is_action_just_pressed("select"):
+		selected.emit()
+	if Input.is_action_just_released("select"):
+		deselected.emit()
 
 func set_data(new_data: PartData) -> void:
 	assert(new_data != null)
@@ -60,6 +62,6 @@ func set_data(new_data: PartData) -> void:
 		_part.queue_free()
 	data = new_data
 	_part = new_data.create_part()
-	z_index = data.z_index
-	shape.shape.size = get_size()
+	position.y = data.y_level
+	collision_shape.shape.size = get_size()
 	add_child(_part)

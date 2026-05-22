@@ -1,4 +1,4 @@
-class_name UnitFormation extends Path2D
+class_name UnitFormation extends Path3D
 
 signal formation_changed(new_formation: Formation)
 signal action_changed(new_action: Action)
@@ -50,9 +50,9 @@ var formation := Formation.LINE:
 
 var _targets: Array[Target] = []
 var _units: Array[RadarSignature] = []
-var _sort_axis := Vector2.RIGHT
-var _center_targets := Vector2.ZERO
-var _center_units := Vector2.ZERO
+var _sort_axis := Vector3.RIGHT
+var _center_targets := Vector3.ZERO
+var _center_units := Vector3.ZERO
 
 func _ready() -> void:
 	set_process(false)
@@ -124,24 +124,22 @@ func begin_dragging() -> void:
 	if _units.is_empty():
 		return
 	mouse_selection.disable()
-	begin_curve(get_global_mouse_position() )
+	begin_curve(mouse_selection.get_mouse_position_3d() )
 	set_process(true)
 
 func stop_dragging() -> void:
 	set_process(false)
 	end_curve()
 	mouse_selection.enable()
-	queue_redraw()
 
-func begin_curve(start: Vector2) -> void:
+func begin_curve(start: Vector3) -> void:
 	curve.clear_points()
 	for i in int(formation):
 		curve.add_point(start)
 	for i in _targets.size():
 		_targets[i] = Target.new(start)
-	queue_redraw()
 
-func move_curve(new_endpoint: Vector2) -> void:
+func move_curve(new_endpoint: Vector3) -> void:
 	var length := curve.get_baked_length()
 	curve.set_point_position(curve.point_count - 1, new_endpoint)
 	if length <= UNSTABLE_CURVE_LENGTH:
@@ -152,7 +150,6 @@ func move_curve(new_endpoint: Vector2) -> void:
 		curve.set_point_position(i, curve.sample_baked(i * segment_length) )
 	for i in _targets.size():
 		_targets[i].position = curve.sample_baked(i * targets_step)
-	queue_redraw()
 
 func end_curve() -> void:
 	_center_units = calculate_center(_units, _center_calculation_units)
@@ -162,13 +159,13 @@ func end_curve() -> void:
 	_targets.sort_custom(_axis_sorter_targets)
 	cleanup_path_intersections()
 
-func calculate_center(objects: Array, calculation: Callable) -> Vector2:
+func calculate_center(objects: Array, calculation: Callable) -> Vector3:
 	return objects.reduce(calculation, Vector2.ZERO) / objects.size()
 
-func _center_calculation_targets(sum: Vector2, unit: Target) -> Vector2:
+func _center_calculation_targets(sum: Vector3, unit: Target) -> Vector3:
 	return sum + unit.position
 
-func _center_calculation_units(sum: Vector2, unit: RadarSignature) -> Vector2:
+func _center_calculation_units(sum: Vector3, unit: RadarSignature) -> Vector3:
 	return sum + unit.get_future_position()
 
 func cleanup_path_intersections() -> int:
@@ -191,57 +188,43 @@ func _swap_path_endpoints(i: int, j: int) -> bool:
 	_targets[j] = temp
 	return true
 
+func _project(pos: Vector3) -> Vector2:
+	return Vector2(pos.x, pos.z)
+
 func _do_paths_intersect(i: int, j: int) -> bool:
 	return Geometry2D.segment_intersects_segment(
-		_units[i].get_future_position(),
-		_targets[i].position,
-		_units[j].get_future_position(),
-		_targets[j].position
+		_project(_units[i].get_future_position()),
+		_project(_targets[i].position),
+		_project(_units[j].get_future_position()),
+		_project(_targets[j].position)
 	) != null
 
-func get_nearest_unit(to: Vector2) -> RadarSignature:
-	var sorter := MouseSelection.distance_sorter.bind(to)
-	var units := mouse_selection.sorted_query(to, sorter, MAX_SELECTION_DISTANCE)
-	return null if units.is_empty() else units[0].get_radar_signature()
+func get_nearest_unit(point: Vector3) -> RadarSignature:
+	var unit := mouse_selection.get_nearest_node(point, globals.Layer.UNITS, MAX_SELECTION_DISTANCE)
+	return unit.get_radar_signature() if unit is Unit else null
 
 func snap_targets() -> void:
 	for i in _targets.size():
-		_targets[i] = get_nearest_unit(_targets[i].position)
-	queue_redraw()
+		_targets[i] = get_nearest_unit(_targets[i].global_position)
 
 func _snap_target_to_nearest_unit(i: int) -> void:
 	_targets[i] = get_nearest_unit(_targets[i].position)
 
-func _draw_target(target: Target) -> void:
-	if target == null:
-		return
-	var icon := ICONS[action]
-	draw_texture(icon, target.position - icon.get_size() / 2)
-
-func _draw() -> void:
-	if not is_dragging():
-		return
-	draw_set_transform_matrix(global_transform.affine_inverse() )
-	if draw_curve:
-		draw_polyline(curve.get_baked_points(), curve_draw_color, curve_draw_width)
-	for target in _targets:
-		_draw_target(target)
-
 func _axis_sorter_units(a: RadarSignature, b: RadarSignature) -> bool:
-	var a_offset := a.get_future_position() - _center_units
-	var b_offset := b.get_future_position() - _center_units
+	var a_offset := a.get_future_global_position() - _center_units
+	var b_offset := b.get_future_global_position() - _center_units
 	return a_offset.cross(_sort_axis) < b_offset.cross(_sort_axis)
 
 func _axis_sorter_targets(a: Target, b: Target) -> bool:
-	var a_offset := a.position - _center_targets
-	var b_offset := b.position - _center_targets
+	var a_offset := a.global_position - _center_targets
+	var b_offset := b.global_position - _center_targets
 	return a_offset.cross(_sort_axis) < b_offset.cross(_sort_axis)
 
 func _on_mouse_selection_selected(bodies: Array[Node2D], _rect: Rect2) -> void:
 	select_units(bodies.map(Unit.to_radar_signature) )
 
 func _process(_dt: float) -> void:
-	move_curve(get_global_mouse_position() )
+	move_curve(mouse_selection.get_mouse_position_3d() )
 
 func _handle_target_input(event: InputEvent) -> void:
 	if action == Action.NONE and event.is_action_pressed("target"):
@@ -295,7 +278,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		return
 	if event.is_action_pressed("select"):
-		var unit := get_nearest_unit(get_global_mouse_position() )
+		var unit := get_nearest_unit(mouse_selection.get_mouse_position_3d() )
 		select_units( [unit] )
 	if event.is_action_pressed("lock units"):
 		toggle_units_movement_lock()

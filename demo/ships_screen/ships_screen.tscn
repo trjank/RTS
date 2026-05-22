@@ -169,7 +169,7 @@ text = "Delete Ship"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="World" type="Node2D" parent="."]
+[node name="World" type="Node3D" parent="."]
 
 [node name="DeleteFleetPopup" type="AcceptDialog" parent="."]
 auto_translate_mode = 1

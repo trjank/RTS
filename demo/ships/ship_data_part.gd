@@ -3,10 +3,10 @@ class_name ShipDataPart extends RefCounted
 var _id: int
 var _data: PartData
 var _rect: Rect2i
-var _placement: PartImage.Placement
+var _placement: Grid.PartPlacement
 var _boundary: int
 
-func _init(init_id: int, init_data: PartData, init_rect: Rect2i, init_placement: PartImage.Placement, init_boundary: int) -> void:
+func _init(init_id: int, init_data: PartData, init_rect: Rect2i, init_placement: Grid.PartPlacement, init_boundary: int) -> void:
 	_id = init_id
 	_data = init_data
 	_rect = init_rect
@@ -25,7 +25,7 @@ func get_data() -> PartData:
 func get_rect() -> Rect2i:
 	return _rect
 
-func get_placement() -> PartImage.Placement:
+func get_placement() -> Grid.PartPlacement:
 	return _placement
 
 func get_image() -> Image:

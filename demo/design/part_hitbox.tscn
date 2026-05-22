@@ -2,16 +2,14 @@
 
 [ext_resource type="Script" uid="uid://b1jcsb3ib2om2" path="res://design/part_hitbox.gd" id="1_ygxrn"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_l8ftv"]
-resource_local_to_scene = true
+[sub_resource type="BoxShape3D" id="BoxShape3D_vspt8"]
 
-[node name="PartHitbox" type="StaticBody2D" node_paths=PackedStringArray("shape")]
-z_as_relative = false
+[node name="PartHitbox" type="StaticBody3D" node_paths=PackedStringArray("collision_shape")]
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_ygxrn")
-shape = NodePath("CollisionShape2D")
+collision_shape = NodePath("CollisionShape3D")
 metadata/_custom_type_script = "uid://b1jcsb3ib2om2"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_l8ftv")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_vspt8")

@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dq44yn5k5uawo"]
+
+[ext_resource type="Shader" uid="uid://igxgpho6hmob" path="res://effects/stripes.gdshader" id="1_ssxay"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ssxay")
+shader_parameter/line_thickness = 0.10000000475

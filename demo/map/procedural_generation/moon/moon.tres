@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://vp27812mvvg6"]
+
+[ext_resource type="Shader" uid="uid://c7ehq2uhigygi" path="res://map/procedural_generation/moon/moon.gdshader" id="1_4qo2o"]
+[ext_resource type="Texture2D" uid="uid://c84m8pjnx04gp" path="res://map/procedural_generation/moon/noise_fault_small.tres" id="2_t7c04"]
+[ext_resource type="Texture2D" uid="uid://dmg2dnkpdndge" path="res://map/procedural_generation/moon/noise_crater_large.tres" id="3_l8ldd"]
+[ext_resource type="Texture2D" uid="uid://cuthanky3tcjs" path="res://map/procedural_generation/moon/noise_crater_small.tres" id="4_a5y16"]
+[ext_resource type="Texture2D" uid="uid://lhm8w3jbruj1" path="res://map/procedural_generation/moon/noise_shade.tres" id="5_lt2se"]
+
+[resource]
+shader = ExtResource("1_4qo2o")
+shader_parameter/noise_shade = ExtResource("5_lt2se")
+shader_parameter/noise_crater_large = ExtResource("3_l8ldd")
+shader_parameter/noise_crater_small = ExtResource("4_a5y16")
+shader_parameter/fault_noise = ExtResource("2_t7c04")

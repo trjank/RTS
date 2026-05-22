@@ -1,14 +1,38 @@
-class_name Grid extends Sprite2D
+class_name Grid extends MeshInstance3D
 
 signal ship_changed(grid: Grid)
 signal save_changed(some_ship: ShipData, saved: bool)
 
-const MAX_CACHE_SIZE := 30
-const TILE_SIZE := 32.0
-const RECALCULATE_ERROR := -1
+# NOTE: Changing this order breaks ALL current and stored ships!
+enum PartPlacement {
+	ROT_0,
+	ROT_90,
+	ROT_180,
+	ROT_270,
+	FLIP_ROT_0,
+	FLIP_ROT_90,
+	FLIP_ROT_180,
+	FLIP_ROT_270,
+	NUM_PLACEMENTS
+}
 
-var _parts: Node2D
-var _parts_cache: Dictionary[ShipData, Node2D] = {}
+const ROTATION_INCREMENT = PI / 2
+const MIN_GRID_SIZE := Vector2i.ONE
+const MAX_CACHE_SIZE := 30
+const RECALCULATE_ERROR := -1
+# Standardized measurements (PLEASE USE THESE!)
+const METERS_PER_TILE := 0.32
+const TILES_PER_METER := 3.125
+const PX_PER_TILE := 32
+const TILES_PER_PX := 0.03125
+const METERS_PER_PX := 0.01
+const PX_PER_METER := 100.0
+
+@export var grid_center_marker: MeshInstance3D
+@export var part_selection: PartSelection
+
+var _parts: Node3D
+var _parts_cache: Dictionary[ShipData, Node3D] = {}
 var _error_cache: Dictionary[ShipData, int] = {}
 
 var size: Vector2i:
@@ -16,9 +40,33 @@ var size: Vector2i:
 var ship: ShipData:
 	set = set_ship
 
+static func is_placement_flipped(placement: PartPlacement) -> bool:
+	return PartPlacement.FLIP_ROT_0 <= placement
+
+static func placement_to_rotation(placement: PartPlacement) -> Vector3:
+	return Vector3(0.0, (placement % 4) * ROTATION_INCREMENT, 0.0)
+
+static func to_placement(flipped: bool, rotation_3d: Vector3) -> PartPlacement:
+	# Maps 315º-45º -> 0,
+	# 45º-135º -> 1,
+	# 135º-225º -> 2,
+	# 225º-315º -> 3
+	var rot := posmod(round(rotation_3d.y / ROTATION_INCREMENT), 4)
+	return (4 + rot if flipped else rot) as PartPlacement
+
+static func is_placement_valid(placement: PartPlacement) -> bool:
+	return 0 <= placement and placement < PartPlacement.NUM_PLACEMENTS
+
+func _ready() -> void:
+	size = MIN_GRID_SIZE
+
 func set_size(new_size: Vector2i) -> void:
-	size = new_size
-	region_rect.size = TILE_SIZE * size
+	size = new_size.max(MIN_GRID_SIZE)
+	mesh.size = METERS_PER_TILE * size
+	mesh.center_offset.x = 0.5 * mesh.size.x
+	mesh.center_offset.z = 0.5 * mesh.size.y
+	grid_center_marker.position = mesh.center_offset
+	set_instance_shader_parameter("num_tiles", Vector2(size) )
 
 func is_cached(which_ship := ship) -> bool:
 	return which_ship in _parts_cache
@@ -99,7 +147,7 @@ func _save_part(part: PartHitbox) -> ShipData.PartError:
 func sync() -> void:
 	if ship == null:
 		return
-	var parts := Node2D.new()
+	var parts := Node3D.new()
 	add_child(parts, false, INTERNAL_MODE_BACK)
 	#         ^^^^^ DO NOT MESS WITH THESE NODES!
 	if _parts != null:
@@ -112,7 +160,10 @@ func sync() -> void:
 
 func _load_part(ship_part: ShipDataPart) -> void:
 	var part := PartHitbox.create()
+	var position_2d := Grid.METERS_PER_TILE * ship_part.get_center()
 	part.data = ship_part.get_data()
 	_parts.add_child(part)
 	part.placement = ship_part.get_placement()
-	part.position = TILE_SIZE * ship_part.get_center()
+	part.position.x = position_2d.x
+	part.position.z = position_2d.y
+	part.selected.connect(part_selection.select_part_and_drag.bind(part) )

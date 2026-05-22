@@ -65,6 +65,6 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="World" type="Node2D" parent="."]
+[node name="World" type="Node3D" parent="."]
 
 [connection signal="pressed" from="UI/MarginContainer/HBoxContainer/MarginContainer/back_button" to="UI/MarginContainer/HBoxContainer/MarginContainer/back_button" method="_on_pressed"]

@@ -1,4 +1,4 @@
-class_name Scenery extends Node2D
+class_name Scenery extends Node3D
 
 const GRAVITATIONAL_CONSTANT := 10.0
 const MIN_MASS := 0.0
@@ -17,6 +17,7 @@ static var subtypes: Dictionary[String, PackedScene] = {
 
 static func create(subtype: String) -> Scenery:
 	assert(subtype in subtypes)
+	#
 	return subtypes[subtype].instantiate() as Scenery
 
 var mass := MIN_MASS:
@@ -60,19 +61,15 @@ func set_orbit_angle(new_orbit_angle: float) -> void:
 func set_orbit_radius(new_orbit_radius: float) -> void:
 	orbit_radius = maxf(new_orbit_radius, MIN_ORBIT_RADIUS)
 	update_position()
-	queue_redraw()
+	#queue_redraw()
 
 func set_orbit_offset(new_orbit_offset: float) -> void:
 	orbit_offset = fposmod(new_orbit_offset, TAU)
 	update_position()
 
 func update_position() -> void:
-	rotation = orbit_angle
-	position = orbit_radius * Vector2.from_angle(orbit_angle)
-
-func _draw() -> void:
-	draw_set_transform_matrix(transform.affine_inverse() )
-	draw_arc(Vector2.ZERO, orbit_radius, 0.0, TAU, DRAW_RESOLUTION, DRAW_COLOR, DRAW_THICKNESS, true)
+	rotation.y = orbit_angle
+	#position = orbit_radius * Vector2.from_angle(orbit_angle)
 
 func _ready() -> void:
 	var min_mass := float(_map.preset.get("min_mass", 0.0) )

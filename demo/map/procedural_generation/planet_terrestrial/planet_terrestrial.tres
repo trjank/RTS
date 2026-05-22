@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://lwo1277xpowv"]
+
+[ext_resource type="Shader" uid="uid://bfcjybkio7jj6" path="res://map/procedural_generation/planet_terrestrial/planet_terrestrial.gdshader" id="1_r06qd"]
+[ext_resource type="Texture2D" uid="uid://88s1nghv43r3" path="res://map/procedural_generation/planet_terrestrial/noise_continents.tres" id="2_rtxgx"]
+[ext_resource type="Texture2D" uid="uid://db4d64qe5wkix" path="res://map/procedural_generation/planet_terrestrial/noise_mountains.tres" id="3_s8pcx"]
+
+[resource]
+shader = ExtResource("1_r06qd")
+shader_parameter/noise_continents = ExtResource("2_rtxgx")
+shader_parameter/noise_mountains = ExtResource("3_s8pcx")

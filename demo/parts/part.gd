@@ -1,5 +1,4 @@
-@tool
-class_name Part extends ResizeableSprite2D
+class_name Part extends Sprite3D
 
 var data: PartData:
 	set = set_data
@@ -9,21 +8,38 @@ var _ship: Ship
 func get_ship() -> Ship:
 	return _ship
 
+func _init() -> void:
+	axis = Vector3.Axis.AXIS_Y
+	pixel_size = Grid.METERS_PER_PX
+
 func _notification(what: int) -> void:
 	if what != NOTIFICATION_PARENTED or _ship == null:
 		return
 	push_warning("Ship part reparented")
 	_ship = null
 
+func get_up_direction() -> Vector3:
+	return transform.basis.y
+
+func get_forward_direction() -> Vector3:
+	return -transform.basis.z
+
+func get_global_up_direction() -> Vector3:
+	return global_transform.basis.y
+
+func get_global_forward_direction() -> Vector3:
+	return -global_transform.basis.z
+
 func set_data(new_data: PartData) -> void:
 	if data != null:
 		return push_error("Part.data is read only!")
 	data = new_data
-	size = Grid.TILE_SIZE * data.get_size()
 	texture = data.get_image().get_texture()
 
 func _ship_init(ship_part: ShipDataPart, ship: Ship) -> void:
 	_ship = ship
-	position = Grid.TILE_SIZE * (ship_part.get_center() - Rect2(ship.data.get_ship_rect() ).get_center() )
-	rotation = (ship_part.get_placement() & 3) * PI/2
-	flip_h = PartImage.Placement.FLIP_ROT_0 <= ship_part.get_placement()
+	var xy := Grid.METERS_PER_TILE * (ship_part.get_center() - Rect2(ship.data.get_ship_rect() ).get_center() )
+	position.x = xy.x
+	position.y = xy.y
+	rotation = Grid.placement_to_rotation(ship_part.get_placement() )
+	flip_h = Grid.is_placement_flipped(ship_part.get_placement() )

@@ -40,7 +40,7 @@ func set_team(new_team: Team) -> void:
 		new_team.players.push_back(self)
 	team = new_team
 
-func spawn_ship(ship_data: ShipData, spawnpoint := Vector2.ZERO) -> Ship:
+func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 	var ship := Ship.create()
 	add_child(ship)
 	ship.data = ship_data

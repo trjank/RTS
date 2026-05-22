@@ -5,8 +5,7 @@ const BLACK_HOLE_PRESET := {
 	"min_mass": 100_000.0,
 	"max_mass": 100_000.0,
 	"min_radius": 1_000.0,
-	"max_radius": 1_000.0,
-	"textures": [preload("res://images_stars/neutron.png") ]
+	"max_radius": 1_000.0
 }
 const PLANET_PRESET := {
 	"display_name": "PLANET_PLANET_PLANET_PLANET_PLANET",
@@ -17,8 +16,7 @@ const PLANET_PRESET := {
 	"min_orbit_radius": 2_000.0,
 	"max_orbit_radius": 2_000.0,
 	"min_orbit_offset": 0.0,
-	"max_orbit_offset": 0.0,
-	"textures": [preload("res://images_planets_jovian/red.png"), preload("res://images_planets_jovian/orange.png")]
+	"max_orbit_offset": 0.0
 }
 
 func _on_play_button_pressed() -> void:

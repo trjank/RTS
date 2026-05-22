@@ -13,6 +13,7 @@ const MINI_ICONS: Dictionary[int, Texture] = {
 @export var fleet_id: Label
 @export var name_edit: LineEdit
 @export var ship_buttons: Container
+@export var collapsed := false
 
 var fleet: Fleet:
 	set = set_fleet
@@ -80,6 +81,7 @@ func _update_slot(new_ship: ShipData, slot: int) -> bool:
 
 func _add_ship(ship: ShipData, slot: int) -> void:
 	var button := ShipButton.create()
+	button.collapsed = collapsed
 	button.ship = ship
 	button.in_fleet = true
 	button.mini_icon = MINI_ICONS.get(slot)

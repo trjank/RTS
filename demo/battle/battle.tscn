@@ -1,13 +1,12 @@
-[gd_scene load_steps=15 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=16 format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="2_wu24d"]
 [ext_resource type="Script" uid="uid://butv3bkqoil8c" path="res://battle/unit_formation.gd" id="2_xooj7"]
-[ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://ships/mouse_selection.tscn" id="3_70s20"]
+[ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://main/mouse_selection.tscn" id="3_70s20"]
 [ext_resource type="Texture2D" uid="uid://cx7lh1wwowlht" path="res://icons/menu.png" id="3_iorop"]
 [ext_resource type="Script" uid="uid://bwysy4g5mfiae" path="res://battle/formation_indicator.gd" id="4_7fucf"]
-[ext_resource type="Texture2D" uid="uid://x8g3f3sy4rf7" path="res://icons/move_marker.png" id="6_l1kiu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1kiu"]
 content_margin_left = 0.0
@@ -17,27 +16,37 @@ content_margin_bottom = 0.0
 bg_color = Color(0.26270002, 0.30561998, 0.37, 0.39215687)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wu24d"]
-content_margin_left = 25.0
-content_margin_top = 20.0
-content_margin_right = 25.0
-content_margin_bottom = 20.0
+content_margin_left = 50.0
+content_margin_top = 30.0
+content_margin_right = 50.0
+content_margin_bottom = 30.0
 bg_color = Color(0, 0, 0, 0.5)
-shadow_color = Color(0, 0, 0, 0.5)
-shadow_size = 5
-shadow_offset = Vector2(0, 5)
+border_width_left = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xooj7"]
-content_margin_left = 25.0
-content_margin_top = 15.0
-content_margin_right = 25.0
-content_margin_bottom = 15.0
+content_margin_left = 30.0
+content_margin_top = 20.0
+content_margin_right = 30.0
+content_margin_bottom = 20.0
 bg_color = Color(0, 0, 0, 0.5)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mnim"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iorop"]
 content_margin_left = 25.0
 content_margin_top = 15.0
 content_margin_right = 25.0
 content_margin_bottom = 15.0
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mnim"]
+content_margin_left = 30.0
+content_margin_top = 20.0
+content_margin_right = 30.0
+content_margin_bottom = 20.0
 bg_color = Color(0, 0, 0, 0.78431374)
 
 [sub_resource type="Environment" id="Environment_70s20"]
@@ -49,19 +58,20 @@ glow_blend_mode = 1
 glow_hdr_threshold = 2.0
 glow_hdr_luminance_cap = 20.0
 
-[sub_resource type="Curve2D" id="Curve2D_70s20"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-}
-point_count = 2
+[sub_resource type="Curve3D" id="Curve3D_iorop"]
 
-[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container")]
+[sub_resource type="SphereMesh" id="SphereMesh_7fucf"]
+radius = 0.05
+height = 0.1
+
+[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection")]
 script = ExtResource("1_nohcx")
 world = NodePath("World")
 round_timer = NodePath("RoundTimer")
 countdown_timer = NodePath("CountdownTimer")
 players_container = NodePath("World/Players")
 fleet_container = NodePath("UI/FleetContainer")
+mouse_selection = NodePath("World/MouseSelection")
 metadata/_custom_type_script = "uid://bvfy718iilaa1"
 
 [node name="UI" type="Control" parent="."]
@@ -73,7 +83,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="FleetContainer" parent="UI" instance=ExtResource("2_4mnim")]
-custom_minimum_size = Vector2(1246, 0)
+custom_minimum_size = Vector2(996, 0)
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -84,6 +94,8 @@ offset_bottom = 0.0
 grow_horizontal = 1
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_l1kiu")
+button_size = Vector2(200, 200)
+collapsed = true
 
 [node name="PanelContainer" parent="UI/FleetContainer/VBoxContainer" index="0"]
 visible = false
@@ -180,8 +192,12 @@ vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI"]
 layout_mode = 1
-offset_right = 199.0
-offset_bottom = 48.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -377.0
+offset_bottom = 70.0
+grow_horizontal = 0
 theme_override_constants/separation = 15
 
 [node name="MenuButton" type="Button" parent="UI/HBoxContainer"]
@@ -189,6 +205,7 @@ layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_xooj7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_iorop")
 theme_override_styles/hover = SubResource("StyleBoxFlat_4mnim")
 text = "Menu
 "
@@ -199,6 +216,7 @@ layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_xooj7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_iorop")
 theme_override_styles/hover = SubResource("StyleBoxFlat_4mnim")
 text = "Design"
 icon = ExtResource("2_wu24d")
@@ -219,26 +237,23 @@ theme_override_constants/outline_size = 2
 text = "Formation: LINE"
 script = ExtResource("4_7fucf")
 
-[node name="World" type="Node2D" parent="."]
+[node name="World" type="Node3D" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
 environment = SubResource("Environment_70s20")
 
-[node name="Players" type="Node2D" parent="World"]
+[node name="Players" type="Node3D" parent="World"]
 
-[node name="UnitFormation" type="Path2D" parent="World" node_paths=PackedStringArray("mouse_selection")]
-curve = SubResource("Curve2D_70s20")
+[node name="UnitFormation" type="Path3D" parent="World" node_paths=PackedStringArray("mouse_selection")]
+curve = SubResource("Curve3D_iorop")
 script = ExtResource("2_xooj7")
 mouse_selection = NodePath("../MouseSelection")
 metadata/_custom_type_script = "uid://butv3bkqoil8c"
 
 [node name="MouseSelection" parent="World" instance=ExtResource("3_70s20")]
-collision_layer = 4
-collision_mask = 4
-color = Color(0.6313726, 0.6313726, 0.6313726, 0.5882353)
 
-[node name="DebugOrigin" type="Sprite2D" parent="World"]
-texture = ExtResource("6_l1kiu")
+[node name="OriginMarker" type="MeshInstance3D" parent="World"]
+mesh = SubResource("SphereMesh_7fucf")
 
 [node name="RoundTimer" type="Timer" parent="."]
 one_shot = true
@@ -249,9 +264,6 @@ one_shot = true
 [connection signal="button_pressed" from="UI/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
 [connection signal="pressed" from="UI/HBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="pressed" from="UI/HBoxContainer/DesignButton" to="." method="_on_design_button_pressed"]
-[connection signal="action_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_action_changed"]
-[connection signal="formation_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_formation_changed"]
-[connection signal="selected" from="World/MouseSelection" to="World/UnitFormation" method="_on_mouse_selection_selected"]
 [connection signal="timeout" from="RoundTimer" to="." method="_on_round_timer_timeout"]
 [connection signal="timeout" from="CountdownTimer" to="." method="_on_countdown_timer_timeout"]
 

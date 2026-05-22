@@ -5,3 +5,5 @@
 
 [node name="Star" instance=ExtResource("1_ivq4w")]
 script = ExtResource("2_qmuoe")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." index="3"]

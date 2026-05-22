@@ -21,4 +21,4 @@ func is_black_hole() -> bool:
 	return radius <= schwarzschild_radius
 
 func update_shader() -> void:
-	sprite.material = BLACK_HOLE_SHADER if is_black_hole() else STAR_SHADER
+	sprite.material_overlay = BLACK_HOLE_SHADER if is_black_hole() else STAR_SHADER

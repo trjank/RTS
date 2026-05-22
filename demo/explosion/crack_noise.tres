@@ -2,7 +2,7 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_epypp"]
 noise_type = 2
-frequency = 0.005
+frequency = 0.0087
 fractal_octaves = 2
 fractal_gain = 10.0
 fractal_ping_pong_strength = 5.0

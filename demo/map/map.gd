@@ -25,9 +25,10 @@ func _init(init_subtype: String) -> void:
 func is_preset_valid() -> bool:
 	return Util.type_check(preset, PRESET_SYNTAX, false, Util.CAST_NUMERICS)
 
-func generate(parent: Node2D, rng: RandomNumberGenerator, node_storage: Array[Scenery], depth_limit := 1) -> Scenery:
+func generate(parent: Node3D, rng: RandomNumberGenerator, node_storage: Array[Scenery], depth_limit := 1) -> Scenery:
 	assert(parent != null)
 	assert(rng != null)
+	#
 	if depth_limit <= 0 or not subtype in Scenery.subtypes or not is_preset_valid():
 		return null
 	var scenery := Scenery.create(subtype)

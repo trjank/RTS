@@ -21,4 +21,4 @@ func update_ui() -> void:
 	if part_data == null or not is_node_ready():
 		return
 	texture_normal = part_data.get_image().get_texture()
-	custom_minimum_size = Grid.TILE_SIZE * part_data.get_size()
+	custom_minimum_size = Grid.PX_PER_TILE * part_data.get_size()

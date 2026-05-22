@@ -6,7 +6,8 @@ const MIN_SIZE := 1
 const MAX_SIZE := 16
 const CODE_LENGTH := 4
 const FALLBACK_CODE := "NULL"
-const MAX_Z_INDEX := 100
+const MIN_Y_LEVEL := 0.0
+const MAX_Y_LEVEL := 1.0
 
 static var subtypes: Dictionary[String, Callable] = {
 	"": PartData.new,
@@ -15,15 +16,16 @@ static var subtypes: Dictionary[String, Callable] = {
 	"weapon_modifier": WeaponModifierData.new,
 	"thruster": ThrusterData.new,
 	"laser": LaserData.new,
-	"bullet": BulletData.new
+	"bullet": BulletData.new,
+	"death_ray": DeathRayData.new
 }
 
 static func create_subtype(part_subtype: String, part_code: String, part_image_path: String, part_width := MIN_SIZE, part_height := MIN_SIZE) -> PartData:
 	return subtypes.get(part_subtype, PartData.new).call(part_code, part_image_path, part_width, part_height)
 
 var atlas_id := -1
-var z_index := 0:
-	set = set_z_index
+var y_level := 0.0:
+	set = set_y_level
 var name := ""
 var tab := ""
 var description := ""
@@ -76,14 +78,14 @@ func get_width() -> int:
 func get_height() -> int:
 	return _size.y
 
-func get_size(placement := PartImage.Placement.ROT_0) -> Vector2i:
+func get_size(placement := Grid.PartPlacement.ROT_0) -> Vector2i:
 	return _size if placement % 2 == 0 else Vector2i(_size.y, _size.x)
 
-func get_boundary(_placement := PartImage.Placement.ROT_0) -> int:
+func get_boundary(_placement := Grid.PartPlacement.ROT_0) -> int:
 	return ShipData.BoundaryFlags.FULL
 
-func set_z_index(new_z_index: int) -> void:
-	z_index = mini(new_z_index, MAX_Z_INDEX)
+func set_y_level(new_y_level: float) -> void:
+	y_level = clampf(new_y_level, MIN_Y_LEVEL, MAX_Y_LEVEL)
 
 func set_image_path(new_image_path: String) -> void:
 	if image_path == new_image_path:

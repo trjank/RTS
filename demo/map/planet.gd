@@ -2,14 +2,15 @@ class_name Planet extends Scenery
 
 const UI_OFFSET := 300.0
 const MIN_RADIUS := 0.0
-const FALLBACK_TEXTURE := preload("res://images_planets_terrestrial/unloaded_celestial.tres")
+const FALLBACK_TEXTURE := preload("res://icons/texture_not_found.png")
 
-@export var always_upright: Node2D
-@export var ui: VBoxContainer
-@export var label: Label
-@export var sprite: ResizeableSprite2D
-@export var zone: Area2D
-@export var zone_shape: CollisionShape2D
+const MOON_SHADER := preload("res://map/procedural_generation/moon/moon.tres")
+
+@export var always_upright: Node3D
+@export var label: Label3D
+@export var sprite: Sprite3D
+@export var zone: Area3D
+@export var zone_shape: CollisionShape3D
 
 var capturable := true:
 	set = set_capturable
@@ -28,8 +29,8 @@ func get_diameter() -> float:
 func set_radius(new_radius: float) -> void:
 	radius = maxf(new_radius, MIN_RADIUS)
 	zone_shape.shape.radius = radius
-	sprite.size = get_diameter() * Vector2.ONE
-	ui.position.y = -radius - UI_OFFSET
+	#sprite.size = get_diameter() * Vector2.ONE
+	always_upright.position.y = -radius - UI_OFFSET
 
 func set_display_name(new_display_name: String) -> void:
 	display_name = new_display_name
@@ -37,12 +38,19 @@ func set_display_name(new_display_name: String) -> void:
 
 func set_capturable(is_capturable: bool) -> void:
 	capturable = is_capturable
-	ui.visible = is_capturable
+	always_upright.visible = is_capturable
 	zone_shape.disabled = is_capturable
 
 func _process(_dt: float) -> void:
 	super._process(_dt)
-	always_upright.global_rotation = 0.0
+	always_upright.global_rotation = Vector3.ZERO
+
+func generate_moon() -> void:
+	sprite.material_overlay = MOON_SHADER
+	sprite.set_instance_shader_parameter("color", Color(randf(), randf(), randf() ) )
+	sprite.set_instance_shader_parameter("random_offset_crater", Vector2(randf(), randf() ) )
+	sprite.set_instance_shader_parameter("random_offset_fault", Vector2(randf(), randf() ) )
+	sprite.set_instance_shader_parameter("random_offset_shade", Vector2(randf(), randf() ) )
 
 func _ready() -> void:
 	super._ready()
@@ -56,3 +64,4 @@ func _ready() -> void:
 	else:
 		var i := _rng.randi_range(0, textures.size() - 1)
 		sprite.texture = textures[i] as Texture2D
+	generate_moon()

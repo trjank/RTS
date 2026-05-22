@@ -9,7 +9,10 @@ signal ship_changed(new_ship: ShipData)
 @export var unsaved_indicator: Label
 @export var name_edit: LineEdit
 @export var custom_icon: TextureRect
+@export var panel_container: PanelContainer
 
+var collapsed := false:
+	set = set_collapsed
 var saved := true:
 	set = set_saved
 var ship: ShipData:
@@ -22,6 +25,13 @@ static func create() -> ShipButton:
 	return preload("res://ships_screen/ship_button.tscn").instantiate()
 
 func _ready() -> void:
+	update_ui()
+
+func is_collapsed() -> bool:
+	return panel_container.visible
+
+func set_collapsed(collapse: bool) -> void:
+	collapsed = collapse
 	update_ui()
 
 func set_saved(is_saved: bool) -> void:
@@ -51,6 +61,7 @@ func update_ui() -> void:
 	else:
 		_create_ship_ui()
 	custom_icon.texture = mini_icon
+	panel_container.visible = not collapsed
 
 func _create_ship_ui() -> void:
 	icon = ship.get_texture()

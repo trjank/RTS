@@ -209,7 +209,7 @@ func for_each_neighbor(part_id: int, boundary_flags: int, f: Callable) -> void:
 	if boundary_flags & BoundaryFlags.BOTTOM:
 		_for_horizontal_edge(rect.end.y, rect.position.x, rect.end.x, f)
 
-func add_part(part_data: PartData, top_left_corner: Vector2i, placement := PartImage.Placement.ROT_0, serialize_part := true) -> PartError:
+func add_part(part_data: PartData, top_left_corner: Vector2i, placement := Grid.PartPlacement.ROT_0, serialize_part := true) -> PartError:
 	if part_data == null:
 		return PartError.IS_NULL
 	var boundary := part_data.get_boundary(placement)
@@ -231,7 +231,7 @@ func add_part(part_data: PartData, top_left_corner: Vector2i, placement := PartI
 	_connect_part_to_grid(part_id, boundary, rect)
 	return PartError.OK
 
-func _create_part(part_data: PartData, rect: Rect2i, placement: PartImage.Placement, boundary: int, serialize_part: bool) -> void:
+func _create_part(part_data: PartData, rect: Rect2i, placement: Grid.PartPlacement, boundary: int, serialize_part: bool) -> void:
 	var part_id := _part_clusters.create_set()
 	var part := ShipDataPart.new(part_id, part_data, rect, placement, boundary)
 	_parts.push_back(part)
@@ -281,7 +281,7 @@ func _serialize_part(part_id: int) -> void:
 
 func _deserialize_part(part_manager: PartManager) -> PartError:
 	var top_left_corner := Vector2i(_bytes.get_u16(), _bytes.get_u16() )
-	var placement := _bytes.get_u8() as PartImage.Placement
+	var placement := _bytes.get_u8() as Grid.PartPlacement
 	var i := _bytes.get_position()
 	var code := _bytes.data_array.slice(i, i + BYTES_UTF32_CODE).get_string_from_utf32()
 	var part := part_manager.get_part_from_code(code)
@@ -289,8 +289,8 @@ func _deserialize_part(part_manager: PartManager) -> PartError:
 	return add_part(part, top_left_corner, placement, false)
 
 func generate_image() -> void:
-	var size := PartImage.TILE_SIZE * _ship_bounds.size
-	var offset := PartImage.TILE_SIZE * _ship_bounds.position
+	var size := Grid.PX_PER_TILE * _ship_bounds.size
+	var offset := Grid.PX_PER_TILE * _ship_bounds.position
 	_image = Image.create_empty(size.x, size.y, USE_MIPMAPS, PartImage.FORMAT)
 	# NOTE: Draw order does not matter because they are guaranteed to not overlap
 	for_each_part(_draw_part.bind(offset) )
@@ -304,6 +304,6 @@ func _draw_part(part: ShipDataPart, offset: Vector2i) -> void:
 		return
 	var part_image := part.get_image()
 	var from := Rect2i(Vector2i.ZERO, part_image.get_size() )
-	var to := PartImage.TILE_SIZE * part.get_rect().position
+	var to := Grid.PX_PER_TILE * part.get_rect().position
 	# NOTE: This uses the CPU, but is very fast due to c++ memcpy
 	_image.blit_rect(part_image, from, to - offset)

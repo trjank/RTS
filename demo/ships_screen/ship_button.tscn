@@ -4,10 +4,11 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xomhk"]
 bg_color = Color(1, 1, 1, 0.039215688)
-border_width_left = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.101960786, 0.101960786, 0.101960786, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y70oc"]
 content_margin_left = 0.0
@@ -15,15 +16,11 @@ content_margin_top = 5.0
 content_margin_right = 0.0
 content_margin_bottom = 5.0
 bg_color = Color(0.1, 0.1, 0.1, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqj0r"]
 bg_color = Color(0, 0, 0, 0)
 
-[node name="Button" type="Button" node_paths=PackedStringArray("ship_id", "unsaved_indicator", "name_edit", "custom_icon")]
+[node name="Button" type="Button" node_paths=PackedStringArray("ship_id", "unsaved_indicator", "name_edit", "custom_icon", "panel_container")]
 custom_minimum_size = Vector2(300, 300)
 offset_right = 200.0
 offset_bottom = 10.0
@@ -38,9 +35,11 @@ ship_id = NodePath("PanelContainer/HBoxContainer/ID")
 unsaved_indicator = NodePath("PanelContainer/HBoxContainer/UnsavedIndicator")
 name_edit = NodePath("PanelContainer/HBoxContainer/Name")
 custom_icon = NodePath("MarginContainer/CustomIcon")
+panel_container = NodePath("PanelContainer")
 metadata/_custom_type_script = "uid://gn43e8awh35b"
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -56,22 +55,24 @@ alignment = 1
 
 [node name="ID" type="Label" parent="PanelContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "#0"
 
 [node name="UnsavedIndicator" type="Label" parent="PanelContainer/HBoxContainer"]
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 28
 text = " Unsaved"
 
 [node name="Name" type="LineEdit" parent="PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_gqj0r")
 theme_override_styles/read_only = SubResource("StyleBoxFlat_gqj0r")
 theme_override_styles/focus = SubResource("StyleBoxFlat_gqj0r")
 placeholder_text = "Unnamed"
-alignment = 1
 max_length = 50
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

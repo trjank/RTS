@@ -1,4 +1,4 @@
-class_name WarpTrail extends Line2D
+class_name WarpTrail extends Sprite3D
 
 const FADE_TIME_SEC := 1.0
 

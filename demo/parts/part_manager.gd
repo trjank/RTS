@@ -32,9 +32,11 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"size": TYPE_VECTOR2I,
 	"width": TYPE_INT,
 	"height": TYPE_INT,
-	"z_index": TYPE_INT,
+	"y_level": TYPE_FLOAT,
 	"image_path": TYPE_STRING,
-	# For WeaponModifierData below
+# For WeaponData below
+	"projectile_code": TYPE_STRING,
+# For WeaponModifierData below
 	"flat_range": TYPE_FLOAT,
 	"flat_energy": TYPE_FLOAT,
 	"flat_speed": TYPE_FLOAT,
@@ -43,11 +45,14 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"multiplier_energy": TYPE_FLOAT,
 	"multiplier_speed": TYPE_FLOAT,
 	"multiplier_cooldown": TYPE_FLOAT,
-	# For ProjectileData below
+# For ProjectileData below
 	"damage": TYPE_FLOAT,
 	"energy_drain": TYPE_FLOAT,
 	"shield_penetration": TYPE_FLOAT,
-	# For LaserData below
+# For BulletData below
+	"launch_velocity": TYPE_FLOAT,
+	"linear_damp": TYPE_FLOAT,
+# For LaserData below
 	"color": TYPE_COLOR,
 	"glow": TYPE_FLOAT,
 	"lifetime_sec": TYPE_FLOAT,

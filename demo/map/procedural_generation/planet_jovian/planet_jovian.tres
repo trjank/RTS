@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://3y4bxyylq1ql"]
+
+[ext_resource type="Shader" uid="uid://c02vsojfwmap4" path="res://map/procedural_generation/planet_jovian/planet_jovian.gdshader" id="1_1jmxf"]
+[ext_resource type="Texture2D" uid="uid://boqpxadphepu6" path="res://map/procedural_generation/planet_jovian/noise_gas.tres" id="2_y0e0j"]
+
+[resource]
+shader = ExtResource("1_1jmxf")
+shader_parameter/noise_gas = ExtResource("2_y0e0j")

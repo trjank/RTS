@@ -5,7 +5,7 @@ signal slot_changed(new_slot: int)
 const SELECTED_COLOR := Color(2.454, 1.027, 1.027, 1.0)
 const STANDARD_SHIP_SIZE := Vector2i(16, 16)
 
-@export var part_group: PartGroup
+@export var part_selection: PartSelection
 @export var parts_container: PartsContainer
 @export var fleet_container: FleetContainer
 @export var mouse_selection: MouseSelection
@@ -19,9 +19,9 @@ var fleet: Fleet:
 	set = set_fleet
 
 func _ready() -> void:
-	part_group.dragging_started.connect(mouse_selection.disable)
-	part_group.dragging_ended.connect(mouse_selection.enable)
-	mouse_selection.selected.connect(part_group.select)
+	part_selection.dragging_started.connect(mouse_selection.disable)
+	part_selection.dragging_ended.connect(mouse_selection.enable)
+	mouse_selection.selected.connect(part_selection.select)
 	globals.client.fleet_changed.connect(set_fleet)
 	fleet = globals.client.fleet
 	parts_container.part_manager = globals.part_manager
@@ -54,7 +54,7 @@ func set_slot(new_slot: int) -> void:
 	slot_changed.emit(slot)
 
 func save() -> void:
-	part_group.move_parts()
+	part_selection.move_parts()
 	var error_flags := grid.save()
 	if error_flags == ShipData.PartError.OK and grid.ship.are_parts_connected():
 		grid.ship.generate_image()
@@ -62,7 +62,6 @@ func save() -> void:
 		grid.ship.calculate_stats()
 	else:
 		popup_error_message(error_flags)
-	print(error_flags)
 
 func popup_error_message(error_flags: int) -> void:
 	var error_message := "Failed to save for the following reasons:\n\n"
@@ -96,8 +95,8 @@ func _on_parts_container_part_clicked(part_data: PartData) -> void:
 		return
 	if get_ship() == null:
 		_create_new_ship()
-	part_group.spawn_part_at_mouse(part_data)
-	part_group.begin_dragging()
+	part_selection.spawn_part_at_mouse(part_data)
+	part_selection.begin_dragging()
 
 func _on_fleet_ship_changed(new_ship: ShipData, which_slot: int) -> void:
 	if slot != which_slot:

@@ -2,8 +2,8 @@
 
 [ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/main_theme.tres" id="1_cnwya"]
 [ext_resource type="Script" uid="uid://cjge4l7tp8ps8" path="res://navbar/navbar.gd" id="1_rsvkd"]
-[ext_resource type="StyleBox" uid="uid://cggb6w05ajg1p" path="res://navigator_button.tres" id="2_70ivd"]
-[ext_resource type="Material" uid="uid://bpeukeun10hch" path="res://navbar/blur.tres" id="3_e86oi"]
+[ext_resource type="StyleBox" uid="uid://cggb6w05ajg1p" path="res://navbar/navigator_button.tres" id="2_70ivd"]
+[ext_resource type="Material" uid="uid://bpeukeun10hch" path="res://effects/blur.tres" id="3_e86oi"]
 [ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navbar/navigator_button_hover.tres" id="3_eayf2"]
 [ext_resource type="Texture2D" uid="uid://cx7lh1wwowlht" path="res://icons/menu.png" id="4_e86oi"]
 
@@ -47,7 +47,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 3
 theme_override_constants/h_separation = 20
 theme_override_constants/icon_max_width = 32
 theme_override_font_sizes/font_size = 30
@@ -67,6 +67,8 @@ size_flags_vertical = 3
 custom_minimum_size = Vector2(0, 95)
 layout_mode = 2
 mouse_default_cursor_shape = 2
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 1
 theme_override_font_sizes/font_size = 25
 theme_override_styles/normal = ExtResource("2_70ivd")
 theme_override_styles/pressed = ExtResource("3_eayf2")
@@ -78,6 +80,8 @@ text = "Design"
 custom_minimum_size = Vector2(0, 95)
 layout_mode = 2
 mouse_default_cursor_shape = 2
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 1
 theme_override_font_sizes/font_size = 25
 theme_override_styles/normal = ExtResource("2_70ivd")
 theme_override_styles/pressed = ExtResource("3_eayf2")
@@ -90,16 +94,14 @@ text = "Ships
 custom_minimum_size = Vector2(0, 95)
 layout_mode = 2
 mouse_default_cursor_shape = 2
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 1
 theme_override_font_sizes/font_size = 25
 theme_override_styles/normal = ExtResource("2_70ivd")
 theme_override_styles/pressed = ExtResource("3_eayf2")
 theme_override_styles/hover = ExtResource("3_eayf2")
 theme_override_styles/focus = ExtResource("3_eayf2")
 text = "Battle"
-
-[node name="Control" type="Control" parent="HFlowContainer"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
 
 [connection signal="pressed" from="HFlowContainer/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="pressed" from="HFlowContainer/DesignButton" to="." method="_on_design_button_pressed"]

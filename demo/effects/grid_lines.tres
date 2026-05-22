@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bju5xmrwu2sfx"]
+
+[ext_resource type="Shader" uid="uid://cxuhliel45ol6" path="res://effects/grid_lines.gdshader" id="1_37e6k"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_37e6k")
+shader_parameter/major_line_tick = 100
+shader_parameter/minor_line_thickness = 0.10000000475
+shader_parameter/major_line_thickness = 0.2000000095

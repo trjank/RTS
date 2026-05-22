@@ -3,12 +3,12 @@
 [ext_resource type="Script" uid="uid://cppt8clgthcoh" path="res://parts/thruster.gd" id="1_766rx"]
 [ext_resource type="Texture2D" uid="uid://ctdiiy8g28x8p" path="res://icons/thruster_trail.png" id="2_nlv1p"]
 
-[node name="Thruster" type="Sprite2D" node_paths=PackedStringArray("trail")]
+[node name="Thruster" type="Sprite3D" node_paths=PackedStringArray("trail")]
+texture_filter = 0
 script = ExtResource("1_766rx")
 trail = NodePath("Trail")
 metadata/_custom_type_script = "uid://cppt8clgthcoh"
 
-[node name="Trail" type="Sprite2D" parent="."]
-position = Vector2(-64, 0)
+[node name="Trail" type="Sprite3D" parent="."]
+axis = 1
 texture = ExtResource("2_nlv1p")
-centered = false

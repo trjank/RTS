@@ -20,11 +20,12 @@ const DEFAULT_TEAM_NAME := "spectators"
 const MAX_NUM_TEAMS := 10
 const MAX_NUM_PLAYERS := 10
 
-@export var world: Node2D
+@export var world: Node3D
 @export var round_timer: Timer
 @export var countdown_timer: Timer
-@export var players_container: Node2D
+@export var players_container: Node3D
 @export var fleet_container: FleetContainer
+@export var mouse_selection: MouseSelection
 
 var players: Dictionary[String, Player] = {}
 var teams: Dictionary[String, Team] = {}
@@ -33,6 +34,8 @@ var scenery: Array[Scenery] = []
 var map: Map
 var map_depth_limit := 5
 var me: Player
+var plane := Plane.PLANE_XZ:
+	set = set_plane
 
 var _state := State.STOPPED
 var _map_root: Scenery
@@ -47,6 +50,7 @@ func _init() -> void:
 func _ready() -> void:
 	globals.client.fleet_changed.connect(fleet_container.set_fleet)
 	fleet_container.set_fleet(globals.client.fleet)
+	mouse_selection.plane = plane
 	me = connect_player("dev")
 
 func are_teams_balanced() -> bool:
@@ -57,6 +61,10 @@ func get_state() -> State:
 
 func get_alive_teams() -> Array[Team]:
 	return teams.values().filter(is_team_alive)
+
+func set_plane(new_plane: Plane) -> void:
+	plane = new_plane
+	mouse_selection.plane = plane
 
 func destroy_map() -> void:
 	if _map_root == null:

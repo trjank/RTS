@@ -29,6 +29,10 @@ static func create() -> Ship:
 var data: ShipData:
 	set = set_data
 
+func _init() -> void:
+	super._init()
+	collision_layer |= globals.Layer.SHIPS
+
 func set_hp(new_hp: float) -> void:
 	super.set_hp(minf(new_hp, _max_hp) )
 
@@ -56,7 +60,7 @@ func set_data(new_data: ShipData) -> void:
 	for ship_part in data.node_parts:
 		_create_part_node(ship_part)
 	texture = data.get_texture()
-	size = Grid.TILE_SIZE * data.get_ship_rect().size
+	size = Grid.METERS_PER_TILE * data.get_ship_rect().size
 	reset_stats()
 
 func clear_stats() -> void:
@@ -71,6 +75,9 @@ func reset_stats() -> void:
 	mass = data.mass
 	_max_hp = data.max_hp
 	hp = data.max_hp
+
+func _on_death_animation() -> void:
+	part_nodes.queue_free()
 
 func _create_part_node(ship_part: ShipDataPart) -> void:
 	assert(ship_part.get_data().becomes_node_on_ship() )
@@ -110,7 +117,10 @@ func hit(damage: float, from: Player = null, shield_penetration := 0.0) -> void:
 	var shield_overkill := hit_shield(shield_damage)
 	super.hit(damage - shield_damage + shield_overkill, from)
 
-func distance_sorter(a: Node2D, b: Node2D) -> bool:
+func drain_energy(energy_drain: float) -> void:
+	energy -= energy_drain
+
+func distance_sorter(a: Node3D, b: Node3D) -> bool:
 	return a.global_position.distance_squared_to(global_position) < b.global_position.distance_squared_to(global_position)
 
 func update_behavior_indicator() -> void:
@@ -131,7 +141,7 @@ func update_behavior_indicator() -> void:
 func _process(_dt: float) -> void:
 	update_behavior_indicator()
 	always_upright.global_rotation = 0.0
-	always_upright.global_scale = Vector2.ONE * ui_scale_z_curve.sample_baked(globals.main.camera.z)
+	always_upright.global_scale = Vector2.ONE * ui_scale_z_curve.sample_baked(globals.main.camera.position.y)
 	#bar_hp.value = hp
 	#bar_shield.value = shield
 	#bar_energy.value = energy
