@@ -56,7 +56,7 @@ func prepare_subscene(substate: State, subscene_root: Node) -> void:
 	#      ^^^^^ You must use this structure because mixing UI and 3D nodes causes issues
 	subworld.reparent(world)
 	subui.reparent(ui)
-	_camera_positions[substate] = Vector3.ZERO
+	_camera_positions[substate] = camera.get_parent_node_3d().position
 	_world_nodes[substate] = subworld
 	_ui_nodes[substate] = subui
 	toggle_node(subworld, state == substate)

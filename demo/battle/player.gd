@@ -1,4 +1,4 @@
-class_name Player extends Node2D
+class_name Player extends Node3D
 
 const MIN_ALLOY := 0.0
 const MAX_ALLOY := 100_000.0

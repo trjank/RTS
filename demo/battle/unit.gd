@@ -37,7 +37,7 @@ var path_arc := 0.3
 var value := 0.0
 var hp := 1.0:
 	set = set_hp
-var warp := 500.0
+var warp := 0.0
 var thrust := 0.0
 var turnrate := 100.0
 var player_owner: Player
@@ -121,10 +121,10 @@ func get_torque_limit(angle := _angle_to_target) -> float:
 	return torque_limit_curve.sample_baked(absf(angle) )
 
 func get_forward_direction() -> Vector3:
-	return -transform.basis.y
+	return -transform.basis.z
 
 func get_global_forward_direction() -> Vector3:
-	return -global_transform.basis.y
+	return -global_transform.basis.z
 
 func get_waypoint(waypoint_num := 0) -> Target:
 	return _waypoints[waypoint_num]
@@ -247,7 +247,7 @@ func order_attack() -> void:
 func attack(min_distance := RAMMING_DISTANCE) -> void:
 	_behavior_flags |= BehaviorFlags.ATTACK
 	#
-	_attack_position = get_waypoint().position
+	_attack_position = get_waypoint().global_position
 	_internal_movement_locked = _distance_to_waypoint <= min_distance
 
 ## NOTE: When safe_distance is reached, the current waypoint is popped

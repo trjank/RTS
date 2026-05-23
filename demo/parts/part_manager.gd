@@ -156,5 +156,5 @@ func draw_parts_on_atlas() -> void:
 	for atlas_id in _parts.size():
 		var part := _parts[atlas_id]
 		var rect := Rect2i(Vector2i.ZERO, 32 * part.get_size() )
-		#atlas.blit_rect(part.image, rect, atlas_offsets[atlas_id] )
-		#part.atlas_rect = Rect2(atlas_offsets[atlas_id], part_sizes[atlas_id])
+		atlas.blit_rect(part.image, rect, atlas_offsets[atlas_id] )
+		part.atlas_rect = Rect2(atlas_offsets[atlas_id], part_sizes[atlas_id])

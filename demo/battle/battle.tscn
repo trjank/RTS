@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=17 format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
@@ -58,7 +58,13 @@ glow_blend_mode = 1
 glow_hdr_threshold = 2.0
 glow_hdr_luminance_cap = 20.0
 
-[sub_resource type="Curve3D" id="Curve3D_iorop"]
+[sub_resource type="SphereMesh" id="SphereMesh_iorop"]
+radius = 0.2
+height = 0.4
+
+[sub_resource type="MultiMesh" id="MultiMesh_rxlun"]
+transform_format = 1
+mesh = SubResource("SphereMesh_iorop")
 
 [sub_resource type="SphereMesh" id="SphereMesh_7fucf"]
 radius = 0.05
@@ -83,7 +89,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="FleetContainer" parent="UI" instance=ExtResource("2_4mnim")]
-custom_minimum_size = Vector2(996, 0)
+custom_minimum_size = Vector2(399, 0)
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -244,13 +250,18 @@ environment = SubResource("Environment_70s20")
 
 [node name="Players" type="Node3D" parent="World"]
 
-[node name="UnitFormation" type="Path3D" parent="World" node_paths=PackedStringArray("mouse_selection")]
-curve = SubResource("Curve3D_iorop")
+[node name="UnitFormation" type="Node3D" parent="World" node_paths=PackedStringArray("mouse_selection", "multimesh_instance")]
 script = ExtResource("2_xooj7")
 mouse_selection = NodePath("../MouseSelection")
+multimesh_instance = NodePath("MultiMeshInstance3D")
 metadata/_custom_type_script = "uid://butv3bkqoil8c"
 
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="World/UnitFormation"]
+multimesh = SubResource("MultiMesh_rxlun")
+
 [node name="MouseSelection" parent="World" instance=ExtResource("3_70s20")]
+collision_layer = 4
+collision_mask = 4
 
 [node name="OriginMarker" type="MeshInstance3D" parent="World"]
 mesh = SubResource("SphereMesh_7fucf")
@@ -264,6 +275,9 @@ one_shot = true
 [connection signal="button_pressed" from="UI/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
 [connection signal="pressed" from="UI/HBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="pressed" from="UI/HBoxContainer/DesignButton" to="." method="_on_design_button_pressed"]
+[connection signal="action_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_action_changed"]
+[connection signal="formation_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_formation_changed"]
+[connection signal="selected" from="World/MouseSelection" to="World/UnitFormation" method="_on_mouse_selection_selected"]
 [connection signal="timeout" from="RoundTimer" to="." method="_on_round_timer_timeout"]
 [connection signal="timeout" from="CountdownTimer" to="." method="_on_countdown_timer_timeout"]
 

@@ -9,8 +9,8 @@ static var ui_scale_z_curve := preload("res://battle/curve_camera_z_ui_scale.tre
 @export var bar_energy: PipBar
 @export var always_upright: Node2D
 @export var behavior_indicator: Label
-@export var part_nodes: Node2D
-@export var detection: Area2D
+@export var part_nodes: Node3D
+@export var detection: Area3D
 
 var shield := 0.0:
 	set = set_shield

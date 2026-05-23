@@ -36,8 +36,7 @@ gradient = SubResource("Gradient_h2j6u")
 width = 16
 height = 32
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_6juyh"]
-radius = 500.0
+[sub_resource type="SphereShape3D" id="SphereShape3D_h2j6u"]
 
 [node name="Ship" node_paths=PackedStringArray("bar_hp", "bar_shield", "bar_energy", "always_upright", "behavior_indicator", "part_nodes", "detection") instance=ExtResource("1_aujvj")]
 script = ExtResource("1_n6m1k")
@@ -49,11 +48,11 @@ behavior_indicator = NodePath("AlwaysUpright/BehaviorIndicator")
 part_nodes = NodePath("PartNodes")
 detection = NodePath("Detection")
 
-[node name="WarpRadius" type="Sprite2D" parent="." index="4"]
+[node name="WarpRadius" type="Sprite2D" parent="." index="2"]
 visible = false
 texture = SubResource("GradientTexture2D_tetda")
 
-[node name="AlwaysUpright" type="Node2D" parent="." index="5"]
+[node name="AlwaysUpright" type="Node2D" parent="." index="3"]
 
 [node name="GridContainer" type="GridContainer" parent="AlwaysUpright" index="0"]
 anchors_preset = 7
@@ -131,11 +130,11 @@ offset_right = 57.0
 offset_bottom = -346.0
 text = "TEST"
 
-[node name="PartNodes" type="Node2D" parent="." index="6"]
+[node name="PartNodes" type="Node3D" parent="." index="4"]
 
-[node name="Detection" type="Area2D" parent="." index="7"]
+[node name="Detection" type="Area3D" parent="." index="5"]
 collision_layer = 0
 collision_mask = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Detection" index="0"]
-shape = SubResource("CircleShape2D_6juyh")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Detection" index="0"]
+shape = SubResource("SphereShape3D_h2j6u")

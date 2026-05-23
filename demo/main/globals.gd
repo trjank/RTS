@@ -1,6 +1,7 @@
 extends Node
 
 enum Layer {
+	CAMERA = 1 << 0,
 	UNITS = 1 << 1,
 	SHIPS = 1 << 2,
 	PROJECTILES = 1 << 3,

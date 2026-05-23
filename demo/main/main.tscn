@@ -51,6 +51,7 @@ visible = false
 [node name="World" type="Node3D" parent="."]
 
 [node name="Camera" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true

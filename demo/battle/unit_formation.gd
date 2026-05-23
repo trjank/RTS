@@ -1,4 +1,4 @@
-class_name UnitFormation extends Path3D
+class_name UnitFormation extends Node3D
 
 signal formation_changed(new_formation: Formation)
 signal action_changed(new_action: Action)
@@ -24,24 +24,15 @@ const MOUSE_CURSORS: Dictionary[Action, Texture2D] = {
 	Action.TARGET: preload("res://icons/cursor_target.png"),
 	Action.SNAP_TARGET: preload("res://icons/cursor_target.png")
 }
-const ICONS: Dictionary[Action, Texture2D] = {
-	Action.NONE: null,
-	Action.MOVE: preload("res://icons/formation_move.png"),
-	Action.QUEUE_MOVE: preload("res://icons/formation_move.png"),
-	Action.TARGET: preload("res://icons/formation_target.png"),
-	Action.SNAP_TARGET: preload("res://icons/formation_target.png")
-}
 const MOUSE_CURSOR_CENTER := Vector2(16.0, 16.0)
 const MAX_SELECTION_DISTANCE := 100.0
 const MAX_CLEANUP_ITERATIONS := 10
-# NOTE: These are used in move_curve()
-const UNSTABLE_CURVE_LENGTH := 0.1
-const NO_DIVIDE_ZERO := 0.001
 
-@export var draw_curve := false
-@export var curve_draw_width := 2.0
-@export var curve_draw_color := Color.WHITE
+const _UNSTABLE_CURVE_LENGTH := 0.3
+const _NO_DIV_ZERO := 0.001
+
 @export var mouse_selection: MouseSelection
+@export var multimesh_instance: MultiMeshInstance3D
 
 var action := Action.NONE:
 	set = set_action
@@ -53,6 +44,8 @@ var _units: Array[RadarSignature] = []
 var _sort_axis := Vector3.RIGHT
 var _center_targets := Vector3.ZERO
 var _center_units := Vector3.ZERO
+var _curve_points := PackedVector3Array()
+var _curve_length := 0.0
 
 func _ready() -> void:
 	set_process(false)
@@ -133,40 +126,58 @@ func stop_dragging() -> void:
 	mouse_selection.enable()
 
 func begin_curve(start: Vector3) -> void:
-	curve.clear_points()
-	for i in int(formation):
-		curve.add_point(start)
+	_curve_length = 0.0
+	_curve_points.resize(int(formation) )
+	_curve_points.fill(start)
+	#
+	multimesh_instance.multimesh.instance_count = _targets.size()
+	multimesh_instance.multimesh.visible_instance_count = -1
+	var start_transform := Transform3D(Basis.IDENTITY, start)
+	#
 	for i in _targets.size():
 		_targets[i] = Target.new(start)
+		multimesh_instance.multimesh.set_instance_transform(i, start_transform)
+
+func _interpolate_curve(index: float) -> Vector3:
+	var i := int(floor(clampf(index, 0.0, _curve_points.size() - 2) ) )
+	var start := _curve_points[i]
+	var end := _curve_points[i + 1]
+	return start.lerp(end, minf(index - i, 1.0) )
 
 func move_curve(new_endpoint: Vector3) -> void:
-	var length := curve.get_baked_length()
-	curve.set_point_position(curve.point_count - 1, new_endpoint)
-	if length <= UNSTABLE_CURVE_LENGTH:
+	var old_length := _curve_length
+	_curve_length += _curve_points[-1].distance_to(new_endpoint)
+	_curve_points[-1] = new_endpoint
+	#
+	if _curve_length <= _UNSTABLE_CURVE_LENGTH:
 		return
-	var targets_step := length / (_targets.size() - 1 + NO_DIVIDE_ZERO)
-	var segment_length := length / (curve.point_count - 1)
-	for i in range(1, curve.point_count - 1):
-		curve.set_point_position(i, curve.sample_baked(i * segment_length) )
+	var length_ratio := _curve_length / old_length
+	var targets_step := (_curve_points.size() - 1) / (_targets.size() - 1 + _NO_DIV_ZERO)
+	#
+	for i in range(1, _curve_points.size() - 1):
+		_curve_points[i] = _interpolate_curve(i * length_ratio)
 	for i in _targets.size():
-		_targets[i].position = curve.sample_baked(i * targets_step)
+		_targets[i].global_position = _interpolate_curve(i * targets_step)
+		multimesh_instance.multimesh.set_instance_transform(i, Transform3D(Basis.IDENTITY, _targets[i].global_position) )
 
 func end_curve() -> void:
 	_center_units = calculate_center(_units, _center_calculation_units)
 	_center_targets = calculate_center(_targets, _center_calculation_targets)
 	_sort_axis = _center_targets - _center_units
+	multimesh_instance.multimesh.visible_instance_count = 0
+	# Sort to get a decent low-intersection solution, and then iteratively improve on it
 	_units.sort_custom(_axis_sorter_units)
 	_targets.sort_custom(_axis_sorter_targets)
 	cleanup_path_intersections()
 
 func calculate_center(objects: Array, calculation: Callable) -> Vector3:
-	return objects.reduce(calculation, Vector2.ZERO) / objects.size()
+	return objects.reduce(calculation, Vector3.ZERO) / objects.size()
 
 func _center_calculation_targets(sum: Vector3, unit: Target) -> Vector3:
-	return sum + unit.position
+	return sum + unit.global_position
 
 func _center_calculation_units(sum: Vector3, unit: RadarSignature) -> Vector3:
-	return sum + unit.get_future_position()
+	return sum + unit.get_future_global_position()
 
 func cleanup_path_intersections() -> int:
 	var iterations := 0
@@ -188,15 +199,15 @@ func _swap_path_endpoints(i: int, j: int) -> bool:
 	_targets[j] = temp
 	return true
 
-func _project(pos: Vector3) -> Vector2:
-	return Vector2(pos.x, pos.z)
+func _project(point: Vector3) -> Vector2:
+	return Vector2(point.x, point.z)
 
 func _do_paths_intersect(i: int, j: int) -> bool:
 	return Geometry2D.segment_intersects_segment(
-		_project(_units[i].get_future_position()),
-		_project(_targets[i].position),
-		_project(_units[j].get_future_position()),
-		_project(_targets[j].position)
+		_project(_units[i].get_future_global_position() ),
+		_project(_targets[i].global_position),
+		_project(_units[j].get_future_global_position() ),
+		_project(_targets[j].global_position)
 	) != null
 
 func get_nearest_unit(point: Vector3) -> RadarSignature:
@@ -220,7 +231,7 @@ func _axis_sorter_targets(a: Target, b: Target) -> bool:
 	var b_offset := b.global_position - _center_targets
 	return a_offset.cross(_sort_axis) < b_offset.cross(_sort_axis)
 
-func _on_mouse_selection_selected(bodies: Array[Node2D], _rect: Rect2) -> void:
+func _on_mouse_selection_selected(bodies: Array[Node3D], _center: Vector3, _span: Vector2) -> void:
 	select_units(bodies.map(Unit.to_radar_signature) )
 
 func _process(_dt: float) -> void:

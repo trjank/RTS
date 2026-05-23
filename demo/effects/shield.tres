@@ -1,13 +1,13 @@
 [gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://busja35hdv13e"]
 
-[ext_resource type="Shader" uid="uid://b118wpv7d03tu" path="res://battle/shield.gdshader" id="1_1ci0r"]
-[ext_resource type="FastNoiseLite" uid="uid://2rip6i13awyj" path="res://battle/shield_noise.tres" id="2_vjrg8"]
+[ext_resource type="Shader" uid="uid://b118wpv7d03tu" path="res://effects/shield.gdshader" id="1_ugxvd"]
+[ext_resource type="FastNoiseLite" uid="uid://2rip6i13awyj" path="res://battle/shield_noise.tres" id="2_bdl2p"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hp2rr"]
-noise = ExtResource("2_vjrg8")
+noise = ExtResource("2_bdl2p")
 
 [resource]
-shader = ExtResource("1_1ci0r")
+shader = ExtResource("1_ugxvd")
 shader_parameter/noise = SubResource("NoiseTexture2D_hp2rr")
 shader_parameter/animation_speed = 2.0
 shader_parameter/size = Vector2(1, 1)

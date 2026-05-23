@@ -40,6 +40,6 @@ func _ship_init(ship_part: ShipDataPart, ship: Ship) -> void:
 	_ship = ship
 	var xy := Grid.METERS_PER_TILE * (ship_part.get_center() - Rect2(ship.data.get_ship_rect() ).get_center() )
 	position.x = xy.x
-	position.y = xy.y
+	position.z = xy.y
 	rotation = Grid.placement_to_rotation(ship_part.get_placement() )
 	flip_h = Grid.is_placement_flipped(ship_part.get_placement() )

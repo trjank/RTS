@@ -64,7 +64,7 @@ func get_nearest_nodes(point: Vector3, mask := globals.Layer.EVERYTHING, max_dis
 
 func get_nearest_node(point: Vector3, mask := globals.Layer.EVERYTHING, max_distance := 1.0) -> Node3D:
 	var nodes := get_nearest_nodes(point, mask, max_distance)
-	nodes.sort_custom(distance_sorter)
+	nodes.sort_custom(distance_sorter.bind(point) )
 	return null if nodes.is_empty() else nodes[0]
 
 func get_mouse_position_3d() -> Vector3:
