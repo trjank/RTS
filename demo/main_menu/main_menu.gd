@@ -25,14 +25,14 @@ const JOVIAN_PLANET_PRESET := {
 	"min_orbit_offset": 0.0,
 	"max_orbit_offset": 0.0
 }
-const PLANET_PRESET := {
-	"display_name": "PLANET_PLANET_PLANET_PLANET_PLANET",
-	"min_mass": 100_000.0,
-	"max_mass": 100_000.0,
-	"min_radius": 500.0,
-	"max_radius": 500.0,
-	"min_orbit_radius": 2_000.0,
-	"max_orbit_radius": 2_000.0,
+const TERRESTRIAL_PLANET_PRESET := {
+	"display_name": "TERRESTRIAL PLANET",
+	"min_mass": 1_000.0,
+	"max_mass": 1_000.0,
+	"min_radius": 5.0,
+	"max_radius": 5.0,
+	"min_orbit_radius": 20.0,
+	"max_orbit_radius": 20.0,
 	"min_orbit_offset": 0.0,
 	"max_orbit_offset": 0.0
 }
@@ -53,11 +53,22 @@ func _ready() -> void:
 	super._ready()
 	map = Map.new("Star")
 	map.preset = STAR_PRESET
+
 	var planet1 := Map.new("JovianPlanet")
 	planet1.preset = JOVIAN_PLANET_PRESET.duplicate()
 	var planet2 := Map.new("JovianPlanet")
 	planet2.preset = JOVIAN_PLANET_PRESET.duplicate()
 	planet2.preset.min_orbit_offset = PI
 	planet2.preset.max_orbit_offset = PI
-	map.submaps = [planet1, planet2]
+
+	var planet3 := Map.new("TerrestrialPlanet")
+	planet3.preset = TERRESTRIAL_PLANET_PRESET.duplicate()
+	planet3.preset.min_orbit_offset = 0.5 * PI
+	planet3.preset.max_orbit_offset = 0.5 * PI
+	var planet4 := Map.new("TerrestrialPlanet")
+	planet4.preset = TERRESTRIAL_PLANET_PRESET.duplicate()
+	planet4.preset.min_orbit_offset = 1.5 * PI
+	planet4.preset.max_orbit_offset = 1.5 * PI
+
+	map.submaps = [planet1, planet2, planet3, planet4]
 	start()

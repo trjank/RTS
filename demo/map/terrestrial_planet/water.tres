@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://bvmmc24trphj1"]
+
+[ext_resource type="Texture2D" uid="uid://b8hll2acj8ots" path="res://map/terrestrial_planet/water_normal_map.tres" id="1_5bgdy"]
+
+[resource]
+albedo_color = Color(0.099999905, 0, 1, 0.78431374)
+metallic_specular = 1.0
+roughness = 0.5
+normal_enabled = true
+normal_scale = 0.2
+normal_texture = ExtResource("1_5bgdy")
+uv1_triplanar = true
+stencil_flags = 2
+stencil_color = Color(1, 1, 1, 1)

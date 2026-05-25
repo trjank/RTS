@@ -1,23 +1,40 @@
-[gd_scene load_steps=6 format=3 uid="uid://cbim2p730crar"]
+[gd_scene load_steps=9 format=3 uid="uid://cbim2p730crar"]
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_ltjny"]
 [ext_resource type="Script" uid="uid://d3piswu2k7xgg" path="res://map/terrestrial_planet/terrestrial_planet.gd" id="2_3s5t7"]
+[ext_resource type="ArrayMesh" uid="uid://dxwe6ty0hckma" path="res://map/terrestrial_planet/mesh_mountain_medium.res" id="3_hpp1k"]
+[ext_resource type="Material" uid="uid://dqej8nkoler0c" path="res://map/terrestrial_planet/color_slopes.tres" id="3_swokb"]
 [ext_resource type="Material" uid="uid://t5t610eblwbo" path="res://map/planet/atmosphere.tres" id="3_vq1xi"]
+[ext_resource type="Material" uid="uid://bvmmc24trphj1" path="res://map/terrestrial_planet/water.tres" id="5_56eyt"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_vq1xi"]
-radius = 1.0
-height = 2.0
+material = ExtResource("5_56eyt")
+radius = 1.01
+height = 2.02
 
 [sub_resource type="SphereMesh" id="SphereMesh_hpp1k"]
-radius = 1.5
-height = 3.0
+radius = 1.2
+height = 2.4
 
 [node name="TerrestrialPlanet" instance=ExtResource("1_ltjny")]
 script = ExtResource("2_3s5t7")
 
-[node name="Water" type="MeshInstance3D" parent="." index="3"]
-mesh = SubResource("SphereMesh_vq1xi")
+[node name="MeshInstance3D" parent="." index="1"]
+material_override = ExtResource("3_swokb")
+instance_shader_parameters/flat_color = Color(0.20533332, 0.77, 0, 1)
+instance_shader_parameters/shore_color = Color(1, 1, 1, 1)
+instance_shader_parameters/shore_height = 1.02
+instance_shader_parameters/steep_color = Color(0.343525, 0.39, 0.33929998, 1)
+mesh = ExtResource("3_hpp1k")
 
-[node name="Atmosphere" type="MeshInstance3D" parent="." index="4"]
+[node name="Water" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
+mesh = SubResource("SphereMesh_vq1xi")
+skeleton = NodePath("../..")
+
+[node name="Atmosphere" type="MeshInstance3D" parent="MeshInstance3D" index="1"]
 material_override = ExtResource("3_vq1xi")
+instance_shader_parameters/atmosphere_color = Color(0.8269897, 1.5919749, 1.8247963, 1)
+instance_shader_parameters/density = 2.000000095
+instance_shader_parameters/fresnel_effect_strength = 2.000000095
 mesh = SubResource("SphereMesh_hpp1k")
+skeleton = NodePath("../..")

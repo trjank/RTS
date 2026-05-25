@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dqej8nkoler0c"]
+
+[ext_resource type="Shader" uid="uid://c54eyipbxrdgo" path="res://map/terrestrial_planet/colored_slopes.gdshader" id="1_4dltr"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_4dltr")
+shader_parameter/slope_color_theshold = 0.8850000420375
+shader_parameter/uv_blend_sharpness = 0.0
+shader_parameter/uv_scale = Vector3(0, 0, 0)
+shader_parameter/uv_offset = Vector3(0, 0, 0)
