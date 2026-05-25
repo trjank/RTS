@@ -1,0 +1,34 @@
+[gd_scene load_steps=9 format=3 uid="uid://b8pwym56tfmx"]
+
+[ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_miubj"]
+[ext_resource type="Script" uid="uid://se4t0qo4oph6" path="res://map/jovian_planet/jovian_planet.gd" id="2_eosxs"]
+[ext_resource type="Material" uid="uid://bwigiblaaj4y1" path="res://map/jovian_planet/jovian_gas.tres" id="3_fc2gh"]
+[ext_resource type="Shader" uid="uid://cglj04vnxxu42" path="res://map/jovian_planet/jovian_rings.gdshader" id="4_2jo2d"]
+[ext_resource type="Texture2D" uid="uid://cjugbjvydgy28" path="res://map/jovian_planet/jovian_ring_noise.tres" id="5_1hplw"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_fc2gh"]
+radius = 1.0
+height = 2.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1hplw"]
+render_priority = 0
+shader = ExtResource("4_2jo2d")
+shader_parameter/radial_noise = ExtResource("5_1hplw")
+shader_parameter/color_primary = Color(0, 0, 0, 1)
+shader_parameter/color_secondary = Color(1, 1, 1, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_eosxs"]
+size = Vector2(5, 5)
+
+[node name="JovianPlanet" instance=ExtResource("1_miubj")]
+script = ExtResource("2_eosxs")
+
+[node name="MeshInstance3D" parent="." index="1"]
+material_override = ExtResource("3_fc2gh")
+mesh = SubResource("SphereMesh_fc2gh")
+
+[node name="Rings" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
+transform = Transform3D(0.9531907, -0.3023699, 0, 0.3023699, 0.9531907, 0, 0, 0, 1, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_1hplw")
+mesh = SubResource("PlaneMesh_eosxs")
+skeleton = NodePath("../..")

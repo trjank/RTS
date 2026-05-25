@@ -50,6 +50,7 @@ visible = false
 visible = false
 
 [node name="TextureRect" type="TextureRect" parent="UI" index="4"]
+visible = false
 modulate = Color(1, 1, 1, 0.78431374)
 layout_mode = 1
 anchors_preset = 15

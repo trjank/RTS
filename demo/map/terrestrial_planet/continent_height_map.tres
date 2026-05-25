@@ -1,0 +1,5 @@
+[gd_resource type="FastNoiseLite" load_steps=0 format=3 uid="uid://c4ts7kbbt7wps"]
+
+[resource]
+noise_type = 2
+cellular_return_type = 2

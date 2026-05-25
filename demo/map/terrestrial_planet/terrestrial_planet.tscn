@@ -1,0 +1,23 @@
+[gd_scene load_steps=6 format=3 uid="uid://cbim2p730crar"]
+
+[ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_ltjny"]
+[ext_resource type="Script" uid="uid://d3piswu2k7xgg" path="res://map/terrestrial_planet/terrestrial_planet.gd" id="2_3s5t7"]
+[ext_resource type="Material" uid="uid://t5t610eblwbo" path="res://map/planet/atmosphere.tres" id="3_vq1xi"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_vq1xi"]
+radius = 1.0
+height = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_hpp1k"]
+radius = 1.5
+height = 3.0
+
+[node name="TerrestrialPlanet" instance=ExtResource("1_ltjny")]
+script = ExtResource("2_3s5t7")
+
+[node name="Water" type="MeshInstance3D" parent="." index="3"]
+mesh = SubResource("SphereMesh_vq1xi")
+
+[node name="Atmosphere" type="MeshInstance3D" parent="." index="4"]
+material_override = ExtResource("3_vq1xi")
+mesh = SubResource("SphereMesh_hpp1k")

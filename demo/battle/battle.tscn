@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=18 format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
@@ -52,11 +52,9 @@ bg_color = Color(0, 0, 0, 0.78431374)
 [sub_resource type="Environment" id="Environment_70s20"]
 background_mode = 3
 glow_enabled = true
-glow_intensity = 0.23
-glow_strength = 0.57
-glow_blend_mode = 1
-glow_hdr_threshold = 2.0
-glow_hdr_luminance_cap = 20.0
+glow_levels/2 = 1.0
+glow_levels/5 = 0.25
+glow_blend_mode = 0
 
 [sub_resource type="SphereMesh" id="SphereMesh_iorop"]
 radius = 0.2
@@ -66,7 +64,11 @@ height = 0.4
 transform_format = 1
 mesh = SubResource("SphereMesh_iorop")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7fucf"]
+shading_mode = 0
+
 [sub_resource type="SphereMesh" id="SphereMesh_7fucf"]
+material = SubResource("StandardMaterial3D_7fucf")
 radius = 0.05
 height = 0.1
 
@@ -264,6 +266,7 @@ collision_layer = 4
 collision_mask = 4
 
 [node name="OriginMarker" type="MeshInstance3D" parent="World"]
+cast_shadow = 0
 mesh = SubResource("SphereMesh_7fucf")
 
 [node name="RoundTimer" type="Timer" parent="."]

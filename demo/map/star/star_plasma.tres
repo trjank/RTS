@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://d0duy5dspoh1r"]
+
+[ext_resource type="Shader" uid="uid://bhs6d7l1yd01e" path="res://map/star/star_plasma.gdshader" id="1_8lp25"]
+[ext_resource type="NoiseTexture3D" uid="uid://cm3b1nfnfi7t4" path="res://map/star/distortion_noise.tres" id="1_nblov"]
+[ext_resource type="Texture2D" uid="uid://bxbg0bm3e8a6h" path="res://map/star/star_emission.tres" id="3_7473v"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_8lp25")
+shader_parameter/texture_emission = ExtResource("3_7473v")
+shader_parameter/uv_scale = Vector3(0.5, 0.5, 0.5)
+shader_parameter/uv_offset = Vector3(0, 0, 0)
+shader_parameter/uv_blend_sharpness = 3.0000001425
+shader_parameter/distortion_speed = 0.30000001425
+shader_parameter/distortion_strength = 0.30000001425
+shader_parameter/distortion_noise = ExtResource("1_nblov")

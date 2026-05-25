@@ -1,0 +1,13 @@
+[gd_resource type="NoiseTexture2D" load_steps=2 format=3 uid="uid://cjugbjvydgy28"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dw5i4"]
+noise_type = 0
+seed = 5
+frequency = 0.0008
+domain_warp_enabled = true
+domain_warp_type = 2
+domain_warp_amplitude = 100.0
+
+[resource]
+height = 1
+noise = SubResource("FastNoiseLite_dw5i4")

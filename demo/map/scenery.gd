@@ -10,9 +10,10 @@ const BIG_NUMBER_NOT_INF := 1.0e10
 
 # NOTE: Do NOT use preload (this variable is static)
 static var subtypes: Dictionary[String, PackedScene] = {
-	"Star": load("res://map/star.tscn"),
-	"Planet": load("res://map/planet.tscn"),
-	"Asteroid": load("res://map/asteroid.tscn")
+	"Star": load("res://map/star/star.tscn"),
+	"TerrestrialPlanet": load("res://map/terrestrial_planet/terrestrial_planet.tscn"),
+	"JovianPlanet": load("res://map/jovian_planet/jovian_planet.tscn"),
+	"Asteroid": load("res://map/asteroid/asteroid.tscn")
 }
 
 static func create(subtype: String) -> Scenery:
@@ -45,7 +46,8 @@ func get_speed() -> float:
 	return GRAVITATIONAL_CONSTANT * get_orbit_mass() / orbit_radius
 
 func get_angular_speed() -> float:
-	return get_speed() / orbit_radius
+	return 0.0
+	#return get_speed() / orbit_radius
 
 func set_mass(new_mass: float) -> void:
 	mass = maxf(new_mass, MIN_MASS)
@@ -61,7 +63,6 @@ func set_orbit_angle(new_orbit_angle: float) -> void:
 func set_orbit_radius(new_orbit_radius: float) -> void:
 	orbit_radius = maxf(new_orbit_radius, MIN_ORBIT_RADIUS)
 	update_position()
-	#queue_redraw()
 
 func set_orbit_offset(new_orbit_offset: float) -> void:
 	orbit_offset = fposmod(new_orbit_offset, TAU)
@@ -69,7 +70,8 @@ func set_orbit_offset(new_orbit_offset: float) -> void:
 
 func update_position() -> void:
 	rotation.y = orbit_angle
-	#position = orbit_radius * Vector2.from_angle(orbit_angle)
+	var position_2d := orbit_radius * Vector2.from_angle(orbit_angle)
+	position = Vector3(position_2d.x, 0.0, position_2d.y)
 
 func _ready() -> void:
 	var min_mass := float(_map.preset.get("min_mass", 0.0) )
