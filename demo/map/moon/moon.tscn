@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_r64pv"]
 [ext_resource type="Material" uid="uid://citpj5kv4ckl2" path="res://map/moon/moon_material.tres" id="2_hp1cs"]
-[ext_resource type="ArrayMesh" uid="uid://csin0kvm10gnh" path="res://map/moon/mesh_craters_medium.res" id="3_vm6sf"]
+[ext_resource type="ArrayMesh" uid="uid://cjtm8qg0o7o2b" path="res://map/moon/mesh_craters_low.res" id="3_vm6sf"]
 
 [node name="Moon" instance=ExtResource("1_r64pv")]
 

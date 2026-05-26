@@ -14,7 +14,6 @@ color_ramp = SubResource("Gradient_tlh15")
 seamless = true
 
 [resource]
-albedo_color = Color(1, 0.62, 0.62, 1)
 albedo_texture = SubResource("NoiseTexture2D_jsk3o")
 uv1_scale = Vector3(0.2, 0.2, 0.2)
 uv1_triplanar = true

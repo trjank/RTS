@@ -13,13 +13,14 @@ radius = 1.01
 height = 2.02
 
 [sub_resource type="SphereMesh" id="SphereMesh_hpp1k"]
-radius = 1.2
-height = 2.4
+radius = 1.1
+height = 2.2
 
 [node name="TerrestrialPlanet" instance=ExtResource("1_ltjny")]
 script = ExtResource("2_3s5t7")
 
 [node name="MeshInstance3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, -0.9983418, 0.05756398, 0, -0.05756398, -0.9983418, 0, 0, 0)
 material_override = ExtResource("3_swokb")
 instance_shader_parameters/flat_color = Color(0.20533332, 0.77, 0, 1)
 instance_shader_parameters/shore_color = Color(1, 1, 1, 1)

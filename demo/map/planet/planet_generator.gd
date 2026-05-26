@@ -55,7 +55,7 @@ static func make_low_poly(mesh: Mesh) -> ArrayMesh:
 	return st.commit()
 
 func _run() -> void:
-	var resolution := RESOLUTION_HIGH
+	var resolution := RESOLUTION_MEDIUM
 	var radius := 1.0
 	var height_variation := 0.02
 	var height_map := preload("res://map/moon/crater_height_map.tres")

@@ -15,11 +15,28 @@ var capturable := true:
 var alloy_per_sec := 0.0
 var energy_per_sec := 0.0
 var capture_progress := 0.0
-var team_owner: Team
 var display_name: String:
 	set = set_display_name
 var radius := MIN_RADIUS:
 	set = set_radius
+
+var _team_owner: Team
+var _team_ship_count: Dictionary[Team, int] = {}
+
+static func _ship_to_team(ship: Ship) -> Team:
+	return ship.player_owner.team if ship.player_owner != null else null
+
+func is_contested() -> bool:
+	return _team_ship_count.size() > 1
+
+func is_captured() -> bool:
+	return _team_owner != null
+
+func get_team_owner() -> Team:
+	return _team_owner
+
+func count_capturing_ships(team: Team) -> int:
+	return _team_ship_count.get(team, 0)
 
 func set_radius(new_radius: float) -> void:
 	radius = maxf(new_radius, MIN_RADIUS)
@@ -48,3 +65,30 @@ func _ready() -> void:
 	radius = _rng.randf_range(min_radius, max_radius)
 	display_name = _map.preset.get("display_name", "")
 	always_upright.position = Vector3.ZERO
+
+func recalculate_capture_progress() -> void:
+	_team_ship_count.clear()
+	var old_team_owner := _team_owner
+	_team_owner = null
+	#
+	for team in zone.get_overlapping_bodies().map(_ship_to_team):
+		_team_ship_count[team] = _team_ship_count.get(team, 0) + 1
+	for team in _team_ship_count:
+		_team_owner = team if _team_owner == null or _team_ship_count[team] > _team_ship_count[_team_owner] else _team_owner
+	# Notify teams
+	if old_team_owner == _team_owner:
+		return
+	if old_team_owner != null:
+		old_team_owner.register_loss(self)
+	if _team_owner != null:
+		_team_owner.register_capture(self)
+
+func _on_area_3d_body_entered(body: Node3D) -> void:
+	assert(body is Ship)
+	#
+	recalculate_capture_progress()
+
+func _on_area_3d_body_exited(body: Node3D) -> void:
+	assert(body is Ship)
+	#
+	recalculate_capture_progress()

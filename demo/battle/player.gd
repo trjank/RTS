@@ -48,9 +48,9 @@ func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 	ship.position = spawnpoint
 	return ship
 
-func register_loss(unit: Unit) -> void:
+func register_death(unit: Unit) -> void:
 	if team != null:
-		team.register_loss(unit)
+		team.register_death(unit)
 	# TODO: Additional penalties?
 
 func register_kill(unit: Unit) -> void:
