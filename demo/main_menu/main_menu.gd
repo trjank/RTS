@@ -1,21 +1,21 @@
 class_name MainMenu extends Battle
 
 const STAR_PRESET := {
-	"display_name": "STAR",
+	"display_name": "Star",
 	"min_mass": 100.0,
 	"max_mass": 100.0,
 	"min_radius": 5.0,
 	"max_radius": 5.0
 }
 const BLACK_HOLE_PRESET := {
-	"display_name": "BLACK HOLE",
+	"display_name": "Black Hole",
 	"min_mass": 100_000.0,
 	"max_mass": 100_000.0,
 	"min_radius": 1_000.0,
 	"max_radius": 1_000.0
 }
 const JOVIAN_PLANET_PRESET := {
-	"display_name": "JOVIAN PLANET",
+	"display_name": "Jupiter",
 	"min_mass": 1_000.0,
 	"max_mass": 1_000.0,
 	"min_radius": 4.0,
@@ -26,7 +26,7 @@ const JOVIAN_PLANET_PRESET := {
 	"max_orbit_offset": 0.0
 }
 const TERRESTRIAL_PLANET_PRESET := {
-	"display_name": "TERRESTRIAL PLANET",
+	"display_name": "Terran",
 	"min_mass": 1_000.0,
 	"max_mass": 1_000.0,
 	"min_radius": 5.0,
@@ -37,7 +37,7 @@ const TERRESTRIAL_PLANET_PRESET := {
 	"max_orbit_offset": 0.0
 }
 const MOON_PRESET := {
-	"display_name": "MOON",
+	"display_name": "Moon",
 	"min_mass": 1_000.0,
 	"max_mass": 1_000.0,
 	"min_radius": 3.0,

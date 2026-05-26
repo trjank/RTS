@@ -1,10 +1,9 @@
 class_name Planet extends Scenery
 
-const UI_OFFSET := 1.0
+const LABEL_OFFSET_METERS := 2.0
 const MIN_RADIUS := 0.0
 
 @export var always_upright: Node3D
-@export var offset: Node3D
 @export var label: Label3D
 @export var mesh_instance: MeshInstance3D
 @export var zone: Area3D
@@ -41,13 +40,13 @@ func count_capturing_ships(team: Team) -> int:
 func set_radius(new_radius: float) -> void:
 	radius = maxf(new_radius, MIN_RADIUS)
 	zone_shape.shape.radius = radius
-	offset.position.z = -radius - UI_OFFSET
+	label.position.z = -radius - LABEL_OFFSET_METERS
 	# NOTE: Ensure the mesh's size is one for this to work
 	mesh_instance.scale = radius * Vector3.ONE
 
 func set_display_name(new_display_name: String) -> void:
 	display_name = new_display_name
-	label.text = display_name
+	label.text = "%s | %.1f" % [display_name, alloy_per_sec]
 
 func set_capturable(is_capturable: bool) -> void:
 	capturable = is_capturable

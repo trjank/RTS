@@ -4,11 +4,10 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_uj2kf"]
 
-[node name="Planet" type="Node3D" node_paths=PackedStringArray("always_upright", "offset", "label", "mesh_instance", "zone", "zone_shape")]
+[node name="Planet" type="Node3D" node_paths=PackedStringArray("always_upright", "label", "mesh_instance", "zone", "zone_shape")]
 script = ExtResource("1_3aqce")
 always_upright = NodePath("AlwaysUpright")
-offset = NodePath("AlwaysUpright/Offset")
-label = NodePath("AlwaysUpright/Offset/Name")
+label = NodePath("AlwaysUpright/Label3D")
 mesh_instance = NodePath("MeshInstance3D")
 zone = NodePath("Area3D")
 zone_shape = NodePath("Area3D/CollisionShape3D")
@@ -16,25 +15,16 @@ metadata/_custom_type_script = "uid://yubit2roc71n"
 
 [node name="AlwaysUpright" type="Node3D" parent="."]
 
-[node name="Offset" type="Node3D" parent="AlwaysUpright"]
-
-[node name="Name" type="Label3D" parent="AlwaysUpright/Offset"]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, -1.3595663)
-outline_modulate = Color(1, 1, 1, 1)
-text = "PLANET"
-outline_size = 5
-
-[node name="Alloy" type="Label3D" parent="AlwaysUpright/Offset"]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, -0.8029549)
-outline_modulate = Color(1, 1, 1, 1)
-text = "Alloy: 10"
-outline_size = 0
-
-[node name="Energy" type="Label3D" parent="AlwaysUpright/Offset"]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, -1.0510207)
-outline_modulate = Color(1, 1, 1, 1)
-text = "Energy: 10"
-outline_size = 0
+[node name="Label3D" type="Label3D" parent="AlwaysUpright"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+billboard = 1
+no_depth_test = true
+fixed_size = true
+render_priority = 10
+outline_render_priority = 9
+text = "Planet"
+font_size = 8
+outline_size = 8
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 
