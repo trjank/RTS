@@ -36,6 +36,17 @@ const TERRESTRIAL_PLANET_PRESET := {
 	"min_orbit_offset": 0.0,
 	"max_orbit_offset": 0.0
 }
+const MOON_PRESET := {
+	"display_name": "MOON",
+	"min_mass": 1_000.0,
+	"max_mass": 1_000.0,
+	"min_radius": 5.0,
+	"max_radius": 5.0,
+	"min_orbit_radius": 20.0,
+	"max_orbit_radius": 20.0,
+	"min_orbit_offset": 0.0,
+	"max_orbit_offset": 0.0
+}
 
 func _on_play_button_pressed() -> void:
 	globals.main.state = Main.State.BATTLE
@@ -70,5 +81,14 @@ func _ready() -> void:
 	planet4.preset.min_orbit_offset = 1.5 * PI
 	planet4.preset.max_orbit_offset = 1.5 * PI
 
-	map.submaps = [planet1, planet2, planet3, planet4]
+	var moon1 := Map.new("Moon")
+	moon1.preset = MOON_PRESET.duplicate()
+	moon1.preset.min_orbit_offset = 0.25 * PI
+	moon1.preset.max_orbit_offset = 0.25 * PI
+	var moon2 := Map.new("Moon")
+	moon2.preset = MOON_PRESET.duplicate()
+	moon2.preset.min_orbit_offset = 1.25 * PI
+	moon2.preset.max_orbit_offset = 1.25 * PI
+
+	map.submaps = [planet1, planet2, planet3, planet4, moon1, moon2]
 	start()

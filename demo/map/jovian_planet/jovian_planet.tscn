@@ -2,9 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_miubj"]
 [ext_resource type="Script" uid="uid://se4t0qo4oph6" path="res://map/jovian_planet/jovian_planet.gd" id="2_eosxs"]
-[ext_resource type="Material" uid="uid://bwigiblaaj4y1" path="res://map/jovian_planet/jovian_gas.tres" id="3_fc2gh"]
-[ext_resource type="Shader" uid="uid://cglj04vnxxu42" path="res://map/jovian_planet/jovian_rings.gdshader" id="4_2jo2d"]
-[ext_resource type="Texture2D" uid="uid://cjugbjvydgy28" path="res://map/jovian_planet/jovian_ring_noise.tres" id="5_1hplw"]
+[ext_resource type="Material" uid="uid://bwigiblaaj4y1" path="res://map/jovian_planet/jovian_material.tres" id="3_fc2gh"]
+[ext_resource type="Shader" uid="uid://cglj04vnxxu42" path="res://map/jovian_planet/rings.gdshader" id="4_2jo2d"]
+[ext_resource type="Texture2D" uid="uid://cjugbjvydgy28" path="res://map/jovian_planet/ring_noise.tres" id="5_1hplw"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_fc2gh"]
 radius = 1.0

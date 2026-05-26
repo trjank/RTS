@@ -13,7 +13,8 @@ static var subtypes: Dictionary[String, PackedScene] = {
 	"Star": load("res://map/star/star.tscn"),
 	"TerrestrialPlanet": load("res://map/terrestrial_planet/terrestrial_planet.tscn"),
 	"JovianPlanet": load("res://map/jovian_planet/jovian_planet.tscn"),
-	"Asteroid": load("res://map/asteroid/asteroid.tscn")
+	"Asteroid": load("res://map/asteroid/asteroid.tscn"),
+	"Moon": load("res://map/moon/moon.tscn")
 }
 
 static func create(subtype: String) -> Scenery:

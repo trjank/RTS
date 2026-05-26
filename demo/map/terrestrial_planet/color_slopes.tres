@@ -1,11 +1,14 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dqej8nkoler0c"]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://dqej8nkoler0c"]
 
 [ext_resource type="Shader" uid="uid://c54eyipbxrdgo" path="res://map/terrestrial_planet/colored_slopes.gdshader" id="1_4dltr"]
+[ext_resource type="Texture2D" uid="uid://dl7in75rg2q8h" path="res://map/terrestrial_planet/biome_color.tres" id="2_hvr6n"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_4dltr")
-shader_parameter/slope_color_theshold = 0.8850000420375
-shader_parameter/uv_blend_sharpness = 0.0
-shader_parameter/uv_scale = Vector3(0, 0, 0)
+shader_parameter/biome_texture = ExtResource("2_hvr6n")
+shader_parameter/slope_color_theshold = 0.5510000261725
+shader_parameter/slope_color_blend = 0.8810000418475
+shader_parameter/uv_blend_sharpness = 0.50000002375
+shader_parameter/uv_scale = Vector3(0.2, 0.2, 0.2)
 shader_parameter/uv_offset = Vector3(0, 0, 0)

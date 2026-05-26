@@ -38,13 +38,30 @@ static func generate_mesh(resolution: int, radius: float, height_variation: floa
 	st.generate_tangents()
 	return st.commit()
 
+## This gives the mesh a stylized look, so low resolutions do not look blurry
+static func make_low_poly(mesh: Mesh) -> ArrayMesh:
+	var st := SurfaceTool.new()
+	var arrays := mesh.surface_get_arrays(0)
+	var vertices = arrays[Mesh.ARRAY_VERTEX]
+	var indices = arrays[Mesh.ARRAY_INDEX]
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	#
+	for i in indices:
+		st.set_smooth_group(-1)
+		st.add_vertex(vertices[i] )
+	#
+	st.generate_normals()
+	st.generate_tangents()
+	return st.commit()
+
 func _run() -> void:
-	var resolution := RESOLUTION_MEDIUM
+	var resolution := RESOLUTION_HIGH
 	var radius := 1.0
-	var height_variation := 0.2
-	var height_map := preload("res://map/terrestrial_planet/mountain_height_map.tres")
-	var color_ramp := preload("res://map/terrestrial_planet/mountain_color_ramp.tres")
+	var height_variation := 0.02
+	var height_map := preload("res://map/moon/crater_height_map.tres")
+	var color_ramp := preload("res://map/moon/crater_color_ramp.tres")
 	#
 	var mesh := generate_mesh(resolution, radius, height_variation, height_map, color_ramp)
+	mesh = make_low_poly(mesh)
 	ResourceSaver.save(mesh, EXPORT_PATH)
 	print("(PlanetGenerator) Exported mesh to %s" % EXPORT_PATH)

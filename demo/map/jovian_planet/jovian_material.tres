@@ -1,6 +1,6 @@
 [gd_resource type="StandardMaterial3D" load_steps=7 format=3 uid="uid://bwigiblaaj4y1"]
 
-[ext_resource type="Texture2D" uid="uid://dmgwg6e67n0vg" path="res://map/jovian_planet/jovian_gas_noise.tres" id="1_4sjsl"]
+[ext_resource type="Texture2D" uid="uid://dmgwg6e67n0vg" path="res://map/jovian_planet/gas_noise.tres" id="1_4sjsl"]
 
 [sub_resource type="Gradient" id="Gradient_tereu"]
 offsets = PackedFloat32Array(0.36864406, 0.4957627)

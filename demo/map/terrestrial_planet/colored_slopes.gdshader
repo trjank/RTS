@@ -2,6 +2,7 @@ shader_type spatial;
 
 uniform sampler2D biome_texture;
 uniform float slope_color_theshold : hint_range(0.0, 1.0) = 0.95;
+uniform float slope_color_blend : hint_range(0.0, 1.0) = 0.1;
 uniform float uv_blend_sharpness : hint_range(0.0, 1.0);
 uniform vec3 uv_scale;
 uniform vec3 uv_offset;
@@ -25,7 +26,7 @@ vec4 triplanar_texture(sampler2D p_sampler, vec3 p_weights, vec3 p_triplanar_pos
 }
 
 void vertex() {
-	flatness = step(slope_color_theshold, dot(NORMAL, normalize(VERTEX) ) );
+	flatness = smoothstep(slope_color_theshold, slope_color_theshold + slope_color_blend, dot(NORMAL, normalize(VERTEX) ) );
 	height = length(VERTEX);
 
 	uv_power_normal = pow(abs(NORMAL), vec3(uv_blend_sharpness));
