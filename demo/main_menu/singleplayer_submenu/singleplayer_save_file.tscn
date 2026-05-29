@@ -1,0 +1,45 @@
+[gd_scene load_steps=9 format=3 uid="uid://cxny6jcxs3vxj"]
+
+[ext_resource type="Script" uid="uid://g3skw8c60mld" path="res://main_menu/singleplayer_submenu/singleplayer_save_file.gd" id="1_guufy"]
+[ext_resource type="StyleBox" uid="uid://bio5fmtu6r7bp" path="res://main_menu/singleplayer_submenu/save_button_normal.tres" id="1_n42qt"]
+[ext_resource type="StyleBox" uid="uid://clfc5rl1d7svt" path="res://main_menu/singleplayer_submenu/save_button_pressed.tres" id="2_guufy"]
+[ext_resource type="StyleBox" uid="uid://oy8ce6x0wj6r" path="res://main_menu/singleplayer_submenu/save_button_hover.tres" id="3_xdjbn"]
+[ext_resource type="Texture2D" uid="uid://b2p0vq6rkplpu" path="res://icons/star.png" id="4_5i4s5"]
+[ext_resource type="Texture2D" uid="uid://oachrng7auhu" path="res://icons/delete.png" id="5_tlv6q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_52lbq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t227v"]
+
+[node name="SingleplayerSaveFile" type="HBoxContainer"]
+theme_override_constants/separation = 25
+script = ExtResource("1_guufy")
+
+[node name="LoadSave" type="Button" parent="."]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("1_n42qt")
+theme_override_styles/pressed = ExtResource("2_guufy")
+theme_override_styles/hover = ExtResource("3_xdjbn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_52lbq")
+text = "Save File 1"
+icon = ExtResource("4_5i4s5")
+expand_icon = true
+
+[node name="DeleteSave" type="Button" parent="."]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.5294118, 0.5294118, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t227v")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t227v")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t227v")
+icon = ExtResource("5_tlv6q")
+expand_icon = true
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "10/10/26"
+
+[connection signal="pressed" from="LoadSave" to="." method="_on_load_save_pressed"]
+[connection signal="pressed" from="DeleteSave" to="." method="_on_delete_save_pressed"]

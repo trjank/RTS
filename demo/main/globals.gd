@@ -34,6 +34,7 @@ func _init() -> void:
 	ship_db.load_ships(LOAD_LIMIT_SHIPS)
 	var fleets := ship_db.load_fleets(LOAD_LIMIT_FLEETS)
 	var fleet := ship_db.get_fleet(config.get_value("player", "fleet_id", -1) )
+	_load_input_map()
 	client.name = config.get_value("player", "name", "Unnamed")
 	client.color = config.get_value("player", "color", Color.WHITE)
 	if fleet != null:
@@ -55,6 +56,21 @@ func _load_json() -> void:
 	if error_flags & PartManager.LoadError.INVALID_PART_PROPERTIES:
 		push_error("Invalid part properties")
 
+func _load_input_map_actions(action: StringName, events: Array) -> void:
+	for event in events:
+		InputMap.action_add_event(action, event)
+
+func _load_input_map() -> void:
+	if not config.has_section("keybinds"):
+		return
+	for action in config.get_section_keys("keybinds"):
+		InputMap.action_erase_events(action)
+		_load_input_map_actions(action, config.get_value("keybinds", action) )
+
+func _save_input_map() -> void:
+	for action in KeybindRow.get_custom_actions():
+		config.set_value("keybinds", action, InputMap.action_get_events(action) )
+
 func _notification(what: int) -> void:
 	# We need to save account data before the game closes
 	if what != NOTIFICATION_WM_CLOSE_REQUEST:
@@ -62,14 +78,15 @@ func _notification(what: int) -> void:
 	# NOTE: SQLite autosaves, so we do not need to manually save databases
 	config.set_value("player", "name", client.name)
 	config.set_value("player", "color", client.color)
+	_save_input_map()
 	#config.set_value("player", "fleet_id", client.fleet.id)
 	config.save(CONFIG_PATH)
 
+## Returns average time in microseconds
 func benchmark(f: Callable, iterations := 100) -> float:
 	var start := Time.get_ticks_usec()
 	for i in iterations:
 		await f.call()
 	var end := Time.get_ticks_usec()
 	var dt := float(end - start)
-	# Return average time in microseconds
 	return dt / iterations

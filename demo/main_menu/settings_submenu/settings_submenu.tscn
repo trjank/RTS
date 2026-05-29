@@ -1,10 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://b1j227w71blew"]
+[gd_scene load_steps=13 format=3 uid="uid://b1j227w71blew"]
 
 [ext_resource type="Script" uid="uid://b4jhjs6yiaehh" path="res://main_menu/settings_submenu/settings_submenu.gd" id="1_evcc7"]
 [ext_resource type="Texture2D" uid="uid://ch5e75wsi4kws" path="res://icons/back_arrow.png" id="1_quw4y"]
 [ext_resource type="StyleBox" uid="uid://7wpi6e0kyjg7" path="res://main_menu/back_button_normal.tres" id="2_qr2ik"]
 [ext_resource type="StyleBox" uid="uid://ddg37eqlcw8tx" path="res://main_menu/h_seperator.tres" id="4_qjcg3"]
 [ext_resource type="Texture2D" uid="uid://c5a8ujhihnlpy" path="res://icons/slider_grabber.png" id="4_wvtck"]
+[ext_resource type="Texture2D" uid="uid://4wyb3hdvbquj" path="res://icons/reset.png" id="6_81w0t"]
+[ext_resource type="StyleBox" uid="uid://brnttdq3hw3qv" path="res://main_menu/settings_submenu/keybind_reset_button_normal.tres" id="6_wp64a"]
+[ext_resource type="StyleBox" uid="uid://c0sk5i4rrnngc" path="res://main_menu/settings_submenu/keybind_reset_button_pressed.tres" id="7_yccn8"]
+[ext_resource type="StyleBox" uid="uid://cmgl01ocl3g50" path="res://main_menu/settings_submenu/keybind_reset_button_hover.tres" id="8_f3nkv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvtck"]
 content_margin_top = 10.0
@@ -22,17 +26,12 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ey76v"]
-content_margin_left = 30.0
-content_margin_top = 15.0
-content_margin_right = 30.0
-content_margin_bottom = 15.0
-bg_color = Color(0.35099998, 0.45, 0.37575, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wp64a"]
 
-[node name="SettingsSubmenu" type="VBoxContainer" node_paths=PackedStringArray("keybinds", "reset_button", "volume_value", "music_volume_value")]
+[node name="SettingsSubmenu" type="VBoxContainer" node_paths=PackedStringArray("keybind_rows", "reset_button", "volume_value", "music_volume_value")]
 theme_override_constants/separation = 75
 script = ExtResource("1_evcc7")
-keybinds = NodePath("Keybinds")
+keybind_rows = NodePath("Keybinds/KeybindRows")
 reset_button = NodePath("Keybinds/ResetButton")
 volume_value = NodePath("Sound/GridContainer/VolumeValue")
 music_volume_value = NodePath("Sound/GridContainer/MusicVolumeValue")
@@ -129,7 +128,7 @@ text = "100"
 [node name="VolumeSlider" type="HSlider" parent="Sound/GridContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 0
 size_flags_vertical = 4
 theme_override_icons/grabber = ExtResource("4_wvtck")
 theme_override_icons/grabber_highlight = ExtResource("4_wvtck")
@@ -152,7 +151,7 @@ text = "100"
 [node name="MusicVolumeSlider" type="HSlider" parent="Sound/GridContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 10
+size_flags_horizontal = 2
 size_flags_vertical = 4
 theme_override_icons/grabber = ExtResource("4_wvtck")
 theme_override_icons/grabber_highlight = ExtResource("4_wvtck")
@@ -178,9 +177,21 @@ theme_override_styles/separator = ExtResource("4_qjcg3")
 
 [node name="ResetButton" type="Button" parent="Keybinds"]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_ey76v")
+size_flags_horizontal = 0
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 48
+theme_override_styles/normal = ExtResource("6_wp64a")
+theme_override_styles/pressed = ExtResource("7_yccn8")
+theme_override_styles/hover = ExtResource("8_f3nkv")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wp64a")
 text = "Reset To Defaults"
+icon = ExtResource("6_81w0t")
+
+[node name="KeybindRows" type="VBoxContainer" parent="Keybinds"]
+layout_mode = 2
+theme_override_constants/separation = 20
 
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="value_changed" from="Sound/GridContainer/VolumeSlider" to="." method="_on_volume_slider_value_changed"]
 [connection signal="value_changed" from="Sound/GridContainer/MusicVolumeSlider" to="." method="_on_music_volume_slider_value_changed"]
+[connection signal="pressed" from="Keybinds/ResetButton" to="." method="_on_reset_button_pressed"]
