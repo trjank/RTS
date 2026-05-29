@@ -22,6 +22,9 @@ var config := ConfigFile.new()
 var ship_db := ShipDatabase.new()
 var part_manager := PartManager.new()
 
+var volume := 0.0
+var music_volume := 0.0
+
 func _init() -> void:
 	_load_json()
 	config.load(CONFIG_PATH)

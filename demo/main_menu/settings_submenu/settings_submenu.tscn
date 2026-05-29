@@ -1,0 +1,186 @@
+[gd_scene load_steps=9 format=3 uid="uid://b1j227w71blew"]
+
+[ext_resource type="Script" uid="uid://b4jhjs6yiaehh" path="res://main_menu/settings_submenu/settings_submenu.gd" id="1_evcc7"]
+[ext_resource type="Texture2D" uid="uid://ch5e75wsi4kws" path="res://icons/back_arrow.png" id="1_quw4y"]
+[ext_resource type="StyleBox" uid="uid://7wpi6e0kyjg7" path="res://main_menu/back_button_normal.tres" id="2_qr2ik"]
+[ext_resource type="StyleBox" uid="uid://ddg37eqlcw8tx" path="res://main_menu/h_seperator.tres" id="4_qjcg3"]
+[ext_resource type="Texture2D" uid="uid://c5a8ujhihnlpy" path="res://icons/slider_grabber.png" id="4_wvtck"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvtck"]
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.156, 0.2, 0.16700001, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qjcg3"]
+bg_color = Color(0.54599994, 0.7, 0.5845, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ey76v"]
+content_margin_left = 30.0
+content_margin_top = 15.0
+content_margin_right = 30.0
+content_margin_bottom = 15.0
+bg_color = Color(0.35099998, 0.45, 0.37575, 1)
+
+[node name="SettingsSubmenu" type="VBoxContainer" node_paths=PackedStringArray("keybinds", "reset_button", "volume_value", "music_volume_value")]
+theme_override_constants/separation = 75
+script = ExtResource("1_evcc7")
+keybinds = NodePath("Keybinds")
+reset_button = NodePath("Keybinds/ResetButton")
+volume_value = NodePath("Sound/GridContainer/VolumeValue")
+music_volume_value = NodePath("Sound/GridContainer/MusicVolumeValue")
+metadata/_tab_index = 2
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 32
+theme_override_styles/normal = ExtResource("2_qr2ik")
+theme_override_styles/pressed = ExtResource("2_qr2ik")
+theme_override_styles/hover = ExtResource("2_qr2ik")
+text = "Back"
+icon = ExtResource("1_quw4y")
+alignment = 0
+
+[node name="General" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="General"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "General"
+
+[node name="HSeparator" type="HSeparator" parent="General"]
+layout_mode = 2
+theme_override_styles/separator = ExtResource("4_qjcg3")
+
+[node name="GridContainer" type="GridContainer" parent="General"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+columns = 3
+
+[node name="MovementSpeedLabel" type="Label" parent="General/GridContainer"]
+layout_mode = 2
+text = "Movement speed"
+
+[node name="MovementSpeedValue" type="Label" parent="General/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "100"
+
+[node name="MovementSpeedSlider" type="HSlider" parent="General/GridContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_icons/grabber = ExtResource("4_wvtck")
+theme_override_icons/grabber_highlight = ExtResource("4_wvtck")
+theme_override_styles/slider = SubResource("StyleBoxFlat_wvtck")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_qjcg3")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_qjcg3")
+value = 50.0
+
+[node name="Sound" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Sound"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "Sound"
+
+[node name="HSeparator" type="HSeparator" parent="Sound"]
+layout_mode = 2
+theme_override_styles/separator = ExtResource("4_qjcg3")
+
+[node name="GridContainer" type="GridContainer" parent="Sound"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+columns = 3
+
+[node name="VolumeLabel" type="Label" parent="Sound/GridContainer"]
+layout_mode = 2
+text = "Volume"
+
+[node name="VolumeValue" type="Label" parent="Sound/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "100"
+
+[node name="VolumeSlider" type="HSlider" parent="Sound/GridContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_icons/grabber = ExtResource("4_wvtck")
+theme_override_icons/grabber_highlight = ExtResource("4_wvtck")
+theme_override_styles/slider = SubResource("StyleBoxFlat_wvtck")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_qjcg3")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_qjcg3")
+value = 50.0
+
+[node name="MusicVolumeLabel" type="Label" parent="Sound/GridContainer"]
+layout_mode = 2
+text = "Music Volume"
+
+[node name="MusicVolumeValue" type="Label" parent="Sound/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "100"
+
+[node name="MusicVolumeSlider" type="HSlider" parent="Sound/GridContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+theme_override_icons/grabber = ExtResource("4_wvtck")
+theme_override_icons/grabber_highlight = ExtResource("4_wvtck")
+theme_override_styles/slider = SubResource("StyleBoxFlat_wvtck")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_qjcg3")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_qjcg3")
+value = 50.0
+
+[node name="Keybinds" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Keybinds"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "Keybinds"
+
+[node name="HSeparator" type="HSeparator" parent="Keybinds"]
+layout_mode = 2
+theme_override_styles/separator = ExtResource("4_qjcg3")
+
+[node name="ResetButton" type="Button" parent="Keybinds"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_ey76v")
+text = "Reset To Defaults"
+
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="value_changed" from="Sound/GridContainer/VolumeSlider" to="." method="_on_volume_slider_value_changed"]
+[connection signal="value_changed" from="Sound/GridContainer/MusicVolumeSlider" to="." method="_on_music_volume_slider_value_changed"]

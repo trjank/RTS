@@ -3,7 +3,7 @@ class_name ShipsScreen extends Node
 signal fleet_changed(new_fleet: Fleet)
 
 const BUTTON_SIZE := Vector2(250.0, 250.0)
-const SELECTED_COLOR := Color(2.454, 0.813, 0.813, 1.0)
+const SELECTED_COLOR := Color(1.112, 1.457, 1.825, 1.0)
 
 @export var ships_box: HFlowContainer
 @export var fleets_box: VBoxContainer
@@ -56,7 +56,7 @@ func load_ships_and_fleets() -> void:
 
 func _reorder_children() -> void:
 	# NOTE: This orders the ship buttons to be BEFORE these nodes
-	create_ship_button.move_to_front()
+	create_ship_button.get_parent().move_to_front()
 	delete_ship_box.move_to_front()
 
 func load_ship(new_ship: ShipData) -> void:

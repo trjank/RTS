@@ -1,12 +1,18 @@
-[gd_scene load_steps=18 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=21 format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="2_wu24d"]
 [ext_resource type="Script" uid="uid://butv3bkqoil8c" path="res://battle/unit_formation.gd" id="2_xooj7"]
 [ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://main/mouse_selection.tscn" id="3_70s20"]
+[ext_resource type="Texture2D" uid="uid://cd8t3je15dn86" path="res://icons/stats_cost.png" id="3_hvjow"]
 [ext_resource type="Texture2D" uid="uid://cx7lh1wwowlht" path="res://icons/menu.png" id="3_iorop"]
+[ext_resource type="StyleBox" uid="uid://qbg2x0y2va1d" path="res://battle/button_normal.tres" id="3_rxlun"]
 [ext_resource type="Script" uid="uid://bwysy4g5mfiae" path="res://battle/formation_indicator.gd" id="4_7fucf"]
+[ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_qybyd"]
+[ext_resource type="StyleBox" uid="uid://cpus28fjbdw4d" path="res://battle/button_pressed.tres" id="4_rxlun"]
+[ext_resource type="Texture2D" uid="uid://bpeacb6y6j5no" path="res://icons/hourglass.png" id="5_eu6g2"]
+[ext_resource type="StyleBox" uid="uid://dpnhdvo8bfxyx" path="res://battle/button_hover.tres" id="5_vlrs1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1kiu"]
 content_margin_left = 0.0
@@ -17,37 +23,11 @@ bg_color = Color(0.26270002, 0.30561998, 0.37, 0.39215687)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wu24d"]
 content_margin_left = 50.0
-content_margin_top = 30.0
+content_margin_top = 50.0
 content_margin_right = 50.0
-content_margin_bottom = 30.0
-bg_color = Color(0, 0, 0, 0.5)
-border_width_left = 2
-border_width_right = 2
-border_width_bottom = 2
+content_margin_bottom = 50.0
+bg_color = Color(0, 0, 0, 0)
 border_color = Color(1, 1, 1, 1)
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xooj7"]
-content_margin_left = 30.0
-content_margin_top = 20.0
-content_margin_right = 30.0
-content_margin_bottom = 20.0
-bg_color = Color(0, 0, 0, 0.5)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iorop"]
-content_margin_left = 25.0
-content_margin_top = 15.0
-content_margin_right = 25.0
-content_margin_bottom = 15.0
-bg_color = Color(1, 1, 1, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4mnim"]
-content_margin_left = 30.0
-content_margin_top = 20.0
-content_margin_right = 30.0
-content_margin_bottom = 20.0
-bg_color = Color(0, 0, 0, 0.78431374)
 
 [sub_resource type="Environment" id="Environment_70s20"]
 background_mode = 3
@@ -117,81 +97,76 @@ theme_override_constants/margin_bottom = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="UI"]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -290.5
-offset_right = 290.5
-offset_bottom = 80.0
-grow_horizontal = 2
+offset_right = 255.0
+offset_bottom = 188.0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_wu24d")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/PanelContainer"]
+[node name="GridContainer" type="GridContainer" parent="UI/PanelContainer"]
 layout_mode = 2
-size_flags_vertical = 0
-theme_override_constants/separation = 0
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 10
+columns = 2
 
-[node name="Alloy" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+[node name="AlloyIcon" type="TextureRect" parent="UI/PanelContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+texture = ExtResource("3_hvjow")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AlloyCount" type="RichTextLabel" parent="UI/PanelContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_colors/default_color = Color(0.654902, 0.792157, 1, 1)
-text = "Alloy: "
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
-vertical_alignment = 1
-
-[node name="AlloyCount" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
 theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
 text = "1000"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Energy" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+[node name="EnergyIcon" type="TextureRect" parent="UI/PanelContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 4
 size_flags_vertical = 0
-theme_override_colors/default_color = Color(1, 1, 0.431373, 1)
-text = "       Energy: "
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
-vertical_alignment = 1
+texture = ExtResource("4_qybyd")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="EnergyCount" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+[node name="EnergyCount" type="RichTextLabel" parent="UI/PanelContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/default_color = Color(1, 0.912, 0.33999997, 1)
+theme_override_colors/font_outline_color = Color(1, 0.9137255, 0.34117648, 1)
+theme_override_constants/outline_size = 5
 text = "1000"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Time" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+[node name="TimeIcon" type="TextureRect" parent="UI/PanelContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 4
 size_flags_vertical = 0
-theme_override_colors/default_color = Color(0.43, 1, 0.6675, 1)
-text = "       Time: "
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
-vertical_alignment = 1
+texture = ExtResource("5_eu6g2")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="TimeLeft" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer"]
+[node name="TimeLeft" type="RichTextLabel" parent="UI/PanelContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/default_color = Color(0.38, 1, 0.50400007, 1)
+theme_override_colors/font_outline_color = Color(0.38039216, 1, 0.5058824, 1)
+theme_override_constants/outline_size = 5
 text = "29m 30s"
 fit_content = true
 scroll_active = false
@@ -208,28 +183,29 @@ offset_bottom = 70.0
 grow_horizontal = 0
 theme_override_constants/separation = 15
 
-[node name="MenuButton" type="Button" parent="UI/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 15
-theme_override_constants/icon_max_width = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_xooj7")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_iorop")
-theme_override_styles/hover = SubResource("StyleBoxFlat_4mnim")
-text = "Menu
-"
-icon = ExtResource("3_iorop")
-
 [node name="DesignButton" type="Button" parent="UI/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_xooj7")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_iorop")
-theme_override_styles/hover = SubResource("StyleBoxFlat_4mnim")
+theme_override_styles/normal = ExtResource("3_rxlun")
+theme_override_styles/pressed = ExtResource("4_rxlun")
+theme_override_styles/hover = ExtResource("5_vlrs1")
 text = "Design"
 icon = ExtResource("2_wu24d")
 
+[node name="MenuButton" type="Button" parent="UI/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 32
+theme_override_styles/normal = ExtResource("3_rxlun")
+theme_override_styles/pressed = ExtResource("4_rxlun")
+theme_override_styles/hover = ExtResource("5_vlrs1")
+text = "Menu
+"
+icon = ExtResource("3_iorop")
+
 [node name="FormationIndicator" type="Label" parent="UI"]
+visible = false
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -276,8 +252,8 @@ one_shot = true
 one_shot = true
 
 [connection signal="button_pressed" from="UI/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
-[connection signal="pressed" from="UI/HBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="pressed" from="UI/HBoxContainer/DesignButton" to="." method="_on_design_button_pressed"]
+[connection signal="pressed" from="UI/HBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="action_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_action_changed"]
 [connection signal="formation_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_formation_changed"]
 [connection signal="selected" from="World/MouseSelection" to="World/UnitFormation" method="_on_mouse_selection_selected"]

@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://r6h5v14tbuk3"]
+
+[ext_resource type="Script" uid="uid://de22xo55qa7xl" path="res://main_menu/settings_submenu/keybind_row.gd" id="1_21nm3"]
+[ext_resource type="StyleBox" uid="uid://f8qvunky26vc" path="res://main_menu/settings_submenu/keybind_button_normal.tres" id="2_28wbf"]
+
+[node name="KeybindRow" type="HBoxContainer" node_paths=PackedStringArray("label", "keybinds")]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 48.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+script = ExtResource("1_21nm3")
+label = NodePath("Label")
+keybinds = [NodePath("Keybind1"), NodePath("Keybind2")]
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Key"
+
+[node name="Keybind1" type="Button" parent="."]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_28wbf")
+text = "1"
+
+[node name="Keybind2" type="Button" parent="."]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_28wbf")
+text = "2"

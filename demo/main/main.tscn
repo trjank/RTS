@@ -7,8 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://battle/battle.tscn" id="4_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://c60au813wrr5i" path="res://main_menu/main_menu.tscn" id="6_4dugh"]
 [ext_resource type="PackedScene" uid="uid://owpblejfs8ky" path="res://ships_screen/ships_screen.tscn" id="6_kfbq2"]
+[ext_resource type="PackedScene" uid="uid://dos22dgb4cqta" path="res://singleplayer/singleplayer.tscn" id="10_0i4oc"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]
-[ext_resource type="PackedScene" uid="uid://cxyn26sy7uyyr" path="res://settings/SettingsMenu.tscn" id="13_w48qg"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_grrlh"]
 
@@ -16,10 +16,10 @@
 script = ExtResource("1_h0c8p")
 nodes = {
 0: NodePath("MainMenu"),
-1: NodePath("SettingsMenu"),
-2: NodePath("Design"),
-3: NodePath("Battle"),
-4: NodePath("Fleets")
+1: NodePath("Design"),
+2: NodePath("Battle"),
+3: NodePath("Fleets"),
+4: NodePath("Singleplayer")
 }
 camera = NodePath("Camera/Camera3D")
 world = NodePath("World")
@@ -64,8 +64,6 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Camera"]
 shape = SubResource("SphereShape3D_grrlh")
 
-[node name="SettingsMenu" parent="." instance=ExtResource("13_w48qg")]
-
 [node name="Design" parent="." instance=ExtResource("11_dg77c")]
 
 [node name="Battle" parent="." instance=ExtResource("4_kfbq2")]
@@ -73,3 +71,5 @@ shape = SubResource("SphereShape3D_grrlh")
 [node name="Fleets" parent="." instance=ExtResource("6_kfbq2")]
 
 [node name="MainMenu" parent="." instance=ExtResource("6_4dugh")]
+
+[node name="Singleplayer" parent="." instance=ExtResource("10_0i4oc")]

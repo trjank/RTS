@@ -27,6 +27,7 @@ const MAX_NUM_PLAYERS := 10
 @export var fleet_container: FleetContainer
 @export var mouse_selection: MouseSelection
 
+var can_pause := false
 var players: Dictionary[String, Player] = {}
 var teams: Dictionary[String, Team] = {}
 var rng := RandomNumberGenerator.new()

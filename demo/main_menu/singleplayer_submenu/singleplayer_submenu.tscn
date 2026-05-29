@@ -1,0 +1,97 @@
+[gd_scene load_steps=11 format=3 uid="uid://c7ognok5j3et6"]
+
+[ext_resource type="Script" uid="uid://dbivnjor0oin5" path="res://main_menu/singleplayer_submenu/singleplayer_submenu.gd" id="1_tjaei"]
+[ext_resource type="Texture2D" uid="uid://ch5e75wsi4kws" path="res://icons/back_arrow.png" id="1_x73db"]
+[ext_resource type="StyleBox" uid="uid://7wpi6e0kyjg7" path="res://main_menu/back_button_normal.tres" id="2_12502"]
+[ext_resource type="Texture2D" uid="uid://b2p0vq6rkplpu" path="res://icons/star.png" id="2_tjaei"]
+[ext_resource type="StyleBox" uid="uid://bio5fmtu6r7bp" path="res://main_menu/singleplayer_submenu/save_button_normal.tres" id="4_mtiid"]
+[ext_resource type="StyleBox" uid="uid://oy8ce6x0wj6r" path="res://main_menu/singleplayer_submenu/save_button_hover.tres" id="5_582dq"]
+[ext_resource type="StyleBox" uid="uid://clfc5rl1d7svt" path="res://main_menu/singleplayer_submenu/save_button_pressed.tres" id="6_582dq"]
+[ext_resource type="Texture2D" uid="uid://oachrng7auhu" path="res://icons/delete.png" id="8_t227v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_52lbq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t227v"]
+
+[node name="SingleplayerSubmenu" type="VBoxContainer"]
+theme_override_constants/separation = 25
+script = ExtResource("1_tjaei")
+metadata/_tab_index = 1
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 32
+theme_override_styles/normal = ExtResource("2_12502")
+theme_override_styles/pressed = ExtResource("2_12502")
+theme_override_styles/hover = ExtResource("2_12502")
+text = "Back"
+icon = ExtResource("1_x73db")
+alignment = 0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Choose a save file to load or create a game"
+
+[node name="SaveFile1" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="LoadSave" type="Button" parent="SaveFile1"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("4_mtiid")
+theme_override_styles/pressed = ExtResource("6_582dq")
+theme_override_styles/hover = ExtResource("5_582dq")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_52lbq")
+text = "Save File 1"
+icon = ExtResource("2_tjaei")
+expand_icon = true
+
+[node name="DeleteSave" type="Button" parent="SaveFile1"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.5294118, 0.5294118, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t227v")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t227v")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t227v")
+icon = ExtResource("8_t227v")
+expand_icon = true
+
+[node name="Label" type="Label" parent="SaveFile1"]
+layout_mode = 2
+text = "10/10/26"
+
+[node name="SaveFile2" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="LoadSave" type="Button" parent="SaveFile2"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("4_mtiid")
+theme_override_styles/pressed = ExtResource("6_582dq")
+theme_override_styles/hover = ExtResource("5_582dq")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_52lbq")
+text = "Save File 1"
+icon = ExtResource("2_tjaei")
+expand_icon = true
+
+[node name="DeleteSave" type="Button" parent="SaveFile2"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.5294118, 0.5294118, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t227v")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t227v")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t227v")
+icon = ExtResource("8_t227v")
+expand_icon = true
+
+[node name="Label" type="Label" parent="SaveFile2"]
+layout_mode = 2
+text = "10/10/26"
+
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

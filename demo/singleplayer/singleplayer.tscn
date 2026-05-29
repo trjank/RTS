@@ -1,0 +1,51 @@
+[gd_scene load_steps=10 format=3 uid="uid://dos22dgb4cqta"]
+
+[ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://battle/battle.tscn" id="1_ir10k"]
+[ext_resource type="Script" uid="uid://b4wihd8hbbeye" path="res://singleplayer/singleplayer.gd" id="2_k16gt"]
+[ext_resource type="Texture2D" uid="uid://c1fkfssn7ug34" path="res://icons/beaker.png" id="2_ph3wn"]
+[ext_resource type="StyleBox" uid="uid://qbg2x0y2va1d" path="res://battle/button_normal.tres" id="3_52tgd"]
+[ext_resource type="PackedScene" uid="uid://bhlx5h5wqpfo8" path="res://singleplayer/tech_tree.tscn" id="3_ycxib"]
+[ext_resource type="StyleBox" uid="uid://cpus28fjbdw4d" path="res://battle/button_pressed.tres" id="4_ngvpm"]
+[ext_resource type="StyleBox" uid="uid://dpnhdvo8bfxyx" path="res://battle/button_hover.tres" id="5_pl1n2"]
+[ext_resource type="Script" uid="uid://b4pdo418feynm" path="res://singleplayer/pause_menu.gd" id="8_ngvpm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_52tgd"]
+bg_color = Color(0, 0, 0, 0.8627451)
+
+[node name="Singleplayer" node_paths=PackedStringArray("tech_tree") instance=ExtResource("1_ir10k")]
+script = ExtResource("2_k16gt")
+tech_tree = NodePath("UI/TechTree")
+
+[node name="TechTreeButton" type="Button" parent="UI/HBoxContainer" index="0"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 32
+theme_override_styles/normal = ExtResource("3_52tgd")
+theme_override_styles/pressed = ExtResource("4_ngvpm")
+theme_override_styles/hover = ExtResource("5_pl1n2")
+text = "Tech Tree"
+icon = ExtResource("2_ph3wn")
+
+[node name="TechTree" parent="UI" index="4" instance=ExtResource("3_ycxib")]
+visible = false
+layout_mode = 1
+
+[node name="PauseMenu" type="PanelContainer" parent="UI" index="5"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_52tgd")
+script = ExtResource("8_ngvpm")
+
+[node name="Label" type="Label" parent="UI/PauseMenu" index="0"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "PAUSED"
+
+[connection signal="pressed" from="UI/HBoxContainer/TechTreeButton" to="." method="_on_tech_tree_button_pressed"]
+
+[editable path="UI/FleetContainer"]

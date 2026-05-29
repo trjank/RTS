@@ -1,9 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://fwcp5yso0imc"]
+[gd_scene load_steps=13 format=3 uid="uid://fwcp5yso0imc"]
 
 [ext_resource type="Script" uid="uid://df7r1lo3a8cdl" path="res://ships_screen/fleet_container.gd" id="1_12wau"]
 [ext_resource type="Texture2D" uid="uid://b74sd2enfxbeq" path="res://icons/fleet_switch.png" id="1_o7u1k"]
-[ext_resource type="Texture2D" uid="uid://inbrq5b8ia5x" path="res://icons/fleet_delete.png" id="2_lfukb"]
+[ext_resource type="Texture2D" uid="uid://oachrng7auhu" path="res://icons/delete.png" id="2_lr1pc"]
 [ext_resource type="Texture2D" uid="uid://ccqmnyatvyvno" path="res://icons/fleet_switch_hover.png" id="2_y70oc"]
+[ext_resource type="Texture2D" uid="uid://dveje2ivq5k2d" path="res://icons/arrowhead_up.png" id="5_qkrrn"]
+[ext_resource type="Texture2D" uid="uid://8wyxeexjad36" path="res://icons/arrowhead_down.png" id="6_0j21k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kagd1"]
 content_margin_left = 0.0
@@ -11,7 +13,6 @@ content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 bg_color = Color(0.2627451, 0.30588236, 0.36862746, 0.19607843)
-border_width_bottom = 1
 border_color = Color(0.77254903, 0.6117647, 0.8509804, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rt1o0"]
@@ -24,27 +25,9 @@ border_color = Color(0.772549, 0.611765, 0.85098, 1)
 shadow_color = Color(0, 0, 0, 1)
 shadow_size = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_subcy"]
-content_margin_left = 15.0
-content_margin_top = 15.0
-content_margin_right = 15.0
-content_margin_bottom = 15.0
-bg_color = Color(0.88, 0.25520003, 0.25520003, 0.5882353)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lr1pc"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y7emp"]
-content_margin_left = 15.0
-content_margin_top = 15.0
-content_margin_right = 15.0
-content_margin_bottom = 15.0
-bg_color = Color(0.88, 0.25520003, 0.25520003, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qkrrn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lr1pc"]
 bg_color = Color(0, 0, 0, 0)
@@ -65,8 +48,8 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_kagd1")
 script = ExtResource("1_12wau")
-fleet_id = NodePath("VBoxContainer/PanelContainer/VBoxContainer/ID")
-name_edit = NodePath("VBoxContainer/PanelContainer/VBoxContainer/Name")
+fleet_id = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ID")
+name_edit = NodePath("VBoxContainer/PanelContainer/HBoxContainer/Name")
 ship_buttons = NodePath("VBoxContainer/MarginContainer/ShipButtons")
 metadata/_custom_type_script = "uid://df7r1lo3a8cdl"
 
@@ -79,28 +62,40 @@ layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_rt1o0")
 
-[node name="VBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="DeleteButton" type="Button" parent="VBoxContainer/PanelContainer/VBoxContainer"]
-custom_minimum_size = Vector2(64, 64)
+[node name="FleetSwapButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("1_o7u1k")
+texture_hover = ExtResource("2_y70oc")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="DeleteButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.53, 0.53, 1)
 theme_override_constants/outline_size = 2
 theme_override_constants/h_separation = 15
-theme_override_styles/normal = SubResource("StyleBoxFlat_subcy")
-theme_override_styles/hover = SubResource("StyleBoxFlat_y7emp")
-icon = ExtResource("2_lfukb")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lr1pc")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_qkrrn")
+icon = ExtResource("2_lr1pc")
 expand_icon = true
 
-[node name="ID" type="Label" parent="VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="ID" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Fleet"
 vertical_alignment = 1
 
-[node name="Name" type="LineEdit" parent="VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="Name" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -114,15 +109,18 @@ alignment = 1
 max_length = 50
 expand_to_text_length = true
 
-[node name="FleetSwapButton" type="TextureButton" parent="VBoxContainer/PanelContainer/VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(48, 48)
+[node name="MoveUp" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-mouse_default_cursor_shape = 2
-texture_normal = ExtResource("1_o7u1k")
-texture_hover = ExtResource("2_y70oc")
-ignore_texture_size = true
-stretch_mode = 5
+size_flags_horizontal = 10
+icon = ExtResource("5_qkrrn")
+expand_icon = true
+
+[node name="MoveDown" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("6_0j21k")
+expand_icon = true
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -136,7 +134,7 @@ layout_mode = 2
 theme_override_constants/h_separation = -1
 theme_override_constants/v_separation = -1
 
-[connection signal="pressed" from="VBoxContainer/PanelContainer/VBoxContainer/DeleteButton" to="." method="_on_delete_fleet_pressed"]
-[connection signal="focus_exited" from="VBoxContainer/PanelContainer/VBoxContainer/Name" to="." method="_on_name_focus_exited"]
-[connection signal="text_submitted" from="VBoxContainer/PanelContainer/VBoxContainer/Name" to="." method="_on_name_text_submitted"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/VBoxContainer/FleetSwapButton" to="." method="_on_fleet_swap_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/FleetSwapButton" to="." method="_on_fleet_swap_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/DeleteButton" to="." method="_on_delete_fleet_pressed"]
+[connection signal="focus_exited" from="VBoxContainer/PanelContainer/HBoxContainer/Name" to="." method="_on_name_focus_exited"]
+[connection signal="text_submitted" from="VBoxContainer/PanelContainer/HBoxContainer/Name" to="." method="_on_name_text_submitted"]

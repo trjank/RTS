@@ -2,11 +2,10 @@ class_name Main extends Node
 
 enum State {
 	MAIN_MENU,
-	SETTINGS,
 	DESIGN,
 	BATTLE,
 	FLEET,
-	SERVER_SELECTOR
+	SINGLEPLAYER
 }
 
 @export var nodes: Dictionary[State, Node]

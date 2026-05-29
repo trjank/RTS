@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://c60au813wrr5i"]
+[gd_scene load_steps=16 format=3 uid="uid://c60au813wrr5i"]
 
 [ext_resource type="Script" uid="uid://76pjt8trd8dg" path="res://main_menu/main_menu.gd" id="1_6tl50"]
 [ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://battle/battle.tscn" id="1_512ns"]
@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="8_6at21"]
 [ext_resource type="Texture2D" uid="uid://d1n2lc651kf1t" path="res://icons/cog.png" id="8_ia84y"]
 [ext_resource type="Texture2D" uid="uid://cx7lh1wwowlht" path="res://icons/menu.png" id="9_og6xe"]
+[ext_resource type="PackedScene" uid="uid://c7ognok5j3et6" path="res://main_menu/singleplayer_submenu/singleplayer_submenu.tscn" id="11_qvn4f"]
+[ext_resource type="PackedScene" uid="uid://b1j227w71blew" path="res://main_menu/settings_submenu/settings_submenu.tscn" id="12_g1omr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ahnob"]
 content_margin_left = 50.0
@@ -17,6 +19,9 @@ content_margin_top = 50.0
 content_margin_right = 50.0
 content_margin_bottom = 50.0
 bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qvn4f"]
+bg_color = Color(1, 1, 1, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ia84y"]
 content_margin_left = 15.0
@@ -34,8 +39,9 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="MainMenu" instance=ExtResource("1_512ns")]
+[node name="MainMenu" node_paths=PackedStringArray("submenus") instance=ExtResource("1_512ns")]
 script = ExtResource("1_6tl50")
+submenus = NodePath("UI/Options/TabContainer")
 
 [node name="FleetContainer" parent="UI" index="0"]
 visible = false
@@ -46,11 +52,7 @@ visible = false
 [node name="HBoxContainer" parent="UI" index="2"]
 visible = false
 
-[node name="FormationIndicator" parent="UI" index="3"]
-visible = false
-
-[node name="TextureRect" type="TextureRect" parent="UI" index="4"]
-visible = false
+[node name="Background" type="TextureRect" parent="UI" index="4"]
 modulate = Color(1, 1, 1, 0.78431374)
 layout_mode = 1
 anchors_preset = 15
@@ -61,57 +63,64 @@ grow_vertical = 2
 texture = ExtResource("4_t6bnd")
 stretch_mode = 1
 
-[node name="Options" type="PanelContainer" parent="UI" index="5"]
+[node name="Options" type="ScrollContainer" parent="UI" index="5"]
 z_index = 10
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -337.0
-offset_top = -340.5
-offset_right = 337.0
-offset_bottom = 340.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_nhs7o")
 theme_override_styles/panel = SubResource("StyleBoxFlat_ahnob")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Options" index="0"]
+[node name="TabContainer" type="TabContainer" parent="UI/Options" index="0"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_styles/panel = SubResource("StyleBoxFlat_qvn4f")
+current_tab = 0
+tabs_visible = false
+
+[node name="Buttons" type="VBoxContainer" parent="UI/Options/TabContainer" index="1"]
 layout_mode = 2
 theme_override_constants/separation = 25
+metadata/_tab_index = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Options/VBoxContainer" index="0"]
+[node name="BannerName" type="HBoxContainer" parent="UI/Options/TabContainer/Buttons" index="0"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 20
 
-[node name="Title" type="Label" parent="UI/Options/VBoxContainer/HBoxContainer" index="0"]
+[node name="Title" type="Label" parent="UI/Options/TabContainer/Buttons/BannerName" index="0"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+theme_override_colors/font_shadow_color = Color(0, 0.4, 0.37254903, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 10
 theme_override_font_sizes/font_size = 50
 text = "Project Stardust"
 vertical_alignment = 2
 
-[node name="Version" type="Label" parent="UI/Options/VBoxContainer/HBoxContainer" index="1"]
+[node name="Version" type="Label" parent="UI/Options/TabContainer/Buttons/BannerName" index="1"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_ia84y")
 text = "alpha"
 
-[node name="Label" type="Label" parent="UI/Options/VBoxContainer" index="1"]
+[node name="BannerDescription" type="Label" parent="UI/Options/TabContainer/Buttons" index="1"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 text = "Build. Kill. Conquer."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SingleplayerButton" type="Button" parent="UI/Options/VBoxContainer" index="2"]
+[node name="SingleplayerButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="2"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
@@ -120,7 +129,7 @@ theme_override_styles/hover = ExtResource("5_0w23u")
 text = "Singleplayer"
 alignment = 0
 
-[node name="MultiplayerButton" type="Button" parent="UI/Options/VBoxContainer" index="3"]
+[node name="MultiplayerButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="3"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
@@ -130,7 +139,7 @@ text = "Multiplayer
 "
 alignment = 0
 
-[node name="DesignButton" type="Button" parent="UI/Options/VBoxContainer" index="4"]
+[node name="DesignButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="4"]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 32
@@ -143,7 +152,7 @@ text = "Design
 icon = ExtResource("8_6at21")
 alignment = 0
 
-[node name="FleetsButton" type="Button" parent="UI/Options/VBoxContainer" index="5"]
+[node name="FleetsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="5"]
 layout_mode = 2
 theme_override_constants/h_separation = 14
 theme_override_constants/icon_max_width = 32
@@ -156,7 +165,7 @@ text = "Fleets
 icon = ExtResource("9_og6xe")
 alignment = 0
 
-[node name="SettingsButton" type="Button" parent="UI/Options/VBoxContainer" index="6"]
+[node name="SettingsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="6"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_constants/h_separation = 15
@@ -170,8 +179,19 @@ text = "Settings
 icon = ExtResource("8_ia84y")
 alignment = 0
 
-[connection signal="pressed" from="UI/Options/VBoxContainer/DesignButton" to="." method="_on_design_button_pressed"]
-[connection signal="pressed" from="UI/Options/VBoxContainer/FleetsButton" to="." method="_on_fleets_button_pressed"]
-[connection signal="pressed" from="UI/Options/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+[node name="SingleplayerSubmenu" parent="UI/Options/TabContainer" index="2" instance=ExtResource("11_qvn4f")]
+visible = false
+layout_mode = 2
+
+[node name="SettingsSubmenu" parent="UI/Options/TabContainer" index="3" instance=ExtResource("12_g1omr")]
+visible = false
+layout_mode = 2
+
+[connection signal="pressed" from="UI/Options/TabContainer/Buttons/SingleplayerButton" to="." method="_on_singleplayer_button_pressed"]
+[connection signal="pressed" from="UI/Options/TabContainer/Buttons/DesignButton" to="." method="_on_design_button_pressed"]
+[connection signal="pressed" from="UI/Options/TabContainer/Buttons/FleetsButton" to="." method="_on_fleets_button_pressed"]
+[connection signal="pressed" from="UI/Options/TabContainer/Buttons/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="back_button_pressed" from="UI/Options/TabContainer/SingleplayerSubmenu" to="." method="_on_singleplayer_submenu_back_button_pressed"]
+[connection signal="back_button_pressed" from="UI/Options/TabContainer/SettingsSubmenu" to="." method="_on_settings_submenu_back_button_pressed"]
 
 [editable path="UI/FleetContainer"]
