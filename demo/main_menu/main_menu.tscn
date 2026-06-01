@@ -97,12 +97,10 @@ theme_override_constants/separation = 20
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-theme_override_colors/font_shadow_color = Color(0, 0.4, 0.37254903, 1)
+theme_override_colors/font_shadow_color = Color(0.72, 0.2808, 0.2808, 0.5882353)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 5
-theme_override_constants/shadow_outline_size = 10
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 0
 theme_override_font_sizes/font_size = 50
 text = "Project Stardust"
 vertical_alignment = 2
@@ -135,8 +133,7 @@ theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
 theme_override_styles/pressed = ExtResource("4_a3n4j")
 theme_override_styles/hover = ExtResource("5_0w23u")
-text = "Multiplayer
-"
+text = "Multiplayer"
 alignment = 0
 
 [node name="DesignButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="4"]
@@ -147,8 +144,7 @@ theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
 theme_override_styles/pressed = ExtResource("4_a3n4j")
 theme_override_styles/hover = ExtResource("5_0w23u")
-text = "Design
-"
+text = "Design"
 icon = ExtResource("8_6at21")
 alignment = 0
 
@@ -160,8 +156,7 @@ theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
 theme_override_styles/pressed = ExtResource("4_a3n4j")
 theme_override_styles/hover = ExtResource("5_0w23u")
-text = "Fleets
-"
+text = "Fleets"
 icon = ExtResource("9_og6xe")
 alignment = 0
 
@@ -186,6 +181,9 @@ layout_mode = 2
 [node name="SettingsSubmenu" parent="UI/Options/TabContainer" index="3" instance=ExtResource("12_g1omr")]
 visible = false
 layout_mode = 2
+
+[node name="RoundTimer" parent="." index="2"]
+wait_time = 100.0
 
 [connection signal="pressed" from="UI/Options/TabContainer/Buttons/SingleplayerButton" to="." method="_on_singleplayer_button_pressed"]
 [connection signal="pressed" from="UI/Options/TabContainer/Buttons/DesignButton" to="." method="_on_design_button_pressed"]

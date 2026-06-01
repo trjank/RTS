@@ -113,7 +113,7 @@ func load_part(code: String, properties: Dictionary) -> LoadError:
 	var part := create_part(code, image_path, width, height, subtype)
 	if part == null:
 		return LoadError.INVALID_PART
-	if not Util.type_check(properties, VALID_PART_PROPERTIES, true, Util.CAST_NUMERICS):
+	if not TypeChecker.type_check(properties, VALID_PART_PROPERTIES, true, TypeChecker.CAST_NUMBERS):
 		return LoadError.INVALID_PART_PROPERTIES
 	for property in properties:
 		part.set(property, properties[property] )

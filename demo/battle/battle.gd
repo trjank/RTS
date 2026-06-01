@@ -1,6 +1,6 @@
 class_name Battle extends Node
 
-enum State {
+enum Status {
 	STOPPED,
 	STARTING,
 	RUNNING
@@ -16,9 +16,10 @@ signal stopped(winners: Array[Team] )
 signal player_joined(player: Player)
 signal player_left(player: Player)
 
-const DEFAULT_TEAM_NAME := "spectators"
 const MAX_NUM_TEAMS := 10
 const MAX_NUM_PLAYERS := 10
+# DO NOT DELETE THIS TEAM!
+const DEFAULT_TEAM_NAME := "spectators"
 
 @export var world: Node3D
 @export var round_timer: Timer
@@ -32,14 +33,16 @@ var players: Dictionary[String, Player] = {}
 var teams: Dictionary[String, Team] = {}
 var rng := RandomNumberGenerator.new()
 var scenery: Array[Scenery] = []
-var map: Map
-var map_depth_limit := 5
-var me: Player
 var plane := Plane.PLANE_XZ:
 	set = set_plane
+var map: Map:
+	get = get_map,
+	set = set_map
+var me: Player
 
-var _state := State.STOPPED
-var _map_root: Scenery
+var _status := Status.STOPPED
+var _map_root: Node3D
+var _state := BattleState.new()
 
 static func is_team_alive(team: Team) -> bool:
 	return team.is_alive()
@@ -57,15 +60,24 @@ func _ready() -> void:
 func are_teams_balanced() -> bool:
 	return true
 
-func get_state() -> State:
+func get_status() -> Status:
+	return _status
+
+func get_state() -> BattleState:
 	return _state
 
 func get_alive_teams() -> Array[Team]:
 	return teams.values().filter(is_team_alive)
 
+func get_map() -> Map:
+	return _state.map
+
 func set_plane(new_plane: Plane) -> void:
 	plane = new_plane
 	mouse_selection.plane = plane
+
+func set_map(new_map: Map) -> void:
+	_state.map = new_map
 
 func destroy_map() -> void:
 	if _map_root == null:
@@ -75,45 +87,50 @@ func destroy_map() -> void:
 	scenery.clear()
 
 func generate_map() -> void:
-	assert(map != null)
+	assert(_state.map != null)
 	#
 	destroy_map()
-	_map_root = map.generate(world, rng, scenery, map_depth_limit)
+	_map_root = Node3D.new()
+	world.add_child(_map_root)
+	var error := _state.map.generate(_map_root, _state, rng, scenery, _state.map_depth_limit)
+	print("(Battle) Map generation: %s" % Map.GenerationError.find_key(error) )
 
 func start_countdown() -> StartError:
-	if _state != State.STOPPED:
+	if _status != Status.STOPPED:
 		return StartError.ALREADY_RUNNING
 	if not are_teams_balanced():
 		return StartError.UNBALANCED_TEAMS
-	_state = State.STARTING
+	_status = Status.STARTING
 	countdown_timer.start()
 	return StartError.OK
 
 func start() -> StartError:
-	if _state == State.RUNNING:
+	if _status == Status.RUNNING:
 		return StartError.ALREADY_RUNNING
 	if not are_teams_balanced():
 		return StartError.UNBALANCED_TEAMS
 	reset_teams()
 	generate_map()
 	set_physics_process(true)
-	_state = State.RUNNING
+	_status = Status.RUNNING
+	_state.time = 0.0
+	_state.time_scale = 1.0
 	round_timer.start()
 	started.emit()
 	return StartError.OK
 
 func stop() -> bool:
-	if _state != State.RUNNING:
+	if _status != Status.RUNNING:
 		return false
 	var winners := get_alive_teams()
-	_state = State.STOPPED
+	_status = Status.STOPPED
 	set_physics_process(false)
 	stopped.emit(winners)
 	return true
 
 func connect_player(player_name: String, color := Color.WHITE) -> Player:
 	assert(DEFAULT_TEAM_NAME in teams)
-	#      ^^^^^^^^^^^^^^^^^ DO NOT DELETE THIS TEAM!
+	#
 	if player_name in players:
 		return players[player_name]
 	if MAX_NUM_PLAYERS <= players.size():
@@ -137,7 +154,7 @@ func disconnect_player(player_name: String) -> bool:
 func create_team(team_name: String, color := Color.WHITE) -> Team:
 	if team_name in teams:
 		return teams[team_name]
-	if _state != State.STOPPED or MAX_NUM_TEAMS <= teams.size():
+	if _status != Status.STOPPED or MAX_NUM_TEAMS <= teams.size():
 		return null
 	var team := Team.new(team_name, color)
 	teams[team_name] = team
@@ -145,7 +162,7 @@ func create_team(team_name: String, color := Color.WHITE) -> Team:
 
 func remove_team(team_name: String) -> bool:
 	assert(DEFAULT_TEAM_NAME in teams)
-	#      ^^^^^^^^^^^^^^^^^ DO NOT DELETE THIS TEAM!
+	#
 	if team_name == DEFAULT_TEAM_NAME or not team_name in teams:
 		return false
 	var team := teams[team_name]
@@ -160,6 +177,9 @@ func reset_teams() -> void:
 		player.alive = true
 	for team in teams.values():
 		team.reset_stats()
+
+func _physics_process(dt: float) -> void:
+	_state.time += _state.time_scale * dt
 
 func _on_countdown_timer_timeout() -> void:
 	var start_error := start()

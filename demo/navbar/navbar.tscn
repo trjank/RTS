@@ -7,13 +7,8 @@
 [ext_resource type="StyleBox" uid="uid://b15nr3mlkf18e" path="res://navbar/navigator_button_hover.tres" id="3_eayf2"]
 [ext_resource type="Texture2D" uid="uid://cx7lh1wwowlht" path="res://icons/menu.png" id="4_e86oi"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajdbe"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-bg_color = Color(0.400975, 0.23650001, 0.43, 0.19607843)
-border_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e86oi"]
+bg_color = Color(1, 1, 1, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jeq1j"]
 content_margin_left = 25.0
@@ -28,7 +23,7 @@ anchor_right = 1.0
 offset_bottom = 94.0
 grow_horizontal = 2
 theme = ExtResource("1_cnwya")
-theme_override_styles/panel = SubResource("StyleBoxFlat_ajdbe")
+theme_override_styles/panel = SubResource("StyleBoxFlat_e86oi")
 script = ExtResource("1_rsvkd")
 
 [node name="Blur" type="ColorRect" parent="."]

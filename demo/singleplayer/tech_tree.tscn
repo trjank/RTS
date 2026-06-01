@@ -1,11 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://bhlx5h5wqpfo8"]
+[gd_scene load_steps=10 format=3 uid="uid://bhlx5h5wqpfo8"]
 
 [ext_resource type="Texture2D" uid="uid://by2clum4xu507" path="res://icons/hexagons.png" id="1_53o3s"]
 [ext_resource type="Script" uid="uid://4iao0p7ww8cd" path="res://singleplayer/tech_tree.gd" id="2_kcwqr"]
 [ext_resource type="Texture2D" uid="uid://c1fkfssn7ug34" path="res://icons/beaker.png" id="3_os4vm"]
+[ext_resource type="Texture2D" uid="uid://bm3hor08lomh" path="res://part_images/weapon_battleship_cannon_4x4.png" id="4_xjldq"]
+[ext_resource type="Texture2D" uid="uid://cphm2v76fwlbg" path="res://icons/explosion.png" id="5_b8hl3"]
 
 [sub_resource type="Gradient" id="Gradient_53o3s"]
-colors = PackedColorArray(0.25299993, 0, 0.33, 1, 0.26999998, 0.37950003, 1, 1)
+colors = PackedColorArray(0, 0.5019608, 0.39215687, 1, 0.26999998, 0.37950003, 1, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_kcwqr"]
 gradient = SubResource("Gradient_53o3s")
@@ -13,6 +15,13 @@ fill_to = Vector2(0, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_53o3s"]
 texture = SubResource("GradientTexture2D_kcwqr")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b8hl3"]
+content_margin_left = 25.0
+content_margin_top = 25.0
+content_margin_right = 25.0
+content_margin_bottom = 25.0
+bg_color = Color(0.30588236, 0.2509804, 0.5019608, 1)
 
 [node name="TechTree" type="PanelContainer"]
 anchors_preset = 15
@@ -60,19 +69,48 @@ text = "100"
 layout_mode = 2
 text = "Back"
 
-[node name="GridContainer" type="GridContainer" parent="ScrollContainer/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("4_xjldq")
+expand_mode = 1
+stretch_mode = 6
 
-[node name="Tier1" type="Label" parent="ScrollContainer/VBoxContainer/GridContainer"]
+[node name="Button" type="Button" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
-text = "Tier I"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_b8hl3")
+text = "+300 base damage"
+icon = ExtResource("5_b8hl3")
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
 
-[node name="Tier2" type="Label" parent="ScrollContainer/VBoxContainer/GridContainer"]
+[node name="Button2" type="Button" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
-text = "Tier II"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_b8hl3")
+text = "+300 base damage"
+icon = ExtResource("5_b8hl3")
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
 
-[node name="Tier3" type="Label" parent="ScrollContainer/VBoxContainer/GridContainer"]
+[node name="Button3" type="Button" parent="ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
-text = "Tier III"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_b8hl3")
+text = "+300 base damage"
+icon = ExtResource("5_b8hl3")
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
 
 [connection signal="pressed" from="ScrollContainer/VBoxContainer/HBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

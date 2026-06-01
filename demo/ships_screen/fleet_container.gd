@@ -109,3 +109,9 @@ func _on_fleet_swap_button_pressed() -> void:
 
 func _on_fleet_ship_changed(new_ship: ShipData, slot: int) -> void:
 	get_button(slot).ship = new_ship
+
+func _on_move_up_pressed() -> void:
+	get_parent().move_child(self, maxi(get_index() - 1, 0) )
+
+func _on_move_down_button_down() -> void:
+	get_parent().move_child(self, get_index() + 1)

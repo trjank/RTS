@@ -3,7 +3,7 @@ class_name ShipsScreen extends Node
 signal fleet_changed(new_fleet: Fleet)
 
 const BUTTON_SIZE := Vector2(250.0, 250.0)
-const SELECTED_COLOR := Color(1.112, 1.457, 1.825, 1.0)
+const SELECTED_COLOR := Color(0.934, 1.498, 1.825, 1.0)
 
 @export var ships_box: HFlowContainer
 @export var fleets_box: VBoxContainer
