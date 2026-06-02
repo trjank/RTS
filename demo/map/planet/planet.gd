@@ -65,6 +65,7 @@ func _ready() -> void:
 	var max_radius := float(_map.preset.get("max_radius", MAX_RADIUS) )
 	capturable = _map.preset.get("capturable", true)
 	radius = _rng.randf_range(min_radius, max_radius)
+	mesh_instance.rotation.x = _rng.randf_range(0.0, TAU)
 	display_name = _map.preset.get("display_name", "")
 	always_upright.position = Vector3.ZERO
 

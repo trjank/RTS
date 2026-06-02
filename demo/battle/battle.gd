@@ -92,8 +92,10 @@ func generate_map() -> void:
 	destroy_map()
 	_map_root = Node3D.new()
 	world.add_child(_map_root)
-	var error := _state.map.generate(_map_root, _state, rng, scenery, _state.map_depth_limit)
+	var shared_variables := {}
+	var error := _state.map.generate(_map_root, _state, rng, scenery, _state.map_depth_limit, shared_variables)
 	print("(Battle) Map generation: %s" % Map.GenerationError.find_key(error) )
+	print("(Battle) Generated %d scenery objects" % shared_variables.get("scenery_count", 0) )
 
 func start_countdown() -> StartError:
 	if _status != Status.STOPPED:

@@ -13,6 +13,8 @@ const PRESET_SYNTAX: Dictionary[String, Variant.Type] = {
 	"max_mass": TYPE_FLOAT,
 	"min_count": TYPE_INT,
 	"max_count": TYPE_INT,
+	"min_rotation": TYPE_FLOAT,
+	"max_rotation": TYPE_FLOAT,
 # For Orbiter below
 	"min_orbit_radius": TYPE_FLOAT,
 	"max_orbit_radius": TYPE_FLOAT,
@@ -74,7 +76,7 @@ func save_json(path: String) -> bool:
 	file.close()
 	return true
 
-func _generate_one(index: int, count: int, parent: Node3D, battle_state: BattleState, rng: RandomNumberGenerator, node_storage: Array[Scenery], depth_limit := 1) -> int:
+func _generate_one(index: int, count: int, parent: Node3D, battle_state: BattleState, rng: RandomNumberGenerator, node_storage: Array[Scenery], depth_limit := 1, shared_variables := {} ) -> int:
 	var scenery := Scenery.create(subtype)
 	scenery._rng = rng
 	scenery._battle_state = battle_state
@@ -85,11 +87,12 @@ func _generate_one(index: int, count: int, parent: Node3D, battle_state: BattleS
 	var error: int = GenerationError.OK
 	#
 	for submap in submaps:
-		error |= submap.generate(scenery, battle_state, rng, node_storage, depth_limit - 1)
+		error |= submap.generate(scenery, battle_state, rng, node_storage, depth_limit - 1, shared_variables)
+	scenery.use_shared_variables(shared_variables)
 	node_storage.push_back(scenery)
 	return error
 
-func generate(parent: Node3D, battle_state: BattleState, rng: RandomNumberGenerator, node_storage: Array[Scenery], depth_limit := 1) -> int:
+func generate(parent: Node3D, battle_state: BattleState, rng: RandomNumberGenerator, node_storage: Array[Scenery], depth_limit := 1, shared_variables := {} ) -> int:
 	assert(parent != null)
 	assert(rng != null)
 	#
@@ -105,5 +108,5 @@ func generate(parent: Node3D, battle_state: BattleState, rng: RandomNumberGenera
 	var error: int = GenerationError.OK
 	#
 	for i in count:
-		error |= _generate_one(i, count, parent, battle_state, rng, node_storage, depth_limit)
+		error |= _generate_one(i, count, parent, battle_state, rng, node_storage, depth_limit, shared_variables)
 	return error

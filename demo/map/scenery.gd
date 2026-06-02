@@ -35,11 +35,18 @@ func set_mass(new_mass: float) -> void:
 func set_time(new_time: float) -> void:
 	time = new_time
 
+## Override this to pass data between Scenery objects during generation
+func use_shared_variables(_shared_variables := {} ) -> void:
+	_shared_variables["scenery_count"] = _shared_variables.get("scenery_count", 0) + 1
+
 func _ready() -> void:
 	# NOTE: INF causes undefined behavior for randf_range
 	var min_mass := float(_map.preset.get("min_mass", MIN_MASS) )
 	var max_mass := float(_map.preset.get("max_mass", MAX_MASS) )
+	var min_rotation := float(_map.preset.get("min_rotation", 0.0) )
+	var max_rotation := float(_map.preset.get("min_rotation", min_rotation) )
 	mass = _rng.randf_range(min_mass, max_mass)
+	rotation.y = _rng.randf_range(min_rotation, max_rotation)
 
 func _process(dt: float) -> void:
 	time = _battle_state.time if _battle_state != null else time + dt

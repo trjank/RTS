@@ -4,6 +4,8 @@ const GRAVITATIONAL_CONSTANT := 0.01
 const MIN_ORBIT_RADIUS := 0.1
 const MAX_ORBIT_RADIUS := 100.0
 
+var angle := 0.0:
+	set = set_angle
 var orbit_angle := 0.0:
 	set = set_orbit_angle
 var orbit_offset := 0.0:
@@ -28,20 +30,27 @@ func set_time(new_time: float) -> void:
 	time = new_time
 	orbit_angle = orbit_offset + time * get_angular_speed()
 
+func set_angle(new_angle: float) -> void:
+	angle = new_angle
+	_update_rotation()
+
 func set_orbit_angle(new_orbit_angle: float) -> void:
 	orbit_angle = fposmod(new_orbit_angle, TAU)
-	update_position()
+	_update_position()
+	_update_rotation()
 
 func set_orbit_radius(new_orbit_radius: float) -> void:
 	orbit_radius = clampf(new_orbit_radius, MIN_ORBIT_RADIUS, MAX_ORBIT_RADIUS)
-	update_position()
+	_update_position()
 
 func set_orbit_offset(new_orbit_offset: float) -> void:
 	orbit_offset = fposmod(new_orbit_offset, TAU)
-	update_position()
+	_update_position()
 
-func update_position() -> void:
-	rotation.y = -orbit_angle
+func _update_rotation() -> void:
+	rotation.y = angle - orbit_angle
+
+func _update_position() -> void:
 	var position_2d := orbit_radius * Vector2.from_angle(orbit_angle)
 	position = Vector3(position_2d.x, 0.0, position_2d.y)
 
@@ -54,3 +63,4 @@ func _ready() -> void:
 	var max_orbit_offset := float(_map.preset.get("max_orbit_offset", TAU) )
 	orbit_radius = _rng.randf_range(min_orbit_radius, max_orbit_radius)
 	orbit_offset = _rng.randf_range(min_orbit_offset, max_orbit_offset) + TAU * generation_index / generation_count
+	angle = rotation.y
