@@ -137,7 +137,7 @@
 		"hp": 100,
 		"width": 1,
 		"height": 3,
-		"thrust": 10000,
+		"thrust": 1000,
 		"tab": "movement",
 		"image_path": "res://part_images/thruster_bulk_1x3.png"
 	},
@@ -149,7 +149,7 @@
 		"hp": 100,
 		"width": 2,
 		"height": 2,
-		"thrust": 10000,
+		"thrust": 1000,
 		"tab": "movement",
 		"image_path": "res://part_images/thruster_bulk_2x2.png"
 	},
@@ -161,7 +161,7 @@
 		"hp": 100,
 		"width": 1,
 		"height": 3,
-		"thrust": 10000,
+		"thrust": 1000,
 		"tab": "movement",
 		"image_path": "res://part_images/thruster_cruiser_1x3.png"
 	},
@@ -173,7 +173,7 @@
 		"hp": 100,
 		"width": 2,
 		"height": 2,
-		"thrust": 10000,
+		"thrust": 1000,
 		"tab": "movement",
 		"image_path": "res://part_images/thruster_cruiser_2x2.png"
 	},
@@ -185,7 +185,7 @@
 		"hp": 100,
 		"width": 1,
 		"height": 2,
-		"thrust": 10000,
+		"thrust": 1000,
 		"tab": "movement",
 		"image_path": "res://part_images/thruster_fighter_1x2.png"
 	},
@@ -197,7 +197,7 @@
 		"hp": 100,
 		"width": 1,
 		"height": 2,
-		"thrust": 10000,
+		"thrust": 1000,
 		"tab": "movement",
 		"image_path": "res://part_images/thruster_scout_1x2.png"
 	},

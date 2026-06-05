@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://c34dvg3i2xuw8"]
+
+[ext_resource type="Shader" uid="uid://cv77ddrtgovda" path="res://map/star/black_hole_fast.gdshader" id="1_eucpj"]
+[ext_resource type="Curve" uid="uid://dof3a2oev5hcn" path="res://map/star/black_hole_distortion_curve.tres" id="2_wcg27"]
+
+[sub_resource type="CurveTexture" id="CurveTexture_xw5au"]
+curve = ExtResource("2_wcg27")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_eucpj")
+shader_parameter/distortion_curve = SubResource("CurveTexture_xw5au")
+shader_parameter/horizon_size = 0.75000003236512
+shader_parameter/horizon_smoothing = 0.086000004085

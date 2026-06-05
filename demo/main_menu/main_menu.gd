@@ -8,7 +8,7 @@ enum Submenu {
 
 @export var submenus: TabContainer
 
-const MAP_PRESET_PATH := "res://map/presets/solar_system.json"
+const MAP_PRESET_PATH := "res://map/presets/black_hole.json"
 
 var submenu: Submenu:
 	get = get_submenu,

@@ -1,6 +1,8 @@
 shader_type spatial;
 
-render_mode unshaded, fog_disabled, depth_draw_never, blend_add;
+render_mode fog_disabled, depth_draw_never, blend_add;
+
+const float MIN_BRIGHTNESS = 0.02;
 
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture;
 
@@ -29,4 +31,5 @@ void fragment() {
 	// Make the atmosphere stronger near the edges
 	float fresnel_effect = pow(1.0 - dot(NORMAL, VIEW), fresnel_effect_strength);
 	ALBEDO = atmosphere_color * atmosphere * fresnel_effect;
+	EMISSION = vec3(MIN_BRIGHTNESS);
 }

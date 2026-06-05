@@ -2,8 +2,6 @@ class_name Ship extends Unit
 
 signal target_changed(new_target: Target)
 
-static var ui_scale_z_curve := preload("res://battle/curve_camera_z_ui_scale.tres")
-
 @export var bar_hp: PipBar
 @export var bar_shield: PipBar
 @export var bar_energy: PipBar
@@ -65,16 +63,18 @@ func set_data(new_data: ShipData) -> void:
 
 func clear_stats() -> void:
 	thrust = 0.0
-	mass = 1.0
 	hp = 1.0
+	mass = 1.0
+	update_inertia_tensor()
 
 func reset_stats() -> void:
 	if data == null:
 		return
-	thrust = data.thrust
-	mass = data.mass
 	_max_hp = data.max_hp
+	thrust = data.thrust
 	hp = data.max_hp
+	mass = data.mass
+	update_inertia_tensor()
 
 func _on_death_animation() -> void:
 	part_nodes.queue_free()
@@ -141,7 +141,6 @@ func update_behavior_indicator() -> void:
 func _process(_dt: float) -> void:
 	update_behavior_indicator()
 	always_upright.global_rotation = 0.0
-	always_upright.global_scale = Vector2.ONE * ui_scale_z_curve.sample_baked(globals.main.camera.position.y)
 	#bar_hp.value = hp
 	#bar_shield.value = shield
 	#bar_energy.value = energy

@@ -11,7 +11,8 @@ fractal_weighted_strength = 1.0
 fractal_ping_pong_strength = 5.0
 cellular_return_type = 0
 domain_warp_type = 1
-domain_warp_fractal_octaves = 2
+domain_warp_frequency = 0.02
+domain_warp_fractal_octaves = 1
 domain_warp_fractal_gain = 2.0
 
 [resource]

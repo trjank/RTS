@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://5yhk4cd760g7"]
+[gd_scene load_steps=6 format=3 uid="uid://5yhk4cd760g7"]
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_b5dfa"]
 [ext_resource type="Script" uid="uid://b7ip1206r8sxu" path="res://map/star/star.gd" id="2_v7ku8"]
@@ -10,6 +10,9 @@ height = 2.0
 radial_segments = 32
 rings = 16
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_v7ku8"]
+resource_local_to_scene = true
+
 [node name="Star" instance=ExtResource("1_b5dfa")]
 script = ExtResource("2_v7ku8")
 
@@ -20,9 +23,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
 material_override = ExtResource("3_v7ku8")
 cast_shadow = 0
 instance_shader_parameters/emission_color_primary = Color(1, 0, 0, 1)
-instance_shader_parameters/emission_color_secondary = Color(1, 0.96862745, 0.3882353, 1)
-instance_shader_parameters/emission_energy = 5.999999865888
+instance_shader_parameters/emission_color_secondary = Color(1, 0.8186667, 0.32, 1)
+instance_shader_parameters/emission_energy = 4.99999988824
 mesh = SubResource("SphereMesh_v7ku8")
+
+[node name="CollisionShape3D" parent="Area3D" index="0"]
+shape = SubResource("SphereShape3D_v7ku8")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." index="3"]
 light_energy = 25.0

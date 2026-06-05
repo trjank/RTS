@@ -1,5 +1,7 @@
 class_name Unit extends RigidBody3D
 
+# NOTE: When you update mass, you need to call update_inertia_tensor() afterwards
+
 signal warped(from: Vector3, to: Vector3)
 
 enum BehaviorFlags {
@@ -12,12 +14,12 @@ enum BehaviorFlags {
 }
 
 const RAMMING_DISTANCE := 0.0
-const BIG_NUMBER := 10_000.0
+const DEFAULT_SAFE_DISTANCE := 10_000.0
+const BROADSIDE_DISTANCE := 10_000.0
 const MAX_NUM_WAYPOINTS := 5
-const MOVE_LAZINESS := 1.0
 const MIN_WARP_TURN_ANGLE := deg_to_rad(135.0)
 const BROADSIDE_CORRECTION_ANGLE := deg_to_rad(100.0)
-const HITBOX_RATIO := 0.5 * sqrt(2)
+const HITBOX_SIZE_RATIO := 0.5 * sqrt(2)
 
 static var enable_warp_trails := true
 static var color_cloak := Color.GREEN
@@ -29,17 +31,17 @@ static func create() -> Unit:
 @export var sprite: Sprite3D
 @export var texture: Texture:
 	set = set_texture
-@export var torque_limit_curve: Curve
 @export var broadside_curve: Curve
 @export var hitbox: CollisionShape3D
 
 var path_arc := 0.3
+var course_correction := 3.0
 var value := 0.0
 var hp := 1.0:
 	set = set_hp
 var warp := 0.0
 var thrust := 0.0
-var turnrate := 100.0
+var torque := 10000.0
 var player_owner: Player
 var movement_locked := false
 var size := Vector2.ZERO:
@@ -52,8 +54,8 @@ var death_explosion := Explosion.DULL
 
 var _stop_distance := 0.0
 var _stop_rotation := 0.0
-var _angle_to_waypoint := 0.0
-var _angle_to_target := 0.0
+var _quaternion_to_waypoint := Quaternion.IDENTITY
+var _quaternion_to_target := Quaternion.IDENTITY
 var _direction_to_waypoint := Vector3.UP
 var _direction_to_target := Vector3.UP
 var _distance_to_waypoint := 0.0
@@ -85,19 +87,20 @@ func _exit_tree() -> void:
 	_radar_signature._state = RadarSignature.State.DEAD
 
 func is_moving() -> bool:
-	return not movement_locked and not _internal_movement_locked and _time_to_turn <= path_arc * _time_to_move
+	return not movement_locked and not _internal_movement_locked and _time_to_turn <= path_arc * _time_to_move and _distance_to_target > _stop_distance
 
 func is_turning() -> bool:
-	return absf(_angle_to_target) > absf(_stop_rotation)
+	return _quaternion_to_target.get_angle() > _stop_rotation
 
 func is_at_target() -> bool:
-	return _distance_to_target <= MOVE_LAZINESS * _stop_distance
+	return _distance_to_target <= _stop_distance
 
 func is_queue_empty() -> bool:
 	return _waypoints.is_empty()
 
 func can_warp() -> bool:
-	return (_distance_to_target <= warp and _waypoints.size() == 1) or MIN_WARP_TURN_ANGLE <= absf(_angle_to_target)
+	return false
+	#return (_distance_to_target <= warp and _waypoints.size() == 1) or MIN_WARP_TURN_ANGLE <= absf(_angle_to_target)
 
 func get_behavior_flags() -> int:
 	return _behavior_flags
@@ -116,9 +119,6 @@ func get_global_direction_to_waypoint() -> Vector3:
 
 func get_speed() -> float:
 	return linear_velocity.length()
-
-func get_torque_limit(angle := _angle_to_target) -> float:
-	return torque_limit_curve.sample_baked(absf(angle) )
 
 func get_forward_direction() -> Vector3:
 	return -transform.basis.z
@@ -144,10 +144,10 @@ func get_max_speed() -> float:
 
 func get_max_angular_velocity() -> float:
 	# NOTE: This comes from balancing forces:
-	#    mass * turnrate = -F_drag
-	# -> mass * turnrate = -mass * angular_damp * v_max
-	# -> |v_max| = turnrate / angular_damp
-	return turnrate / angular_damp
+	#    torque = -T_drag
+	# -> torque = -mass * angular_damp * ω_max
+	# -> |ω_max| = turnrate / (mass * angular_damp)
+	return torque / (mass * angular_damp)
 
 func set_size(new_size: Vector2) -> void:
 	size = new_size
@@ -174,27 +174,27 @@ func hit(damage: float, from: Player = null) -> void:
 	kill_credit = from
 	hp -= damage
 
+func update_inertia_tensor() -> void:
+	# This makes the mass distribution sphere-like, but not affected by radius
+	inertia = Vector3(mass, mass, mass)
+
 func drain_energy(_energy_drain: float) -> void:
 	pass # (override this method)
 
 func _update_hitbox() -> void:
-	hitbox.shape.radius = HITBOX_RATIO * size[size.max_axis_index()]
+	hitbox.shape.radius = HITBOX_SIZE_RATIO * size[size.max_axis_index() ]
 
 func update_ui() -> void:
 	if not is_node_ready():
 		return
 	sprite.texture = texture
-	#sprite.pixel_size = size
-	#sprite.modulate = color_selected if selected else Color.WHITE
 	_update_hitbox()
 
 func cloak() -> void:
 	_radar_signature.state = RadarSignature.State.CLOAKED
-	#modulate = color_cloak
 
 func decloak() -> void:
 	_radar_signature.state = RadarSignature.State.ALIVE
-	#modulate = Color.WHITE
 
 func clear_waypoints() -> void:
 	_waypoints.clear()
@@ -202,28 +202,20 @@ func clear_waypoints() -> void:
 func count_waypoints() -> int:
 	return _waypoints.size()
 
-## NOTE: i must be non-negative
-func set_waypoint(i: int, waypoint: Target) -> bool:
-	if waypoint == null or waypoint == self._radar_signature or i < 0 or _waypoints.size() <= i:
-		return false
-	_waypoints[i] = waypoint
-	return true
-
 func queue_waypoint(waypoint: Target) -> bool:
 	if waypoint == null or waypoint == self._radar_signature:
 		return false
 	if MAX_NUM_WAYPOINTS <= _waypoints.size():
-		return set_waypoint(_waypoints.size() - 1, waypoint)
-	_waypoints.push_back(waypoint)
-	sleeping = false
+		_waypoints[-1] = waypoint
+	else:
+		_waypoints.push_back(waypoint)
+		sleeping = false
 	return true
 
-func pop_waypoint() -> void:
-	if _waypoints.is_empty():
-		return
+func pop_waypoint() -> bool:
 	_behavior_flags = BehaviorFlags.NONE
 	_distance_to_target = INF
-	_waypoints.pop_front()
+	return _waypoints.pop_front() != null
 
 func kill() -> void:
 	if kill_credit != null:
@@ -233,7 +225,6 @@ func kill() -> void:
 	if death_explosion.is_empty() or not is_node_ready():
 		queue_free()
 	elif not _dying:
-		#Explosion.explode(sprite, death_explosion, 3.0, 2.0, 0.0).connect(queue_free)
 		_on_death_animation()
 		_dying = true
 
@@ -251,7 +242,7 @@ func attack(min_distance := RAMMING_DISTANCE) -> void:
 	_internal_movement_locked = _distance_to_waypoint <= min_distance
 
 ## NOTE: When safe_distance is reached, the current waypoint is popped
-func flee(safe_distance := BIG_NUMBER) -> void:
+func flee(safe_distance := DEFAULT_SAFE_DISTANCE) -> void:
 	_behavior_flags |= BehaviorFlags.FLEE
 	#
 	_attack_position = get_waypoint().position - safe_distance * _direction_to_waypoint
@@ -273,8 +264,8 @@ func broadside(distance: float, approach_angle := deg_to_rad(45.0) ) -> void:
 	_behavior_flags |= BehaviorFlags.BROADSIDE
 	#
 	var smooth_factor := broadside_curve.sample_baked(_distance_to_waypoint - distance)
-	approach_angle = -signf(_angle_to_waypoint) * lerpf(BROADSIDE_CORRECTION_ANGLE, approach_angle, smooth_factor)
-	_attack_position = global_position + BIG_NUMBER * _direction_to_waypoint.rotated(Vector3.UP, approach_angle)
+	approach_angle = _quaternion_to_target.get_angle() * lerpf(BROADSIDE_CORRECTION_ANGLE, approach_angle, smooth_factor)
+	_attack_position = global_position + BROADSIDE_DISTANCE * _direction_to_waypoint.rotated(Vector3.UP, approach_angle)
 	_internal_movement_locked = false
 
 func kite(min_distance: float, max_distance: float) -> void:
@@ -284,54 +275,72 @@ func kite(min_distance: float, max_distance: float) -> void:
 		return flee()
 	attack(max_distance)
 
-func _calculate_trajectory_to_target() -> void:
-	var to_target := _attack_position - global_position
-	_distance_to_target = to_target.length()
-	_direction_to_target = to_target.normalized()
-	_angle_to_target = get_global_forward_direction().angle_to(to_target)
-
 func _calculate_trajectory_to_waypoint() -> void:
 	var to_waypoint := get_waypoint().global_position - global_position
 	_distance_to_waypoint = to_waypoint.length()
 	_direction_to_waypoint = to_waypoint.normalized()
-	_angle_to_waypoint = get_global_forward_direction().angle_to(to_waypoint)
+	_quaternion_to_waypoint = Quaternion(get_global_forward_direction(), to_waypoint)
+
+func _course_correct(to_target: Vector3, to_target_speed: float) -> void:
+	# If the direction of travel is not straight, turn more to course correct
+	var perp_velocity := linear_velocity - to_target_speed * _direction_to_target
+	var correction := course_correction * perp_velocity * _time_to_move
+	_quaternion_to_target = Quaternion(get_global_forward_direction(), to_target - correction)
+
+func _calculate_trajectory_to_target() -> void:
+	var to_target := _attack_position - global_position
+	_distance_to_target = to_target.length()
+	_direction_to_target = to_target.normalized()
+	var to_target_speed := linear_velocity.dot(_direction_to_target)
+	_quaternion_to_target = Quaternion(get_global_forward_direction(), to_target)
 	# NOTE: This comes from solving the differential equation:
 	#    x'' = -damp * x' [This is how Godot calculates damp force]
 	# -> x' = v_0 * exp(-damp * t)
 	# -> x = x_0 + (v_0 / damp) * (1 - exp(-damp * t) )
 	# -> x = x_0 + (v_0 / damp) [as t goes to infinity]
 	# -> Δx = v_0 / damp
-	_stop_distance = linear_velocity.dot(_direction_to_target) / linear_damp
-	_stop_rotation = angular_velocity.y / angular_damp
+	_stop_distance = to_target_speed / linear_damp
+	_stop_rotation = angular_velocity.length() / angular_damp
 	# This is just an approximation (but it works well in most cases)
 	_time_to_move = _distance_to_target / get_max_speed()
-	_time_to_turn = absf(_angle_to_target) / get_max_angular_velocity()
+	_time_to_turn = _quaternion_to_target.get_angle() / get_max_angular_velocity()
+	_course_correct(to_target, to_target_speed)
 
 func _physics_process(_dt: float) -> void:
-	_move_to_target()
 	_update_radar_signature()
 
+func _turn_to_target(state: PhysicsDirectBodyState3D) -> void:
+	# NOTE: This comes from solving the inequality:
+	#    stop_rotation <= Δθ
+	# -> ω / angular_damp <= Δθ
+	# -> ω <= angular_damp * Δθ
+	# -> ω_0 + Δω <= angular_damp * Δθ
+	# -> Δω <= angular_damp * Δθ - ω_0
+	var deviation := angular_damp * _quaternion_to_target.get_angle() - angular_velocity.length()
+	# Since inertia tensor is the identity multiplied by mass, we can easily convert to torque
+	var max_torque := mass * deviation / state.step
+	# Need to limit torque because time steps are discrete (and can overshoot target)
+	state.apply_torque(minf(torque, max_torque) * _quaternion_to_target.get_axis() )
+
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
-	assert(state.inverse_inertia.is_equal_approx(Vector3.ONE) )
-	# Can treat torque as angular acceleration   ^^^^^^^^^^^
-	if _waypoints.is_empty():
+	if not _calculate_trajectory():
 		return
-	if is_turning():
-		var torque := minf(turnrate, get_torque_limit() )
-		state.apply_torque(signf(_angle_to_target) * torque * Vector3.UP)
 	if is_moving():
 		_warp_to_attack_position(state)
 		state.apply_central_force(thrust * get_forward_direction() )
+	if is_turning():
+		_turn_to_target(state)
 
-func _move_to_target() -> void:
+func _calculate_trajectory() -> bool:
 	if _waypoints.is_empty():
-		return
+		return false
 	if not get_waypoint().is_alive() or is_at_target():
-		return pop_waypoint()
+		return not pop_waypoint()
 	_calculate_trajectory_to_waypoint()
 	_behavior_flags = BehaviorFlags.NONE
 	order_attack()
 	_calculate_trajectory_to_target()
+	return true
 
 func _update_radar_signature() -> void:
 	if _radar_signature.get_state() == RadarSignature.State.CLOAKED:
@@ -359,7 +368,7 @@ func _warp_to_attack_position(state: PhysicsDirectBodyState3D) -> void:
 	var from := global_position
 	var to := from + distance * _direction_to_target
 	warp -= distance
-	state.transform = global_transform.rotated(Vector3.UP, _angle_to_target)
+	#state.transform = global_transform.rotated(Vector3.UP, _angle_to_target)
 	state.transform.origin = to
 	_create_warp_trail(from, to)
 	warped.emit(from, to)

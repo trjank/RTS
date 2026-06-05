@@ -1,8 +1,8 @@
 class_name Star extends Planet
 
-const INSTABILITY := GRAVITATIONAL_CONSTANT
-const STAR_MATERIAL := preload("res://map/star/star_plasma.tres")
-const BLACK_HOLE_SHADER := preload("res://shaders/black_hole.tres")
+const INSTABILITY := 0.01 * GRAVITATIONAL_CONSTANT
+const STAR_SHADER := preload("res://map/star/star_plasma.tres")
+const BLACK_HOLE_SHADER := preload("res://map/star/black_hole_fast.tres")
 
 var energy: float:
 	get = get_energy,
@@ -41,5 +41,4 @@ func set_secondary_color(new_secondary_color: float) -> void:
 	mesh_instance.set_instance_shader_parameter("emission_color_secondary", new_secondary_color)
 
 func update_shader() -> void:
-	pass
-	#sprite.material_overlay = BLACK_HOLE_SHADER if is_black_hole() else STAR_SHADER
+	mesh_instance.material_override = BLACK_HOLE_SHADER if is_black_hole() else STAR_SHADER

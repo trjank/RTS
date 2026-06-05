@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bclfkleo04c2s"]
+[gd_scene load_steps=16 format=3 uid="uid://bclfkleo04c2s"]
 
 [ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://battle/unit.tscn" id="1_aujvj"]
 [ext_resource type="Script" uid="uid://c1kpbbaqx8xxa" path="res://battle/ship.gd" id="1_n6m1k"]
@@ -6,6 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_aujvj"]
 [ext_resource type="PackedScene" uid="uid://x0uqbyqx11lv" path="res://battle/pip_bar.tscn" id="4_jqcho"]
 [ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="5_aujvj"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6juyh"]
+resource_local_to_scene = true
 
 [sub_resource type="Gradient" id="Gradient_wnxci"]
 offsets = PackedFloat32Array(0.516908, 0.676328, 0.717391)
@@ -38,6 +41,10 @@ height = 32
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_h2j6u"]
 
+[sub_resource type="SphereMesh" id="SphereMesh_h2j6u"]
+radius = 0.1
+height = 0.2
+
 [node name="Ship" node_paths=PackedStringArray("bar_hp", "bar_shield", "bar_energy", "always_upright", "behavior_indicator", "part_nodes", "detection") instance=ExtResource("1_aujvj")]
 script = ExtResource("1_n6m1k")
 bar_hp = NodePath("AlwaysUpright/GridContainer/PipBarHP")
@@ -47,6 +54,9 @@ always_upright = NodePath("AlwaysUpright")
 behavior_indicator = NodePath("AlwaysUpright/BehaviorIndicator")
 part_nodes = NodePath("PartNodes")
 detection = NodePath("Detection")
+
+[node name="CollisionShape3D" parent="." index="1"]
+shape = SubResource("SphereShape3D_6juyh")
 
 [node name="WarpRadius" type="Sprite2D" parent="." index="2"]
 visible = false
@@ -82,7 +92,7 @@ layout_mode = 2
 text = "500"
 
 [node name="PipBarShield" parent="AlwaysUpright/GridContainer" index="2" instance=ExtResource("4_jqcho")]
-custom_minimum_size = Vector2(190, 32)
+custom_minimum_size = Vector2(185.25, 32)
 layout_mode = 2
 size_flags_horizontal = 0
 max_value = 950.0
@@ -100,7 +110,7 @@ layout_mode = 2
 text = "500"
 
 [node name="PipBarHP" parent="AlwaysUpright/GridContainer" index="5" instance=ExtResource("4_jqcho")]
-custom_minimum_size = Vector2(84, 32)
+custom_minimum_size = Vector2(81.9, 32)
 layout_mode = 2
 size_flags_horizontal = 0
 max_value = 2100.0
@@ -118,7 +128,7 @@ layout_mode = 2
 text = "500"
 
 [node name="PipBarEnergy" parent="AlwaysUpright/GridContainer" index="8" instance=ExtResource("4_jqcho")]
-custom_minimum_size = Vector2(160, 32)
+custom_minimum_size = Vector2(156, 32)
 layout_mode = 2
 size_flags_horizontal = 0
 texture_progress = SubResource("GradientTexture2D_6juyh")
@@ -138,3 +148,6 @@ collision_mask = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Detection" index="0"]
 shape = SubResource("SphereShape3D_h2j6u")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="6"]
+mesh = SubResource("SphereMesh_h2j6u")

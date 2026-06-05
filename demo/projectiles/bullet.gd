@@ -18,7 +18,7 @@ func set_data(new_data: BulletData) -> void:
 	mass = data.mass
 	texture = data.get_image().get_texture()
 	linear_damp = data.linear_damp
-	turnrate = data.turn_impulse
+	torque = data.turn_impulse
 
 func begin_death_timer() -> void:
 	get_tree().create_timer(data.lifetime_sec).timeout.connect(queue_free)

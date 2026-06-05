@@ -20,10 +20,10 @@ const PRESET_SYNTAX: Dictionary[String, Variant.Type] = {
 	"max_orbit_radius": TYPE_FLOAT,
 	"min_orbit_offset": TYPE_FLOAT,
 	"max_orbit_offset": TYPE_FLOAT,
+# For Planet below
 	"min_radius": TYPE_FLOAT,
 	"max_radius": TYPE_FLOAT,
 	"display_name": TYPE_STRING,
-# For Planet below
 	"capturable": TYPE_BOOL
 }
 

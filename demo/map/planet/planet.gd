@@ -3,6 +3,9 @@ class_name Planet extends Orbiter
 const LABEL_OFFSET_METERS := 2.0
 const MIN_RADIUS := 0.0
 const MAX_RADIUS := 100.0
+const MIN_CAPTURE_PROGRESS := 0.0
+const MAX_CAPTURE_PROGRESS := 1.0
+const ZONE_SIZE_RATIO := 1.5
 
 @export var always_upright: Node3D
 @export var label: Label3D
@@ -14,7 +17,8 @@ var capturable := true:
 	set = set_capturable
 var alloy_per_sec := 0.0
 var energy_per_sec := 0.0
-var capture_progress := 0.0
+var capture_progress := 0.0:
+	set = set_capture_progress
 var display_name: String:
 	set = set_display_name
 var radius := MIN_RADIUS:
@@ -38,9 +42,12 @@ func get_team_owner() -> Team:
 func count_capturing_ships(team: Team) -> int:
 	return _team_ship_count.get(team, 0)
 
+func set_capture_progress(new_capture_progress: float) -> void:
+	capture_progress = clampf(new_capture_progress, MIN_CAPTURE_PROGRESS, MAX_CAPTURE_PROGRESS)
+
 func set_radius(new_radius: float) -> void:
 	radius = clampf(new_radius, MIN_RADIUS, MAX_RADIUS)
-	zone_shape.shape.radius = radius
+	zone_shape.shape.radius = ZONE_SIZE_RATIO * radius
 	label.position.z = -radius - LABEL_OFFSET_METERS
 	# NOTE: Ensure the mesh's size is one for this to work
 	mesh_instance.scale = radius * Vector3.ONE
