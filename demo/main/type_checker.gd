@@ -5,6 +5,14 @@ const CAST_NUMBERS: Dictionary[Variant.Type, Variant.Type] = {
 	TYPE_INT: TYPE_FLOAT,
 	TYPE_FLOAT: TYPE_INT
 }
+const CAST_COLORS: Dictionary[Variant.Type, Variant.Type] = {
+	TYPE_STRING: TYPE_COLOR
+}
+const CAST_NUMBERS_AND_COLORS: Dictionary[Variant.Type, Variant.Type] = {
+	TYPE_INT: TYPE_FLOAT,
+	TYPE_FLOAT: TYPE_INT,
+	TYPE_STRING: TYPE_COLOR
+}
 
 ## Use to validate user input (e.g. parsing JSON)
 static func type_check_key(key: Variant, data: Dictionary, template: Dictionary[String, Variant.Type], strict_keys := true, allowed_casts: Dictionary[Variant.Type, Variant.Type] = {} ) -> bool:

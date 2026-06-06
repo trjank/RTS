@@ -31,7 +31,7 @@ func set_bullet_speed(new_bullet_speed: float) -> void:
 func fire(target: Target) -> bool:
 	if target == null or _projectile_data == null:
 		return false
-	look_at(target.position)
+	look_at(target.global_position)
 	#var angle := rotation.y + get_angle_to(target.position) - UP_ANGLE
 	#if absf(angle_difference(angle, rest_angle) ) > firing_arc:
 		#return false

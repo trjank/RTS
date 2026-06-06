@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://d05n70tt1def7"]
 
-[ext_resource type="Script" uid="uid://bknt8kh06bfmd" path="res://projectiles/laser.gd" id="1_rgfps"]
+[ext_resource type="Script" uid="uid://bknt8kh06bfmd" path="res://projectiles/laser/laser.gd" id="1_rgfps"]
 
 [sub_resource type="Gradient" id="Gradient_rgfps"]
 offsets = PackedFloat32Array(0.65848213, 0.75223213)

@@ -48,7 +48,7 @@ var max_warp := 0.0
 var max_shield := 0.0
 var max_energy := 0.0
 var thrust := 0.0
-var turn_impulse := 0.0
+var torque := 0.0
 var part_counts: Dictionary[PartData, int]
 var center: Vector2
 var node_parts: Array[ShipDataPart] = []
@@ -156,7 +156,7 @@ func _reset_stats() -> void:
 	cost           = 0
 	thrust         = 0.0
 	mass           = 0.0
-	turn_impulse   = 0.0
+	torque         = 0.0
 	max_warp       = 0.0
 	max_shield     = 0.0
 	max_energy     = 0.0
@@ -168,7 +168,7 @@ func add_part_stats(part_data: PartData, count := 1) -> void:
 	thrust         += count * part_data.thrust
 	cost           += count * part_data.cost
 	mass           += count * part_data.mass
-	turn_impulse   += count * part_data.turn_impulse
+	torque         += count * part_data.torque
 	max_hp         += count * part_data.hp
 	max_warp       += count * part_data.warp
 	max_shield     += count * part_data.shield

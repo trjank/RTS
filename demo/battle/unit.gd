@@ -221,7 +221,7 @@ func kill() -> void:
 	if kill_credit != null:
 		kill_credit.register_kill(self)
 	if player_owner != null:
-		player_owner.register_loss(self)
+		player_owner.register_death(self)
 	if death_explosion.is_empty() or not is_node_ready():
 		queue_free()
 	elif not _dying:

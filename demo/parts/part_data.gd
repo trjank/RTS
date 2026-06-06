@@ -39,7 +39,7 @@ var warp_per_sec := 0.0
 var shield_per_sec := 0.0
 var energy_per_sec := 0.0
 var thrust := 0.0
-var turn_impulse := 0.0
+var torque := 0.0
 var hp := 0.0
 var mass := 0.0
 var image_path: String:

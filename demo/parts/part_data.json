@@ -289,7 +289,7 @@
 		"height": 4,
 		"tab": "weapons",
 		"y_level": 0.1,
-		"projectile_code": "GPB1",
+		"projectile_code": "PDR1",
 		"image_path": "res://part_images/weapon_battleship_cannon_4x4.png"
 	},
 	"LPW1": {
@@ -305,7 +305,6 @@
 		"image_path": "res://part_images/weapon_light_point_defense_2x2.png"
 	},
 	"GPB1": {
-		"cost": 10,
 		"damage": 10000.0,
 		"name": "Generic Laser 2x2",
 		"subtype": "laser",
@@ -319,6 +318,19 @@
 		"tab": "hidden",
 		"y_level": 0.1,
 		"max_chains": 10,
+		"image_path": "res://part_images/projectile_bullet_generic.png"
+	},
+	"PDR1": {
+		"damage": 100.0,
+		"name": "Death Ray",
+		"subtype": "death_ray",
+		"mass": 10,
+		"hp": 100,
+		"tab": "hidden",
+		"thickness": 1.0,
+		"outer_beam_color": "blue",
+		"glow": 2.0,
+		"lifetime_sec": 1.0,
 		"image_path": "res://part_images/projectile_bullet_generic.png"
 	}
 }

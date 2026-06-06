@@ -26,7 +26,7 @@ void vertex() {
 	BINORMAL += vec3(0.0, 0.0, -1.0) * abs(NORMAL.y);
 	BINORMAL += vec3(0.0, 1.0, 0.0) * abs(NORMAL.z);
 	BINORMAL = normalize(BINORMAL);
-	// UV1 Triplanar: Enabled
+	// UV Triplanar: Enabled
 	uv_power_normal = pow(abs(NORMAL), vec3(uv_blend_sharpness) );
 	uv_triplanar_pos = VERTEX * uv_scale + uv_offset;
 	uv_power_normal /= dot(uv_power_normal, vec3(1.0) );

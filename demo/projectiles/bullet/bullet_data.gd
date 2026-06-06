@@ -1,12 +1,12 @@
 class_name BulletData extends ProjectileData
 
-const MIN_MISSILE_TURN_IMPULSE = 0.1
+const MIN_MISSILE_TORQUE = 0.1
 
 var launch_velocity := 0.0
 var linear_damp := 0.0
 
 func is_missile() -> bool:
-	return MIN_MISSILE_TURN_IMPULSE <= turn_impulse
+	return MIN_MISSILE_TORQUE <= torque
 
 func create_projectile(from: Weapon, to: Target) -> void:
 	assert(from != null)

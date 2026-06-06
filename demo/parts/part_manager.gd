@@ -26,7 +26,7 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"shield_per_sec": TYPE_FLOAT,
 	"energy_per_sec": TYPE_FLOAT,
 	"thrust": TYPE_FLOAT,
-	"turn_impulse": TYPE_FLOAT,
+	"torque": TYPE_FLOAT,
 	"hp": TYPE_FLOAT,
 	"mass": TYPE_FLOAT,
 	"size": TYPE_VECTOR2I,
@@ -46,6 +46,7 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"multiplier_speed": TYPE_FLOAT,
 	"multiplier_cooldown": TYPE_FLOAT,
 # For ProjectileData below
+	"lifetime_sec": TYPE_FLOAT,
 	"damage": TYPE_FLOAT,
 	"energy_drain": TYPE_FLOAT,
 	"shield_penetration": TYPE_FLOAT,
@@ -55,10 +56,19 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 # For LaserData below
 	"color": TYPE_COLOR,
 	"glow": TYPE_FLOAT,
-	"lifetime_sec": TYPE_FLOAT,
 	"max_chains": TYPE_INT,
 	"chain_multiplier": TYPE_FLOAT,
-	"display_width": TYPE_FLOAT
+	"display_width": TYPE_FLOAT,
+# For DeathRayData below
+	"thickness": TYPE_FLOAT,
+	"max_range": TYPE_FLOAT,
+	"inner_beam_color": TYPE_COLOR,
+	"outer_beam_color": TYPE_COLOR,
+	"inner_beam_size": TYPE_FLOAT,
+	"volatility": TYPE_FLOAT,
+	"hit_damage_multiplier": TYPE_FLOAT,
+	"hit_energy_drain_multiplier": TYPE_FLOAT,
+	"max_hits": TYPE_INT
 }
 
 var part_sizes := PackedVector2Array()
@@ -105,15 +115,16 @@ func create_part(code: String, image_path: String, width: int, height: int, subt
 	return part
 
 func load_part(code: String, properties: Dictionary) -> LoadError:
+	# These are all constant parameters, so we cannot use set
 	var subtype = properties.get("subtype", "")
 	var width: int = properties.get("width", PartData.MIN_SIZE)
 	var height: int = properties.get("height", PartData.MIN_SIZE)
-	#   ^^^^^^ These are all constant parameters, so we cannot use set
 	var image_path: String = properties.get("image_path", "")
+	#
 	var part := create_part(code, image_path, width, height, subtype)
 	if part == null:
 		return LoadError.INVALID_PART
-	if not TypeChecker.type_check(properties, VALID_PART_PROPERTIES, true, TypeChecker.CAST_NUMBERS):
+	if not TypeChecker.type_check(properties, VALID_PART_PROPERTIES, true, TypeChecker.CAST_NUMBERS_AND_COLORS):
 		return LoadError.INVALID_PART_PROPERTIES
 	for property in properties:
 		part.set(property, properties[property] )

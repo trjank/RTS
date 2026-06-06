@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://dib1pkixkrg8p"]
+
+[ext_resource type="Script" uid="uid://vsnh5ncxfq8j" path="res://projectiles/death_ray/death_ray.gd" id="1_7f011"]
+[ext_resource type="Material" uid="uid://bharayvlqs852" path="res://projectiles/death_ray/material.tres" id="1_27fsr"]
+[ext_resource type="AudioStream" uid="uid://brp2hrgo0j8u" path="res://projectiles/death_ray/sound_effect.wav" id="3_b6x20"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_27fsr"]
+resource_local_to_scene = true
+
+[node name="DeathRay" type="MeshInstance3D" node_paths=PackedStringArray("sound_effect")]
+material_override = ExtResource("1_27fsr")
+transparency = 0.5
+instance_shader_parameters/alpha = 1.0
+instance_shader_parameters/inner_beam_size = 0.10800000513
+instance_shader_parameters/volatility = 0.050000002375
+mesh = SubResource("PlaneMesh_27fsr")
+script = ExtResource("1_7f011")
+sound_effect = NodePath("AudioStreamPlayer3D")
+metadata/_custom_type_script = "uid://vsnh5ncxfq8j"
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_b6x20")

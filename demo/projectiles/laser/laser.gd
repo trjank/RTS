@@ -6,11 +6,10 @@ var data: LaserData:
 var _visited: Array[Ship] = []
 
 static func create() -> Laser:
-	return preload("res://projectiles/laser.tscn").instantiate()
+	return preload("res://projectiles/laser/laser.tscn").instantiate()
 
 func set_data(new_data: LaserData) -> void:
 	if new_data == null:
-		push_warning("Laser has null data and will be removed")
 		return queue_free()
 	data = new_data
 

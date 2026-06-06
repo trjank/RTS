@@ -40,7 +40,7 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
 
-[node name="StatsBox" type="MarginContainer" node_paths=PackedStringArray("hp", "cost", "mass", "thrust", "turn_impulse")]
+[node name="StatsBox" type="MarginContainer" node_paths=PackedStringArray("hp", "cost", "mass", "thrust", "torque")]
 offset_right = 648.0
 offset_bottom = 465.0
 theme_override_constants/margin_left = 30
@@ -52,7 +52,7 @@ hp = NodePath("VBoxContainer/PanelContainer/GridContainer/HPValue")
 cost = NodePath("VBoxContainer/PanelContainer/GridContainer/CostValue")
 mass = NodePath("VBoxContainer/PanelContainer/GridContainer/MassValue")
 thrust = NodePath("VBoxContainer/PanelContainer/GridContainer/ThrustValue")
-turn_impulse = NodePath("VBoxContainer/PanelContainer/GridContainer/TurnImpulseValue")
+torque = NodePath("VBoxContainer/PanelContainer/GridContainer/TorqueValue")
 metadata/_custom_type_script = "uid://fr7sl5a3vj3d"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -173,12 +173,12 @@ texture = ExtResource("5_033vo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="TurnImpulseProperty" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
+[node name="TorqueProperty" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Turnrate:"
 
-[node name="TurnImpulseValue" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
+[node name="TorqueValue" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8784314, 0.54901963, 1)
 theme_override_colors/font_outline_color = Color(1, 0.8784314, 0.54901963, 1)
