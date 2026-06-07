@@ -1,0 +1,8 @@
+[gd_resource type="PlaneMesh" load_steps=2 format=3 uid="uid://dbl564nq45ww8"]
+
+[ext_resource type="Material" uid="uid://bm87xgb755vnc" path="res://trails/flame_trail.tres" id="1_e2oqk"]
+
+[resource]
+material = ExtResource("1_e2oqk")
+size = Vector2(1, 1)
+center_offset = Vector3(0, 0, 0.5)

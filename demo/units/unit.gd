@@ -26,7 +26,7 @@ static var color_cloak := Color.GREEN
 static var color_selected := Color(1.0, 0.4, 0.4, 1.0)
 
 static func create() -> Unit:
-	return preload("res://battle/unit.tscn").instantiate()
+	return preload("res://units/unit.tscn").instantiate()
 
 @export var sprite: Sprite3D
 @export var texture: Texture:

@@ -118,7 +118,18 @@ text = "Build. Kill. Conquer."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SingleplayerButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="2"]
+[node name="Warning" type="Label" parent="UI/Options/TabContainer/Buttons" index="2"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.7607843, 0.36078432, 1)
+theme_override_colors/font_outline_color = Color(1, 0.7607843, 0.36078432, 1)
+theme_override_constants/outline_size = 3
+text = "WARNING: This game has intense 
+flashing and flickering lights."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SingleplayerButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="3"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
@@ -127,7 +138,7 @@ theme_override_styles/hover = ExtResource("5_0w23u")
 text = "Singleplayer"
 alignment = 0
 
-[node name="MultiplayerButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="3"]
+[node name="MultiplayerButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="4"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
@@ -136,7 +147,7 @@ theme_override_styles/hover = ExtResource("5_0w23u")
 text = "Multiplayer"
 alignment = 0
 
-[node name="DesignButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="4"]
+[node name="DesignButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="5"]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 32
@@ -148,7 +159,7 @@ text = "Design"
 icon = ExtResource("8_6at21")
 alignment = 0
 
-[node name="FleetsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="5"]
+[node name="FleetsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="6"]
 layout_mode = 2
 theme_override_constants/h_separation = 14
 theme_override_constants/icon_max_width = 32
@@ -160,7 +171,7 @@ text = "Fleets"
 icon = ExtResource("9_og6xe")
 alignment = 0
 
-[node name="SettingsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="6"]
+[node name="SettingsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="7"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_constants/h_separation = 15
@@ -186,6 +197,7 @@ layout_mode = 2
 wait_time = 100.0
 
 [connection signal="pressed" from="UI/Options/TabContainer/Buttons/SingleplayerButton" to="." method="_on_singleplayer_button_pressed"]
+[connection signal="pressed" from="UI/Options/TabContainer/Buttons/MultiplayerButton" to="." method="_on_multiplayer_button_pressed"]
 [connection signal="pressed" from="UI/Options/TabContainer/Buttons/DesignButton" to="." method="_on_design_button_pressed"]
 [connection signal="pressed" from="UI/Options/TabContainer/Buttons/FleetsButton" to="." method="_on_fleets_button_pressed"]
 [connection signal="pressed" from="UI/Options/TabContainer/Buttons/SettingsButton" to="." method="_on_settings_button_pressed"]

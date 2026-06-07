@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://vsnh5ncxfq8j" path="res://projectiles/death_ray/death_ray.gd" id="1_7f011"]
 [ext_resource type="Material" uid="uid://bharayvlqs852" path="res://projectiles/death_ray/material.tres" id="1_27fsr"]
-[ext_resource type="AudioStream" uid="uid://brp2hrgo0j8u" path="res://projectiles/death_ray/sound_effect.wav" id="3_b6x20"]
+[ext_resource type="AudioStream" uid="uid://brp2hrgo0j8u" path="res://sound_effects/death_ray.wav" id="3_b6x20"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_27fsr"]
 resource_local_to_scene = true

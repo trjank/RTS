@@ -23,6 +23,9 @@ func set_submenu(new_submenu: Submenu) -> void:
 func _on_singleplayer_button_pressed() -> void:
 	submenu = Submenu.SINGLEPLAYER
 
+func _on_multiplayer_button_pressed() -> void:
+	globals.main.state = Main.State.BATTLE
+
 func _on_design_button_pressed() -> void:
 	globals.main.state = Main.State.DESIGN
 

@@ -22,7 +22,7 @@ var _max_energy := 0.0
 var _detection_cache := []
 
 static func create() -> Ship:
-	return preload("res://battle/ship.tscn").instantiate()
+	return preload("res://ships/ship.tscn").instantiate()
 
 var data: ShipData:
 	set = set_data

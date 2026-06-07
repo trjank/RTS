@@ -1,8 +1,0 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://orgxnjygsyx5"]
-
-[ext_resource type="Shader" uid="uid://dcn0htcdxhoe5" path="res://parts/thruster_trail.gdshader" id="1_3rs64"]
-[ext_resource type="Texture2D" uid="uid://bk15827ca1k3h" path="res://parts/thruster_trail_noise.tres" id="2_5hidi"]
-
-[resource]
-shader = ExtResource("1_3rs64")
-shader_parameter/noise = ExtResource("2_5hidi")

@@ -1,10 +1,10 @@
 [gd_scene load_steps=16 format=3 uid="uid://bclfkleo04c2s"]
 
-[ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://battle/unit.tscn" id="1_aujvj"]
-[ext_resource type="Script" uid="uid://c1kpbbaqx8xxa" path="res://battle/ship.gd" id="1_n6m1k"]
+[ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://units/unit.tscn" id="1_aujvj"]
+[ext_resource type="Script" uid="uid://c1kpbbaqx8xxa" path="res://ships/ship.gd" id="1_n6m1k"]
 [ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="3_h2j6u"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_aujvj"]
-[ext_resource type="PackedScene" uid="uid://x0uqbyqx11lv" path="res://battle/pip_bar.tscn" id="4_jqcho"]
+[ext_resource type="PackedScene" uid="uid://x0uqbyqx11lv" path="res://ships/pip_bar.tscn" id="4_jqcho"]
 [ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="5_aujvj"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_6juyh"]

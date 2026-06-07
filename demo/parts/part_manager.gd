@@ -53,6 +53,15 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 # For BulletData below
 	"launch_velocity": TYPE_FLOAT,
 	"linear_damp": TYPE_FLOAT,
+	"sound_variation": TYPE_FLOAT,
+	"trail_enabled": TYPE_BOOL,
+	"trail_inner_color": TYPE_COLOR,
+	"trail_outer_color": TYPE_COLOR,
+	"trail_glow": TYPE_FLOAT,
+	"trail_roundness": TYPE_FLOAT,
+	"trail_flicker_strength": TYPE_FLOAT,
+	"trail_width": TYPE_FLOAT,
+	"trail_force": TYPE_FLOAT,
 # For LaserData below
 	"color": TYPE_COLOR,
 	"glow": TYPE_FLOAT,

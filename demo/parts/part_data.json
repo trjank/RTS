@@ -150,6 +150,9 @@
 		"width": 2,
 		"height": 2,
 		"thrust": 1000,
+		"trail_roundness": 0.8,
+		"trail_inner_color": "white",
+		"trail_outer_color": "blue",
 		"tab": "movement",
 		"image_path": "res://part_images/thruster_bulk_2x2.png"
 	},
@@ -174,6 +177,11 @@
 		"width": 2,
 		"height": 2,
 		"thrust": 1000,
+		"trail_roundness": 1.5,
+		"trail_glow": 1.5,
+		"trail_force": 0.2,
+		"trail_inner_color": "white",
+		"trail_outer_color": "green",
 		"tab": "movement",
 		"image_path": "res://part_images/thruster_cruiser_2x2.png"
 	},
@@ -289,7 +297,7 @@
 		"height": 4,
 		"tab": "weapons",
 		"y_level": 0.1,
-		"projectile_code": "PDR1",
+		"projectile_code": "PBM1",
 		"image_path": "res://part_images/weapon_battleship_cannon_4x4.png"
 	},
 	"LPW1": {
@@ -304,20 +312,24 @@
 		"y_level": 0.1,
 		"image_path": "res://part_images/weapon_light_point_defense_2x2.png"
 	},
-	"GPB1": {
-		"damage": 10000.0,
-		"name": "Generic Laser 2x2",
-		"subtype": "laser",
+	"PBM1": {
+		"damage": 10.0,
+		"name": "Missile",
+		"subtype": "bullet",
 		"mass": 10,
 		"hp": 100,
-		"display_width": 2.0,
-		"lifetime_sec": 1.0,
 		"width": 2,
 		"height": 2,
 		"glow": 10.0,
 		"tab": "hidden",
 		"y_level": 0.1,
-		"max_chains": 10,
+		"lifetime_sec": 3.0,
+		"launch_velocity": 10.0,
+		"sound_variation": 0.25,
+		"trail_enabled": true,
+		"trail_width": 0.5,
+		"trail_force": 0.2,
+		"trail_roundness": 1.2,
 		"image_path": "res://part_images/projectile_bullet_generic.png"
 	},
 	"PDR1": {

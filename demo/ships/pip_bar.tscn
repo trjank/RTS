@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://x0uqbyqx11lv"]
 
-[ext_resource type="Script" uid="uid://bnrcm6w6acecr" path="res://battle/pip_bar.gd" id="1_lexbn"]
+[ext_resource type="Script" uid="uid://bnrcm6w6acecr" path="res://ships/pip_bar.gd" id="1_lexbn"]
 
 [sub_resource type="Gradient" id="Gradient_jqcho"]
 colors = PackedColorArray(0.2, 0.2, 0.2, 1, 0.2, 0.2, 0.2, 1)

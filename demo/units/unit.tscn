@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dt0p75hngjhet"]
 
-[ext_resource type="Script" uid="uid://3tjt6gih8io4" path="res://battle/unit.gd" id="1_fynol"]
+[ext_resource type="Script" uid="uid://3tjt6gih8io4" path="res://units/unit.gd" id="1_fynol"]
 [ext_resource type="Texture2D" uid="uid://xmt7t8to3f6j" path="res://icons/texture_not_found.png" id="2_kf62j"]
 [ext_resource type="Curve" uid="uid://ug5bfatr3v6x" path="res://battle/curve_broadside.tres" id="3_01nh1"]
 
