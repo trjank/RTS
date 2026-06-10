@@ -297,7 +297,7 @@
 		"height": 4,
 		"tab": "weapons",
 		"y_level": 0.1,
-		"projectile_code": "PBM1",
+		"projectile_code": "PDR1",
 		"image_path": "res://part_images/weapon_battleship_cannon_4x4.png"
 	},
 	"LPW1": {

@@ -40,7 +40,7 @@ const NEUTRON := {
 	"shockwave_force": 0.5,
 	"num_shockwaves": 0.8,
 }
-const MATERIAL := preload("res://explosion/explosion.tres")
+const MATERIAL := preload("res://explosions_old/explosion.tres")
 
 static func explode(sprite: Sprite2D, parameters: Dictionary, force := 1.0, explosion_duration := 1.0, implosion_duration := 0.0) -> Signal:
 	assert(implosion_duration <= explosion_duration)

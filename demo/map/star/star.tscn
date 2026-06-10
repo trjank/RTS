@@ -2,11 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_b5dfa"]
 [ext_resource type="Script" uid="uid://b7ip1206r8sxu" path="res://map/star/star.gd" id="2_v7ku8"]
-[ext_resource type="Material" uid="uid://d0duy5dspoh1r" path="res://map/star/star_plasma.tres" id="3_v7ku8"]
+[ext_resource type="Material" uid="uid://dwvqiyh5panah" path="res://map/star/black_hole.tres" id="3_v7ku8"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_v7ku8"]
-radius = 1.0
-height = 2.0
 radial_segments = 32
 rings = 16
 
@@ -20,11 +18,13 @@ script = ExtResource("2_v7ku8")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
 
 [node name="MeshInstance3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.161234e-05, 0.00083629787, -0.00015819073)
 material_override = ExtResource("3_v7ku8")
 cast_shadow = 0
-instance_shader_parameters/emission_color_primary = Color(1, 0, 0, 1)
-instance_shader_parameters/emission_color_secondary = Color(1, 0.8186667, 0.32, 1)
-instance_shader_parameters/emission_energy = 4.99999988824
+instance_shader_parameters/accretion_disk_light_color = Color(0, 1.1878442, 5.912981, 1)
+instance_shader_parameters/accretion_disk_light_dropoff = 6.538000215555
+instance_shader_parameters/accretion_disk_rotation_speed = 1.0
+instance_shader_parameters/accretion_disk_start_rotation = 0.0
 mesh = SubResource("SphereMesh_v7ku8")
 
 [node name="CollisionShape3D" parent="Area3D" index="0"]

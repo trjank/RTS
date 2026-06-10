@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://d0duy5dspoh1r"]
 
 [ext_resource type="Shader" uid="uid://bhs6d7l1yd01e" path="res://map/star/star_plasma.gdshader" id="1_8lp25"]
-[ext_resource type="NoiseTexture3D" uid="uid://cm3b1nfnfi7t4" path="res://map/star/distortion_noise.tres" id="1_nblov"]
+[ext_resource type="NoiseTexture3D" uid="uid://cm3b1nfnfi7t4" path="res://map/star/star_plasma_distortion.tres" id="1_nblov"]
 [ext_resource type="Texture2D" uid="uid://bxbg0bm3e8a6h" path="res://map/star/star_emission.tres" id="3_7473v"]
 
 [resource]

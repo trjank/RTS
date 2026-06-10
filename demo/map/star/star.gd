@@ -2,7 +2,7 @@ class_name Star extends Planet
 
 const INSTABILITY := 0.01 * GRAVITATIONAL_CONSTANT
 const STAR_SHADER := preload("res://map/star/star_plasma.tres")
-const BLACK_HOLE_SHADER := preload("res://map/star/black_hole_fast.tres")
+const BLACK_HOLE_SHADER := preload("res://map/star/black_hole.tres")
 
 var energy: float:
 	get = get_energy,

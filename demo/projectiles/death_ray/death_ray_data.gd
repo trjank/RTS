@@ -4,6 +4,7 @@ const MASK := globals.Layer.SHIPS
 
 var thickness := 0.5
 var max_range := 10.0
+var charge_time_sec := 0.0
 var inner_beam_color := Color.WHITE
 var outer_beam_color := Color.GREEN
 var inner_beam_size := 0.05

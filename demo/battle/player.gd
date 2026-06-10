@@ -46,6 +46,7 @@ func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 	ship.data = ship_data
 	ship.player_owner = self
 	ship.position = spawnpoint
+	ExplodeTest.explode(ship)
 	return ship
 
 func register_death(unit: Unit) -> void:

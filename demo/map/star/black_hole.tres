@@ -1,9 +1,9 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dwvqiyh5panah"]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://dwvqiyh5panah"]
 
 [ext_resource type="Shader" uid="uid://cg33eu68onqar" path="res://map/star/black_hole.gdshader" id="1_eucpj"]
+[ext_resource type="Texture2D" uid="uid://waksj5lydmmi" path="res://map/star/black_hole_accretion_disk.tres" id="2_wcg27"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_eucpj")
-shader_parameter/horizon_size = 0.0
-shader_parameter/horizon_smoothing = 0.0
+shader_parameter/accretion_disk_texture = ExtResource("2_wcg27")
