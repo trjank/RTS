@@ -17,12 +17,15 @@ script = ExtResource("2_v7ku8")
 [node name="AlwaysUpright" parent="." index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
 
+[node name="CaptureText" parent="AlwaysUpright" index="1"]
+visible = false
+
 [node name="MeshInstance3D" parent="." index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.161234e-05, 0.00083629787, -0.00015819073)
 material_override = ExtResource("3_v7ku8")
 cast_shadow = 0
-instance_shader_parameters/accretion_disk_light_color = Color(0, 1.1878442, 5.912981, 1)
-instance_shader_parameters/accretion_disk_light_dropoff = 6.538000215555
+instance_shader_parameters/accretion_disk_light_color = Color(1.8247963, 0.5181448, 0, 1)
+instance_shader_parameters/accretion_disk_light_dropoff = 5.000000142499999
 instance_shader_parameters/accretion_disk_rotation_speed = 1.0
 instance_shader_parameters/accretion_disk_start_rotation = 0.0
 mesh = SubResource("SphereMesh_v7ku8")

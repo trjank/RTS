@@ -4,12 +4,12 @@ render_mode unshaded;
 
 #define DISTORT_BACKGROUND false
 
-const float G_M = 0.05;
+const float G_M = 0.1;
 const float SCHWARZCHILD_RADIUS = 0.1;
 const float MIN_DT = 0.2 * SCHWARZCHILD_RADIUS;
 const float MAX_DT = 1.0 * SCHWARZCHILD_RADIUS;
 const float ACCRETION_DISK_OUTER_RADIUS = 0.5;
-const float ACCRETION_DISK_INNER_RADIUS = 0.13;
+const float ACCRETION_DISK_INNER_RADIUS = 0.18;
 // KEEP THIS AS SMALL AS POSSIBLE (HUGE PERFORMANCE IMPACT)
 const int NUM_TIME_STEPS = 32;
 
@@ -22,6 +22,7 @@ instance uniform float accretion_disk_rotation_speed: hint_range(-1.0, 1.0) = 0.
 instance uniform float accretion_disk_light_dropoff: hint_range(2.0, 10.0) = 4.0;
 
 varying vec3 local_position;
+varying vec3 local_camera_position;
 
 struct LightRay {
 	vec3 position;
@@ -32,6 +33,7 @@ struct LightRay {
 
 void vertex() {
 	local_position = VERTEX;
+	local_camera_position = (inverse(MODEL_MATRIX) * vec4(CAMERA_POSITION_WORLD, 1.0) ).xyz;
 }
 
 LightRay raymarch(LightRay ray) {
@@ -81,7 +83,7 @@ void fragment() {
 	ALBEDO = vec3(0.0);
 	LightRay ray;
 	ray.position = local_position;
-	ray.velocity = normalize(local_position - (inverse(MODEL_MATRIX) * vec4(CAMERA_POSITION_WORLD, 1.0) ).xyz);
+	ray.velocity = normalize(local_position - local_camera_position);
 	//
 	for (int i = 0; i < NUM_TIME_STEPS; ++i) {
 		vec3 previous_position = ray.position;
@@ -93,7 +95,10 @@ void fragment() {
 		// NOTE: This will not render transparent objects behind the black hole
 		// Unfortunately, there is no easy fix because transparent objects are handled later in the pipeline
 	#if DISTORT_BACKGROUND
-		vec2 distortion = 0.05 * (MODEL_MATRIX * vec4(ray.velocity, 0.0)).xy;
+		vec3 world_direction = normalize(MODEL_MATRIX * vec4(ray.velocity, 0.0) ).xyz;
+		vec3 view_direction = normalize(VIEW_MATRIX * vec4(world_direction, 0.0) ).xyz;
+		//vec2 distortion = 0.05 * (MODEL_MATRIX * vec4(ray.velocity, 0.0)).xy;
+		vec2 distortion = 0.1 * view_direction.xy / abs(view_direction.z);
 		ALBEDO += texture(SCREEN_TEXTURE, SCREEN_UV + distortion).rgb;
 	#else
 		ALBEDO += texture(SCREEN_TEXTURE, SCREEN_UV).rgb;

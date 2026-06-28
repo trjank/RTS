@@ -297,7 +297,7 @@
 		"height": 4,
 		"tab": "weapons",
 		"y_level": 0.1,
-		"projectile_code": "PDR1",
+		"projectile_code": "PFT1",
 		"image_path": "res://part_images/weapon_battleship_cannon_4x4.png"
 	},
 	"LPW1": {
@@ -343,6 +343,22 @@
 		"outer_beam_color": "blue",
 		"glow": 2.0,
 		"lifetime_sec": 1.0,
+		"image_path": "res://part_images/projectile_bullet_generic.png"
+	},
+	"PFT1": {
+		"damage": 100.0,
+		"name": "Flame Thrower",
+		"subtype": "flamethrower",
+		"tab": "hidden",
+		"thickness": 2.0,
+		"speed": 10.0,
+		"fade_speed": 10.0,
+		"max_range": 10.0,
+		"lifetime_sec": 1.0,
+		"glow": 2.0,
+		"volatility": 0.5,
+		"start_color": "green",
+		"end_color": "red",
 		"image_path": "res://part_images/projectile_bullet_generic.png"
 	}
 }

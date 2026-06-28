@@ -65,6 +65,7 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 # For LaserData below
 	"color": TYPE_COLOR,
 	"glow": TYPE_FLOAT,
+	"chain_range": TYPE_FLOAT,
 	"max_chains": TYPE_INT,
 	"chain_multiplier": TYPE_FLOAT,
 	"display_width": TYPE_FLOAT,
@@ -77,7 +78,12 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"volatility": TYPE_FLOAT,
 	"hit_damage_multiplier": TYPE_FLOAT,
 	"hit_energy_drain_multiplier": TYPE_FLOAT,
-	"max_hits": TYPE_INT
+	"max_hits": TYPE_INT,
+# For FlamethrowerData below
+	"speed": TYPE_FLOAT,
+	"fade_speed": TYPE_FLOAT,
+	"start_color": TYPE_COLOR,
+	"end_color": TYPE_COLOR
 }
 
 var part_sizes := PackedVector2Array()

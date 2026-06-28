@@ -17,7 +17,7 @@ var max_hits := 10
 func calculate_net_damage(hits := max_hits) -> float:
 	return hits * damage if is_equal_approx(hit_damage_multiplier, 1.0) else damage * (1.0 - hit_damage_multiplier ** hits) / (1.0 - hit_damage_multiplier)
 
-func create_projectile(from: Weapon, to: Target) -> void:
+func create_projectile(from: Weapon, to: Target, _cache: Array[Node3D] ) -> void:
 	assert(from != null)
 	#
 	var death_ray := DeathRay.create()

@@ -23,7 +23,7 @@ func is_missile() -> bool:
 func set_sound_variation(new_sound_variation: float) -> void:
 	sound_variation = clampf(new_sound_variation, MIN_SOUND_VARIATION, MAX_SOUND_VARIATION)
 
-func create_projectile(from: Weapon, to: Target) -> void:
+func create_projectile(from: Weapon, to: Target, _cache: Array[Node3D] ) -> void:
 	assert(from != null)
 	#
 	var bullet := Bullet.create()

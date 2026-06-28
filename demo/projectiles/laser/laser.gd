@@ -1,9 +1,7 @@
-class_name Laser extends Sprite3D
+class_name Laser extends MultiMeshInstance3D
 
 var data: LaserData:
 	set = set_data
-
-var _visited: Array[Ship] = []
 
 static func create() -> Laser:
 	return preload("res://projectiles/laser/laser.tscn").instantiate()
@@ -18,22 +16,26 @@ func begin_death_timer() -> void:
 	get_tree().create_timer(data.lifetime_sec).timeout.connect(queue_free)
 
 func _can_chain(from: Ship, to: Ship) -> bool:
-	return to.is_friend(from) and not to in _visited
+	return to.is_friend(from) and from.global_position.distance_to(to.global_position) <= data.chain_range
 
-func count_chains() -> int:
-	return _visited.size()
+func _create_laser(i: int, from: Vector3, to: Vector3) -> void:
+	multimesh.set_instance_transform(i, transform)
 
-func chain_to() -> void:
-	pass
-
-func chain(to: Ship, damage := data.damage, energy_drain := data.energy_drain) -> void:
-	pass
-	#var ships := to.filter_nearest(_can_chain)
-	#from.hit(damage * multiplier, from.player_owner, shield_penetration)
+func chain(from: Ship, to: Ship) -> int:
+	var ships := to.filter_nearest(_can_chain)
+	var chains := mini(ships.size(), data.max_chains)
+	var damage := data.damage
+	var energy_drain := data.energy_drain
+	multimesh.instance_count = 1 + chains
+	multimesh.set_instance_transform(0, Transform3D(Basis()))
+	#from.hit(damage, from.player_owner, data.shield_penetration)
 	#from.drain_energy(energy_drain)
+	##
 	#damage *= data.chain_damage_multiplier
 	#energy_drain *= data.chain_energy_drain_multiplier
-	#create_laser(from, to.global_position, multiplier)
-	#for ship in ships:
-		#visited.append(ship)
+	##
+	#for i in chains:
+		#ships[i].hit(damage, from.player_owner, data.shield_penetration)
+		#ships[i].drain_energy(energy_drain)
 		#chain_laser(to, ship, depth_left - 1, multiplier, visited)
+	return chains
