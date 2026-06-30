@@ -30,7 +30,6 @@ static func generate_mesh(resolution: int, radius: float, height_variation: floa
 	#
 	for i in vertices.size():
 		vertices[i] = _raise_vertex(vertices[i], height_variation, height_map, color_ramp)
-	#
 	arrays[Mesh.ARRAY_VERTEX] = vertices
 	var st := SurfaceTool.new()
 	st.create_from_arrays(arrays, Mesh.PRIMITIVE_TRIANGLES)
@@ -49,7 +48,6 @@ static func make_low_poly(mesh: Mesh) -> ArrayMesh:
 	for i in indices:
 		st.set_smooth_group(-1)
 		st.add_vertex(vertices[i] )
-	#
 	st.generate_normals()
 	st.generate_tangents()
 	return st.commit()

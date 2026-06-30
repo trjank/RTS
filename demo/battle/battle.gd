@@ -27,6 +27,9 @@ const DEFAULT_TEAM_NAME := "spectators"
 @export var players_container: Node3D
 @export var fleet_container: FleetContainer
 @export var mouse_selection: MouseSelection
+@export var alloy_label: Label
+@export var energy_label: Label
+@export var military_science_label: Label
 
 var can_pause := false
 var players: Dictionary[String, Player] = {}
@@ -169,16 +172,26 @@ func remove_team(team_name: String) -> bool:
 		return false
 	var team := teams[team_name]
 	var default_team := teams[DEFAULT_TEAM_NAME]
+	#
 	for player in team.players:
 		player.team = default_team
 	return teams.erase(team_name)
 
+func _reset_player(player: Player) -> void:
+	player.resources.reset()
+	player.resources.add(player.team.start_resources)
+	player.alive = true
+
 func reset_teams() -> void:
-	for player in players.values():
-		player.reset_resources()
-		player.alive = true
-	for team in teams.values():
+	for player: Player in players.values():
+		_reset_player(player)
+	for team: Team in teams.values():
 		team.reset_stats()
+
+func _process(_dt: float) -> void:
+	alloy_label.text = "%.1f" % me.resources.alloy
+	energy_label.text = "%.1f" % me.resources.energy
+	military_science_label.text = "%.1f" % me.resources.military_science
 
 func _physics_process(dt: float) -> void:
 	_state.time += _state.time_scale * dt

@@ -35,4 +35,4 @@ func create_projectile(from: Weapon, to: Target, _cache: Array[Node3D] ) -> void
 	var laser := Laser.new()
 	laser.begin_death_timer()
 	from.get_ship().add_sibling(laser)
-	#laser.chain()
+	#laser.chain_to_target(to)

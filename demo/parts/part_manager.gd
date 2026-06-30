@@ -18,7 +18,7 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"code": TYPE_STRING,
 	"subtype": TYPE_STRING,
 	"connected": TYPE_BOOL,
-	"cost": TYPE_INT,
+	"cost_data": TYPE_DICTIONARY,
 	"warp": TYPE_FLOAT,
 	"shield": TYPE_FLOAT,
 	"energy": TYPE_FLOAT,
@@ -50,6 +50,7 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"damage": TYPE_FLOAT,
 	"energy_drain": TYPE_FLOAT,
 	"shield_penetration": TYPE_FLOAT,
+	"mining_efficiency": TYPE_FLOAT,
 # For BulletData below
 	"launch_velocity": TYPE_FLOAT,
 	"linear_damp": TYPE_FLOAT,
@@ -86,45 +87,32 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"end_color": TYPE_COLOR
 }
 
-var part_sizes := PackedVector2Array()
-var atlas_offsets := PackedVector2Array()
-var atlas: Image
-
-var _parts: Array[PartData] = []
-var _code_to_id: Dictionary[String, int] = {}
+var _parts: Dictionary[String, PartData] = {}
 
 static func is_dictionary(variant: Variant) -> bool:
 	return variant is Dictionary
 
 func clear() -> void:
-	_code_to_id.clear()
 	_parts.clear()
-	part_sizes.clear()
-	atlas_offsets.clear()
-	atlas = null
 
 func count_parts() -> int:
 	return _parts.size()
 
-func has_id(atlas_id: int) -> bool:
-	return 0 <= atlas_id and atlas_id < _parts.size()
+func has_part(code: String) -> bool:
+	return code in _parts
 
-func has_code(part_code: String) -> bool:
-	return part_code in _code_to_id
+func get_part(code: String) -> PartData:
+	return _parts.get(code)
 
-func get_part_from_id(atlas_id: int) -> PartData:
-	return _parts[atlas_id]
-
-func get_part_from_code(code: String) -> PartData:
-	return _parts[_code_to_id[code] ]
+func for_each_part(f: Callable) -> void:
+	for part in _parts:
+		f.call(_parts[part] )
 
 func create_part(code: String, image_path: String, width: int, height: int, subtype = "") -> PartData:
-	if code.length() != PartData.CODE_LENGTH or has_code(code) or not subtype in PartData.subtypes:
+	if code.length() != PartData.CODE_LENGTH or has_part(code) or not subtype in PartData.subtypes:
 		return null
 	var part := PartData.create_subtype(subtype, code, image_path, width, height)
-	var atlas_id := _parts.size()
-	_code_to_id[code] = atlas_id
-	_parts.push_back(part)
+	_parts[code] = part
 	part._manager = self
 	part_created.emit(part)
 	return part
@@ -136,11 +124,11 @@ func load_part(code: String, properties: Dictionary) -> LoadError:
 	var height: int = properties.get("height", PartData.MIN_SIZE)
 	var image_path: String = properties.get("image_path", "")
 	#
+	if not TypeChecker.type_check(properties, VALID_PART_PROPERTIES, true, TypeChecker.CAST_NUMBERS_AND_COLORS):
+		return LoadError.INVALID_PART_PROPERTIES
 	var part := create_part(code, image_path, width, height, subtype)
 	if part == null:
 		return LoadError.INVALID_PART
-	if not TypeChecker.type_check(properties, VALID_PART_PROPERTIES, true, TypeChecker.CAST_NUMBERS_AND_COLORS):
-		return LoadError.INVALID_PART_PROPERTIES
 	for property in properties:
 		part.set(property, properties[property] )
 	return LoadError.OK
@@ -161,26 +149,3 @@ func load_json(file_path: String) -> int:
 	if not data is Dictionary:
 		return LoadError.INCORRECT_FORMAT
 	return load_dictionary(data)
-
-func for_each_part(f: Callable) -> void:
-	for part in _parts:
-		f.call(part)
-
-func generate_atlas() -> void:
-	update_atlas_part_sizes()
-	var atlas_data := Geometry2D.make_atlas(part_sizes)
-	atlas_offsets = atlas_data.points
-	atlas = Image.create(atlas_data.size.x, atlas_data.size.y, false, Image.FORMAT_RGBA8)
-	draw_parts_on_atlas()
-
-func update_atlas_part_sizes() -> void:
-	part_sizes.resize(_parts.size() )
-	for atlas_id in _parts.size():
-		part_sizes[atlas_id] = Vector2(32 * _parts[atlas_id].get_size() )
-
-func draw_parts_on_atlas() -> void:
-	for atlas_id in _parts.size():
-		var part := _parts[atlas_id]
-		var rect := Rect2i(Vector2i.ZERO, 32 * part.get_size() )
-		atlas.blit_rect(part.image, rect, atlas_offsets[atlas_id] )
-		part.atlas_rect = Rect2(atlas_offsets[atlas_id], part_sizes[atlas_id])

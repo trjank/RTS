@@ -24,6 +24,10 @@ static var subtypes: Dictionary[String, Callable] = {
 static func create_subtype(part_subtype: String, part_code: String, part_image_path: String, part_width := MIN_SIZE, part_height := MIN_SIZE) -> PartData:
 	return subtypes.get(part_subtype, PartData.new).call(part_code, part_image_path, part_width, part_height)
 
+var cost := StrategicResources.new()
+var cost_data: Dictionary:
+	get = get_cost_data,
+	set = set_cost_data
 var atlas_id := -1
 var y_level := 0.0:
 	set = set_y_level
@@ -32,7 +36,6 @@ var tab := ""
 var description := ""
 var subtype := ""
 var connected = true
-var cost := 0
 var warp := 0.0
 var shield := 0.0
 var energy := 0.0
@@ -84,6 +87,12 @@ func get_size(placement := Grid.PartPlacement.ROT_0) -> Vector2i:
 
 func get_boundary(_placement := Grid.PartPlacement.ROT_0) -> int:
 	return ShipData.BoundaryFlags.FULL
+
+func get_cost_data() -> Dictionary:
+	return cost.to_dict()
+
+func set_cost_data(new_cost_data: Dictionary) -> void:
+	cost.load_dict(new_cost_data)
 
 func set_y_level(new_y_level: float) -> void:
 	y_level = clampf(new_y_level, MIN_Y_LEVEL, MAX_Y_LEVEL)

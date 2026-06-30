@@ -7,6 +7,7 @@ var energy_drain := 0.0
 var shield_penetration := 0.0
 var lifetime_sec := MIN_LIFETIME_SEC:
 	set = set_lifetime_sec
+var mining_efficiency := StrategicResources.new()
 
 func set_lifetime_sec(new_lifetime_sec: float) -> void:
 	lifetime_sec = maxf(new_lifetime_sec, MIN_LIFETIME_SEC)

@@ -13,10 +13,9 @@ const ZONE_SIZE_RATIO := 1.5
 @export var zone: Area3D
 @export var zone_shape: CollisionShape3D
 
+var resource_rate := StrategicResources.new()
 var capturable := true:
 	set = set_capturable
-var alloy_per_sec := 0.0
-var energy_per_sec := 0.0
 var capture_progress := 0.0:
 	set = set_capture_progress
 var display_name: String:
@@ -54,7 +53,7 @@ func set_radius(new_radius: float) -> void:
 
 func set_display_name(new_display_name: String) -> void:
 	display_name = new_display_name
-	label.text = display_name if is_zero_approx(alloy_per_sec) else "%s | %.1f" % [display_name, alloy_per_sec]
+	label.text = display_name if is_zero_approx(resource_rate.alloy) else "%s | %.1f" % [display_name, resource_rate.alloy]
 
 func set_capturable(is_capturable: bool) -> void:
 	capturable = is_capturable

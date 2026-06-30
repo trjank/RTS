@@ -1,16 +1,14 @@
 class_name Team extends RefCounted
 
+var start_resources := StrategicResources.new()
+var resource_rate := StrategicResources.new()
 var display_name := ""
 var color := Color.WHITE
 var units_killed := 0
 var units_lost := 0
 var celestials_owned := 0
-var initial_alloy := 0.0
-var initial_energy := 0.0
-var alloy_per_sec := 0.0
-var energy_per_sec := 0.0
-var value_killed := 0.0
-var value_lost := 0.0
+var value_killed := StrategicResources.new()
+var value_lost := StrategicResources.new()
 var players: Array[Player] = []
 
 var _captures: Dictionary[Scenery, bool] = {}
@@ -39,15 +37,15 @@ func register_loss(scenery: Scenery) -> void:
 
 func register_kill(unit: Unit) -> void:
 	units_killed += 1
-	value_killed += unit.value
+	value_killed.add(unit.value)
 
 func register_death(unit: Unit) -> void:
 	units_lost += 1
-	value_lost += unit.value
+	value_lost.add(unit.value)
 
 func reset_stats() -> void:
 	celestials_owned = 0
 	units_killed = 0
 	units_lost = 0
-	value_killed = 0.0
-	value_lost = 0.0
+	value_killed.reset()
+	value_lost.reset()

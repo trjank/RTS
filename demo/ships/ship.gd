@@ -28,11 +28,12 @@ var data: ShipData:
 	set = set_data
 
 func _init() -> void:
-	super._init()
+	super()
+	#
 	collision_layer |= globals.Layer.SHIPS
 
 func set_hp(new_hp: float) -> void:
-	super.set_hp(minf(new_hp, _max_hp) )
+	super(minf(new_hp, _max_hp) )
 
 func set_target(new_target: Target) -> bool:
 	if target == new_target:
@@ -59,12 +60,14 @@ func set_data(new_data: ShipData) -> void:
 		_create_part_node(ship_part)
 	texture = data.get_texture()
 	size = Grid.METERS_PER_TILE * data.get_ship_rect().size
+	value = data.cost
 	reset_stats()
 
 func clear_stats() -> void:
 	thrust = 0.0
 	hp = 1.0
 	mass = 1.0
+	value = StrategicResources.NONE
 	update_inertia_tensor()
 
 func reset_stats() -> void:

@@ -97,11 +97,11 @@ ship_buttons = NodePath("VBoxContainer/MarginContainer/ScrollContainer/ShipButto
 [node name="PanelContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer" index="0"]
 custom_minimum_size = Vector2(0, 92)
 
-[node name="DeleteButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" index="0"]
-visible = false
-
-[node name="FleetSwapButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" index="3"]
+[node name="FleetSwapButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" index="0"]
 visible = true
+
+[node name="DeleteButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" index="1"]
+visible = false
 
 [node name="MoveUp" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" index="4"]
 visible = false

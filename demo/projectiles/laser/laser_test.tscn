@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://57qxqimbcen5"]
+
+[ext_resource type="Material" uid="uid://di2ie6bwdls04" path="res://projectiles/laser/material.tres" id="1_sn6g8"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5ipps"]
+material = ExtResource("1_sn6g8")
+size = Vector2(1, 1)
+
+[node name="LaserTest" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+instance_shader_parameters/inner_color = Color(0, 0, 0, 1)
+instance_shader_parameters/outer_color = Color(0.6072346, 0, 1.8247963, 1)
+instance_shader_parameters/speed = 0.1
+instance_shader_parameters/uv_ratio = 2.0
+instance_shader_parameters/volatility = 0.1
+instance_shader_parameters/width = 0.2
+mesh = SubResource("PlaneMesh_5ipps")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=22 format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_qybyd"]
 [ext_resource type="StyleBox" uid="uid://cpus28fjbdw4d" path="res://battle/button_pressed.tres" id="4_rxlun"]
 [ext_resource type="Texture2D" uid="uid://bpeacb6y6j5no" path="res://icons/hourglass.png" id="5_eu6g2"]
+[ext_resource type="Texture2D" uid="uid://c1fkfssn7ug34" path="res://icons/beaker.png" id="5_t8p1f"]
 [ext_resource type="StyleBox" uid="uid://dpnhdvo8bfxyx" path="res://battle/button_hover.tres" id="5_vlrs1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1kiu"]
@@ -52,7 +53,7 @@ material = SubResource("StandardMaterial3D_7fucf")
 radius = 0.05
 height = 0.1
 
-[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection")]
+[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection", "alloy_label", "energy_label", "military_science_label")]
 script = ExtResource("1_nohcx")
 world = NodePath("World")
 round_timer = NodePath("RoundTimer")
@@ -60,6 +61,9 @@ countdown_timer = NodePath("CountdownTimer")
 players_container = NodePath("World/Players")
 fleet_container = NodePath("UI/FleetContainer")
 mouse_selection = NodePath("World/MouseSelection")
+alloy_label = NodePath("UI/PanelContainer/GridContainer/AlloyCount")
+energy_label = NodePath("UI/PanelContainer/GridContainer/EnergyCount")
+military_science_label = NodePath("UI/PanelContainer/GridContainer/MilitaryScienceCount")
 metadata/_custom_type_script = "uid://bvfy718iilaa1"
 
 [node name="UI" type="Control" parent="."]
@@ -119,16 +123,13 @@ texture = ExtResource("3_hvjow")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="AlloyCount" type="RichTextLabel" parent="UI/PanelContainer/GridContainer"]
+[node name="AlloyCount" type="Label" parent="UI/PanelContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 text = "1000"
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
 vertical_alignment = 1
 
 [node name="EnergyIcon" type="TextureRect" parent="UI/PanelContainer/GridContainer"]
@@ -140,16 +141,31 @@ texture = ExtResource("4_qybyd")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="EnergyCount" type="RichTextLabel" parent="UI/PanelContainer/GridContainer"]
+[node name="EnergyCount" type="Label" parent="UI/PanelContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/default_color = Color(1, 0.912, 0.33999997, 1)
-theme_override_colors/font_outline_color = Color(1, 0.9137255, 0.34117648, 1)
+theme_override_colors/font_color = Color(1, 0.8666667, 0.34117648, 1)
+theme_override_colors/font_outline_color = Color(1, 0.8666667, 0.34117648, 1)
 theme_override_constants/outline_size = 5
 text = "1000"
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="MilitaryScienceIcon" type="TextureRect" parent="UI/PanelContainer/GridContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+texture = ExtResource("5_t8p1f")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MilitaryScienceCount" type="Label" parent="UI/PanelContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.4, 0.9882353, 1, 1)
+theme_override_colors/font_outline_color = Color(0.4, 0.9882353, 1, 1)
+theme_override_constants/outline_size = 5
+text = "0"
 vertical_alignment = 1
 
 [node name="TimeIcon" type="TextureRect" parent="UI/PanelContainer/GridContainer"]

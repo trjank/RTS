@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bknt8kh06bfmd" path="res://projectiles/laser/laser.gd" id="1_rgfps"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_1r6ww"]
+size = Vector2(1, 1)
 
 [sub_resource type="MultiMesh" id="MultiMesh_1r6ww"]
 resource_local_to_scene = true

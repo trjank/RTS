@@ -8,7 +8,8 @@ const FOLDER_PATHS := [
 	"user://part_images/",
 	"user://part_normal_maps/"
 ]
-const FALLBACK_TEXTURE: Texture2D = preload("res://icons/texture_not_found.png")
+const IMAGE_NOT_FOUND := preload("res://icons/image_not_found.png")
+const TEXTURE_NOT_FOUND := preload("res://icons/texture_not_found.png")
 
 var _texture: Texture2D
 var _cached_images: Array[Image] = []
@@ -22,7 +23,7 @@ func _init(path: String, tiles_wide := 1, tiles_tall := 1) -> void:
 	else:
 		_texture = load(path) as Texture2D
 	if _texture == null:
-		_texture = FALLBACK_TEXTURE
+		_texture = TEXTURE_NOT_FOUND
 	var image := _texture.get_image()
 	image.convert(FORMAT)
 	image.resize(Grid.PX_PER_TILE * tiles_wide, Grid.PX_PER_TILE * tiles_tall)

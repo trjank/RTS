@@ -13,6 +13,12 @@ func _init(init_global_position := Vector3.ZERO, init_linear_velocity := Vector3
 func is_alive() -> bool:
 	return true
 
+func hit(_damage: float, _from: Player = null, _penetration := 0.0) -> void:
+	pass # (override this method)
+
+func drain_energy(_energy_drain: float) -> void:
+	pass # (override this method)
+
 func get_intersection_point(intersection_time: float) -> Vector3:
 	return global_position + intersection_time * linear_velocity
 

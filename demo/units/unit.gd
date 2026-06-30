@@ -34,9 +34,9 @@ static func create() -> Unit:
 @export var broadside_curve: Curve
 @export var hitbox: CollisionShape3D
 
+var value := StrategicResources.NONE
 var path_arc := 0.3
 var course_correction := 3.0
-var value := 0.0
 var hp := 1.0:
 	set = set_hp
 var warp := 0.0
@@ -170,16 +170,16 @@ func set_hp(new_hp: float) -> void:
 	if hp <= 0:
 		kill()
 
-func hit(damage: float, from: Player = null) -> void:
+func hit(damage: float, from: Player = null, _penetration := 0.0) -> void:
 	kill_credit = from
 	hp -= damage
+
+func drain_energy(_energy_drain: float) -> void:
+	pass # (override this method)
 
 func update_inertia_tensor() -> void:
 	# This makes the mass distribution sphere-like, but not affected by radius
 	inertia = Vector3(mass, mass, mass)
-
-func drain_energy(_energy_drain: float) -> void:
-	pass # (override this method)
 
 func _update_hitbox() -> void:
 	hitbox.shape.radius = HITBOX_SIZE_RATIO * size[size.max_axis_index() ]

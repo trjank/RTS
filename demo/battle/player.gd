@@ -1,37 +1,19 @@
 class_name Player extends Node3D
 
-const MIN_ALLOY := 0.0
-const MAX_ALLOY := 100_000.0
-const MIN_ENERGY := 0.0
-const MAX_ENERGY := 100_000.0
-
 var display_name: String
 var color: Color
-var alive := false:
-	set = set_alive
-var energy := 0.0:
-	set = set_energy
-var alloy := 0.0:
-	set = set_alloy
+var alive := false
 var team: Team:
 	set = set_team
+var resources := StrategicResources.new()
 
 func _init(init_display_name := "", init_color := Color.WHITE) -> void:
 	display_name = init_display_name
 	color = init_color
 
-func _exit_tree() -> void:
-	set_team(null)
-
-func set_energy(new_energy: float) -> void:
-	energy = clampf(new_energy, MIN_ENERGY, MAX_ENERGY)
-
-func set_alloy(new_alloy: float) -> void:
-	alloy = clampf(new_alloy, MIN_ALLOY, MAX_ALLOY)
-
-func set_alive(is_alive: bool) -> void:
-	alive = is_alive
-	set_physics_process(is_alive)
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		set_team(null)
 
 func set_team(new_team: Team) -> void:
 	if team != null:
@@ -59,13 +41,7 @@ func register_kill(unit: Unit) -> void:
 		team.register_kill(unit)
 	# TODO: Bounty system?
 
-func reset_resources() -> void:
-	energy = team.initial_energy
-	alloy = team.initial_alloy
-
 func _physics_process(dt: float) -> void:
-	return
-	assert(alive)
-	#
-	alloy += team.alloy_per_sec * dt
-	energy += team.energy_per_sec * dt
+	if not alive or team == null:
+		return
+	resources.generate_resources(team.resource_rate, dt)

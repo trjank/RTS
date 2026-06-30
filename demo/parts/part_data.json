@@ -1,6 +1,8 @@
 {
 	"HAW1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Heavy Armor Wedge 1x1",
 		"mass": 10,
 		"hp": 100,
@@ -10,7 +12,9 @@
 		"image_path": "res://part_images/armor_heavy_wedge_1x1.png"
 	},
 	"HAT1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Triangular Heavy Armor 1x1",
 		"mass": 10,
 		"hp": 100,
@@ -20,7 +24,9 @@
 		"image_path": "res://part_images/armor_heavy_triangular_1x1.png"
 	},
 	"HAS1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Slanted Heavy Armor 1x1",
 		"mass": 10,
 		"hp": 100,
@@ -30,7 +36,9 @@
 		"image_path": "res://part_images/armor_heavy_slanted_1x1.png"
 	},
 	"HAC1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Curved Heavy Armor 1x1",
 		"mass": 10,
 		"hp": 100,
@@ -40,7 +48,9 @@
 		"image_path": "res://part_images/armor_heavy_curved_1x1.png"
 	},
 	"HAF1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Heavy Armor 1x1",
 		"mass": 10,
 		"hp": 100,
@@ -50,7 +60,9 @@
 		"image_path": "res://part_images/armor_heavy_1x1.png"
 	},
 	"HAT2": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Triangular Heavy Armor 1x2",
 		"mass": 10,
 		"hp": 100,
@@ -60,7 +72,9 @@
 		"image_path": "res://part_images/armor_heavy_triangular_1x2.png"
 	},
 	"HAS2": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Slanted Heavy Armor 1x2",
 		"mass": 10,
 		"hp": 100,
@@ -70,7 +84,9 @@
 		"image_path": "res://part_images/armor_heavy_slanted_1x2.png"
 	},
 	"HAC2": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Curved Heavy Armor 1x2",
 		"mass": 10,
 		"hp": 100,
@@ -80,7 +96,9 @@
 		"image_path": "res://part_images/armor_heavy_curved_1x2.png"
 	},
 	"HAS3": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Slanted Heavy Armor 2x2",
 		"mass": 10,
 		"hp": 100,
@@ -90,7 +108,9 @@
 		"image_path": "res://part_images/armor_heavy_slanted_2x2.png"
 	},
 	"HAC3": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Curved Heavy Armor 2x2",
 		"mass": 10,
 		"hp": 100,
@@ -100,7 +120,9 @@
 		"image_path": "res://part_images/armor_heavy_curved_2x2.png"
 	},
 	"HAF2": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Heavy Armor 2x2",
 		"mass": 10,
 		"hp": 100,
@@ -110,7 +132,9 @@
 		"image_path": "res://part_images/armor_heavy_2x2.png"
 	},
 	"ENT1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Energy Transfer 1x1",
 		"mass": 10,
 		"hp": 100,
@@ -120,7 +144,9 @@
 		"image_path": "res://part_images/energy_transfer_1x1.png"
 	},
 	"ENT2": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Energy Transfer 2x2",
 		"mass": 10,
 		"hp": 100,
@@ -130,7 +156,9 @@
 		"image_path": "res://part_images/energy_transfer_2x2.png"
 	},
 	"THB1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Bulk Thruster 1x3",
 		"subtype": "thruster",
 		"mass": 10,
@@ -142,7 +170,9 @@
 		"image_path": "res://part_images/thruster_bulk_1x3.png"
 	},
 	"THB2": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Bulk Thruster 2x2",
 		"subtype": "thruster",
 		"mass": 10,
@@ -157,7 +187,9 @@
 		"image_path": "res://part_images/thruster_bulk_2x2.png"
 	},
 	"THC1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Cruiser Thruster 1x3",
 		"subtype": "thruster",
 		"mass": 10,
@@ -169,7 +201,9 @@
 		"image_path": "res://part_images/thruster_cruiser_1x3.png"
 	},
 	"THC2": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Cruiser Thruster 2x2",
 		"subtype": "thruster",
 		"mass": 10,
@@ -186,7 +220,9 @@
 		"image_path": "res://part_images/thruster_cruiser_2x2.png"
 	},
 	"THF1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Fighter Thruster 1x2",
 		"subtype": "thruster",
 		"mass": 10,
@@ -198,7 +234,9 @@
 		"image_path": "res://part_images/thruster_fighter_1x2.png"
 	},
 	"THS1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Scout Thruster 1x2",
 		"subtype": "thruster",
 		"mass": 10,
@@ -210,7 +248,9 @@
 		"image_path": "res://part_images/thruster_scout_1x2.png"
 	},
 	"3TM1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "360deg Turret Mount 2x2",
 		"subtype": "weapon_mount",
 		"mass": 10,
@@ -221,7 +261,9 @@
 		"image_path": "res://part_images/mount_2x2_360.png"
 	},
 	"1TM1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "180deg Turret Mount 2x2",
 		"subtype": "weapon_mount",
 		"mass": 10,
@@ -232,7 +274,9 @@
 		"image_path": "res://part_images/mount_2x2_180.png"
 	},
 	"9TM1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "90deg Turret Mount 2x2",
 		"subtype": "weapon_mount",
 		"mass": 10,
@@ -243,7 +287,9 @@
 		"image_path": "res://part_images/mount_2x2_90.png"
 	},
 	"3TM2": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "360deg Turret Mount 3x3",
 		"subtype": "weapon_mount",
 		"mass": 10,
@@ -254,7 +300,9 @@
 		"image_path": "res://part_images/mount_3x3_360.png"
 	},
 	"3TM3": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "360deg Turret Mount 4x4",
 		"subtype": "weapon_mount",
 		"mass": 10,
@@ -265,7 +313,9 @@
 		"image_path": "res://part_images/mount_4x4_360.png"
 	},
 	"STM1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Spinal Turret Mount 2x4",
 		"subtype": "weapon_mount",
 		"mass": 10,
@@ -276,7 +326,9 @@
 		"image_path": "res://part_images/mount_2x4_spinal.png"
 	},
 	"MBW1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Mining Beam 2x2",
 		"subtype": "weapon",
 		"mass": 10,
@@ -288,7 +340,9 @@
 		"image_path": "res://part_images/weapon_mining_beam_2x2.png"
 	},
 	"BCW1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Battleship Cannon 4x4",
 		"subtype": "weapon",
 		"mass": 10,
@@ -301,7 +355,9 @@
 		"image_path": "res://part_images/weapon_battleship_cannon_4x4.png"
 	},
 	"LPW1": {
-		"cost": 10,
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Light Point Defense Beam 2x2",
 		"subtype": "weapon",
 		"mass": 10,

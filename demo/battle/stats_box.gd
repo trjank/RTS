@@ -37,7 +37,7 @@ func _clear_stats() -> void:
 
 func _show_stats() -> void:
 	hp.text = str(ship.max_hp)
-	cost.text = "$" + str(ship.cost)
+	cost.text = "$" + str(ship.cost.alloy)
 	mass.text = str(ship.mass) + " kg"
 	thrust.text = str(ship.thrust) + " N"
 	torque.text = str(ship.torque)

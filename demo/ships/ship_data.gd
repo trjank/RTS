@@ -38,7 +38,7 @@ var name := "":
 var grid_size: Vector2i:
 	get = get_grid_size,
 	set = set_grid_size
-var cost := 0
+var cost := StrategicResources.new()
 var mass := 0.0
 var warp_per_sec := 0.0
 var shield_per_sec := 0.0
@@ -153,7 +153,7 @@ func clear() -> void:
 	ui_update.emit()
 
 func _reset_stats() -> void:
-	cost           = 0
+	cost.reset()
 	thrust         = 0.0
 	mass           = 0.0
 	torque         = 0.0
@@ -165,8 +165,8 @@ func _reset_stats() -> void:
 	energy_per_sec = 0.0
 
 func add_part_stats(part_data: PartData, count := 1) -> void:
+	cost.add(part_data.cost, count)
 	thrust         += count * part_data.thrust
-	cost           += count * part_data.cost
 	mass           += count * part_data.mass
 	torque         += count * part_data.torque
 	max_hp         += count * part_data.hp
@@ -284,7 +284,7 @@ func _deserialize_part(part_manager: PartManager) -> PartError:
 	var placement := _bytes.get_u8() as Grid.PartPlacement
 	var i := _bytes.get_position()
 	var code := _bytes.data_array.slice(i, i + BYTES_UTF32_CODE).get_string_from_utf32()
-	var part := part_manager.get_part_from_code(code)
+	var part := part_manager.get_part(code)
 	_bytes.seek(i + BYTES_UTF32_CODE)
 	return add_part(part, top_left_corner, placement, false)
 
