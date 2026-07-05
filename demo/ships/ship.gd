@@ -2,11 +2,13 @@ class_name Ship extends Unit
 
 signal target_changed(new_target: Target)
 
-@export var bar_hp: PipBar
-@export var bar_shield: PipBar
-@export var bar_energy: PipBar
-@export var always_upright: Node2D
-@export var behavior_indicator: Label
+const PIP_BAR_SPACING := 0.0
+
+@export var hp_bar: PipBar
+@export var shield_bar: PipBar
+@export var energy_bar: PipBar
+@export var ui: Node3D
+@export var behavior_indicator: Label3D
 @export var part_nodes: Node3D
 @export var detection: Area3D
 
@@ -52,6 +54,7 @@ func set_data(new_data: ShipData) -> void:
 	if data == new_data:
 		return
 	data = new_data
+	#
 	for part in part_nodes.get_children():
 		part.queue_free()
 	if data == null:
@@ -78,6 +81,15 @@ func reset_stats() -> void:
 	hp = data.max_hp
 	mass = data.mass
 	update_inertia_tensor()
+
+func update_ui() -> void:
+	super()
+	#
+	if not is_node_ready():
+		return
+	energy_bar.position.z = -size.y
+	hp_bar.position.z = energy_bar.position.z - energy_bar.size.y - PIP_BAR_SPACING
+	shield_bar.position.z = hp_bar.position.z - hp_bar.size.y - PIP_BAR_SPACING
 
 func _on_death_animation() -> void:
 	part_nodes.queue_free()
@@ -143,7 +155,7 @@ func update_behavior_indicator() -> void:
 
 func _process(_dt: float) -> void:
 	update_behavior_indicator()
-	always_upright.global_rotation = 0.0
+	ui.global_rotation = Vector3.ZERO
 	#bar_hp.value = hp
 	#bar_shield.value = shield
 	#bar_energy.value = energy

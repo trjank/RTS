@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://hvicroe1d56b"]
+
+[ext_resource type="Script" uid="uid://cti5sdaqmgcbc" path="res://pips/pip_bar.gd" id="1_17877"]
+[ext_resource type="Material" uid="uid://dt5oinw71yfyg" path="res://pips/material.tres" id="1_chyao"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_17877"]
+size = Vector2(1, 1)
+
+[node name="PipBar" type="MeshInstance3D"]
+material_override = ExtResource("1_chyao")
+instance_shader_parameters/border_width = 0.1
+instance_shader_parameters/pip_color = Color(1, 0.32, 0.32, 1)
+instance_shader_parameters/pip_progress = 0.50000002375
+instance_shader_parameters/pip_width = 0.9
+instance_shader_parameters/size = Vector2(1, 1)
+mesh = SubResource("PlaneMesh_17877")
+script = ExtResource("1_17877")
+metadata/_custom_type_script = "uid://cti5sdaqmgcbc"

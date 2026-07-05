@@ -108,10 +108,10 @@ func transfer_military_science(to: StrategicResources, military_science_limit :=
 	to.military_science += military_science_transfer
 
 ## This ensures total tactical resources are always conserved
-func transfer(to: StrategicResources, alloy_limit := INF, energy_limit := INF, military_science_limit := INF) -> void:
-	transfer_alloy(to, alloy_limit)
-	transfer_energy(to, energy_limit)
-	transfer_military_science(to, military_science_limit)
+func transfer(to: StrategicResources, rate: StrategicResources, dt := 1.0) -> void:
+	transfer_alloy(to, rate.alloy * dt)
+	transfer_energy(to, rate.energy * dt)
+	transfer_military_science(to, rate.military_science * dt)
 
 func generate_resources(rate: StrategicResources, dt := 1.0) -> void:
 	alloy += rate.alloy * dt

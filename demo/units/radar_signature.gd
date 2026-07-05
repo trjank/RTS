@@ -24,8 +24,6 @@ func get_future_global_position() -> Vector3:
 	return global_position if stationary else _unit.get_waypoint(-1).global_position
 
 func as_unit() -> Unit:
-	assert(_state != State.DEAD)
-	#
 	return _unit
 
 func hit(damage: float, from: Player = null, penetration := 0.0) -> void:

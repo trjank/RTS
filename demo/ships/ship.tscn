@@ -1,153 +1,86 @@
-[gd_scene load_steps=16 format=3 uid="uid://bclfkleo04c2s"]
+[gd_scene load_steps=6 format=3 uid="uid://bclfkleo04c2s"]
 
 [ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://units/unit.tscn" id="1_aujvj"]
 [ext_resource type="Script" uid="uid://c1kpbbaqx8xxa" path="res://ships/ship.gd" id="1_n6m1k"]
-[ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="3_h2j6u"]
-[ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_aujvj"]
-[ext_resource type="PackedScene" uid="uid://x0uqbyqx11lv" path="res://ships/pip_bar.tscn" id="4_jqcho"]
-[ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="5_aujvj"]
+[ext_resource type="PackedScene" uid="uid://hvicroe1d56b" path="res://pips/pip_bar.tscn" id="3_an5v1"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_6juyh"]
 resource_local_to_scene = true
 
-[sub_resource type="Gradient" id="Gradient_wnxci"]
-offsets = PackedFloat32Array(0.516908, 0.676328, 0.717391)
-colors = PackedColorArray(0, 0, 0, 0, 0.231373, 0.901961, 0.682353, 1, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_tetda"]
-gradient = SubResource("Gradient_wnxci")
-width = 256
-height = 256
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-metadata/_snap_enabled = true
-
-[sub_resource type="Gradient" id="Gradient_n6m1k"]
-colors = PackedColorArray(0.46768677, 0.3723, 0.73, 1, 0.342, 0.5871, 0.6, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_h2j6u"]
-gradient = SubResource("Gradient_n6m1k")
-width = 16
-height = 32
-
-[sub_resource type="Gradient" id="Gradient_h2j6u"]
-offsets = PackedFloat32Array(0.004716981, 1)
-colors = PackedColorArray(0.8, 0.73520005, 0.368, 1, 0.8, 0.73333335, 0.36862746, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_6juyh"]
-gradient = SubResource("Gradient_h2j6u")
-width = 16
-height = 32
-
 [sub_resource type="SphereShape3D" id="SphereShape3D_h2j6u"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_h2j6u"]
-radius = 0.1
-height = 0.2
-
-[node name="Ship" node_paths=PackedStringArray("bar_hp", "bar_shield", "bar_energy", "always_upright", "behavior_indicator", "part_nodes", "detection") instance=ExtResource("1_aujvj")]
+[node name="Ship" node_paths=PackedStringArray("hp_bar", "shield_bar", "energy_bar", "ui", "behavior_indicator", "part_nodes", "detection") instance=ExtResource("1_aujvj")]
 script = ExtResource("1_n6m1k")
-bar_hp = NodePath("AlwaysUpright/GridContainer/PipBarHP")
-bar_shield = NodePath("AlwaysUpright/GridContainer/PipBarShield")
-bar_energy = NodePath("AlwaysUpright/GridContainer/PipBarEnergy")
-always_upright = NodePath("AlwaysUpright")
-behavior_indicator = NodePath("AlwaysUpright/BehaviorIndicator")
+hp_bar = NodePath("UI/HPBar")
+shield_bar = NodePath("UI/ShieldBar")
+energy_bar = NodePath("UI/EnergyBar")
+ui = NodePath("UI")
+behavior_indicator = NodePath("UI/BehaviorIndicator")
 part_nodes = NodePath("PartNodes")
 detection = NodePath("Detection")
 
 [node name="CollisionShape3D" parent="." index="1"]
 shape = SubResource("SphereShape3D_6juyh")
 
-[node name="WarpRadius" type="Sprite2D" parent="." index="2"]
-visible = false
-texture = SubResource("GradientTexture2D_tetda")
+[node name="PartNodes" type="Node3D" parent="." index="2"]
 
-[node name="AlwaysUpright" type="Node2D" parent="." index="3"]
+[node name="UI" type="Node3D" parent="." index="3"]
 
-[node name="GridContainer" type="GridContainer" parent="AlwaysUpright" index="0"]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -153.0
-offset_top = -309.0
-offset_right = 154.0
-offset_bottom = -159.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_constants/h_separation = 15
-theme_override_constants/v_separation = 15
-columns = 3
+[node name="ShieldBar" parent="UI" index="0" instance=ExtResource("3_an5v1")]
+transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, -1.5)
+instance_shader_parameters/base_color = Color(0.10416663, 0, 0.25, 1)
+instance_shader_parameters/border_color = Color(1, 1, 1, 1)
+instance_shader_parameters/border_width = 0.03
+instance_shader_parameters/pip_color = Color(0.4166665, 0, 1, 1)
+instance_shader_parameters/pip_progress = 0.4
+instance_shader_parameters/pip_width = 0.497
+instance_shader_parameters/size = Vector2(5, 0.5)
+skeleton = NodePath("../..")
+border_width = 0.03
+size = Vector2(5, 0.5)
+pip_count = 10
+value = 4.0
+max_value = 10.0
 
-[node name="ShieldIcon" type="TextureRect" parent="AlwaysUpright/GridContainer" index="0"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-texture = ExtResource("3_h2j6u")
-expand_mode = 1
-stretch_mode = 5
+[node name="HPBar" parent="UI" index="1" instance=ExtResource("3_an5v1")]
+transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 0)
+instance_shader_parameters/base_color = Color(0.25, 0.0775, 0.0775, 1)
+instance_shader_parameters/border_width = 0.03
+instance_shader_parameters/pip_width = 0.497
+instance_shader_parameters/size = Vector2(5, 0.5)
+skeleton = NodePath("../..")
+border_width = 0.03
+size = Vector2(5, 0.5)
+pip_count = 10
+value = 5.0
+max_value = 10.0
 
-[node name="Shield" type="Label" parent="AlwaysUpright/GridContainer" index="1"]
-layout_mode = 2
-text = "500"
+[node name="EnergyBar" parent="UI" index="2" instance=ExtResource("3_an5v1")]
+transform = Transform3D(2.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 1.5)
+instance_shader_parameters/base_color = Color(0.25, 0.175, 0, 1)
+instance_shader_parameters/border_width = 0.03
+instance_shader_parameters/pip_color = Color(1, 0.7, 0, 1)
+instance_shader_parameters/pip_progress = 0.3
+instance_shader_parameters/pip_width = 0.24700000000000003
+instance_shader_parameters/size = Vector2(2.5, 0.5)
+skeleton = NodePath("../..")
+border_width = 0.03
+size = Vector2(2.5, 0.5)
+pip_count = 10
+value = 3.0
+max_value = 10.0
 
-[node name="PipBarShield" parent="AlwaysUpright/GridContainer" index="2" instance=ExtResource("4_jqcho")]
-custom_minimum_size = Vector2(185.25, 32)
-layout_mode = 2
-size_flags_horizontal = 0
-max_value = 950.0
-texture_progress = SubResource("GradientTexture2D_h2j6u")
+[node name="BehaviorIndicator" type="Label3D" parent="UI" index="3"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0)
+pixel_size = 0.01
+billboard = 1
+render_priority = 1
+outline_render_priority = 0
+text = "NONE"
 
-[node name="HPIcon" type="TextureRect" parent="AlwaysUpright/GridContainer" index="3"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-texture = ExtResource("5_aujvj")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="HP" type="Label" parent="AlwaysUpright/GridContainer" index="4"]
-layout_mode = 2
-text = "500"
-
-[node name="PipBarHP" parent="AlwaysUpright/GridContainer" index="5" instance=ExtResource("4_jqcho")]
-custom_minimum_size = Vector2(81.9, 32)
-layout_mode = 2
-size_flags_horizontal = 0
-max_value = 2100.0
-value = 800.0
-
-[node name="EnergyIcon" type="TextureRect" parent="AlwaysUpright/GridContainer" index="6"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-texture = ExtResource("4_aujvj")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Energy" type="Label" parent="AlwaysUpright/GridContainer" index="7"]
-layout_mode = 2
-text = "500"
-
-[node name="PipBarEnergy" parent="AlwaysUpright/GridContainer" index="8" instance=ExtResource("4_jqcho")]
-custom_minimum_size = Vector2(156, 32)
-layout_mode = 2
-size_flags_horizontal = 0
-texture_progress = SubResource("GradientTexture2D_6juyh")
-
-[node name="BehaviorIndicator" type="Label" parent="AlwaysUpright" index="1"]
-offset_left = -84.0
-offset_top = -386.0
-offset_right = 57.0
-offset_bottom = -346.0
-text = "TEST"
-
-[node name="PartNodes" type="Node3D" parent="." index="4"]
-
-[node name="Detection" type="Area3D" parent="." index="5"]
+[node name="Detection" type="Area3D" parent="." index="4"]
 collision_layer = 0
 collision_mask = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Detection" index="0"]
 shape = SubResource("SphereShape3D_h2j6u")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="6"]
-mesh = SubResource("SphereMesh_h2j6u")

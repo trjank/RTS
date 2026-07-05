@@ -50,7 +50,8 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"damage": TYPE_FLOAT,
 	"energy_drain": TYPE_FLOAT,
 	"shield_penetration": TYPE_FLOAT,
-	"mining_efficiency": TYPE_FLOAT,
+	"can_mine": TYPE_BOOL,
+	"mining_rate_data": TYPE_DICTIONARY,
 # For BulletData below
 	"launch_velocity": TYPE_FLOAT,
 	"linear_damp": TYPE_FLOAT,

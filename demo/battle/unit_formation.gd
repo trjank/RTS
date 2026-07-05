@@ -203,12 +203,11 @@ func _project(point: Vector3) -> Vector2:
 	return Vector2(point.x, point.z)
 
 func _do_paths_intersect(i: int, j: int) -> bool:
-	return Geometry2D.segment_intersects_segment(
-		_project(_units[i].get_future_global_position() ),
-		_project(_targets[i].global_position),
-		_project(_units[j].get_future_global_position() ),
-		_project(_targets[j].global_position)
-	) != null
+	var from_i := _project(_units[i].get_future_global_position() )
+	var from_j := _project(_units[j].get_future_global_position() )
+	var to_i := _project(_targets[i].global_position)
+	var to_j := _project(_targets[j].global_position)
+	return Geometry2D.segment_intersects_segment(from_i, to_i, from_j, to_j) != null
 
 func get_nearest_unit(point: Vector3) -> RadarSignature:
 	var unit := mouse_selection.get_nearest_node(point, globals.Layer.UNITS, MAX_SELECTION_DISTANCE)

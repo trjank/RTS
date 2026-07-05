@@ -6,12 +6,22 @@ var global_position: Vector3
 var linear_velocity: Vector3
 var speed := 0.0
 
+static func from_node(node: Node) -> Target:
+	if node is Unit:
+		return node.get_radar_signature()
+	if node is Scenery:
+		return node.get_target()
+	return null
+
 func _init(init_global_position := Vector3.ZERO, init_linear_velocity := Vector3.ZERO) -> void:
 	global_position = init_global_position
 	linear_velocity = init_linear_velocity
 
 func is_alive() -> bool:
 	return true
+
+func mine(_storage: StrategicResources, _rate: StrategicResources, _dt := 1.0) -> void:
+	pass # (override this method)
 
 func hit(_damage: float, _from: Player = null, _penetration := 0.0) -> void:
 	pass # (override this method)
