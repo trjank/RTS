@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=13 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main/main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="2_67ri8"]
@@ -9,6 +9,11 @@
 [ext_resource type="PackedScene" uid="uid://owpblejfs8ky" path="res://ships_screen/ships_screen.tscn" id="6_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://dos22dgb4cqta" path="res://singleplayer/singleplayer.tscn" id="10_0i4oc"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_grrlh"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_0i4oc"]
+plane = Plane(0, -1, 0, 0)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_grrlh"]
 
@@ -21,8 +26,8 @@ nodes = {
 3: NodePath("Fleets"),
 4: NodePath("Singleplayer")
 }
-camera = NodePath("CameraBody/Camera3D")
-camera_body = NodePath("CameraBody")
+camera = NodePath("World/CameraBody/Camera3D")
+camera_body = NodePath("World/CameraBody")
 world = NodePath("World")
 ui = NodePath("UI")
 background = NodePath("Background/TextureRect")
@@ -51,7 +56,20 @@ visible = false
 
 [node name="World" type="Node3D" parent="."]
 
-[node name="CameraBody" type="RigidBody3D" parent="."]
+[node name="Floor" type="StaticBody3D" parent="World"]
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Floor"]
+shape = SubResource("WorldBoundaryShape3D_grrlh")
+
+[node name="Ceiling" type="StaticBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, 0)
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Ceiling"]
+shape = SubResource("WorldBoundaryShape3D_0i4oc")
+
+[node name="CameraBody" type="RigidBody3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 axis_lock_angular_x = true
 axis_lock_angular_y = true
@@ -62,10 +80,10 @@ linear_damp = 2.0
 script = ExtResource("4_0i4oc")
 force = Vector3(100, 100, 100)
 
-[node name="Camera3D" type="Camera3D" parent="CameraBody"]
+[node name="Camera3D" type="Camera3D" parent="World/CameraBody"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CameraBody"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/CameraBody"]
 shape = SubResource("SphereShape3D_grrlh")
 
 [node name="Design" parent="." instance=ExtResource("11_dg77c")]
