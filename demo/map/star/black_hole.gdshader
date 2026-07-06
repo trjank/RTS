@@ -4,6 +4,7 @@ render_mode unshaded;
 
 #define DISTORT_BACKGROUND false
 
+const float ANIMATION_PERIOD = 1.0;
 const float G_M = 0.1;
 const float SCHWARZCHILD_RADIUS = 0.1;
 const float MIN_DT = 0.2 * SCHWARZCHILD_RADIUS;
@@ -25,18 +26,22 @@ varying vec3 local_position;
 varying vec3 local_camera_position;
 
 struct LightRay {
+	vec3 previous_position;
 	vec3 position;
 	vec3 velocity;
 	float r;
 	float dt;
 };
 
-void vertex() {
-	local_position = VERTEX;
-	local_camera_position = (inverse(MODEL_MATRIX) * vec4(CAMERA_POSITION_WORLD, 1.0) ).xyz;
+vec2 rotate_2d(vec2 position, float theta) {
+	float cos_theta = cos(theta);
+	float sin_theta = sin(theta);
+	mat2 rotation_matrix = mat2(vec2(cos_theta, sin_theta), vec2(-sin_theta, cos_theta) );
+	return rotation_matrix * position;
 }
 
 LightRay raymarch(LightRay ray) {
+	ray.previous_position = ray.position;
 	ray.r = length(ray.position);
 	// Use smaller time steps closer to the event horizon
 	ray.dt = clamp(ray.r * 0.1, MIN_DT, MAX_DT);
@@ -47,35 +52,42 @@ LightRay raymarch(LightRay ray) {
 	return ray;
 }
 
-vec2 rotate_2d(vec2 position, float theta) {
-	float cos_theta = cos(theta);
-	float sin_theta = sin(theta);
-	mat2 rotation_matrix = mat2(vec2(cos_theta, sin_theta), vec2(-sin_theta, cos_theta) );
-	return rotation_matrix * position;
-}
-
 vec3 calculate_accretion_disk_light(vec2 xy, float r) {
-	// NOTE: The use of mod makes this not a seamless transition
-	float rotation = accretion_disk_start_rotation + mod(accretion_disk_rotation_speed * TIME, TAU);
+	// Here we stitch two oscillators together to make a seamless rotation animation
+	// This is necessary because the inner accretion disk rotates faster,
+	// causing the texture to shear and look vastly different
+	float t1 = mod(TIME, ANIMATION_PERIOD);
+	float t2 = mod(TIME + 0.5 * ANIMATION_PERIOD, ANIMATION_PERIOD);
 	float orbital_velocity = sqrt(G_M / (r * r * r) );
-	xy = rotate_2d(xy, rotation * orbital_velocity);
-	float brightness = texture(accretion_disk_texture, xy).r;
+	vec2 xy1 = rotate_2d(xy, (accretion_disk_start_rotation + accretion_disk_rotation_speed * t1) * orbital_velocity);
+	vec2 xy2 = rotate_2d(xy, (accretion_disk_start_rotation + accretion_disk_rotation_speed * t2) * orbital_velocity);
+	float brightness1 = texture(accretion_disk_texture, xy1).r;
+	float brightness2 = texture(accretion_disk_texture, xy2).r;
+	float brightness = mix(brightness1, brightness2, 0.5 + 0.5 * cos( (TAU / ANIMATION_PERIOD) * t1) );
 	// Make the light brighter on the inner disk compared to outer disk
 	// The inner disk rotates quicker, is hotter, and has a stronger glow
-	brightness *= pow(r / ACCRETION_DISK_INNER_RADIUS, -accretion_disk_light_dropoff);
+	brightness *= pow(r / ACCRETION_DISK_INNER_RADIUS, -accretion_disk_light_dropoff) - pow(0.5 / ACCRETION_DISK_INNER_RADIUS, -accretion_disk_light_dropoff);
 	return accretion_disk_light_color * brightness;
 }
 
-vec3 intersect_accretion_disk(vec3 previous_position, vec3 position, vec3 albedo) {
+bool hit_accretion_disk(vec3 ray_from, vec3 ray_to) {
 	// NOTE: The accretion disk lies entirely on the plane y = 0
-	if (previous_position.y * position.y > 0.0)
-		return albedo;
+	return ray_from.y * ray_to.y > 0.0;
+}
+
+vec3 intersect_accretion_disk(vec3 ray_from, vec3 ray_to, vec3 albedo) {
+	if (hit_accretion_disk(ray_from, ray_to) ) return albedo;
 	// Calculate the exact intersection point (without this, the disk looks blocky)
-	float t_intersect = previous_position.y / (previous_position.y - position.y);
-	vec3 intersection = mix(previous_position, position, t_intersect);
+	float t_intersect = ray_from.y / (ray_from.y - ray_to.y);
+	vec3 intersection = mix(ray_from, ray_to, t_intersect);
 	float r = length(intersection);
 	bool intersected = SCHWARZCHILD_RADIUS < r && r <= ACCRETION_DISK_OUTER_RADIUS;
 	return intersected ? albedo + calculate_accretion_disk_light(vec2(intersection.x, intersection.z), r) : albedo;
+}
+
+void vertex() {
+	local_position = VERTEX;
+	local_camera_position = (inverse(MODEL_MATRIX) * vec4(CAMERA_POSITION_WORLD, 1.0) ).xyz;
 }
 
 void fragment() {
@@ -86,9 +98,8 @@ void fragment() {
 	ray.velocity = normalize(local_position - local_camera_position);
 	//
 	for (int i = 0; i < NUM_TIME_STEPS; ++i) {
-		vec3 previous_position = ray.position;
 		ray = raymarch(ray);
-		ALBEDO = intersect_accretion_disk(previous_position, ray.position, ALBEDO);
+		ALBEDO = intersect_accretion_disk(ray.previous_position, ray.position, ALBEDO);
 		if (ray.r <= SCHWARZCHILD_RADIUS) break;
 	}
 	if (ray.r > SCHWARZCHILD_RADIUS) {

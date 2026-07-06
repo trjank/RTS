@@ -68,6 +68,7 @@ func set_display_name(new_display_name: String) -> void:
 
 func set_capturable(is_capturable: bool) -> void:
 	capturable = is_capturable
+	progress_bar.visible = is_capturable
 	zone_shape.disabled = not is_capturable
 
 func set_capture_time_sec(new_capture_time_sec: float) -> void:
