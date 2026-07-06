@@ -46,6 +46,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "PAUSED"
 
+[node name="RoundTimer" parent="." index="2"]
+wait_time = 10.0
+
 [connection signal="pressed" from="UI/HBoxContainer/TechTreeButton" to="." method="_on_tech_tree_button_pressed"]
 
 [editable path="UI/FleetContainer"]

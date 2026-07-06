@@ -1,3 +1,11 @@
-[gd_scene format=3 uid="uid://bc43w650o5ehk"]
+[gd_scene load_steps=3 format=3 uid="uid://s0m27t7rhtfv"]
 
-[node name="Asteroid" type="Node3D"]
+[ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_40nn4"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_xlw7k"]
+resource_local_to_scene = true
+
+[node name="Asteroid" instance=ExtResource("1_40nn4")]
+
+[node name="CollisionShape3D" parent="Area3D" index="0"]
+shape = SubResource("SphereShape3D_xlw7k")

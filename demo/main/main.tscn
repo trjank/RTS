@@ -50,13 +50,15 @@ visible = false
 
 [node name="World" type="Node3D" parent="."]
 
-[node name="Camera" type="CharacterBody3D" parent="."]
+[node name="Camera" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
+gravity_scale = 0.0
+linear_damp = 2.0
 script = ExtResource("4_0i4oc")
-speed = Vector3(5, 5, 5)
+force = Vector3(100, 100, 100)
 
 [node name="Camera3D" type="Camera3D" parent="Camera"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)

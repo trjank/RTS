@@ -66,6 +66,6 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	_target._scenery = null
 
-func _process(dt: float) -> void:
+func _physics_process(dt: float) -> void:
 	_target.global_position = global_position
 	time = _battle_state.time if _battle_state != null else time + dt

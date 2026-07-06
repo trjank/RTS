@@ -1,1 +1,1 @@
-extends Node
+class_name Asteroid extends Planet

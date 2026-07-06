@@ -104,14 +104,14 @@ func set_team_owner(new_team_owner: Team) -> void:
 	team_owner = new_team_owner
 
 func _physics_process(dt: float) -> void:
+	super(dt)
+	#
 	if _contesting_team == null:
 		return
 	dt *= _battle_state.time_scale
 	capture_progress += dt if _contesting_team == _capturing_team else -dt
 
-func _process(dt: float) -> void:
-	super(dt)
-	#
+func _process(_dt: float) -> void:
 	ui.global_rotation = Vector3.ZERO
 
 func update_contesting_team() -> void:
