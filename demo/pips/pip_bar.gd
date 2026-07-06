@@ -15,6 +15,24 @@ const MAX_BORDER_WIDTH := 1.0
 	set = set_value
 @export var max_value := 0.0:
 	set = set_max_value
+@export var base_color: Color:
+	get = get_base_color,
+	set = set_base_color
+@export var pip_color: Color:
+	get = get_pip_color,
+	set = set_pip_color
+
+func get_base_color() -> Color:
+	return get_instance_shader_parameter("base_color")
+
+func get_pip_color() -> Color:
+	return get_instance_shader_parameter("pip_color")
+
+func set_base_color(new_base_color: Color) -> void:
+	set_instance_shader_parameter("base_color", new_base_color)
+
+func set_pip_color(new_pip_color: Color) -> void:
+	set_instance_shader_parameter("pip_color", new_pip_color)
 
 func set_value(new_value: float) -> void:
 	value = new_value

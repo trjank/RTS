@@ -78,10 +78,11 @@ func get_top_node(point: Vector3, mask := globals.Layer.EVERYTHING) -> Node3D:
 
 func _resize_hitbox() -> void:
 	var size_3d := (to_local(end) - to_local(start) ).abs()
+	var size_2d := Vector2(size_3d.x, size_3d.z)
 	size_3d.y = VERTICAL_RANGE
 	global_position = 0.5 * (start + end)
-	mesh_instance.mesh.size = Vector2(size_3d.x, size_3d.z)
-	mesh_instance.set_instance_shader_parameter("size", mesh_instance.mesh.size)
+	mesh_instance.mesh.size = size_2d
+	mesh_instance.set_instance_shader_parameter("size", size_2d)
 	hitbox.shape.size = size_3d
 
 func _begin_selection() -> void:

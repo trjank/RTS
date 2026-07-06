@@ -2,7 +2,7 @@ class_name Ship extends Unit
 
 signal target_changed(new_target: Target)
 
-const PIP_BAR_SPACING := 0.0
+const PIP_BAR_SPACING := -0.03
 
 @export var hp_bar: PipBar
 @export var shield_bar: PipBar
@@ -87,6 +87,7 @@ func update_ui() -> void:
 	#
 	if not is_node_ready():
 		return
+	ui.visible = selected
 	energy_bar.position.z = -size.y
 	hp_bar.position.z = energy_bar.position.z - energy_bar.size.y - PIP_BAR_SPACING
 	shield_bar.position.z = hp_bar.position.z - hp_bar.size.y - PIP_BAR_SPACING

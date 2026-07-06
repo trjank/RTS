@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=26 format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://c1fkfssn7ug34" path="res://icons/beaker.png" id="5_t8p1f"]
 [ext_resource type="StyleBox" uid="uid://dpnhdvo8bfxyx" path="res://battle/button_hover.tres" id="5_vlrs1"]
 [ext_resource type="Texture2D" uid="uid://b5riwlxwyb5kj" path="res://icons/count.png" id="7_a56dj"]
+[ext_resource type="Script" uid="uid://dwken4rn36b3k" path="res://battle/selection_info.gd" id="7_dxsh4"]
 [ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="7_rgsk0"]
 [ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="8_tkkqt"]
 
@@ -194,13 +195,15 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="SelectionInfo" type="GridContainer" parent="UI/PanelContainer/HBoxContainer"]
+[node name="SelectionInfo" type="GridContainer" parent="UI/PanelContainer/HBoxContainer" node_paths=PackedStringArray("count_label")]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 10
 columns = 2
+script = ExtResource("7_dxsh4")
+count_label = NodePath("Count")
 
-[node name="AlloyIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="CountIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -209,7 +212,7 @@ texture = ExtResource("7_a56dj")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="AlloyCount" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="Count" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -218,7 +221,7 @@ theme_override_constants/outline_size = 5
 text = "1"
 vertical_alignment = 1
 
-[node name="EnergyIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetAlloyIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -227,7 +230,7 @@ texture = ExtResource("3_hvjow")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="EnergyCount" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetAlloy" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 0.8666667, 0.34117648, 1)
@@ -236,7 +239,7 @@ theme_override_constants/outline_size = 5
 text = "1000"
 vertical_alignment = 1
 
-[node name="MilitaryScienceIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetHPIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -245,7 +248,7 @@ texture = ExtResource("7_rgsk0")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MilitaryScienceCount" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetHP" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 0.45, 0.45, 1)
@@ -254,7 +257,7 @@ theme_override_constants/outline_size = 5
 text = "100"
 vertical_alignment = 1
 
-[node name="MilitaryScienceIcon2" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetShieldIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -263,7 +266,7 @@ texture = ExtResource("8_tkkqt")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MilitaryScienceCount2" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetShield" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.4, 0.9882353, 1, 1)
@@ -272,7 +275,7 @@ theme_override_constants/outline_size = 5
 text = "0"
 vertical_alignment = 1
 
-[node name="MilitaryScienceIcon3" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetEnergyIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -281,7 +284,7 @@ texture = ExtResource("4_qybyd")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MilitaryScienceCount3" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetEnergy" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.4, 0.9882353, 1, 1)
@@ -373,6 +376,7 @@ one_shot = true
 [connection signal="pressed" from="UI/HBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="action_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_action_changed"]
 [connection signal="formation_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_formation_changed"]
+[connection signal="selected" from="World/MouseSelection" to="UI/PanelContainer/HBoxContainer/SelectionInfo" method="_on_mouse_selection_selected"]
 [connection signal="selected" from="World/MouseSelection" to="World/UnitFormation" method="_on_mouse_selection_selected"]
 [connection signal="timeout" from="RoundTimer" to="." method="_on_round_timer_timeout"]
 [connection signal="timeout" from="CountdownTimer" to="." method="_on_countdown_timer_timeout"]

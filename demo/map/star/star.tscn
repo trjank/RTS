@@ -14,12 +14,6 @@ resource_local_to_scene = true
 [node name="Star" instance=ExtResource("1_b5dfa")]
 script = ExtResource("2_v7ku8")
 
-[node name="AlwaysUpright" parent="." index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
-
-[node name="CaptureText" parent="AlwaysUpright" index="1"]
-visible = false
-
 [node name="MeshInstance3D" parent="." index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.161234e-05, 0.00083629787, -0.00015819073)
 material_override = ExtResource("3_v7ku8")

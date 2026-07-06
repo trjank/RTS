@@ -156,7 +156,7 @@ func disconnect_player(player_name: String) -> bool:
 	players.erase(player_name)
 	return true
 
-func create_team(team_name: String, color := Color.WHITE) -> Team:
+func create_team(team_name: String, color := Color.BLUE) -> Team:
 	if team_name in teams:
 		return teams[team_name]
 	if _status != Status.STOPPED or MAX_NUM_TEAMS <= teams.size():

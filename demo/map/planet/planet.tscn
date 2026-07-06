@@ -1,22 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://bvi7rt1l6hfoy"]
+[gd_scene load_steps=4 format=3 uid="uid://bvi7rt1l6hfoy"]
 
 [ext_resource type="Script" uid="uid://yubit2roc71n" path="res://map/planet/planet.gd" id="1_3aqce"]
+[ext_resource type="PackedScene" uid="uid://hvicroe1d56b" path="res://pips/pip_bar.tscn" id="2_td387"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_uj2kf"]
 resource_local_to_scene = true
 
-[node name="Planet" type="Node3D" node_paths=PackedStringArray("always_upright", "label", "mesh_instance", "zone", "zone_shape")]
+[node name="Planet" type="Node3D" node_paths=PackedStringArray("ui", "label", "mesh_instance", "zone", "zone_shape", "progress_bar")]
 script = ExtResource("1_3aqce")
-always_upright = NodePath("AlwaysUpright")
-label = NodePath("AlwaysUpright/Label3D")
+ui = NodePath("UI")
+label = NodePath("UI/Label3D")
 mesh_instance = NodePath("MeshInstance3D")
 zone = NodePath("Area3D")
 zone_shape = NodePath("Area3D/CollisionShape3D")
+progress_bar = NodePath("UI/PipBar")
 metadata/_custom_type_script = "uid://yubit2roc71n"
 
-[node name="AlwaysUpright" type="Node3D" parent="."]
+[node name="UI" type="Node3D" parent="."]
 
-[node name="Label3D" type="Label3D" parent="AlwaysUpright"]
+[node name="Label3D" type="Label3D" parent="UI"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 billboard = 1
 no_depth_test = true
@@ -27,17 +29,14 @@ text = "Planet"
 font_size = 8
 outline_size = 8
 
-[node name="CaptureText" type="Label3D" parent="AlwaysUpright"]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
-billboard = 1
-no_depth_test = true
-fixed_size = true
-render_priority = 10
-outline_render_priority = 9
-modulate = Color(1, 0.49, 0.49, 1)
-text = "CONTESTED"
-font_size = 6
-outline_size = 6
+[node name="PipBar" parent="UI" instance=ExtResource("2_td387")]
+transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+instance_shader_parameters/pip_progress = 0.0
+instance_shader_parameters/pip_width = 4.9
+instance_shader_parameters/size = Vector2(5, 1)
+size = Vector2(5, 1)
+max_value = 5.0
+pip_color = Color(1, 0.32, 0.32, 1)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 

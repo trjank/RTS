@@ -1,6 +1,6 @@
 shader_type spatial;
 
-render_mode unshaded, fog_disabled;
+render_mode unshaded, fog_disabled, depth_test_disabled;
 
 uniform float shadow_darkness: hint_range(0.0, 1.0) = 0.5;
 uniform float shadow_start: hint_range(0.0, 1.0) = 0.5;
