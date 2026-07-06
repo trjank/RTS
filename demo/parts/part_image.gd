@@ -1,13 +1,7 @@
 class_name PartImage extends RefCounted
 
 const FORMAT := Image.FORMAT_RGBA8
-const NORMAL_MAP_FORMAT := Image.FORMAT_RGTC_RG
-const FOLDER_PATHS := [
-	"res://part_images/",
-	"res://part_normal_maps/",
-	"user://part_images/",
-	"user://part_normal_maps/"
-]
+const FOLDER_PATHS := ["res://part_images/", "user://part_images/"]
 const IMAGE_NOT_FOUND := preload("res://icons/image_not_found.png")
 const TEXTURE_NOT_FOUND := preload("res://icons/texture_not_found.png")
 
