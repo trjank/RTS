@@ -38,9 +38,11 @@ func _ready() -> void:
 	#
 	var min_radius := float(_map.preset.get("min_radius", MIN_RADIUS) )
 	var max_radius := float(_map.preset.get("max_radius", MAX_RADIUS) )
+	var min_tilt := float(_map.preset.get("min_tilt", 0.0) )
+	var max_tilt := float(_map.preset.get("max_tilt", 360.0) )
 	capturable = _map.preset.get("capturable", true)
 	radius = _rng.randf_range(min_radius, max_radius)
-	mesh_instance.rotation.x = _rng.randf_range(0.0, TAU)
+	mesh_instance.rotation.x = deg_to_rad(_rng.randf_range(min_tilt, max_tilt) )
 	display_name = _map.preset.get("display_name", "")
 	ui.position = Vector3.ZERO
 

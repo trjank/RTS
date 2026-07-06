@@ -24,7 +24,9 @@ const PRESET_SYNTAX: Dictionary[String, Variant.Type] = {
 	"min_radius": TYPE_FLOAT,
 	"max_radius": TYPE_FLOAT,
 	"display_name": TYPE_STRING,
-	"capturable": TYPE_BOOL
+	"capturable": TYPE_BOOL,
+	"min_tilt": TYPE_FLOAT,
+	"max_tilt": TYPE_FLOAT
 }
 
 var subtype: String

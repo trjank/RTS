@@ -12,7 +12,7 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_grrlh"]
 
-[node name="Main" type="Node" node_paths=PackedStringArray("nodes", "camera", "world", "ui", "background")]
+[node name="Main" type="Node" node_paths=PackedStringArray("nodes", "camera", "camera_body", "world", "ui", "background")]
 script = ExtResource("1_h0c8p")
 nodes = {
 0: NodePath("MainMenu"),
@@ -21,7 +21,8 @@ nodes = {
 3: NodePath("Fleets"),
 4: NodePath("Singleplayer")
 }
-camera = NodePath("Camera/Camera3D")
+camera = NodePath("CameraBody/Camera3D")
+camera_body = NodePath("CameraBody")
 world = NodePath("World")
 ui = NodePath("UI")
 background = NodePath("Background/TextureRect")
@@ -50,20 +51,21 @@ visible = false
 
 [node name="World" type="Node3D" parent="."]
 
-[node name="Camera" type="RigidBody3D" parent="."]
+[node name="CameraBody" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
 gravity_scale = 0.0
+freeze = true
 linear_damp = 2.0
 script = ExtResource("4_0i4oc")
 force = Vector3(100, 100, 100)
 
-[node name="Camera3D" type="Camera3D" parent="Camera"]
+[node name="Camera3D" type="Camera3D" parent="CameraBody"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CameraBody"]
 shape = SubResource("SphereShape3D_grrlh")
 
 [node name="Design" parent="." instance=ExtResource("11_dg77c")]
