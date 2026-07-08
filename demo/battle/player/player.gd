@@ -1,10 +1,15 @@
 class_name Player extends Node3D
 
+const MAX_CLAN_LENGTH := 10
+
 var display_name: String
 var color: Color
 var alive := false
 var team: Team:
 	set = set_team
+var clan := "":
+	set = set_clan
+var icon := preload("res://icons/skull.png")
 var resources := StrategicResources.new()
 
 func _init(init_display_name := "", init_color := Color.WHITE) -> void:
@@ -14,6 +19,9 @@ func _init(init_display_name := "", init_color := Color.WHITE) -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
 		set_team(null)
+
+func set_clan(new_clan: String) -> void:
+	clan = new_clan.left(MAX_CLAN_LENGTH)
 
 func set_team(new_team: Team) -> void:
 	if team != null:

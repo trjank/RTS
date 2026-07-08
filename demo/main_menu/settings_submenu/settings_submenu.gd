@@ -1,4 +1,4 @@
-extends VBoxContainer
+extends PanelContainer
 
 signal back_button_pressed
 

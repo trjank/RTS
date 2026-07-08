@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/parts_container.tscn" id="9_3c8mw"]
 [ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/part_selection.gd" id="10_6vk6i"]
 [ext_resource type="Material" uid="uid://dq44yn5k5uawo" path="res://effects/stripes.tres" id="12_r41aq"]
-[ext_resource type="PackedScene" uid="uid://cyxuko5kc8x27" path="res://battle/stats_box.tscn" id="12_rmp56"]
+[ext_resource type="PackedScene" uid="uid://cyxuko5kc8x27" path="res://design/stats_box.tscn" id="12_rmp56"]
 [ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://main/mouse_selection.tscn" id="13_r41aq"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="14_7jtw0"]
 

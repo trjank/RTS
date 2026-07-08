@@ -57,6 +57,7 @@ visible = false
 [node name="World" type="Node3D" parent="."]
 
 [node name="Floor" type="StaticBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/Floor"]

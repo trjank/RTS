@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://c7ognok5j3et6"]
+[gd_scene load_steps=7 format=3 uid="uid://c7ognok5j3et6"]
 
 [ext_resource type="Script" uid="uid://dbivnjor0oin5" path="res://main_menu/singleplayer_submenu/singleplayer_submenu.gd" id="1_tjaei"]
 [ext_resource type="Texture2D" uid="uid://ch5e75wsi4kws" path="res://icons/back_arrow.png" id="1_x73db"]
 [ext_resource type="StyleBox" uid="uid://7wpi6e0kyjg7" path="res://main_menu/back_button_normal.tres" id="2_12502"]
 [ext_resource type="PackedScene" uid="uid://cxny6jcxs3vxj" path="res://main_menu/singleplayer_submenu/singleplayer_save_file.tscn" id="4_274ql"]
+[ext_resource type="PackedScene" uid="uid://dkcs4q50d0xwa" path="res://battle/battle_settings.tscn" id="5_6yq8i"]
+[ext_resource type="PackedScene" uid="uid://dr4y0i4ikrvlg" path="res://battle/team/team_settings.tscn" id="5_xf2ag"]
 
 [node name="SingleplayerSubmenu" type="VBoxContainer"]
 theme_override_constants/separation = 25
@@ -26,13 +28,42 @@ alignment = 0
 layout_mode = 2
 text = "Choose a save file to load or create a game"
 
-[node name="SingleplayerSaveFile" parent="." instance=ExtResource("4_274ql")]
+[node name="TabContainer" type="TabContainer" parent="."]
+layout_mode = 2
+current_tab = 1
+tabs_visible = false
+
+[node name="Saves" type="VBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 25
+metadata/_tab_index = 0
+
+[node name="SingleplayerSaveFile" parent="TabContainer/Saves" instance=ExtResource("4_274ql")]
 layout_mode = 2
 
-[node name="SingleplayerSaveFile2" parent="." instance=ExtResource("4_274ql")]
+[node name="SingleplayerSaveFile2" parent="TabContainer/Saves" instance=ExtResource("4_274ql")]
 layout_mode = 2
 
-[node name="SingleplayerSaveFile3" parent="." instance=ExtResource("4_274ql")]
+[node name="SingleplayerSaveFile3" parent="TabContainer/Saves" instance=ExtResource("4_274ql")]
+layout_mode = 2
+
+[node name="CreateGame" type="VBoxContainer" parent="TabContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+metadata/_tab_index = 1
+
+[node name="TabBar" type="TabBar" parent="TabContainer/CreateGame"]
+layout_mode = 2
+current_tab = 0
+tab_count = 2
+tab_0/title = "Standard"
+tab_1/title = "Campaign"
+
+[node name="TeamSettings" parent="TabContainer/CreateGame" instance=ExtResource("5_xf2ag")]
+layout_mode = 2
+
+[node name="BattleSettings" parent="TabContainer/CreateGame" instance=ExtResource("5_6yq8i")]
 layout_mode = 2
 
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=3 uid="uid://caglosna42lck"]
+
+[ext_resource type="Script" uid="uid://hjk3nl0bbwyt" path="res://battle/team/team_box.gd" id="1_lsf7y"]
+[ext_resource type="Texture2D" uid="uid://bc2ocllol2460" path="res://icons/add.png" id="2_3uern"]
+[ext_resource type="PackedScene" uid="uid://cosoya0jnm0ke" path="res://battle/player/player_box.tscn" id="3_2rmjt"]
+
+[node name="TeamBox" type="VBoxContainer" node_paths=PackedStringArray("players_container")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+script = ExtResource("1_lsf7y")
+players_container = NodePath("Players")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+color = Color(1, 0, 0, 1)
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "TEAM NAME HERE"
+
+[node name="AddBotButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/icon_max_width = 24
+text = "Bot"
+icon = ExtResource("2_3uern")
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="Players" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PlayerBox" parent="Players" instance=ExtResource("3_2rmjt")]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Players"]
+layout_mode = 2
+text = "Join"

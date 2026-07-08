@@ -1,0 +1,52 @@
+[gd_scene load_steps=6 format=3 uid="uid://cosoya0jnm0ke"]
+
+[ext_resource type="Script" uid="uid://b01xfrqaj1fir" path="res://battle/player/player_box.gd" id="1_qcx7q"]
+[ext_resource type="Texture2D" uid="uid://dfnjwkhw74fd8" path="res://icons/computer_chip.png" id="2_vvvix"]
+[ext_resource type="Texture2D" uid="uid://jbvwfgsvkskq" path="res://icons/checkbox_on.png" id="3_cvqk3"]
+[ext_resource type="StyleBox" uid="uid://bcmtw4y0fr8d" path="res://battle/player/kick_button_normal.tres" id="3_vvvix"]
+[ext_resource type="Texture2D" uid="uid://dbbopdl6muf60" path="res://icons/checkbox_off.png" id="4_vvvix"]
+
+[node name="PlayerBox" type="HBoxContainer" node_paths=PackedStringArray("clan_label", "name_label", "icon")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+script = ExtResource("1_qcx7q")
+clan_label = NodePath("Clan")
+name_label = NodePath("Name")
+icon = NodePath("Icon")
+
+[node name="Icon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_vvvix")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Clan" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "CLAN"
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 2
+text = "Anonymous"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+theme_override_styles/normal = ExtResource("3_vvvix")
+text = "kick"
+
+[node name="CheckBox" type="CheckBox" parent="."]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_icons/checked = ExtResource("3_cvqk3")
+theme_override_icons/unchecked = ExtResource("4_vvvix")
+text = "Muted"

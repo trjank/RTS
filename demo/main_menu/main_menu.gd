@@ -47,3 +47,4 @@ func _ready() -> void:
 	map = Map.new()
 	map.load_json(MAP_PRESET_PATH)
 	start()
+	print(_map_root.get_child(0).global_position)

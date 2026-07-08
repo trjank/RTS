@@ -1,8 +1,10 @@
 class_name Orbiter extends Scenery
 
 const GRAVITATIONAL_CONSTANT := 0.01
-const MIN_ORBIT_RADIUS := 0.1
+const MIN_ORBIT_RADIUS := 0.0
 const MAX_ORBIT_RADIUS := 100.0
+# This is a lower bound to prevent huge or infinite orbital speeds
+const MIN_EFFECTIVE_ORBIT_RADIUS := 0.1
 
 var angle := 0.0:
 	set = set_angle
@@ -20,11 +22,14 @@ func get_orbit_mass() -> float:
 	var center := get_orbit_center()
 	return center.mass if center != null else MIN_MASS
 
+func get_effective_orbit_radius() -> float:
+	return maxf(orbit_radius, MIN_EFFECTIVE_ORBIT_RADIUS)
+
 func get_speed() -> float:
-	return GRAVITATIONAL_CONSTANT * get_orbit_mass() / orbit_radius
+	return GRAVITATIONAL_CONSTANT * get_orbit_mass() / get_effective_orbit_radius()
 
 func get_angular_speed() -> float:
-	return get_speed() / orbit_radius
+	return get_speed() / get_effective_orbit_radius()
 
 func set_time(new_time: float) -> void:
 	time = new_time
@@ -60,7 +65,7 @@ func _ready() -> void:
 	var min_orbit_radius := float(_map.preset.get("min_orbit_radius", MIN_ORBIT_RADIUS) )
 	var max_orbit_radius := float(_map.preset.get("max_orbit_radius", MAX_ORBIT_RADIUS) )
 	var min_orbit_offset := float(_map.preset.get("min_orbit_offset", 0.0) )
-	var max_orbit_offset := float(_map.preset.get("max_orbit_offset", TAU) )
+	var max_orbit_offset := float(_map.preset.get("max_orbit_offset", 360.0) )
 	orbit_radius = _rng.randf_range(min_orbit_radius, max_orbit_radius)
-	orbit_offset = _rng.randf_range(min_orbit_offset, max_orbit_offset) + TAU * generation_index / generation_count
+	orbit_offset = deg_to_rad(_rng.randf_range(min_orbit_offset, max_orbit_offset) ) + TAU * generation_index / generation_count
 	angle = rotation.y

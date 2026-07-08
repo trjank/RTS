@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://rtgl3l82gcan"
-path="res://.godot/imported/formation_move.png-323ac1d92c17b09b1833469d512d77fd.ctex"
+uid="uid://dfnjwkhw74fd8"
+path="res://.godot/imported/computer_chip.png-4ade6cde1a59b8da4104c076acb89861.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://icons/formation_move.png"
-dest_files=["res://.godot/imported/formation_move.png-323ac1d92c17b09b1833469d512d77fd.ctex"]
+source_file="res://icons/computer_chip.png"
+dest_files=["res://.godot/imported/computer_chip.png-4ade6cde1a59b8da4104c076acb89861.ctex"]
 
 [params]
 

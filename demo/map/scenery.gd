@@ -59,9 +59,9 @@ func _ready() -> void:
 	var min_mass := float(_map.preset.get("min_mass", MIN_MASS) )
 	var max_mass := float(_map.preset.get("max_mass", MAX_MASS) )
 	var min_rotation := float(_map.preset.get("min_rotation", 0.0) )
-	var max_rotation := float(_map.preset.get("min_rotation", min_rotation) )
+	var max_rotation := float(_map.preset.get("max_rotation", min_rotation) )
 	mass = _rng.randf_range(min_mass, max_mass)
-	rotation.y = _rng.randf_range(min_rotation, max_rotation)
+	rotation.y = deg_to_rad(_rng.randf_range(min_rotation, max_rotation) )
 
 func _exit_tree() -> void:
 	_target._scenery = null

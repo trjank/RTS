@@ -11,8 +11,24 @@ var units := []
 var _empty := true
 #var _ship_db := ShipDatabase.new()
 
+static func from_dict() -> BattleState:
+	return null
+
 func is_empty() -> bool:
 	return _empty
+
+func to_dict() -> Dictionary:
+	return {
+		"date_created": date_created,
+		"time_scale": time_scale,
+		"time": time,
+		"map": map.to_dict(),
+		"map_seed": map_seed,
+		"map_depth_limit": map_depth_limit
+	}
+
+func load_dict() -> void:
+	pass
 
 func save_json(_path: String) -> void:
 	pass

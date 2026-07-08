@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dkcs4q50d0xwa"]
+[gd_scene load_steps=12 format=3 uid="uid://dkcs4q50d0xwa"]
 
 [ext_resource type="Texture2D" uid="uid://jbvwfgsvkskq" path="res://icons/checkbox_on.png" id="1_mreyr"]
 [ext_resource type="Texture2D" uid="uid://dbbopdl6muf60" path="res://icons/checkbox_off.png" id="2_hokgt"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://c1fkfssn7ug34" path="res://icons/beaker.png" id="4_7ufq2"]
 [ext_resource type="Texture2D" uid="uid://4wyb3hdvbquj" path="res://icons/reset.png" id="5_8sgl3"]
 [ext_resource type="Texture2D" uid="uid://c5a8ujhihnlpy" path="res://icons/slider_grabber.png" id="6_h4c6q"]
+[ext_resource type="Texture2D" uid="uid://cd8t3je15dn86" path="res://icons/stats_cost.png" id="6_nuevk"]
 [ext_resource type="StyleBox" uid="uid://b2007pvepcnra" path="res://main_menu/slider.tres" id="7_1tosd"]
 [ext_resource type="StyleBox" uid="uid://d0yij55vfjfkd" path="res://main_menu/slider_grabber.tres" id="8_j218h"]
 
@@ -61,6 +62,25 @@ theme_override_icons/unchecked = ExtResource("2_hokgt")
 text = "Retrofits"
 icon = ExtResource("5_8sgl3")
 
+[node name="CheckBox4" type="CheckBox" parent="."]
+layout_mode = 2
+tooltip_text = "Without retrofits, modified versions of a ship can be spawned only if no older version is fielded. With retrofits, all fielded older versions can be upgraded for a price."
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 48
+theme_override_styles/normal = SubResource("StyleBoxEmpty_rp2h0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rp2h0")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_rp2h0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rp2h0")
+theme_override_icons/checked = ExtResource("1_mreyr")
+theme_override_icons/unchecked = ExtResource("2_hokgt")
+text = "Fair resource distribution"
+icon = ExtResource("6_nuevk")
+
+[node name="SpinBox" type="SpinBox" parent="."]
+layout_mode = 2
+rounded = true
+prefix = "Seed:"
+
 [node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 2
 theme_override_constants/h_separation = 15
@@ -90,6 +110,29 @@ theme_override_styles/grabber_area = ExtResource("8_j218h")
 theme_override_styles/grabber_area_highlight = ExtResource("8_j218h")
 value = 50.0
 
+[node name="ResourceMultiplierLabel" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Resource multiplier"
+
+[node name="ResourceMultiplieralue" type="Label" parent="GridContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "1.0"
+
+[node name="ResourceMultiplierSlider" type="HSlider" parent="GridContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_icons/grabber = ExtResource("6_h4c6q")
+theme_override_icons/grabber_highlight = ExtResource("6_h4c6q")
+theme_override_styles/slider = ExtResource("7_1tosd")
+theme_override_styles/grabber_area = ExtResource("8_j218h")
+theme_override_styles/grabber_area_highlight = ExtResource("8_j218h")
+value = 50.0
+
 [node name="Difficulty" type="Label" parent="."]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.5019608, 0.5019608, 1)
@@ -99,6 +142,6 @@ text = "Brutal difficulty"
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 8
 theme_override_styles/normal = SubResource("StyleBoxFlat_rp2h0")
 text = "Create Game"
