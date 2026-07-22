@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://caglosna42lck"]
+[gd_scene load_steps=5 format=3 uid="uid://caglosna42lck"]
 
 [ext_resource type="Script" uid="uid://hjk3nl0bbwyt" path="res://battle/team/team_box.gd" id="1_lsf7y"]
 [ext_resource type="Texture2D" uid="uid://bc2ocllol2460" path="res://icons/add.png" id="2_3uern"]
+[ext_resource type="StyleBox" uid="uid://cwwelxfbd6hkr" path="res://battle/team/join_button_normal.tres" id="3_2rmjt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2rmjt"]
 
 [node name="TeamBox" type="VBoxContainer" node_paths=PackedStringArray("players_container", "name_label", "color_rect")]
 anchors_preset = 15
@@ -41,6 +44,12 @@ layout_mode = 2
 [node name="Players" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="Players"]
+[node name="JoinButton" type="Button" parent="."]
 layout_mode = 2
+theme_override_styles/normal = ExtResource("3_2rmjt")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_2rmjt")
+theme_override_styles/hover = ExtResource("3_2rmjt")
+theme_override_styles/focus = ExtResource("3_2rmjt")
 text = "Join"
+
+[connection signal="pressed" from="JoinButton" to="." method="_on_join_button_pressed"]

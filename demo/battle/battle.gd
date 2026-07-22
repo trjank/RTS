@@ -38,11 +38,12 @@ var scenery: Array[Scenery] = []
 var map: Map:
 	get = get_map,
 	set = set_map
-var gamemode := Gamemode.STANDARD:
+var gamemode: Gamemode:
 	set = set_gamemode
 var plane := Plane.PLANE_XZ:
 	set = set_plane
 var me: Player
+var host: Player
 
 var _default_team: Team
 var _players: Dictionary[String, Player] = {}
@@ -57,6 +58,7 @@ static func is_team_alive(team: Team) -> bool:
 
 func _init() -> void:
 	_default_team = create_team("Spectators")
+	gamemode = Gamemode.STANDARD
 	set_physics_process(false)
 
 func _ready() -> void:
@@ -96,7 +98,11 @@ func set_gamemode(new_gamemode: Gamemode) -> bool:
 	if _status != Status.STOPPED or new_gamemode == null:
 		return false
 	gamemode = new_gamemode
-	move_players()
+	move_players(_default_team)
+	clear_teams()
+	#
+	for team in gamemode.teams:
+		load_team(team)
 	return true
 
 func set_map(new_map: Map) -> void:
@@ -140,7 +146,7 @@ func start() -> StartError:
 	_status = Status.RUNNING
 	_state.time = 0.0
 	_state.time_scale = 1.0
-	gamemode.battle_init(self, _shared_variables)
+	gamemode.on_battle_start(self, _shared_variables)
 	round_timer.start()
 	started.emit()
 	return StartError.OK
@@ -157,10 +163,10 @@ func stop() -> bool:
 func connect_player(player_name: String, color := Color.WHITE) -> Player:
 	assert(_default_team != null)
 	#
-	if player_name in _players:
-		return _players[player_name]
 	if MAX_NUM_PLAYERS <= _players.size():
 		return null
+	player_name = _find_unique_name(player_name, _players)
+	#
 	var player := Player.new(player_name, color)
 	_players[player_name] = player
 	player.display_name_changed.connect(_handle_player_rename.bind(player) )
@@ -179,24 +185,22 @@ func disconnect_player(player_name: String) -> bool:
 	_players.erase(player_name)
 	return true
 
-func create_team(team_name: String, color := Color.WHITE) -> Team:
-	if team_name in _teams:
-		return _teams[team_name]
+func request_join_team(team: Team, player := me) -> bool:
+	return (_status == Status.STOPPED or player.is_admin) and team.add_player(player)
+
+func load_team(team: Team) -> Team:
 	if _status != Status.STOPPED or MAX_NUM_TEAMS <= _teams.size():
 		return null
-	var team := Team.new(team_name, color)
-	_teams[team_name] = team
+	team = team.copy()
+	team.display_name = _find_unique_name(team.display_name, _teams)
+	#
+	_teams[team.display_name] = team
 	team.display_name_changed.connect(_handle_team_rename.bind(team) )
 	team_created.emit(team)
 	return team
 
-func _handle_player_rename(old_name: String, new_name: String, player: Player) -> void:
-	if _players.get(old_name, player) == player:
-		player.display_name = _handle_unique_rename(old_name, new_name, _teams)
-
-func _handle_team_rename(old_name: String, new_name: String, team: Team) -> void:
-	if _teams.get(old_name, team) == team:
-		team.display_name = _handle_unique_rename(old_name, new_name, _teams)
+func create_team(team_name: String, color := Color.WHITE, max_players := 10) -> Team:
+	return load_team(Team.new(team_name, color, max_players) )
 
 func remove_team(team_name: String) -> bool:
 	if team_name == _default_team.display_name or not team_name in _teams:
@@ -235,14 +239,26 @@ func _reset_player(player: Player) -> void:
 	player.resources.add(player.team.start_resources)
 	player.alive = true
 
-func _handle_unique_rename(old_name: String, new_name: String, dictionary: Dictionary) -> String:
-	if old_name == new_name:
-		return old_name
-	while new_name in dictionary:
-		new_name += DUPLICATE_NAME_SUFFIX
-	dictionary[new_name] = dictionary[old_name]
-	dictionary.erase(old_name)
-	return new_name
+func _find_unique_name(key: String, dictionary: Dictionary) -> String:
+	while key in dictionary:
+		key += DUPLICATE_NAME_SUFFIX
+	return key
+
+func _handle_player_rename(old_name: String, new_name: String, player: Player) -> void:
+	if _players.get(old_name, player) != player:
+		return
+	new_name = _find_unique_name(new_name, _players)
+	_players[new_name] = player
+	_players.erase(old_name)
+	player.display_name = new_name
+
+func _handle_team_rename(old_name: String, new_name: String, team: Team) -> void:
+	if _teams.get(old_name, team) != team:
+		return
+	new_name = _find_unique_name(new_name, _teams)
+	_teams[new_name] = team
+	_teams.erase(old_name)
+	team.display_name = new_name
 
 func _process(_dt: float) -> void:
 	alloy_label.text = "%.1f" % me.resources.alloy

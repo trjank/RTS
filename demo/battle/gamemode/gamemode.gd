@@ -12,7 +12,11 @@ var teams: Array[Team] = [Team.APHELIONS, Team.FEDERATION, Team.SYZYGYSTS, Team.
 func is_map_compatible(_map: Map) -> bool:
 	return true
 
-func battle_init(_battle: Battle, _shared_variables: Dictionary) -> void:
+func on_battle_start(_battle: Battle, _shared_variables: Dictionary) -> void:
+	pass
+	#battle.for_each_player(func player: player.)
+
+func check_win_condition() -> void:
 	pass
 
 func battle_tick(_battle: Battle, _dt: float) -> void:

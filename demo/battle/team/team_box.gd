@@ -1,5 +1,7 @@
 class_name TeamBox extends VBoxContainer
 
+signal request_join_team(this_team: Team)
+
 @export var players_container: VBoxContainer
 @export var name_label: Label
 @export var color_rect: ColorRect
@@ -67,3 +69,6 @@ func _set_ui(new_team: Team) -> void:
 func _clear_ui() -> void:
 	name_label.text = ""
 	color_rect.color = Color.WHITE
+
+func _on_join_button_pressed() -> void:
+	request_join_team.emit(team)

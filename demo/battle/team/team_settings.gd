@@ -1,5 +1,7 @@
 class_name TeamSettings extends VBoxContainer
 
+signal request_join_team(team: Team)
+
 var battle: Battle:
 	set = set_battle
 
@@ -28,6 +30,7 @@ func add_team(team: Team) -> void:
 		return
 	var team_box := TeamBox.create()
 	team_box.team = team
+	team_box.request_join_team.connect(request_join_team.emit)
 	_team_boxes[team] = team_box
 	add_child(team_box)
 
@@ -43,9 +46,11 @@ func _clear_teams() -> void:
 	_team_boxes.clear()
 
 func _disconnect_signals(old_battle: Battle) -> void:
+	request_join_team.disconnect(old_battle.request_join_team)
 	old_battle.team_created.disconnect(add_team)
 	old_battle.team_removed.disconnect(remove_team)
 
 func _connect_signals(new_battle: Battle) -> void:
+	request_join_team.connect(new_battle.request_join_team)
 	new_battle.team_created.connect(add_team)
 	new_battle.team_removed.connect(remove_team)

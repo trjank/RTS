@@ -3,4 +3,5 @@
 [ext_resource type="Script" uid="uid://c8td7v5adgovl" path="res://battle/team/team_settings.gd" id="1_sl4uc"]
 
 [node name="TeamSettings" type="VBoxContainer"]
+theme_override_constants/separation = 50
 script = ExtResource("1_sl4uc")

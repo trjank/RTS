@@ -72,8 +72,8 @@ func remove_player(player: Player) -> bool:
 	player_left.emit(player)
 	return true
 
-func with_players(max_players := _max_players) -> void:
-	return Team.new(display_name, color, max_players)
+func copy() -> Team:
+	return Team.new(display_name, color, _max_players)
 
 func register_capture(scenery: Scenery) -> void:
 	_captures[scenery] = true

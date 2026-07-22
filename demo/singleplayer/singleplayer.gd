@@ -12,4 +12,4 @@ func _ready() -> void:
 	#
 	map = Map.new()
 	map.load_json(MAP_PRESET_PATH)
-	start()
+	#start()

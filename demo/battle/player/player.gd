@@ -14,6 +14,7 @@ var clan := "":
 	set = set_clan
 var icon := preload("res://icons/skull.png")
 var resources := StrategicResources.new()
+var is_admin := false
 
 func _init(init_display_name := "", init_color := Color.WHITE) -> void:
 	display_name = init_display_name
