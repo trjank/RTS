@@ -50,7 +50,8 @@ icon = ExtResource("4_7ufq2")
 
 [node name="CheckBox3" type="CheckBox" parent="."]
 layout_mode = 2
-tooltip_text = "Without retrofits, modified versions of a ship can be spawned only if no older version is fielded. With retrofits, all fielded older versions can be upgraded for a price."
+tooltip_text = "Without retrofits, modified versions of a ship can be spawned only if no older version is fielded.
+With retrofits, all fielded older versions can be upgraded for a price."
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 48
 theme_override_styles/normal = SubResource("StyleBoxEmpty_rp2h0")
@@ -64,7 +65,8 @@ icon = ExtResource("5_8sgl3")
 
 [node name="CheckBox4" type="CheckBox" parent="."]
 layout_mode = 2
-tooltip_text = "Without retrofits, modified versions of a ship can be spawned only if no older version is fielded. With retrofits, all fielded older versions can be upgraded for a price."
+tooltip_text = "Without this, every player gets the same starting resources.
+With this, players on bigger teams get fewer resources."
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 48
 theme_override_styles/normal = SubResource("StyleBoxEmpty_rp2h0")
@@ -80,6 +82,11 @@ icon = ExtResource("6_nuevk")
 layout_mode = 2
 rounded = true
 prefix = "Seed:"
+
+[node name="SpinBox2" type="SpinBox" parent="."]
+layout_mode = 2
+rounded = true
+prefix = "Duration (minutes):"
 
 [node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 2

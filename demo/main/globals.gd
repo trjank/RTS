@@ -1,5 +1,7 @@
 extends Node
 
+signal main_ready
+
 enum Layer {
 	CAMERA = 1 << 0,
 	UNITS = 1 << 1,
@@ -19,7 +21,8 @@ const MIN_VOLUME := 0.0
 const DEFAULT_VOLUME := 50.0
 const MAX_VOLUME := 100.0
 
-var main: Main
+var main: Main:
+	set = set_main
 var client := Client2.new()
 var config := ConfigFile.new()
 var ship_db := ShipDatabase.new()
@@ -29,6 +32,10 @@ var volume := DEFAULT_VOLUME:
 	set = set_volume
 var music_volume := DEFAULT_VOLUME:
 	set = set_music_volume
+
+func set_main(new_main: Main) -> void:
+	main = new_main
+	main_ready.emit()
 
 func set_volume(new_volume: float) -> void:
 	volume = clampf(new_volume, MIN_VOLUME, MAX_VOLUME)
@@ -84,6 +91,7 @@ func _load_input_map() -> void:
 		_load_input_map_actions(action, config.get_value("keybinds", action) )
 
 func _save_input_map() -> void:
+	config.erase_section("keybinds")
 	for action in KeybindRow.get_custom_actions():
 		config.set_value("keybinds", action, InputMap.action_get_events(action) )
 
@@ -101,8 +109,9 @@ func _notification(what: int) -> void:
 	config.save(CONFIG_PATH)
 
 ## Returns average time in microseconds
-func benchmark(f: Callable, iterations := 100) -> float:
+func benchmark(f: Callable, iterations := 1) -> float:
 	var start := Time.get_ticks_usec()
+	#
 	for i in iterations:
 		await f.call()
 	var end := Time.get_ticks_usec()

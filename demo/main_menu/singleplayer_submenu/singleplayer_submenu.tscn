@@ -1,5 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://c7ognok5j3et6"]
+[gd_scene load_steps=9 format=3 uid="uid://c7ognok5j3et6"]
 
+[ext_resource type="StyleBox" uid="uid://dlbo22wcfy65n" path="res://main_menu/settings_submenu/panel.tres" id="1_ti4tu"]
 [ext_resource type="Script" uid="uid://dbivnjor0oin5" path="res://main_menu/singleplayer_submenu/singleplayer_submenu.gd" id="1_tjaei"]
 [ext_resource type="Texture2D" uid="uid://ch5e75wsi4kws" path="res://icons/back_arrow.png" id="1_x73db"]
 [ext_resource type="StyleBox" uid="uid://7wpi6e0kyjg7" path="res://main_menu/back_button_normal.tres" id="2_12502"]
@@ -7,12 +8,20 @@
 [ext_resource type="PackedScene" uid="uid://dkcs4q50d0xwa" path="res://battle/battle_settings.tscn" id="5_6yq8i"]
 [ext_resource type="PackedScene" uid="uid://dr4y0i4ikrvlg" path="res://battle/team/team_settings.tscn" id="5_xf2ag"]
 
-[node name="SingleplayerSubmenu" type="VBoxContainer"]
-theme_override_constants/separation = 25
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xf2ag"]
+
+[node name="SingleplayerSubmenu" type="PanelContainer" node_paths=PackedStringArray("team_settings")]
+offset_right = 606.0
+theme_override_styles/panel = ExtResource("1_ti4tu")
 script = ExtResource("1_tjaei")
+team_settings = NodePath("VBoxContainer/TabContainer/CreateGame/TeamSettings")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 75
 metadata/_tab_index = 1
 
-[node name="BackButton" type="Button" parent="."]
+[node name="BackButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/h_separation = 15
@@ -24,46 +33,47 @@ text = "Back"
 icon = ExtResource("1_x73db")
 alignment = 0
 
-[node name="Label" type="Label" parent="."]
+[node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
 layout_mode = 2
-text = "Choose a save file to load or create a game"
-
-[node name="TabContainer" type="TabContainer" parent="."]
-layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_xf2ag")
 current_tab = 1
 tabs_visible = false
 
-[node name="Saves" type="VBoxContainer" parent="TabContainer"]
+[node name="Saves" type="VBoxContainer" parent="VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 25
 metadata/_tab_index = 0
 
-[node name="SingleplayerSaveFile" parent="TabContainer/Saves" instance=ExtResource("4_274ql")]
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Saves"]
+layout_mode = 2
+text = "Choose a save file to load or create a game"
+
+[node name="SingleplayerSaveFile" parent="VBoxContainer/TabContainer/Saves" instance=ExtResource("4_274ql")]
 layout_mode = 2
 
-[node name="SingleplayerSaveFile2" parent="TabContainer/Saves" instance=ExtResource("4_274ql")]
+[node name="SingleplayerSaveFile2" parent="VBoxContainer/TabContainer/Saves" instance=ExtResource("4_274ql")]
 layout_mode = 2
 
-[node name="SingleplayerSaveFile3" parent="TabContainer/Saves" instance=ExtResource("4_274ql")]
+[node name="SingleplayerSaveFile3" parent="VBoxContainer/TabContainer/Saves" instance=ExtResource("4_274ql")]
 layout_mode = 2
 
-[node name="CreateGame" type="VBoxContainer" parent="TabContainer"]
+[node name="CreateGame" type="VBoxContainer" parent="VBoxContainer/TabContainer"]
 layout_mode = 2
 theme_override_constants/separation = 50
 metadata/_tab_index = 1
 
-[node name="TabBar" type="TabBar" parent="TabContainer/CreateGame"]
+[node name="TabBar" type="TabBar" parent="VBoxContainer/TabContainer/CreateGame"]
 layout_mode = 2
 current_tab = 0
 tab_count = 2
 tab_0/title = "Standard"
 tab_1/title = "Campaign"
 
-[node name="TeamSettings" parent="TabContainer/CreateGame" instance=ExtResource("5_xf2ag")]
+[node name="TeamSettings" parent="VBoxContainer/TabContainer/CreateGame" instance=ExtResource("5_xf2ag")]
 layout_mode = 2
 
-[node name="BattleSettings" parent="TabContainer/CreateGame" instance=ExtResource("5_6yq8i")]
+[node name="BattleSettings" parent="VBoxContainer/TabContainer/CreateGame" instance=ExtResource("5_6yq8i")]
 layout_mode = 2
 
-[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

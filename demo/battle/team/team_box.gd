@@ -9,28 +9,29 @@ var team: Team:
 
 var _player_boxes: Dictionary[Player, PlayerBox] = {}
 
+static func create() -> TeamBox:
+	return preload("res://battle/team/team_box.tscn").instantiate()
+
+## Returns null if the PlayerBox does not exist
 func get_player_box(player: Player) -> PlayerBox:
 	return _player_boxes.get(player)
 
 func set_team(new_team: Team) -> void:
+	_clear_players()
+	if team != null:
+		_disconnect_signals(team)
+	if new_team != null:
+		_connect_signals(new_team)
+		_set_ui(new_team)
+		new_team._players.all(add_player)
+	else:
+		_clear_ui()
 	team = new_team
-	name_label.text = team.display_name if team != null else ""
-	color_rect.color = team.color if team != null else Color.WHITE
-	update_players() 
-
-func clear_players() -> void:
-	for player in _player_boxes:
-		_player_boxes[player].queue_free()
-	_player_boxes.clear()
-
-func update_players() -> void:
-	clear_players()
-	team.players.all(add_player)
 
 func add_player(player: Player) -> void:
 	if player in _player_boxes:
 		return
-	var player_box := PlayerBox.new()
+	var player_box := PlayerBox.create()
 	player_box.player = player
 	_player_boxes[player] = player_box
 	players_container.add_child(player_box)
@@ -40,3 +41,29 @@ func remove_player(player: Player) -> void:
 		return
 	_player_boxes[player].queue_free()
 	_player_boxes.erase(player)
+
+func _clear_players() -> void:
+	for player in _player_boxes:
+		_player_boxes[player].queue_free()
+	_player_boxes.clear()
+
+func _disconnect_signals(old_team: Team) -> void:
+	old_team.display_name_changed.disconnect(_update_name)
+	old_team.player_joined.disconnect(add_player)
+	old_team.player_left.disconnect(remove_player)
+
+func _connect_signals(new_team: Team) -> void:
+	new_team.display_name_changed.connect(_update_name)
+	new_team.player_joined.connect(add_player)
+	new_team.player_left.connect(remove_player)
+
+func _update_name(_old_name: String, new_name: String) -> void:
+	name_label.text = new_name
+
+func _set_ui(new_team: Team) -> void:
+	name_label.text = new_team.display_name
+	color_rect.color = new_team.color
+
+func _clear_ui() -> void:
+	name_label.text = ""
+	color_rect.color = Color.WHITE

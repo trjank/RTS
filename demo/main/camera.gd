@@ -6,5 +6,5 @@ func _physics_process(_dt: float) -> void:
 	if freeze:
 		return # (prevent forces from stacking up when set to false)
 	var input_xz := Input.get_vector("left", "right", "up", "down")
-	var input_y := Input.get_axis("zoom_in", "zoom_out")
+	var input_y := Input.get_axis("zoom in", "zoom out")
 	apply_central_force(force * Vector3(input_xz.x, input_y, input_xz.y) )

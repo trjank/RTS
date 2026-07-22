@@ -37,6 +37,12 @@ func _ready() -> void:
 		prepare_subscene(substate, nodes[substate] )
 	globals.main = self
 
+func get_world_node(node_state := state) -> Node3D:
+	return _world_nodes[node_state]
+
+func get_ui_node(node_state := state) -> Control:
+	return _ui_nodes[node_state]
+
 func get_adaptive_fov(ratio := DEFAULT_ADAPTIVE_FOV_RATIO) -> float:
 	var screen_height := get_viewport().get_visible_rect().size.y
 	var fov := rad_to_deg(2.0 * atan(screen_height * ratio) )
@@ -44,6 +50,7 @@ func get_adaptive_fov(ratio := DEFAULT_ADAPTIVE_FOV_RATIO) -> float:
 
 func change_camera(from: State, to: State) -> void:
 	await get_tree().physics_frame
+	#
 	_camera_positions[from] = camera_body.position
 	camera_body.position = _camera_positions[to]
 	camera_body.linear_velocity = Vector3.ZERO

@@ -184,6 +184,7 @@ alignment = 0
 [node name="SingleplayerSubmenu" parent="UI/Options/TabContainer" index="2" instance=ExtResource("11_qvn4f")]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 1
 
 [node name="SettingsSubmenu" parent="UI/Options/TabContainer" index="3" instance=ExtResource("12_g1omr")]
 visible = false

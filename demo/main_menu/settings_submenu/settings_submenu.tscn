@@ -1,9 +1,10 @@
 [gd_scene load_steps=14 format=3 uid="uid://b1j227w71blew"]
 
+[ext_resource type="StyleBox" uid="uid://dlbo22wcfy65n" path="res://main_menu/settings_submenu/panel.tres" id="1_00qj5"]
 [ext_resource type="Script" uid="uid://b4jhjs6yiaehh" path="res://main_menu/settings_submenu/settings_submenu.gd" id="1_evcc7"]
 [ext_resource type="Texture2D" uid="uid://ch5e75wsi4kws" path="res://icons/back_arrow.png" id="1_quw4y"]
 [ext_resource type="StyleBox" uid="uid://7wpi6e0kyjg7" path="res://main_menu/back_button_normal.tres" id="2_qr2ik"]
-[ext_resource type="StyleBox" uid="uid://ddg37eqlcw8tx" path="res://main_menu/h_seperator.tres" id="4_qjcg3"]
+[ext_resource type="StyleBox" uid="uid://ddg37eqlcw8tx" path="res://main_menu/h_separator.tres" id="4_qjcg3"]
 [ext_resource type="Texture2D" uid="uid://c5a8ujhihnlpy" path="res://icons/slider_grabber.png" id="4_wvtck"]
 [ext_resource type="Texture2D" uid="uid://4wyb3hdvbquj" path="res://icons/reset.png" id="6_81w0t"]
 [ext_resource type="StyleBox" uid="uid://brnttdq3hw3qv" path="res://main_menu/settings_submenu/keybind_reset_button_normal.tres" id="6_wp64a"]
@@ -12,18 +13,11 @@
 [ext_resource type="StyleBox" uid="uid://c0sk5i4rrnngc" path="res://main_menu/settings_submenu/keybind_reset_button_pressed.tres" id="7_yccn8"]
 [ext_resource type="StyleBox" uid="uid://cmgl01ocl3g50" path="res://main_menu/settings_submenu/keybind_reset_button_hover.tres" id="8_f3nkv"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3nkv"]
-content_margin_left = 50.0
-content_margin_top = 50.0
-content_margin_right = 50.0
-content_margin_bottom = 50.0
-bg_color = Color(0, 0, 0, 0.98039216)
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wp64a"]
 
 [node name="SettingsSubmenu" type="PanelContainer" node_paths=PackedStringArray("keybind_rows", "reset_button", "volume_value", "music_volume_value", "volume_slider", "music_volume_slider")]
 offset_right = 550.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_f3nkv")
+theme_override_styles/panel = ExtResource("1_00qj5")
 script = ExtResource("1_evcc7")
 keybind_rows = NodePath("VBoxContainer/Keybinds/KeybindRows")
 reset_button = NodePath("VBoxContainer/Keybinds/ResetButton")

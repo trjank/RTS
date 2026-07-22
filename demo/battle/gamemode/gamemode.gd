@@ -1,11 +1,20 @@
 class_name Gamemode extends RefCounted
 
-static var _modes: Dictionary[String, Gamemode] = {}
+static var STANDARD := Gamemode.new():
+	set(__): push_error("Gamemode.STANDARD is immutable")
+static var CAMPAIGN := CampaignMode.new():
+	set(__): push_error("Gamemode.CAMPAIGN is immutable")
+static var modes: Array[Gamemode] = [STANDARD]
 
-var name := ""
+var name := "Standard"
+var teams: Array[Team] = [Team.APHELIONS, Team.FEDERATION, Team.SYZYGYSTS, Team.OCCULTARCHS]
 
-static func mode(gamemode_name: String) -> Gamemode:
-	return _modes.get(gamemode_name)
-
-func are_teams_balanced() -> bool:
+func is_map_compatible(_map: Map) -> bool:
 	return true
+
+func battle_init(_battle: Battle, _shared_variables: Dictionary) -> void:
+	pass
+
+func battle_tick(_battle: Battle, _dt: float) -> void:
+	# Put gamemode logic here
+	pass
