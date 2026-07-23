@@ -13,14 +13,15 @@ enum StartError {
 
 signal started
 signal stopped(winners: Array[Team] )
+signal host_changed(old_host: Player, new_host: Player)
 signal player_joined(player: Player)
 signal player_left(player: Player)
 signal team_created(team: Team)
 signal team_removed(team: Team)
 
-const DUPLICATE_NAME_SUFFIX := "*"
 const MAX_NUM_TEAMS := 10
 const MAX_NUM_PLAYERS := 100
+const BOT_ICON := preload("res://icons/bot.png")
 
 @export var world: Node3D
 @export var round_timer: Timer
@@ -43,7 +44,8 @@ var gamemode: Gamemode:
 var plane := Plane.PLANE_XZ:
 	set = set_plane
 var me: Player
-var host: Player
+var host: Player:
+	set = set_host
 
 var _default_team: Team
 var _players: Dictionary[String, Player] = {}
@@ -66,12 +68,11 @@ func _ready() -> void:
 	fleet_container.set_fleet(globals.client.fleet)
 	mouse_selection.plane = plane
 	me = connect_player("dev")
+	host = me
 
-## Returns null if the player does not exist
 func get_player(player_name: String) -> Player:
 	return _players.get(player_name)
 
-## Returns null if the team does not exist
 func get_team(team_name: String) -> Player:
 	return _teams.get(team_name)
 
@@ -93,6 +94,13 @@ func get_map() -> Map:
 func set_plane(new_plane: Plane) -> void:
 	plane = new_plane
 	mouse_selection.plane = plane
+
+func set_host(new_host: Player) -> void:
+	if new_host == host:
+		return
+	var old_host = host
+	host = new_host
+	host_changed.emit(old_host, new_host)
 
 func set_gamemode(new_gamemode: Gamemode) -> bool:
 	if _status != Status.STOPPED or new_gamemode == null:
@@ -123,6 +131,7 @@ func generate_map() -> void:
 	world.add_child(_map_root)
 	_shared_variables.clear()
 	var error := _state.map.generate(_map_root, _state, rng, scenery, _state.map_depth_limit, _shared_variables)
+	#
 	print("(Battle) Map generation: %s" % Map.GenerationError.find_key(error) )
 	print("(Battle) Generated %d scenery objects" % _shared_variables.get("scenery_count", 0) )
 
@@ -168,10 +177,11 @@ func connect_player(player_name: String, color := Color.WHITE) -> Player:
 	player_name = _find_unique_name(player_name, _players)
 	#
 	var player := Player.new(player_name, color)
+	players_container.add_child(player, false, Node.INTERNAL_MODE_BACK)
 	_players[player_name] = player
 	player.display_name_changed.connect(_handle_player_rename.bind(player) )
+	player._battle = self
 	player.team = _default_team
-	players_container.add_child(player, false, Node.INTERNAL_MODE_BACK)
 	player_joined.emit(player)
 	return player
 
@@ -185,8 +195,40 @@ func disconnect_player(player_name: String) -> bool:
 	_players.erase(player_name)
 	return true
 
+func request_add_bot(team: Team) -> Player:
+	if team.is_full():
+		return null
+	var bot := connect_player("bot")
+	if bot == null:
+		return null
+	bot.team = team
+	bot.icon = BOT_ICON
+	bot.is_bot = true
+	return bot
+
+func can_join_team(team: Team, player := me) -> bool:
+	return _status == Status.STOPPED or (player != null and player.is_admin) and team != null
+
+func can_team_kick(from := me) -> bool:
+	return (from == host and _status == Status.STOPPED) or (from != null and from.is_admin)
+
 func request_join_team(team: Team, player := me) -> bool:
-	return (_status == Status.STOPPED or player.is_admin) and team.add_player(player)
+	return can_join_team(team, player) and team.add_player(player)
+
+func request_team_kick(player: Player, from := me) -> bool:
+	return can_team_kick(from) and _default_team.add_player(player)
+
+func request_kick(player: Player, from := me) -> bool:
+	if player == null:
+		return false
+	if player.is_bot or (from != null and from.is_admin):
+		return disconnect_player(player.display_name)
+	# TODO: Cast vote
+	return false
+
+func repick_host() -> void:
+	# TODO: Cast vote
+	pass
 
 func load_team(team: Team) -> Team:
 	if _status != Status.STOPPED or MAX_NUM_TEAMS <= _teams.size():
@@ -240,9 +282,13 @@ func _reset_player(player: Player) -> void:
 	player.alive = true
 
 func _find_unique_name(key: String, dictionary: Dictionary) -> String:
-	while key in dictionary:
-		key += DUPLICATE_NAME_SUFFIX
-	return key
+	var count := 1
+	var unique_key := key
+	#
+	while unique_key in dictionary:
+		count += 1
+		unique_key = key + " %d" % count
+	return unique_key
 
 func _handle_player_rename(old_name: String, new_name: String, player: Player) -> void:
 	if _players.get(old_name, player) != player:

@@ -32,6 +32,9 @@ var _captures: Dictionary[Scenery, bool] = {}
 static func is_player_alive(player: Player) -> bool:
 	return player.alive
 
+static func is_me(player: Player) -> bool:
+	return player.is_me()
+
 func _init(init_name := "", init_color := Color.WHITE, max_players := 10) -> void:
 	display_name = init_name
 	color = init_color
@@ -57,7 +60,7 @@ func set_display_name(new_display_name: String) -> void:
 	display_name_changed.emit(old_display_name, new_display_name)
 
 func add_player(player: Player) -> bool:
-	if is_full() or player in _players:
+	if is_full() or player == null or player in _players:
 		return false
 	_players.append(player)
 	player.team = self
@@ -71,6 +74,9 @@ func remove_player(player: Player) -> bool:
 	player.team = null
 	player_left.emit(player)
 	return true
+
+func contains_me() -> bool:
+	return _players.any(is_me)
 
 func copy() -> Team:
 	return Team.new(display_name, color, _max_players)

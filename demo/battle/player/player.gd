@@ -1,6 +1,9 @@
 class_name Player extends Node3D
 
 signal display_name_changed(old_display_name: String, new_display_name: String)
+signal clan_changed(old_clan: String, new_clan: String)
+signal icon_changed(old_icon: Texture2D, new_icon: Texture2D)
+signal bot_status_changed
 
 const MAX_CLAN_LENGTH := 10
 
@@ -12,20 +15,49 @@ var team: Team:
 	set = set_team
 var clan := "":
 	set = set_clan
-var icon := preload("res://icons/skull.png")
+var icon: Texture2D = preload("res://icons/skull.png"):
+	set = set_icon
 var resources := StrategicResources.new()
+var is_bot := false:
+	set = set_bot_status
 var is_admin := false
+
+var _battle: Battle
 
 func _init(init_display_name := "", init_color := Color.WHITE) -> void:
 	display_name = init_display_name
 	color = init_color
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-		set_team(null)
+func is_me() -> bool:
+	return _battle != null and self == _battle.me
+
+func is_host() -> bool:
+	return _battle != null and self == _battle.host
+
+func get_battle() -> Battle:
+	return _battle
+
+func set_bot_status(bot_status: bool) -> void:
+	if bot_status == is_bot:
+		return
+	is_bot = bot_status
+	bot_status_changed.emit()
 
 func set_clan(new_clan: String) -> void:
-	clan = new_clan.left(MAX_CLAN_LENGTH)
+	new_clan = new_clan.left(MAX_CLAN_LENGTH)
+	#
+	if new_clan == clan:
+		return
+	var old_clan := clan
+	clan = new_clan
+	clan_changed.emit(old_clan, new_clan)
+
+func set_icon(new_icon: Texture2D) -> void:
+	if new_icon == icon or new_icon == null:
+		return
+	var old_icon := icon
+	icon = new_icon
+	icon_changed.emit(old_icon, new_icon)
 
 func set_display_name(new_display_name: String) -> void:
 	if new_display_name == display_name:
@@ -54,14 +86,18 @@ func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 func register_death(unit: Unit) -> void:
 	if team != null:
 		team.register_death(unit)
-	# TODO: Additional penalties?
 
 func register_kill(unit: Unit) -> void:
 	if team != null:
 		team.register_kill(unit)
-	# TODO: Bounty system?
 
 func _physics_process(dt: float) -> void:
-	if not alive or team == null:
-		return
-	resources.generate_resources(team.resource_rate, dt)
+	if alive and team != null:
+		resources.generate_resources(team.resource_rate, dt)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		set_team(null)
+	if what == NOTIFICATION_PARENTED and _battle != null:
+		push_error("(Player) Players should not be reparented!")
+	# (Player nodes need to be internally handled by Battle to prevent bugs)

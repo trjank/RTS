@@ -1,6 +1,7 @@
 class_name TeamSettings extends VBoxContainer
 
 signal request_join_team(team: Team)
+signal request_add_bot(team: Team)
 
 var battle: Battle:
 	set = set_battle
@@ -10,7 +11,6 @@ var _team_boxes: Dictionary[Team, TeamBox] = {}
 static func create() -> TeamSettings:
 	return preload("res://battle/team/team_settings.tscn").instantiate()
 
-## Returns null if the team box does not exist
 func get_team_box(team: Team) -> TeamBox:
 	return _team_boxes.get(team)
 
@@ -31,6 +31,7 @@ func add_team(team: Team) -> void:
 	var team_box := TeamBox.create()
 	team_box.team = team
 	team_box.request_join_team.connect(request_join_team.emit)
+	team_box.request_add_bot.connect(request_add_bot.emit)
 	_team_boxes[team] = team_box
 	add_child(team_box)
 
@@ -47,10 +48,12 @@ func _clear_teams() -> void:
 
 func _disconnect_signals(old_battle: Battle) -> void:
 	request_join_team.disconnect(old_battle.request_join_team)
+	request_add_bot.disconnect(old_battle.request_add_bot)
 	old_battle.team_created.disconnect(add_team)
 	old_battle.team_removed.disconnect(remove_team)
 
 func _connect_signals(new_battle: Battle) -> void:
 	request_join_team.connect(new_battle.request_join_team)
+	request_add_bot.connect(new_battle.request_add_bot)
 	new_battle.team_created.connect(add_team)
 	new_battle.team_removed.connect(remove_team)

@@ -6,7 +6,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2rmjt"]
 
-[node name="TeamBox" type="VBoxContainer" node_paths=PackedStringArray("players_container", "name_label", "color_rect")]
+[node name="TeamBox" type="VBoxContainer" node_paths=PackedStringArray("players_container", "name_label", "color_rect", "join_button", "add_bot_button")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,6 +17,8 @@ script = ExtResource("1_lsf7y")
 players_container = NodePath("Players")
 name_label = NodePath("HBoxContainer/Label")
 color_rect = NodePath("HBoxContainer/ColorRect")
+join_button = NodePath("JoinButton")
+add_bot_button = NodePath("HBoxContainer/AddBotButton")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -52,4 +54,5 @@ theme_override_styles/hover = ExtResource("3_2rmjt")
 theme_override_styles/focus = ExtResource("3_2rmjt")
 text = "Join"
 
+[connection signal="pressed" from="HBoxContainer/AddBotButton" to="." method="_on_add_bot_button_pressed"]
 [connection signal="pressed" from="JoinButton" to="." method="_on_join_button_pressed"]

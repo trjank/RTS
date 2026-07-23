@@ -1,10 +1,13 @@
 class_name TeamBox extends VBoxContainer
 
 signal request_join_team(this_team: Team)
+signal request_add_bot(this_team: Team)
 
 @export var players_container: VBoxContainer
 @export var name_label: Label
 @export var color_rect: ColorRect
+@export var join_button: Button
+@export var add_bot_button: Button
 
 var team: Team:
 	set = set_team
@@ -14,7 +17,6 @@ var _player_boxes: Dictionary[Player, PlayerBox] = {}
 static func create() -> TeamBox:
 	return preload("res://battle/team/team_box.tscn").instantiate()
 
-## Returns null if the PlayerBox does not exist
 func get_player_box(player: Player) -> PlayerBox:
 	return _player_boxes.get(player)
 
@@ -29,6 +31,7 @@ func set_team(new_team: Team) -> void:
 	else:
 		_clear_ui()
 	team = new_team
+	toggle_buttons()
 
 func add_player(player: Player) -> void:
 	if player in _player_boxes:
@@ -37,12 +40,18 @@ func add_player(player: Player) -> void:
 	player_box.player = player
 	_player_boxes[player] = player_box
 	players_container.add_child(player_box)
+	toggle_buttons()
 
 func remove_player(player: Player) -> void:
 	if not player in _player_boxes:
 		return
 	_player_boxes[player].queue_free()
 	_player_boxes.erase(player)
+	toggle_buttons()
+
+func toggle_buttons() -> void:
+	join_button.visible = team != null and not team.contains_me()
+	add_bot_button.visible = team != null and not team.is_full()
 
 func _clear_players() -> void:
 	for player in _player_boxes:
@@ -72,3 +81,6 @@ func _clear_ui() -> void:
 
 func _on_join_button_pressed() -> void:
 	request_join_team.emit(team)
+
+func _on_add_bot_button_pressed() -> void:
+	request_add_bot.emit(team)
