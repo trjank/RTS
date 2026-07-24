@@ -360,6 +360,7 @@ multimesh = SubResource("MultiMesh_rxlun")
 [node name="MouseSelection" parent="World" instance=ExtResource("3_70s20")]
 collision_layer = 4
 collision_mask = 4
+single_select_mode = 2
 
 [node name="OriginMarker" type="MeshInstance3D" parent="World"]
 cast_shadow = 0
@@ -376,6 +377,8 @@ one_shot = true
 [connection signal="pressed" from="UI/HBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="action_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_action_changed"]
 [connection signal="formation_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_formation_changed"]
+[connection signal="mouse_moved" from="World/MouseSelection" to="." method="_on_mouse_selection_mouse_moved"]
+[connection signal="selected" from="World/MouseSelection" to="." method="_on_mouse_selection_selected"]
 [connection signal="selected" from="World/MouseSelection" to="UI/PanelContainer/HBoxContainer/SelectionInfo" method="_on_mouse_selection_selected"]
 [connection signal="selected" from="World/MouseSelection" to="World/UnitFormation" method="_on_mouse_selection_selected"]
 [connection signal="timeout" from="RoundTimer" to="." method="_on_round_timer_timeout"]

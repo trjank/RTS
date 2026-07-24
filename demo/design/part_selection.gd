@@ -13,6 +13,7 @@ static func is_part(node: Node) -> bool:
 
 func _ready() -> void:
 	super()
+	#
 	mesh_instance.mesh.size = Vector2(size.x, size.z)
 
 func is_empty() -> bool:

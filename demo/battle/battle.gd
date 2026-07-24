@@ -14,6 +14,7 @@ enum StartError {
 signal started
 signal stopped(winners: Array[Team] )
 signal host_changed(old_host: Player, new_host: Player)
+signal me_changed(old_me: Player, new_me: Player)
 signal player_joined(player: Player)
 signal player_left(player: Player)
 signal team_created(team: Team)
@@ -43,7 +44,8 @@ var gamemode: Gamemode:
 	set = set_gamemode
 var plane := Plane.PLANE_XZ:
 	set = set_plane
-var me: Player
+var me: Player:
+	set = set_me
 var host: Player:
 	set = set_host
 
@@ -53,7 +55,7 @@ var _teams: Dictionary[String, Team] = {}
 var _status := Status.STOPPED
 var _map_root: Node3D
 var _state := BattleState.new()
-var _shared_variables := {}
+var _map_data := {}
 
 static func is_team_alive(team: Team) -> bool:
 	return team.is_alive()
@@ -68,6 +70,7 @@ func _ready() -> void:
 	fleet_container.set_fleet(globals.client.fleet)
 	mouse_selection.plane = plane
 	me = connect_player("dev")
+	me.fleet = globals.client.fleet
 	host = me
 
 func get_player(player_name: String) -> Player:
@@ -91,16 +94,30 @@ func get_alive_teams() -> Array[Team]:
 func get_map() -> Map:
 	return _state.map
 
+func get_map_data() -> Dictionary:
+	return _map_data
+
 func set_plane(new_plane: Plane) -> void:
 	plane = new_plane
 	mouse_selection.plane = plane
 
-func set_host(new_host: Player) -> void:
-	if new_host == host:
-		return
+func set_host(new_host: Player) -> bool:
+	if new_host == host or new_host.get_battle() != self:
+		return false
 	var old_host = host
 	host = new_host
 	host_changed.emit(old_host, new_host)
+	return true
+
+func set_me(new_me: Player) -> bool:
+	if new_me == me or new_me.get_battle() != self:
+		return false
+	if me != null:
+		me.selection.clear()
+	var old_me := me
+	me = new_me
+	me_changed.emit(old_me, new_me)
+	return true
 
 func set_gamemode(new_gamemode: Gamemode) -> bool:
 	if _status != Status.STOPPED or new_gamemode == null:
@@ -119,6 +136,7 @@ func set_map(new_map: Map) -> void:
 func destroy_map() -> void:
 	if _map_root == null:
 		return
+	_map_data.clear()
 	_map_root.queue_free()
 	_map_root = null
 	scenery.clear()
@@ -129,11 +147,10 @@ func generate_map() -> void:
 	destroy_map()
 	_map_root = Node3D.new()
 	world.add_child(_map_root)
-	_shared_variables.clear()
-	var error := _state.map.generate(_map_root, _state, rng, scenery, _state.map_depth_limit, _shared_variables)
+	var error := _state.map.generate(_map_root, _state, rng, scenery, _state.map_depth_limit, _map_data)
 	#
 	print("(Battle) Map generation: %s" % Map.GenerationError.find_key(error) )
-	print("(Battle) Generated %d scenery objects" % _shared_variables.get("scenery_count", 0) )
+	print("(Battle) Generated %d scenery objects" % _map_data.get("scenery_count", 0) )
 
 func start_countdown() -> StartError:
 	if _status != Status.STOPPED:
@@ -155,7 +172,7 @@ func start() -> StartError:
 	_status = Status.RUNNING
 	_state.time = 0.0
 	_state.time_scale = 1.0
-	gamemode.on_battle_start(self, _shared_variables)
+	gamemode.on_battle_start(self)
 	round_timer.start()
 	started.emit()
 	return StartError.OK
@@ -223,11 +240,13 @@ func request_kick(player: Player, from := me) -> bool:
 		return false
 	if player.is_bot or (from != null and from.is_admin):
 		return disconnect_player(player.display_name)
-	# TODO: Cast vote
+	cast_vote()
 	return false
 
 func repick_host() -> void:
-	# TODO: Cast vote
+	cast_vote()
+
+func cast_vote() -> void:
 	pass
 
 func load_team(team: Team) -> Team:
@@ -235,7 +254,6 @@ func load_team(team: Team) -> Team:
 		return null
 	team = team.copy()
 	team.display_name = _find_unique_name(team.display_name, _teams)
-	#
 	_teams[team.display_name] = team
 	team.display_name_changed.connect(_handle_team_rename.bind(team) )
 	team_created.emit(team)
@@ -277,6 +295,7 @@ func for_each_team(f: Callable) -> void:
 		f.call(_teams[team] )
 
 func _reset_player(player: Player) -> void:
+	player.get_battle_data().clear()
 	player.resources.reset()
 	player.resources.add(player.team.start_resources)
 	player.alive = true
@@ -325,12 +344,23 @@ func _on_round_timer_timeout() -> void:
 	#
 	assert(can_stop)
 
-func _on_fleet_container_button_pressed(slot: int) -> void:
-	if globals.client.fleet.get_ship(slot) != null:
-		me.spawn_ship(globals.client.fleet.get_ship(slot) )
-
 func _on_design_button_pressed() -> void:
 	globals.main.state = Main.State.DESIGN
 
 func _on_menu_button_pressed() -> void:
 	globals.main.state = Main.State.MAIN_MENU
+
+func _on_mouse_selection_mouse_moved(new_position: Vector3) -> void:
+	if me != null:
+		me.mouse_position = new_position
+
+func _on_fleet_container_button_pressed(slot: int) -> void:
+	if me == null:
+		return push_error("(Battle) No player found to spawn ship slot %d for!" % slot)
+	me.spawn_ship_slot(slot)
+
+func _on_mouse_selection_selected(bodies: Array[Node3D], _center: Vector3, _span: Vector2) -> void:
+	if me == null:
+		return
+	var valid_targets := bodies.map(Target.from_node).filter(Target.is_valid)
+	me.selection.assign(valid_targets)

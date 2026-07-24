@@ -2,6 +2,9 @@ extends GridContainer
 
 @export var count_label: Label
 
-func _on_mouse_selection_selected(bodies: Array[Node3D], _center: Vector3, _span: Vector2) -> void:
-	visible = not bodies.is_empty()
-	count_label.text = str(bodies.size() )
+func _ready() -> void:
+	visible = false
+
+func _on_mouse_selection_selected(nodes: Array[Node3D], _center: Vector3, _span: Vector2) -> void:
+	visible = not nodes.is_empty()
+	count_label.text = str(nodes.size() )

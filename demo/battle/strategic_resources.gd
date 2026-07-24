@@ -1,7 +1,7 @@
 class_name StrategicResources extends RefCounted
 
 static var NONE := StrategicResources.new():
-	set = set_none
+	set(__): push_error("StrategicResources.NONE is immutable")
 
 const SYNTAX: Dictionary[String, Variant.Type] = {
 	"alloy": TYPE_FLOAT,
@@ -27,9 +27,6 @@ var min_military_science := 0.0
 var max_alloy := INF
 var max_energy := INF
 var max_military_science := INF
-
-static func set_none(__: StrategicResources) -> void:
-	push_error("StrategicResources.NONE is immutable")
 
 static func from_dict(dict: Dictionary, always_copy := false) -> StrategicResources:
 	var resources := StrategicResources.new()

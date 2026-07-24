@@ -59,32 +59,29 @@ func has_ship_in_slot(slot: int) -> bool:
 func get_ship(slot: int) -> ShipData:
 	return _ships[slot] if has_slot(slot) else null
 
+## For one-line set and save do: var success := set_ship(..) and save_ships()
 func set_ship(slot: int, ship: ShipData) -> bool:
 	if not has_slot(slot) or ship == _ships[slot]:
 		return false
-	# NOTE:    ^^^^^ This allows for one-line set and save
-	# (var success := set_ship(..) and save_ships() )
 	_ships[slot] = ship
 	ship_changed.emit(ship, slot)
 	return true
 
+## For one-line set and save do: var success := set_name(..) and save_metadata()
 func set_name(new_name: String) -> bool:
 	new_name = new_name.substr(0, MAX_NAME_LENGTH)
 	if name == new_name:
 		return false
-	# NOTE:    ^^^^^ This allows for one-line set and save
-	# (var success := set_name(..) and save_metadata() )
 	name = new_name
 	renamed.emit(name)
 	ui_update.emit()
 	return true
 
+## For one-line set and save do: var success := set_size(..) and save_metadata()
 func set_size(new_size: int) -> bool:
 	new_size = clampi(new_size, MIN_SIZE, MAX_SIZE)
 	if size == new_size:
 		return false
-	# NOTE:    ^^^^^ This allows for one-line set and save
-	# (var success := set_size(..) and save_metadata() )
 	_ships.resize(new_size)
 	resized.emit(new_size)
 	return true

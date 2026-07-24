@@ -77,3 +77,4 @@ layout_mode = 2
 layout_mode = 2
 
 [connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="request_create_game" from="VBoxContainer/TabContainer/CreateGame/BattleSettings" to="." method="_on_battle_settings_request_create_game"]

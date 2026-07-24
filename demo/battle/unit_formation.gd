@@ -287,9 +287,9 @@ func _handle_formation_input(event: InputEvent) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		return
-	if event.is_action_pressed("select"):
-		var unit := get_nearest_unit(mouse_selection.get_mouse_position_3d() )
-		select_units( [unit] )
+	#if event.is_action_pressed("select"):
+		#var unit := get_nearest_unit(mouse_selection.get_mouse_position_3d() )
+		#select_units( [unit] )
 	if event.is_action_pressed("lock units"):
 		toggle_units_movement_lock()
 	if event.is_action_released("stop"):

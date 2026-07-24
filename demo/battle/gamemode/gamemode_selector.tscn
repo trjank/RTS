@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dusqwho0awokt"]
+
+[node name="GamemodeSelector" type="TabBar"]
+offset_right = 89.0
+offset_bottom = 48.0
+current_tab = 0
+tab_count = 1
+tab_0/title = "TEST"

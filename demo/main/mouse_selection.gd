@@ -2,10 +2,19 @@ class_name MouseSelection extends Area3D
 
 signal selection_started
 signal selection_ended
-signal selected(bodies: Array[Node3D], center: Vector3, span: Vector2)
+signal selected(nodes: Array[Node3D], center: Vector3, span: Vector2)
+signal mouse_moved(new_position: Vector3)
 
-const VERTICAL_RANGE := 100.0
+enum SingleSelectMode {
+	DISABLED,
+	TOP_NODE,
+	NEAREST_NODE
+}
 
+const Y_RANGE := 100.0
+
+@export var single_select_range := 1.0
+@export var single_select_mode := SingleSelectMode.DISABLED
 @export var hitbox: CollisionShape3D
 @export var raycast: RayCast3D
 @export var mesh_instance: MeshInstance3D
@@ -14,6 +23,9 @@ var plane := Plane.PLANE_XZ:
 	set = set_plane
 var start := Vector3.ZERO
 var end := Vector3.ZERO
+
+var _mouse_position_3d := Vector3.ZERO
+var _selecting := false
 
 static func distance_sorter(a: Node3D, b: Node3D, point: Vector3) -> bool:
 	return a.global_position.distance_squared_to(point) < b.global_position.distance_squared_to(point)
@@ -32,10 +44,9 @@ static func _to_collider(result: Dictionary) -> Node3D:
 func _ready() -> void:
 	mesh_instance.mesh.size = Vector2.ZERO
 	_resize_hitbox()
-	set_physics_process(false)
 
 func is_selecting() -> bool:
-	return is_physics_processing()
+	return _selecting
 
 func is_enabled() -> bool:
 	return is_processing_unhandled_input()
@@ -52,7 +63,10 @@ func set_plane(new_plane: Plane) -> void:
 	plane = new_plane
 	_resize_hitbox()
 
-func get_nearest_nodes(point: Vector3, mask := globals.Layer.EVERYTHING, max_distance := 1.0) -> Array:
+func get_mouse_position_3d() -> Vector3:
+	return _mouse_position_3d
+
+func get_nearest_nodes(point: Vector3, mask := globals.Layer.EVERYTHING, max_distance := single_select_range) -> Array:
 	var shape := SphereShape3D.new()
 	var query := PhysicsShapeQueryParameters3D.new()
 	shape.radius = max_distance
@@ -62,13 +76,10 @@ func get_nearest_nodes(point: Vector3, mask := globals.Layer.EVERYTHING, max_dis
 	# NOTE: This only checks 32 nodes by default (set max_results to change this)
 	return get_world_3d().direct_space_state.intersect_shape(query).map(_to_collider)
 
-func get_nearest_node(point: Vector3, mask := globals.Layer.EVERYTHING, max_distance := 1.0) -> Node3D:
+func get_nearest_node(point: Vector3, mask := globals.Layer.EVERYTHING, max_distance := single_select_range) -> Node3D:
 	var nodes := get_nearest_nodes(point, mask, max_distance)
 	nodes.sort_custom(distance_sorter.bind(point) )
 	return null if nodes.is_empty() else nodes[0]
-
-func get_mouse_position_3d() -> Vector3:
-	return get_node_mouse_position_3d(self, plane)
 
 func get_top_node(point: Vector3, mask := globals.Layer.EVERYTHING) -> Node3D:
 	raycast.global_position = point
@@ -76,40 +87,59 @@ func get_top_node(point: Vector3, mask := globals.Layer.EVERYTHING) -> Node3D:
 	raycast.force_raycast_update()
 	return raycast.get_collider() as Node3D
 
+func get_mouse_node() -> Node3D:
+	if single_select_mode == SingleSelectMode.TOP_NODE:
+		return get_top_node(_mouse_position_3d, collision_mask)
+	return get_nearest_node(_mouse_position_3d, collision_mask, single_select_range)
+
+func get_mouse_nodes() -> Array[Node3D]:
+	var node := get_mouse_node()
+	return ( [node] as Array[Node3D] ) if node != null else ( [] as Array[Node3D] )
+
 func _resize_hitbox() -> void:
 	var size_3d := (to_local(end) - to_local(start) ).abs()
 	var size_2d := Vector2(size_3d.x, size_3d.z)
-	size_3d.y = VERTICAL_RANGE
+	size_3d.y = Y_RANGE
 	global_position = 0.5 * (start + end)
 	mesh_instance.mesh.size = size_2d
 	mesh_instance.set_instance_shader_parameter("size", size_2d)
 	hitbox.shape.size = size_3d
 
 func _begin_selection() -> void:
-	if is_selecting():
+	if _selecting:
 		return
-	start = get_mouse_position_3d()
+	start = _mouse_position_3d
 	end = start
 	_resize_hitbox()
-	set_physics_process(true)
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	_selecting = true
 	selection_started.emit()
 
-func _stop_selection() -> void:
-	if not is_selecting():
+func _move_selection() -> void:
+	if not _selecting:
 		return
-	set_physics_process(false)
+	end = _mouse_position_3d
+	_resize_hitbox()
+
+func _stop_selection() -> void:
+	if not _selecting:
+		return
 	mesh_instance.mesh.size = Vector2.ZERO
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	_selecting = false
 	selection_ended.emit()
 
 func _physics_process(_dt: float) -> void:
-	end = get_mouse_position_3d()
-	_resize_hitbox()
- 
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("multiselect") and not is_selecting():
+	# Since the camera may change position, this cannot go in _input or _unhandled_input
+	_mouse_position_3d = get_node_mouse_position_3d(self, plane)
+	mouse_moved.emit(_mouse_position_3d)
+	_move_selection()
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("select") and single_select_mode != SingleSelectMode.DISABLED:
+		selected.emit(get_mouse_nodes(), _mouse_position_3d, Vector2.ZERO)
+	if event.is_action_pressed("multiselect") and not _selecting:
 		_begin_selection()
-	if event.is_action_released("multiselect") and is_selecting():
+	if event.is_action_released("multiselect") and _selecting:
 		selected.emit(get_overlapping_bodies(), global_position, mesh_instance.mesh.size)
 		_stop_selection()

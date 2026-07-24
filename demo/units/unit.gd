@@ -3,6 +3,7 @@ class_name Unit extends RigidBody3D
 # NOTE: When you update mass, you need to call update_inertia_tensor() afterwards
 
 signal warped(from: Vector3, to: Vector3)
+signal died
 
 enum BehaviorFlags {
 	NONE = 0,
@@ -71,7 +72,7 @@ var _dying := false
 
 ## NOTE: This is useful for Array.map
 static func to_radar_signature(unit: Unit) -> RadarSignature:
-	return unit.get_radar_signature()
+	return unit.get_radar_signature() if unit != null else null
 
 func _init() -> void:
 	collision_layer = globals.Layer.UNITS
@@ -224,9 +225,11 @@ func kill() -> void:
 		player_owner.register_death(self)
 	if death_explosion.is_empty() or not is_node_ready():
 		queue_free()
+		died.emit()
 	elif not _dying:
 		_on_death_animation()
 		_dying = true
+		died.emit()
 
 func _on_death_animation() -> void:
 	pass

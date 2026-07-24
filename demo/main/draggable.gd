@@ -17,7 +17,6 @@ var _box_shape := BoxShape3D.new()
 
 func _ready() -> void:
 	collision_shape.shape = _box_shape
-	set_physics_process(false)
 
 func is_dragging() -> bool:
 	return _dragging
@@ -44,22 +43,20 @@ func begin_dragging() -> bool:
 		return false
 	_mouse_offset = global_position - get_mouse_position_3d()
 	_dragging = true
-	set_physics_process(true)
 	dragging_started.emit()
 	return true
 
 func stop_dragging() -> bool:
 	if not _dragging:
 		return false
-	set_physics_process(false)
 	_dragging = false
 	dragging_ended.emit()
 	return true
 
 func _physics_process(_dt: float) -> void:
-	assert(_dragging)
-	#
-	global_position = get_mouse_position_3d() + _mouse_offset
+	if _dragging:
+		global_position = get_mouse_position_3d() + _mouse_offset
+	# NOTE: If overriding, you must call super() on this
 
 func _input_event(_camera: Camera3D, _event: InputEvent, _event_position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if Input.is_action_just_pressed("select"):

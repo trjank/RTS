@@ -13,6 +13,9 @@ static func from_node(node: Node) -> Target:
 		return node.get_target()
 	return null
 
+static func is_valid(target: Target) -> bool:
+	return target != null and target.is_alive()
+
 func _init(init_global_position := Vector3.ZERO, init_linear_velocity := Vector3.ZERO) -> void:
 	global_position = init_global_position
 	linear_velocity = init_linear_velocity

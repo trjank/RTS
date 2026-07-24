@@ -20,7 +20,7 @@ const ROTATION_INCREMENT = PI / 2
 const MIN_GRID_SIZE := Vector2i.ONE
 const MAX_CACHE_SIZE := 30
 const RECALCULATE_ERROR := -1
-# Standardized measurements (PLEASE USE THESE!)
+# Standardized measurements
 const METERS_PER_TILE := 0.32
 const TILES_PER_METER := 3.125
 const PX_PER_TILE := 32
@@ -47,10 +47,7 @@ static func placement_to_rotation(placement: PartPlacement) -> Vector3:
 	return Vector3(0.0, (placement % 4) * ROTATION_INCREMENT, 0.0)
 
 static func to_placement(flipped: bool, rotation_3d: Vector3) -> PartPlacement:
-	# Maps 315º-45º -> 0,
-	# 45º-135º -> 1,
-	# 135º-225º -> 2,
-	# 225º-315º -> 3
+	# Maps 315º-45º -> 0, 45º-135º -> 1, 135º-225º -> 2, 225º-315º -> 3
 	var rot := posmod(round(rotation_3d.y / ROTATION_INCREMENT), 4)
 	return (4 + rot if flipped else rot) as PartPlacement
 
@@ -149,7 +146,6 @@ func sync() -> void:
 		return
 	var parts := Node3D.new()
 	add_child(parts, false, INTERNAL_MODE_BACK)
-	#         ^^^^^ DO NOT MESS WITH THESE NODES!
 	if _parts != null:
 		_parts.queue_free()
 	if ship in _parts_cache:

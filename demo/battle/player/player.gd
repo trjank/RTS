@@ -18,11 +18,15 @@ var clan := "":
 var icon: Texture2D = preload("res://icons/skull.png"):
 	set = set_icon
 var resources := StrategicResources.new()
+var fleet: Fleet
 var is_bot := false:
 	set = set_bot_status
 var is_admin := false
+var mouse_position := Vector3.ZERO
+var selection: Array[Target] = []
 
 var _battle: Battle
+var _battle_data := {}
 
 func _init(init_display_name := "", init_color := Color.WHITE) -> void:
 	display_name = init_display_name
@@ -36,6 +40,9 @@ func is_host() -> bool:
 
 func get_battle() -> Battle:
 	return _battle
+
+func get_battle_data() -> Dictionary:
+	return _battle_data
 
 func set_bot_status(bot_status: bool) -> void:
 	if bot_status == is_bot:
@@ -82,6 +89,9 @@ func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 	ship.player_owner = self
 	ship.position = spawnpoint
 	return ship
+
+func spawn_ship_slot(slot: int, spawnpoint := Vector3.ZERO) -> Ship:
+	return spawn_ship(fleet.get_ship(slot), spawnpoint) if fleet != null else null
 
 func register_death(unit: Unit) -> void:
 	if team != null:
