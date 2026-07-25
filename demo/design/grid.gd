@@ -29,7 +29,6 @@ const METERS_PER_PX := 0.01
 const PX_PER_METER := 100.0
 
 @export var grid_center_marker: MeshInstance3D
-@export var part_selection: PartSelection
 
 var _parts: Node3D
 var _parts_cache: Dictionary[ShipData, Node3D] = {}
@@ -162,4 +161,3 @@ func _load_part(ship_part: ShipDataPart) -> void:
 	part.placement = ship_part.get_placement()
 	part.position.x = position_2d.x
 	part.position.z = position_2d.y
-	part.selected.connect(part_selection.select_part_and_drag.bind(part) )

@@ -8,7 +8,8 @@ enum Layer {
 	SHIPS = 1 << 2,
 	PROJECTILES = 1 << 3,
 	SCENERY = 1 << 4,
-	EVERYTHING = 4294967295
+	PARTS = 1 << 5,
+	EVERYTHING = CAMERA | UNITS | SHIPS | PROJECTILES | SCENERY | PARTS
 }
 
 # NOTE: You should keep configs local to avoid code injection

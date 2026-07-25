@@ -8,7 +8,6 @@ const STANDARD_SHIP_SIZE := Vector2i(16, 16)
 @export var part_selection: PartSelection
 @export var parts_container: PartsContainer
 @export var fleet_container: FleetContainer
-@export var mouse_selection: MouseSelection
 @export var grid: Grid
 @export var save_popup: AcceptDialog
 @export var stats_box: StatsBox
@@ -19,9 +18,6 @@ var fleet: Fleet:
 	set = set_fleet
 
 func _ready() -> void:
-	part_selection.dragging_started.connect(mouse_selection.disable)
-	part_selection.dragging_ended.connect(mouse_selection.enable)
-	mouse_selection.selected.connect(part_selection.select)
 	globals.client.fleet_changed.connect(set_fleet)
 	fleet = globals.client.fleet
 	parts_container.part_manager = globals.part_manager
@@ -66,13 +62,13 @@ func save() -> void:
 func popup_error_message(error_flags: int) -> void:
 	var error_message := "Failed to save for the following reasons:\n\n"
 	if error_flags & ShipData.PartError.IS_NULL:
-		error_message += "☐ NULL part (PLEASE REPORT THIS BUG)\n"
+		error_message += "NULL part (PLEASE REPORT THIS BUG)\n"
 	if error_flags & ShipData.PartError.OUT_OF_BOUNDS:
-		error_message += "☐ Part is out of bounds\n"
+		error_message += "Part is out of bounds\n"
 	if error_flags & ShipData.PartError.OVERLAP:
-		error_message += "☐ Parts are overlapping\n"
+		error_message += "Parts are overlapping\n"
 	elif not grid.ship.are_parts_connected():
-		error_message += "☐ Parts are disconnected (%d clusters detected)\n" % grid.ship.count_part_clusters()
+		error_message += "Parts are disconnected (%d clusters detected)\n" % grid.ship.count_part_clusters()
 	save_popup.dialog_text = error_message
 	save_popup.show()
 

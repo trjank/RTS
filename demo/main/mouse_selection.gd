@@ -3,6 +3,8 @@ class_name MouseSelection extends Area3D
 signal selection_started
 signal selection_ended
 signal selected(nodes: Array[Node3D], center: Vector3, span: Vector2)
+signal selected_multiple(nodes: Array[Node3D], center: Vector3, span: Vector2)
+signal selected_single(node: Node3D, center: Vector3)
 signal mouse_moved(new_position: Vector3)
 
 enum SingleSelectMode {
@@ -88,13 +90,8 @@ func get_top_node(point: Vector3, mask := globals.Layer.EVERYTHING) -> Node3D:
 	return raycast.get_collider() as Node3D
 
 func get_mouse_node() -> Node3D:
-	if single_select_mode == SingleSelectMode.TOP_NODE:
-		return get_top_node(_mouse_position_3d, collision_mask)
-	return get_nearest_node(_mouse_position_3d, collision_mask, single_select_range)
-
-func get_mouse_nodes() -> Array[Node3D]:
-	var node := get_mouse_node()
-	return ( [node] as Array[Node3D] ) if node != null else ( [] as Array[Node3D] )
+	var select_top := single_select_mode == SingleSelectMode.TOP_NODE
+	return get_top_node(_mouse_position_3d, collision_mask) if select_top else get_nearest_node(_mouse_position_3d, collision_mask, single_select_range)
 
 func _resize_hitbox() -> void:
 	var size_3d := (to_local(end) - to_local(start) ).abs()
@@ -135,11 +132,23 @@ func _physics_process(_dt: float) -> void:
 	mouse_moved.emit(_mouse_position_3d)
 	_move_selection()
 
+func _finish_single_selection() -> void:
+	var mouse_node := get_mouse_node()
+	var mouse_nodes := [mouse_node] as Array[Node3D] if mouse_node != null else ( [] as Array[Node3D] )
+	selected.emit(mouse_nodes, _mouse_position_3d, Vector2.ZERO)
+	selected_single.emit(mouse_node, _mouse_position_3d)
+
+func _finish_multiselection() -> void:
+	var nodes := get_overlapping_bodies()
+	var span: Vector2 = mesh_instance.mesh.size
+	selected.emit(nodes, global_position, span)
+	selected_multiple.emit(nodes, global_position, span)
+	_stop_selection()
+
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("select") and single_select_mode != SingleSelectMode.DISABLED:
-		selected.emit(get_mouse_nodes(), _mouse_position_3d, Vector2.ZERO)
+		_finish_single_selection()
 	if event.is_action_pressed("multiselect") and not _selecting:
 		_begin_selection()
 	if event.is_action_released("multiselect") and _selecting:
-		selected.emit(get_overlapping_bodies(), global_position, mesh_instance.mesh.size)
-		_stop_selection()
+		_finish_multiselection()

@@ -40,20 +40,21 @@ func get_image(placement := Grid.PartPlacement.ROT_0) -> Image:
 
 func _transform_image(image: Image, placement: Grid.PartPlacement) -> void:
 	match placement:
-		Grid.PartPlacement.FLIP_ROT_0:
-			image.flip_x()
 		Grid.PartPlacement.ROT_90:
-			image.rotate_90(CLOCKWISE)
-		Grid.PartPlacement.FLIP_ROT_90:
-			image.flip_x()
-			image.rotate_90(CLOCKWISE)
+			image.rotate_90(COUNTERCLOCKWISE)
 		Grid.PartPlacement.ROT_180:
 			image.rotate_180()
+		Grid.PartPlacement.ROT_270:
+			image.rotate_90(CLOCKWISE)
+	# Flipped placements
+		Grid.PartPlacement.FLIP_ROT_0:
+			image.flip_x()
+		Grid.PartPlacement.FLIP_ROT_90:
+			image.flip_x()
+			image.rotate_90(COUNTERCLOCKWISE)
 		Grid.PartPlacement.FLIP_ROT_180:
 			image.flip_x()
 			image.rotate_180()
-		Grid.PartPlacement.ROT_270:
-			image.rotate_90(COUNTERCLOCKWISE)
 		Grid.PartPlacement.FLIP_ROT_270:
 			image.flip_x()
-			image.rotate_90(COUNTERCLOCKWISE)
+			image.rotate_90(CLOCKWISE)

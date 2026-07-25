@@ -1,10 +1,6 @@
 class_name PartHitbox extends StaticBody3D
 
-const OVERLAP_COLOR := Color.RED
 const OVERLAP_Y_LEVEL := PartData.MAX_Y_LEVEL + 0.1
-
-signal selected
-signal deselected
 
 @export var collision_shape: CollisionShape3D
 
@@ -21,16 +17,19 @@ var _part: Part
 static func create() -> PartHitbox:
 	return preload("res://design/part_hitbox.tscn").instantiate()
 
+func _ready() -> void:
+	collision_layer = globals.Layer.PARTS
+
 func get_size_2d() -> Vector2:
 	return Grid.METERS_PER_TILE * data.get_size()
 
-func get_size() -> Vector3:
+func get_size_3d() -> Vector3:
 	var size_2d := get_size_2d()
 	return Vector3(size_2d.x, 0.0, size_2d.y)
 
 ## NOTE: This returns position in grid tiles, NOT meters or pixels
 func get_top_left_corner() -> Vector2i:
-	var corner := transform * (-0.5 * get_size() )
+	var corner := position - 0.5 * (transform.basis * get_size_3d() ).abs()
 	var corner_2d := Grid.TILES_PER_METER * Vector2(corner.x, corner.z)
 	return Vector2i(corner_2d.round() )
 
@@ -47,21 +46,14 @@ func set_placement(new_placement: Grid.PartPlacement) -> void:
 
 func set_overlapping(is_overlapping: bool) -> void:
 	position.y = OVERLAP_Y_LEVEL if is_overlapping else data.y_level
-	#modulate = OVERLAP_COLOR if is_overlapping else Color.WHITE
-
-func _input_event(_camera: Camera3D, _event: InputEvent, _event_position: Vector3, _normal: Vector3, _shape_idx: int) -> void:
-	if Input.is_action_just_pressed("select"):
-		selected.emit()
-	if Input.is_action_just_released("select"):
-		deselected.emit()
 
 func set_data(new_data: PartData) -> void:
-	assert(new_data != null)
-	#
+	if new_data == null:
+		return push_error("(PartHitbox) PartData cannot be null")
 	if _part != null:
 		_part.queue_free()
 	data = new_data
 	_part = new_data.create_part()
 	position.y = data.y_level
-	collision_shape.shape.size = get_size()
+	collision_shape.shape.size = get_size_3d()
 	add_child(_part)

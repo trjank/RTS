@@ -27,6 +27,12 @@ func to_dict() -> Dictionary:
 		"map_depth_limit": map_depth_limit
 	}
 
+func _serialize_unit() -> void:
+	pass
+
+func _deserialize_unit() -> void:
+	pass
+
 func load_dict() -> void:
 	pass
 

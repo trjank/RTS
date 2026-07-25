@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="6_r41aq"]
 [ext_resource type="Material" uid="uid://bju5xmrwu2sfx" path="res://effects/grid_lines.tres" id="8_7jtw0"]
 [ext_resource type="Script" uid="uid://rrpw8rs1x5wn" path="res://design/grid.gd" id="8_r41aq"]
-[ext_resource type="PackedScene" uid="uid://cn7vkesgxr87y" path="res://main/draggable.tscn" id="8_rmp56"]
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/parts_container.tscn" id="9_3c8mw"]
 [ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/part_selection.gd" id="10_6vk6i"]
 [ext_resource type="Material" uid="uid://dq44yn5k5uawo" path="res://effects/stripes.tres" id="12_r41aq"]
@@ -43,16 +42,17 @@ height = 0.1
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6gxgq"]
 albedo_color = Color(0.35000002, 0.72916675, 1, 1)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_djjwm"]
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_rmp56"]
 resource_local_to_scene = true
 material = ExtResource("12_r41aq")
 
-[node name="Design" type="Node" node_paths=PackedStringArray("part_selection", "parts_container", "fleet_container", "mouse_selection", "grid", "save_popup", "stats_box")]
+[node name="Design" type="Node" node_paths=PackedStringArray("part_selection", "parts_container", "fleet_container", "grid", "save_popup", "stats_box")]
 script = ExtResource("1_wctwy")
 part_selection = NodePath("World/Grid/PartSelection")
 parts_container = NodePath("UI/VBoxContainer/HBoxContainer/PartsContainer")
 fleet_container = NodePath("UI/VBoxContainer/HBoxContainer/FleetContainer")
-mouse_selection = NodePath("World/MouseSelection")
 grid = NodePath("World/Grid")
 save_popup = NodePath("SaveShipPopup")
 stats_box = NodePath("World/SubViewport/StatsBox")
@@ -157,9 +157,8 @@ icon = ExtResource("6_r41aq")
 [node name="World" type="Node3D" parent="."]
 
 [node name="MouseSelection" parent="World" instance=ExtResource("13_r41aq")]
-collision_layer = 2
-collision_mask = 2
 input_ray_pickable = false
+single_select_mode = 1
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
@@ -177,14 +176,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.582675, 0, 2.6538885)
 axis = 1
 texture = SubResource("ViewportTexture_rmp56")
 
-[node name="Grid" type="MeshInstance3D" parent="World" node_paths=PackedStringArray("grid_center_marker", "part_selection")]
+[node name="Grid" type="MeshInstance3D" parent="World" node_paths=PackedStringArray("grid_center_marker")]
 sorting_offset = -2.0
 instance_shader_parameters/num_tiles = Vector2(5, 5)
 instance_shader_parameters/square_color = Color(1, 1, 1, 0.039215688)
 mesh = SubResource("PlaneMesh_6gxgq")
 script = ExtResource("8_r41aq")
 grid_center_marker = NodePath("GridCenterMarker")
-part_selection = NodePath("PartSelection")
 metadata/_custom_type_script = "uid://rrpw8rs1x5wn"
 
 [node name="GridCenterMarker" type="MeshInstance3D" parent="World/Grid"]
@@ -194,11 +192,16 @@ mesh = SubResource("SphereMesh_r41aq")
 material_override = SubResource("StandardMaterial3D_6gxgq")
 mesh = SubResource("SphereMesh_r41aq")
 
-[node name="PartSelection" parent="World/Grid" node_paths=PackedStringArray("mouse_selection", "mesh_instance", "grid") instance=ExtResource("8_rmp56")]
+[node name="PartSelection" type="StaticBody3D" parent="World/Grid" node_paths=PackedStringArray("mouse_selection", "mesh_instance", "grid", "collision_shape")]
 script = ExtResource("10_6vk6i")
+rotation_ease = 2
 mouse_selection = NodePath("../../MouseSelection")
 mesh_instance = NodePath("Stripes")
 grid = NodePath("..")
+collision_shape = NodePath("CollisionShape3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Grid/PartSelection"]
+shape = SubResource("BoxShape3D_djjwm")
 
 [node name="Stripes" type="MeshInstance3D" parent="World/Grid/PartSelection"]
 sorting_offset = -1.0
@@ -219,5 +222,8 @@ ok_button_text = "Return to design"
 [connection signal="button_pressed" from="UI/VBoxContainer/HBoxContainer/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
 [connection signal="part_clicked" from="UI/VBoxContainer/HBoxContainer/PartsContainer" to="." method="_on_parts_container_part_clicked"]
 [connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/TestButton" to="." method="_on_test_button_pressed"]
+[connection signal="selected_multiple" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selected_multiple"]
+[connection signal="selected_single" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selected_single"]
+[connection signal="selection_started" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selection_started"]
 
 [editable path="UI/VBoxContainer/HBoxContainer/FleetContainer"]

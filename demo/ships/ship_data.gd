@@ -157,6 +157,7 @@ func _reset_stats() -> void:
 	thrust         = 0.0
 	mass           = 0.0
 	torque         = 0.0
+	max_hp         = 0.0
 	max_warp       = 0.0
 	max_shield     = 0.0
 	max_energy     = 0.0
