@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://bvi7rt1l6hfoy"]
+[gd_scene load_steps=5 format=3 uid="uid://bvi7rt1l6hfoy"]
 
 [ext_resource type="Script" uid="uid://yubit2roc71n" path="res://map/planet/planet.gd" id="1_3aqce"]
 [ext_resource type="PackedScene" uid="uid://hvicroe1d56b" path="res://pips/pip_bar.tscn" id="2_td387"]
@@ -6,13 +6,18 @@
 [sub_resource type="SphereShape3D" id="SphereShape3D_uj2kf"]
 resource_local_to_scene = true
 
-[node name="Planet" type="Node3D" node_paths=PackedStringArray("ui", "label", "mesh_instance", "zone", "zone_shape", "progress_bar")]
+[sub_resource type="SphereShape3D" id="SphereShape3D_td387"]
+resource_local_to_scene = true
+
+[node name="Planet" type="Node3D" node_paths=PackedStringArray("ui", "label", "mesh_instance", "zone", "zone_shape", "hitbox", "hitbox_shape", "progress_bar")]
 script = ExtResource("1_3aqce")
 ui = NodePath("UI")
 label = NodePath("UI/Label3D")
 mesh_instance = NodePath("MeshInstance3D")
 zone = NodePath("Area3D")
 zone_shape = NodePath("Area3D/CollisionShape3D")
+hitbox = NodePath("Hitbox")
+hitbox_shape = NodePath("Hitbox/CollisionShape3D")
 progress_bar = NodePath("UI/PipBar")
 metadata/_custom_type_script = "uid://yubit2roc71n"
 
@@ -44,9 +49,16 @@ pip_color = Color(1, 0.32, 0.32, 1)
 [node name="Area3D" type="Area3D" parent="."]
 collision_layer = 0
 collision_mask = 4
+input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("SphereShape3D_uj2kf")
+
+[node name="Hitbox" type="StaticBody3D" parent="."]
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+shape = SubResource("SphereShape3D_td387")
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
 [connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]

@@ -1,5 +1,7 @@
 {
 	"subtype": "Star",
+	"min_energy": 3.0,
+	"max_energy": 3.0,
 	"min_mass": 100.0,
 	"max_mass": 100.0,
 	"min_orbit_radius": 0.0,

@@ -9,9 +9,9 @@ uniform float distortion_speed : hint_range(0.0, 3.0) = 0.3;
 uniform float distortion_strength : hint_range(0.0, 1.0) = 0.3;
 uniform sampler3D distortion_noise;
 
-instance uniform float emission_energy : hint_range(0.0, 100.0, 0.01) = 3.0;
-instance uniform vec3 emission_color_primary : source_color;
-instance uniform vec3 emission_color_secondary : source_color;
+instance uniform float emission_energy : hint_range(0.0, 100.0, 0.01) = 1.0;
+instance uniform vec3 emission_color_primary : source_color = vec3(1.0, 0.0, 0.0);
+instance uniform vec3 emission_color_secondary : source_color = vec3(1.0);
 
 varying vec3 uv_power_normal;
 varying vec3 uv_triplanar_pos;

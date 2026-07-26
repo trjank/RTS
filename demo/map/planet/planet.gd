@@ -10,6 +10,8 @@ const MIN_CAPTURE_TIME_SEC := 0.1
 @export var mesh_instance: MeshInstance3D
 @export var zone: Area3D
 @export var zone_shape: CollisionShape3D
+@export var hitbox: StaticBody3D
+@export var hitbox_shape: CollisionShape3D
 @export var progress_bar: PipBar
 
 var resource_rate := StrategicResources.new()
@@ -25,6 +27,7 @@ var radius := MIN_RADIUS:
 	set = set_radius
 var team_owner: Team:
 	set = set_team_owner
+var capture_zone_radius_ratio := 1.5
 
 var _capturing_team: Team
 var _contesting_team: Team
@@ -40,11 +43,16 @@ func _ready() -> void:
 	var max_radius := float(_map.preset.get("max_radius", MAX_RADIUS) )
 	var min_tilt := float(_map.preset.get("min_tilt", 0.0) )
 	var max_tilt := float(_map.preset.get("max_tilt", 360.0) )
+	capture_zone_radius_ratio = float(_map.preset.get("capture_zone_radius_ratio", 1.5) )
 	capturable = _map.preset.get("capturable", true)
 	radius = _rng.randf_range(min_radius, max_radius)
 	mesh_instance.rotation.x = deg_to_rad(_rng.randf_range(min_tilt, max_tilt) )
 	display_name = _map.preset.get("display_name", "")
 	ui.position = Vector3.ZERO
+	#
+	zone.collision_mask = globals.Layer.SHIPS
+	hitbox.collision_mask = globals.Layer.CAMERA | globals.Layer.SCENERY
+	hitbox.collision_layer = globals.Layer.CAMERA | globals.Layer.SCENERY
 
 func is_captured() -> bool:
 	return team_owner != null
@@ -90,7 +98,8 @@ func set_capture_progress(new_capture_progress: float) -> void:
 
 func set_radius(new_radius: float) -> void:
 	radius = clampf(new_radius, MIN_RADIUS, MAX_RADIUS)
-	zone_shape.shape.radius = radius
+	zone_shape.shape.radius = capture_zone_radius_ratio * radius
+	hitbox_shape.shape.radius = radius
 	label.position.z = -radius - LABEL_OFFSET_METERS
 	# NOTE: Ensure the mesh's size is one for this to work
 	mesh_instance.scale = radius * Vector3.ONE

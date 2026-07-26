@@ -1,6 +1,6 @@
 shader_type spatial;
 
-render_mode fog_disabled, depth_draw_never, blend_add;
+render_mode fog_disabled, depth_draw_never, blend_add, unshaded;
 
 const float MIN_BRIGHTNESS = 0.02;
 

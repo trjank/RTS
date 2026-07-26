@@ -74,14 +74,14 @@ var _dying := false
 static func to_radar_signature(unit: Unit) -> RadarSignature:
 	return unit.get_radar_signature() if unit != null else null
 
-func _init() -> void:
-	collision_layer = globals.Layer.UNITS
-
 func _ready() -> void:
 	_radar_signature._unit = self
 	_radar_signature._state = RadarSignature.State.ALIVE
 	sprite.pixel_size = Grid.METERS_PER_PX
 	update_ui()
+	#
+	collision_layer = globals.Layer.UNITS | globals.Layer.SCENERY
+	collision_mask = globals.Layer.UNITS | globals.Layer.SCENERY
 
 func _exit_tree() -> void:
 	_radar_signature._unit = null

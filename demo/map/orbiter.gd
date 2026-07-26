@@ -1,6 +1,6 @@
 class_name Orbiter extends Scenery
 
-const GRAVITATIONAL_CONSTANT := 1.0
+const GRAVITATIONAL_CONSTANT := 0.1
 const MIN_ORBIT_RADIUS := 0.0
 const MAX_ORBIT_RADIUS := 100.0
 # This is a lower bound to prevent huge or infinite orbital speeds

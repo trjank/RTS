@@ -26,7 +26,13 @@ const PRESET_SYNTAX: Dictionary[String, Variant.Type] = {
 	"display_name": TYPE_STRING,
 	"capturable": TYPE_BOOL,
 	"min_tilt": TYPE_FLOAT,
-	"max_tilt": TYPE_FLOAT
+	"max_tilt": TYPE_FLOAT,
+	"capture_zone_radius_ratio": TYPE_FLOAT,
+# For Star below
+	"min_energy": TYPE_FLOAT,
+	"max_energy": TYPE_FLOAT,
+	"min_temperature": TYPE_FLOAT,
+	"max_temperature": TYPE_FLOAT
 }
 
 var subtype: String

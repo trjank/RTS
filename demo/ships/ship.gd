@@ -29,7 +29,7 @@ static func create() -> Ship:
 var data: ShipData:
 	set = set_data
 
-func _init() -> void:
+func _ready() -> void:
 	super()
 	#
 	collision_layer |= globals.Layer.SHIPS

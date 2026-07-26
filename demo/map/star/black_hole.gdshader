@@ -19,7 +19,7 @@ uniform sampler2D accretion_disk_texture;
 
 instance uniform vec3 accretion_disk_light_color: source_color = vec3(0.0, 1.0, 5.0);
 instance uniform float accretion_disk_start_rotation = 0.0;
-instance uniform float accretion_disk_rotation_speed: hint_range(-1.0, 1.0) = 0.0;
+instance uniform float accretion_disk_rotation_speed: hint_range(-1.0, 1.0) = 1.0;
 instance uniform float accretion_disk_light_dropoff: hint_range(2.0, 10.0) = 4.0;
 
 varying vec3 local_position;
