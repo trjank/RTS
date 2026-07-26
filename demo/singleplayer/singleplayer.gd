@@ -10,5 +10,4 @@ func _on_tech_tree_button_pressed() -> void:
 func _ready() -> void:
 	super()
 	#
-	map = Map.new()
-	map.load_json(MAP_PRESET_PATH)
+	map = Map.from_json(MAP_PRESET_PATH)

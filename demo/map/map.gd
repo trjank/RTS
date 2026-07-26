@@ -39,48 +39,67 @@ var subtype: String
 var preset := {}
 var submaps: Array[Map] = []
 
-static func _to_dict(map: Map) -> Dictionary:
-	return map.to_dict()
-
 static func from_dict(dict: Dictionary) -> Map:
-	var map := Map.new(dict.get("subtype", "") )
-	map.submaps.assign(dict.get("submaps", [] ).map(from_dict) )
-	map.preset = dict
+	return from_unnested_dict(dict) if "root" in dict else from_nested_dict(dict)
+
+static func from_nested_dict(dict: Dictionary) -> Map:
+	var map := Map.new(dict.get("subtype", ""), dict)
+	map.submaps.assign(dict.get("submaps", [] ).map(from_nested_dict) )
 	return map
 
-func _init(init_subtype := "") -> void:
+static func from_unnested_dict(dict: Dictionary) -> Map:
+	var is_dict := func(value: Variant) -> bool: return value is Dictionary
+	#
+	if not "root" in dict or not dict.values().all(is_dict):
+		return null
+	var maps: Dictionary[String, Map] = {}
+	var get_map := func(id: String) -> Map: return maps.get(id, null)
+	for id in dict:
+		maps[id] = Map.new(dict[id].get("subtype", ""), dict[id] )
+	for id in dict:
+		maps[id].submaps.assign(dict[id].submaps.map(get_map) )
+	return maps["root"]
+
+static func from_json(path: String) -> Map:
+	var text := FileAccess.get_file_as_string(path)
+	var json := JSON.parse_string(text) as Dictionary
+	return from_dict(json) if json != null else null
+
+func _init(init_subtype := "", init_preset := {} ) -> void:
 	subtype = init_subtype
+	preset = init_preset
 
 func is_preset_valid() -> bool:
 	return TypeChecker.type_check(preset, PRESET_SYNTAX, false, TypeChecker.CAST_NUMBERS)
 
 func to_dict() -> Dictionary:
-	var dict := {
-		"subtype": subtype,
-		"submaps": submaps.map(_to_dict)
-	}
-	dict.merge(preset)
+	# Default to unnested to reduce duplication
+	return to_unnested_dict()
+
+func to_nested_dict() -> Dictionary:
+	var submap_to_dict := func(submap: Map) -> Dictionary: return submap.to_nested_dict()
+	#
+	return {"subtype": subtype, "submaps": submaps.map(submap_to_dict) }.merged(preset)
+
+func _add_to_unnested_dict(dict: Dictionary, counts: Dictionary[String, int] = {} ) -> String:
+	var count: int = counts.get(subtype, 1)
+	var id := "%s %d" % [subtype, count] if not counts.is_empty() else "root"
+	var to_id := func(submap: Map) -> String: return submap._add_to_unnested_dict(dict, counts)
+	counts[subtype] = count + 1
+	dict[id] = {"subtype": subtype, "submaps": submaps.map(to_id) }.merged(preset)
+	return id
+
+func to_unnested_dict() -> Dictionary:
+	var dict := {}
+	_add_to_unnested_dict(dict)
 	return dict
 
-func load_dict(dict: Dictionary) -> void:
-	subtype = dict.get("subtype", "")
-	submaps.assign(dict.get("submaps", [] ).map(from_dict) )
-	preset = dict
-
-func load_json(path: String) -> bool:
-	var text := FileAccess.get_file_as_string(path)
-	var json := JSON.parse_string(text) as Dictionary
-	if json == null:
-		return false
-	load_dict(json)
-	return true
-
-func save_json(path: String) -> bool:
+func save_json(path: String, nested := false) -> bool:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return false
-	var json := JSON.stringify(to_dict() )
-	file.store_string(json)
+	var dict := to_nested_dict() if nested else to_unnested_dict()
+	file.store_string(JSON.stringify(dict, "\t") )
 	file.close()
 	return true
 

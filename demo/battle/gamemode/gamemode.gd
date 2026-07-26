@@ -28,6 +28,9 @@ func battle_tick(_battle: Battle, _dt: float) -> void:
 func is_spawnpoint(target: Target) -> bool:
 	return target != null
 
+func get_map_spawnpoints(battle: Battle) -> Array[Spawnpoint]:
+	return battle.get_map_data().get("spawnpoints", [] as Array[Spawnpoint] )
+
 func get_spawnpoint(player: Player) -> Vector3:
 	var spawnpoints := player.selection.filter(is_spawnpoint)
 	var spawnpoint := spawnpoints.pick_random() as Target

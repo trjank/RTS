@@ -50,8 +50,8 @@ func set_time(new_time: float) -> void:
 	time = new_time
 
 ## Override this to pass data between Scenery objects during generation
-func use_shared_variables(_shared_variables := {} ) -> void:
-	_shared_variables["scenery_count"] = _shared_variables.get("scenery_count", 0) + 1
+func use_shared_variables(shared_variables := {} ) -> void:
+	shared_variables["scenery_count"] = shared_variables.get("scenery_count", 0) + 1
 
 func _ready() -> void:
 	_target._scenery = self

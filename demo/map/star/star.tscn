@@ -5,6 +5,8 @@
 [ext_resource type="Material" uid="uid://d0duy5dspoh1r" path="res://map/star/star_plasma.tres" id="3_v7ku8"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_v7ku8"]
+radius = 1.0
+height = 2.0
 radial_segments = 32
 rings = 16
 
