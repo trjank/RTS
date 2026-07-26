@@ -5,18 +5,19 @@ var data: PartData:
 
 var _ship: Ship
 
-func get_ship() -> Ship:
-	return _ship
-
 func _init() -> void:
 	axis = Vector3.Axis.AXIS_Y
 	pixel_size = Grid.METERS_PER_PX
 
-func _notification(what: int) -> void:
-	if what != NOTIFICATION_PARENTED or _ship == null:
-		return
-	push_warning("Ship part reparented")
-	_ship = null
+func get_ship() -> Ship:
+	return _ship
+
+func get_size_2d() -> Vector2:
+	return Grid.METERS_PER_TILE * data.get_size() if data != null else Vector2.ZERO
+
+func get_size_3d() -> Vector3:
+	var size_2d := get_size_2d()
+	return Vector3(size_2d.x, 0.0, size_2d.y)
 
 func get_up_direction() -> Vector3:
 	return transform.basis.y
@@ -43,3 +44,9 @@ func _ship_init(ship_part: ShipDataPart, ship: Ship) -> void:
 	position.z = xy.y
 	rotation = Grid.placement_to_rotation(ship_part.get_placement() )
 	flip_h = Grid.is_placement_flipped(ship_part.get_placement() )
+
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_PARENTED or _ship == null:
+		return
+	push_warning("(Part) Ship part reparented")
+	_ship = null

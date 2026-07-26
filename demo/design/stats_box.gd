@@ -1,10 +1,11 @@
 class_name StatsBox extends MarginContainer
 
-@export var hp: Label
-@export var cost: Label
-@export var mass: Label
-@export var thrust: Label
-@export var torque: Label
+@export var hp_label: Label
+@export var cost_label: Label
+@export var mass_label: Label
+@export var thrust_label: Label
+@export var torque_label: Label
+@export var energy_label: Label
 
 var ship: ShipData:
 	set = set_ship
@@ -29,15 +30,17 @@ func update_stats() -> void:
 		_show_stats()
 
 func _clear_stats() -> void:
-	hp.text = "--"
-	cost.text = "--"
-	mass.text = "--"
-	thrust.text = "--"
-	torque.text = "--"
+	hp_label.text = "--"
+	cost_label.text = "--"
+	mass_label.text = "--"
+	thrust_label.text = "--"
+	torque_label.text = "--"
+	energy_label.text = "--"
 
 func _show_stats() -> void:
-	hp.text = str(ship.max_hp)
-	cost.text = "$" + str(ship.cost.alloy)
-	mass.text = str(ship.mass) + " kg"
-	thrust.text = str(ship.thrust) + " N"
-	torque.text = str(ship.torque)
+	hp_label.text = "%.0f" % ship.max_hp
+	cost_label.text = "$%.0f" % ship.cost.alloy
+	mass_label.text = "%.0f kg" % ship.mass
+	thrust_label.text = "%.0f N" % ship.thrust
+	torque_label.text = "%.0f" % ship.torque
+	energy_label.text = "%.0f at %.0f/s" % [ship.max_energy, ship.energy_per_sec]

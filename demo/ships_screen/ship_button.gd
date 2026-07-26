@@ -59,11 +59,11 @@ func update_ui() -> void:
 	if ship == null:
 		_clear_ui()
 	else:
-		_create_ship_ui()
+		_set_ui()
 	custom_icon.texture = mini_icon
 	panel_container.visible = not collapsed
 
-func _create_ship_ui() -> void:
+func _set_ui() -> void:
 	icon = ship.get_texture()
 	ship_id.text = "#%d" % ship.get_id()
 	name_edit.text = ship.name

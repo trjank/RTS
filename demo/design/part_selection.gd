@@ -89,8 +89,7 @@ func spawn_part_at_mouse(part_data: PartData) -> PartHitbox:
 func begin_dragging() -> void:
 	if _dragging and not is_empty():
 		return
-	# Need this because we are moving around internal nodes
-	grid._update_error(Grid.RECALCULATE_ERROR)
+	grid.force_recalculate_error()
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	_mouse_offset = global_position - mouse_selection.get_mouse_position_3d()
 	_dragging = true

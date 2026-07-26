@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b1jcsb3ib2om2" path="res://design/part_hitbox.gd" id="1_ygxrn"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vspt8"]
+resource_local_to_scene = true
 
 [node name="PartHitbox" type="StaticBody3D" node_paths=PackedStringArray("collision_shape")]
 script = ExtResource("1_ygxrn")

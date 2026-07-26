@@ -383,7 +383,7 @@
 		"launch_velocity": 10.0,
 		"sound_variation": 0.25,
 		"trail_enabled": true,
-		"trail_width": 0.5,
+		"trail_width_ratio": 0.5,
 		"trail_force": 0.2,
 		"trail_roundness": 1.2,
 		"image_path": "res://part_images/projectile_bullet_generic.png"

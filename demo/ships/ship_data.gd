@@ -183,6 +183,7 @@ func add_to_part_count(part_data: PartData, count := 1) -> void:
 
 func calculate_stats() -> void:
 	_reset_stats()
+	#
 	for part in part_counts:
 		add_part_stats(part, part_counts[part] )
 	stats_updated.emit()

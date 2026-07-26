@@ -14,8 +14,8 @@ var trail_outer_color := Color.RED
 var trail_glow := 2.0
 var trail_roundness := 1.0
 var trail_flicker_strength := 0.1
-var trail_width := 1.0
 var trail_force := 1.0
+var trail_width_ratio := 1.0
 
 func is_missile() -> bool:
 	return MIN_MISSILE_TORQUE <= torque

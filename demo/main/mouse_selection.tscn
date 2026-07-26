@@ -9,21 +9,17 @@ resource_local_to_scene = true
 [sub_resource type="PlaneMesh" id="PlaneMesh_cha34"]
 material = ExtResource("2_atvwh")
 
-[node name="MouseSelection" type="Area3D" node_paths=PackedStringArray("hitbox", "raycast", "mesh_instance")]
+[node name="MouseSelection" type="Area3D" node_paths=PackedStringArray("hitbox", "mesh_instance")]
 gravity_point_center = Vector3(0, 1, 0)
 gravity_direction = Vector3(0, 1, 0)
 gravity = 980.0
 angular_damp = 1.0
 script = ExtResource("1_cha34")
 hitbox = NodePath("CollisionShape3D")
-raycast = NodePath("RayCast3D")
 mesh_instance = NodePath("Stripes")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_cha34")
-
-[node name="RayCast3D" type="RayCast3D" parent="."]
-target_position = Vector3(0, -5, 0)
 
 [node name="Stripes" type="MeshInstance3D" parent="."]
 sorting_offset = 1.0

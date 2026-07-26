@@ -1,6 +1,6 @@
 class_name PartHitbox extends StaticBody3D
 
-const OVERLAP_Y_LEVEL := PartData.MAX_Y_LEVEL + 0.1
+const COLORED_OVERLAY := preload("res://effects/colored_overlay.tres")
 
 @export var collision_shape: CollisionShape3D
 
@@ -21,7 +21,7 @@ func _ready() -> void:
 	collision_layer = globals.Layer.PARTS
 
 func get_size_2d() -> Vector2:
-	return Grid.METERS_PER_TILE * data.get_size()
+	return Grid.METERS_PER_TILE * data.get_size() if data != null else Vector2.ZERO
 
 func get_size_3d() -> Vector3:
 	var size_2d := get_size_2d()
@@ -45,7 +45,10 @@ func set_placement(new_placement: Grid.PartPlacement) -> void:
 	scale.x = -1.0 if Grid.is_placement_flipped(new_placement) else 1.0 
 
 func set_overlapping(is_overlapping: bool) -> void:
-	position.y = OVERLAP_Y_LEVEL if is_overlapping else data.y_level
+	assert(_part != null, "(PartHitbox) PartData is required to test overlap")
+	#
+	overlapping = is_overlapping
+	_part.material_overlay = COLORED_OVERLAY if overlapping else null
 
 func set_data(new_data: PartData) -> void:
 	if new_data == null:

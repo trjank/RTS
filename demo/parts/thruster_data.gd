@@ -5,8 +5,8 @@ var trail_outer_color := Color.RED
 var trail_flicker_strength := 0.2
 var trail_roundness := 1.0
 var trail_glow := 2.0
-var trail_width := 0.64
 var trail_force := 0.5
+var trail_width_ratio := 1.0
 
 func becomes_node_on_ship() -> bool:
 	return true # <- MUST BE CONSTANT

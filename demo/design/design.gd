@@ -52,12 +52,11 @@ func set_slot(new_slot: int) -> void:
 func save() -> void:
 	part_selection.move_parts()
 	var error_flags := grid.save()
-	if error_flags == ShipData.PartError.OK and grid.ship.are_parts_connected():
-		grid.ship.generate_image()
-		grid.ship.save()
-		grid.ship.calculate_stats()
-	else:
-		popup_error_message(error_flags)
+	if error_flags != ShipData.PartError.OK or not grid.ship.are_parts_connected():
+		return popup_error_message(error_flags)
+	grid.ship.generate_image()
+	grid.ship.calculate_stats()
+	grid.ship.save()
 
 func popup_error_message(error_flags: int) -> void:
 	var error_message := "Failed to save for the following reasons:\n\n"

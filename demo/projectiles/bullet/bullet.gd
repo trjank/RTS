@@ -45,7 +45,8 @@ func launch(inertia_velocity := Vector3.ZERO) -> void:
 	play_sound_effect()
 
 func _process(_dt: float) -> void:
-	trail.scale = Vector3(data.trail_width, data.trail_width, data.trail_force * get_speed() )
+	trail.scale.x = data.trail_width_ratio
+	trail.scale.z = data.trail_force * get_speed()
 
 func order_attack() -> void:
 	assert(data != null)

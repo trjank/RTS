@@ -10,6 +10,5 @@ func _ready() -> void:
 	trail.set_instance_shader_parameter("random_phase_offset", randf_range(0.0, TAU) )
 
 func _process(_dt: float) -> void:
-	if _ship == null:
-		return
-	trail.scale = Vector3(data.trail_width, data.trail_width, data.trail_force * _ship.get_speed() )
+	trail.scale.x = data.trail_width_ratio * get_size_2d().x
+	trail.scale.z = data.trail_force * _ship.get_speed() if _ship != null else 1.0

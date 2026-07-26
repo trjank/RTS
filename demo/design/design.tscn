@@ -158,6 +158,7 @@ icon = ExtResource("6_r41aq")
 
 [node name="MouseSelection" parent="World" instance=ExtResource("13_r41aq")]
 input_ray_pickable = false
+single_select_ray_range = 25.0
 single_select_mode = 1
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="World"]
@@ -225,5 +226,6 @@ ok_button_text = "Return to design"
 [connection signal="selected_multiple" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selected_multiple"]
 [connection signal="selected_single" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selected_single"]
 [connection signal="selection_started" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selection_started"]
+[connection signal="save_changed" from="World/Grid" to="." method="_on_grid_save_changed"]
 
 [editable path="UI/VBoxContainer/HBoxContainer/FleetContainer"]

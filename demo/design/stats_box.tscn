@@ -40,19 +40,20 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
 
-[node name="StatsBox" type="MarginContainer" node_paths=PackedStringArray("hp", "cost", "mass", "thrust", "torque")]
-offset_right = 648.0
-offset_bottom = 465.0
+[node name="StatsBox" type="MarginContainer" node_paths=PackedStringArray("hp_label", "cost_label", "mass_label", "thrust_label", "torque_label", "energy_label")]
+offset_right = 380.0
+offset_bottom = 521.0
 theme_override_constants/margin_left = 30
 theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 30
 script = ExtResource("1_lp8qi")
-hp = NodePath("VBoxContainer/PanelContainer/GridContainer/HPValue")
-cost = NodePath("VBoxContainer/PanelContainer/GridContainer/CostValue")
-mass = NodePath("VBoxContainer/PanelContainer/GridContainer/MassValue")
-thrust = NodePath("VBoxContainer/PanelContainer/GridContainer/ThrustValue")
-torque = NodePath("VBoxContainer/PanelContainer/GridContainer/TorqueValue")
+hp_label = NodePath("VBoxContainer/PanelContainer/GridContainer/HPValue")
+cost_label = NodePath("VBoxContainer/PanelContainer/GridContainer/CostValue")
+mass_label = NodePath("VBoxContainer/PanelContainer/GridContainer/MassValue")
+thrust_label = NodePath("VBoxContainer/PanelContainer/GridContainer/ThrustValue")
+torque_label = NodePath("VBoxContainer/PanelContainer/GridContainer/TorqueValue")
+energy_label = NodePath("VBoxContainer/PanelContainer/GridContainer/EnergyValue")
 metadata/_custom_type_script = "uid://fr7sl5a3vj3d"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -68,6 +69,7 @@ theme_override_constants/outline_size = 2
 text = "Summary"
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_lp8qi")
@@ -76,7 +78,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_lp8qi")
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 10
-columns = 4
+columns = 3
 
 [node name="HPIcon" type="TextureRect" parent="VBoxContainer/PanelContainer/GridContainer"]
 custom_minimum_size = Vector2(40, 40)
@@ -88,7 +90,7 @@ stretch_mode = 5
 [node name="HPProperty" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "HP:"
+text = "HP"
 
 [node name="HPValue" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
@@ -96,9 +98,6 @@ theme_override_colors/font_color = Color(1, 0.55, 0.55, 1)
 theme_override_colors/font_outline_color = Color(1, 0.54901963, 0.54901963, 1)
 theme_override_constants/outline_size = 2
 text = "100"
-
-[node name="Spacer" type="Control" parent="VBoxContainer/PanelContainer/GridContainer"]
-layout_mode = 2
 
 [node name="CostIcon" type="TextureRect" parent="VBoxContainer/PanelContainer/GridContainer"]
 custom_minimum_size = Vector2(40, 40)
@@ -110,7 +109,7 @@ stretch_mode = 5
 [node name="CostProperty" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Cost:"
+text = "Cost"
 
 [node name="CostValue" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
@@ -118,9 +117,6 @@ theme_override_colors/font_color = Color(0.55, 1, 0.5575, 1)
 theme_override_colors/font_outline_color = Color(0.54901963, 1, 0.5568628, 1)
 theme_override_constants/outline_size = 2
 text = "1000"
-
-[node name="Spacer2" type="Control" parent="VBoxContainer/PanelContainer/GridContainer"]
-layout_mode = 2
 
 [node name="MassIcon" type="TextureRect" parent="VBoxContainer/PanelContainer/GridContainer"]
 custom_minimum_size = Vector2(40, 40)
@@ -132,7 +128,7 @@ stretch_mode = 5
 [node name="MassProperty" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Mass:"
+text = "Mass"
 
 [node name="MassValue" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
@@ -140,9 +136,6 @@ theme_override_colors/font_color = Color(1, 0.88, 0.55, 1)
 theme_override_colors/font_outline_color = Color(1, 0.8784314, 0.54901963, 1)
 theme_override_constants/outline_size = 2
 text = "100"
-
-[node name="Spacer3" type="Control" parent="VBoxContainer/PanelContainer/GridContainer"]
-layout_mode = 2
 
 [node name="ThrustIcon" type="TextureRect" parent="VBoxContainer/PanelContainer/GridContainer"]
 custom_minimum_size = Vector2(40, 40)
@@ -154,7 +147,7 @@ stretch_mode = 5
 [node name="ThrustProperty" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Thrust:"
+text = "Thrust"
 
 [node name="ThrustValue" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
@@ -162,9 +155,6 @@ theme_override_colors/font_color = Color(1, 0.8784314, 0.54901963, 1)
 theme_override_colors/font_outline_color = Color(1, 0.8784314, 0.54901963, 1)
 theme_override_constants/outline_size = 2
 text = "100"
-
-[node name="Spacer4" type="Control" parent="VBoxContainer/PanelContainer/GridContainer"]
-layout_mode = 2
 
 [node name="TurnImpulseIcon" type="TextureRect" parent="VBoxContainer/PanelContainer/GridContainer"]
 custom_minimum_size = Vector2(40, 40)
@@ -176,7 +166,7 @@ stretch_mode = 5
 [node name="TorqueProperty" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Turnrate:"
+text = "Turnrate"
 
 [node name="TorqueValue" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
@@ -184,9 +174,6 @@ theme_override_colors/font_color = Color(1, 0.8784314, 0.54901963, 1)
 theme_override_colors/font_outline_color = Color(1, 0.8784314, 0.54901963, 1)
 theme_override_constants/outline_size = 2
 text = "100"
-
-[node name="Spacer5" type="Control" parent="VBoxContainer/PanelContainer/GridContainer"]
-layout_mode = 2
 
 [node name="EnergyIcon" type="TextureRect" parent="VBoxContainer/PanelContainer/GridContainer"]
 custom_minimum_size = Vector2(40, 40)
@@ -198,16 +185,16 @@ stretch_mode = 5
 [node name="EnergyProperty" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Energy:"
+text = "Energy"
 
 [node name="EnergyValue" type="Label" parent="VBoxContainer/PanelContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65999997, 0.6883333, 1, 1)
 theme_override_colors/font_outline_color = Color(0.65882355, 0.6901961, 1, 1)
 theme_override_constants/outline_size = 2
-text = "100"
+text = "100 at 100/s"
 
-[node name="EnergyProgressBar" type="ProgressBar" parent="VBoxContainer/PanelContainer/GridContainer"]
+[node name="EnergyProgressBar" type="ProgressBar" parent="VBoxContainer"]
 custom_minimum_size = Vector2(250, 32)
 layout_mode = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_jorbo")

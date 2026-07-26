@@ -20,7 +20,8 @@ const ROTATION_INCREMENT = PI / 2
 const MIN_GRID_SIZE := Vector2i.ONE
 const MAX_CACHE_SIZE := 30
 const RECALCULATE_ERROR := -1
-# Standardized measurements
+
+# Standardized measurements (PLEASE USE THESE!)
 const METERS_PER_TILE := 0.32
 const TILES_PER_METER := 3.125
 const PX_PER_TILE := 32
@@ -118,10 +119,9 @@ func add_part(part: Node) -> void:
 	part.reparent(_parts)
 	_update_error(RECALCULATE_ERROR)
 
-func _update_error(error: int) -> void:
-	var is_saved := error == ShipData.PartError.OK
-	_error_cache[ship] = error
-	save_changed.emit(ship, is_saved)
+## Used in case that parts are modified or reparented outside this class
+func force_recalculate_error() -> void:
+	_update_error(RECALCULATE_ERROR)
 
 func save(lazy := true) -> int:
 	var error_flags := _error_cache[ship]
@@ -129,7 +129,7 @@ func save(lazy := true) -> int:
 		return error_flags
 	ship.clear()
 	error_flags = ShipData.PartError.OK
-	# NOTE: This will break if you tamper with internal nodes
+	#
 	for node in _parts.get_children():
 		error_flags |= _save_part(node)
 	_update_error(error_flags)
@@ -152,6 +152,11 @@ func sync() -> void:
 	_parts = parts
 	ship.for_each_part(_load_part)
 	_update_error(ShipData.PartError.OK)
+
+func _update_error(error: int) -> void:
+	var is_saved := error == ShipData.PartError.OK
+	_error_cache[ship] = error
+	save_changed.emit(ship, is_saved)
 
 func _load_part(ship_part: ShipDataPart) -> void:
 	var part := PartHitbox.create()
