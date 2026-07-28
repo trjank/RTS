@@ -3,10 +3,12 @@ class_name WeaponModifiers extends RefCounted
 enum SpecialFlags {}
 
 const SYNTAX: Dictionary[String, Variant.Type] = {
+	"flat_damage": TYPE_FLOAT,
 	"flat_range": TYPE_FLOAT,
 	"flat_energy": TYPE_FLOAT,
 	"flat_speed": TYPE_FLOAT,
 	"flat_cooldown": TYPE_FLOAT,
+	"multiplier_damage": TYPE_FLOAT,
 	"multiplier_range": TYPE_FLOAT,
 	"multiplier_energy": TYPE_FLOAT,
 	"multiplier_speed": TYPE_FLOAT,
@@ -16,10 +18,12 @@ const SYNTAX: Dictionary[String, Variant.Type] = {
 static var NONE := StrategicResources.new():
 	set(__): push_error("WeaponModifiers.NONE is immutable")
 
+var flat_damage := 0.0
 var flat_range := 0.0
 var flat_energy := 0.0
 var flat_speed := 0.0
 var flat_cooldown := 0.0
+var multiplier_damage := 1.0
 var multiplier_range := 1.0
 var multiplier_energy := 1.0
 var multiplier_speed := 1.0
@@ -44,12 +48,14 @@ func load_dict(dict: Dictionary) -> bool:
 	return true
 
 func reset_flat() -> void:
+	flat_damage = 0.0
 	flat_range = 0.0
 	flat_energy = 0.0
 	flat_speed = 0.0
 	flat_cooldown = 0.0
 
 func reset_multipliers() -> void:
+	multiplier_damage = 1.0
 	multiplier_range = 1.0
 	multiplier_energy = 1.0
 	multiplier_speed = 1.0
@@ -64,12 +70,14 @@ func reset() -> void:
 	reset_special_flags()
 
 func add_flat(from: WeaponModifiers) -> void:
+	flat_damage += from.flat_damage
 	flat_range += from.flat_range
 	flat_energy += from.flat_energy
 	flat_speed += from.flat_speed
 	flat_cooldown += from.flat_cooldown
 
 func add_multipliers(from: WeaponModifiers) -> void:
+	multiplier_damage *= from.multiplier_damage
 	multiplier_range *= from.multiplier_range
 	multiplier_energy *= from.multiplier_energy
 	multiplier_speed *= from.multiplier_speed

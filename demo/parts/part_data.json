@@ -416,5 +416,124 @@
 		"start_color": "green",
 		"end_color": "red",
 		"image_path": "res://part_images/projectile_bullet_generic.png"
+	},
+	"WMD1": {
+		"name": "Damage Modifier A",
+		"subtype": "weapon_modifier",
+		"tab": "weapons",
+		"width": 2,
+		"height": 2,
+		"hp": 5,
+		"mass": 4,
+		"cost_data": {
+			"alloy": 3
+		},
+		"modifier_data": {
+			"multiplier_damage": 1.1,
+			"multiplier_energy": 1.05
+		},
+		"image_path": "res://part_images/weapon_modifier_damage.png"
+	},
+	"WMD2": {
+		"name": "Damage Modifier B",
+		"subtype": "weapon_modifier",
+		"tab": "weapons",
+		"width": 2,
+		"height": 2,
+		"hp": 20.0,
+		"mass": 16.0,
+		"cost_data": {
+			"alloy": 12.0
+		},
+		"modifier_data": {
+			"flat_damage": 50.0,
+			"multiplier_damage": 1.25
+		},
+		"image_path": "res://part_images/weapon_modifier_damage.png"
+	},
+	"WMS1": {
+		"name": "Speed Modifier",
+		"subtype": "weapon_modifier",
+		"tab": "weapons",
+		"width": 2,
+		"height": 2,
+		"hp": 5.0,
+		"mass": 1.0,
+		"cost_data": {
+			"alloy": 4.0
+		},
+		"modifier_data": {
+			"flat_range": 40.0,
+			"multiplier_speed": 1.5,
+			"multiplier_cooldown": 1.1
+		},
+		"image_path": "res://part_images/weapon_modifier_speed.png"
+	},
+	"WMR1": {
+		"name": "Range Modifier A",
+		"subtype": "weapon_modifier",
+		"tab": "weapons",
+		"width": 2,
+		"height": 2,
+		"hp": 5.0,
+		"mass": 8.0,
+		"cost_data": {
+			"alloy": 4.0
+		},
+		"modifier_data": {
+			"multiplier_range": 1.1,
+			"multiplier_cooldown": 1.15
+		},
+		"image_path": "res://part_images/weapon_modifier_range.png"
+	},
+	"WMR2": {
+		"name": "Range Modifier B",
+		"subtype": "weapon_modifier",
+		"tab": "weapons",
+		"width": 2,
+		"height": 2,
+		"hp": 20.0,
+		"mass": 32.0,
+		"cost_data": {
+			"alloy": 15.0
+		},
+		"modifier_data": {
+			"flat_range": 50.0,
+			"multiplier_range": 1.2,
+			"multiplier_cooldown": 1.25
+		},
+		"image_path": "res://part_images/weapon_modifier_range.png"
+	},
+	"WMC1": {
+		"name": "Cooldown Modifier",
+		"subtype": "weapon_modifier",
+		"tab": "weapons",
+		"width": 2,
+		"height": 2,
+		"hp": 20.0,
+		"mass": 16.0,
+		"cost_data": {
+			"alloy": 8.0
+		},
+		"modifier_data": {
+			"multiplier_cooldown": 0.8
+		},
+		"image_path": "res://part_images/weapon_modifier_energy.png"
+	},
+	"WME1": {
+		"name": "Energy Modifier",
+		"subtype": "weapon_modifier",
+		"tab": "weapons",
+		"width": 2,
+		"height": 2,
+		"hp": 10.0,
+		"mass": 12.0,
+		"cost_data": {
+			"alloy": 2.0
+		},
+		"modifier_data": {
+			"multiplier_energy": 0.9
+		},
+		"image_path": "res://part_images/weapon_modifier_cooldown.png"
 	}
 }

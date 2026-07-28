@@ -45,6 +45,7 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"multiplier_energy": TYPE_FLOAT,
 	"multiplier_speed": TYPE_FLOAT,
 	"multiplier_cooldown": TYPE_FLOAT,
+	"modifier_data": TYPE_DICTIONARY,
 # For ProjectileData below
 	"lifetime_sec": TYPE_FLOAT,
 	"damage": TYPE_FLOAT,
