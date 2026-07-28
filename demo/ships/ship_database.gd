@@ -173,7 +173,7 @@ func _parse_ship_from_result(ship: ShipData, result: Dictionary) -> void:
 		ship._image = null
 		ship._texture = null
 	else:
-		ship._image = Image.create_from_data(result.image_width, result.image_height, ShipData.USE_MIPMAPS, PartImage.FORMAT, image_bytes)
+		ship._image = Image.create_from_data(result.image_width, result.image_height, ShipData.USE_MIPMAPS, ImageAsset.IMAGE_FORMAT, image_bytes)
 		ship._texture = ImageTexture.create_from_image(ship._image)
 
 func handle_deserialization_error(error: int, ship_id: int) -> void:

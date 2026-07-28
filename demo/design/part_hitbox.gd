@@ -4,9 +4,9 @@ const COLORED_OVERLAY := preload("res://effects/colored_overlay.tres")
 
 @export var collision_shape: CollisionShape3D
 
-var placement: Grid.PartPlacement:
-	get = get_placement,
-	set = set_placement
+var discrete_rotation: Rotation.Discrete:
+	get = get_discrete_rotation,
+	set = set_discrete_rotation
 var overlapping := false:
 	set = set_overlapping
 var data: PartData:
@@ -21,7 +21,7 @@ func _ready() -> void:
 	collision_layer = globals.Layer.PARTS
 
 func get_size_2d() -> Vector2:
-	return Grid.METERS_PER_TILE * data.get_size() if data != null else Vector2.ZERO
+	return Measurement.METERS_PER_TILE * data.get_size() if data != null else Vector2.ZERO
 
 func get_size_3d() -> Vector3:
 	var size_2d := get_size_2d()
@@ -30,19 +30,19 @@ func get_size_3d() -> Vector3:
 ## NOTE: This returns position in grid tiles, NOT meters or pixels
 func get_top_left_corner() -> Vector2i:
 	var corner := position - 0.5 * (transform.basis * get_size_3d() ).abs()
-	var corner_2d := Grid.TILES_PER_METER * Vector2(corner.x, corner.z)
+	var corner_2d := Measurement.TILES_PER_METER * Vector2(corner.x, corner.z)
 	return Vector2i(corner_2d.round() )
 
-func get_placement() -> Grid.PartPlacement:
+func get_discrete_rotation() -> Rotation.Discrete:
 	var h_flip := scale.x < 0
 	var v_flip := scale.z < 0
 	var h_rotation := rotation.y + PI if v_flip else rotation.y
 	# NOTE: Godot's transform implementation often flips negative signs
-	return Grid.to_placement(h_flip and v_flip, Vector3(0.0, h_rotation, 0.0) )
+	return Rotation.from_radians(h_rotation, h_flip and v_flip)
 
-func set_placement(new_placement: Grid.PartPlacement) -> void:
-	rotation = Grid.placement_to_rotation(new_placement)
-	scale.x = -1.0 if Grid.is_placement_flipped(new_placement) else 1.0 
+func set_discrete_rotation(new_rotation: Rotation.Discrete) -> void:
+	rotation.y = Rotation.to_radians(new_rotation)
+	scale.x = -1.0 if Rotation.is_flip_h(new_rotation) else 1.0 
 
 func set_overlapping(is_overlapping: bool) -> void:
 	assert(_part != null, "(PartHitbox) PartData is required to test overlap")

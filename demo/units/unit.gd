@@ -77,7 +77,7 @@ static func to_radar_signature(unit: Unit) -> RadarSignature:
 func _ready() -> void:
 	_radar_signature._unit = self
 	_radar_signature._state = RadarSignature.State.ALIVE
-	sprite.pixel_size = Grid.METERS_PER_PX
+	sprite.pixel_size = Measurement.METERS_PER_PX
 	update_ui()
 	#
 	collision_layer = globals.Layer.UNITS | globals.Layer.SCENERY

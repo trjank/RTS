@@ -8,17 +8,15 @@ var part_manager: PartManager:
 	set = set_part_manager
 
 func set_part_manager(new_part_manager: PartManager) -> void:
+	if part_manager == new_part_manager:
+		return # (prevent wasting time when many parts are loaded)
 	clear()
 	if part_manager != null:
 		part_manager.part_created.disconnect(_add_part)
 	if new_part_manager != null:
-		new_part_manager.for_each_part(_add_part)
+		_add_parts(new_part_manager)
 		new_part_manager.part_created.connect(_add_part)
 	part_manager = new_part_manager
-
-func _remove_part(node: Node) -> void:
-	if node is PartButton:
-		node.queue_free()
 
 func clear_tab(tab: String) -> void:
 	if not tab in tabs:
@@ -29,6 +27,14 @@ func clear_tab(tab: String) -> void:
 func clear() -> void:
 	for tab in tabs:
 		clear_tab(tab)
+
+func _remove_part(node: Node) -> void:
+	if node is PartButton:
+		node.queue_free()
+
+func _add_parts(new_part_manager: PartManager) -> void:
+	for part in new_part_manager.get_parts():
+		_add_part(part)
 
 func _add_part(part_data: PartData) -> void:
 	if not part_data.tab in tabs:

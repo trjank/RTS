@@ -22,6 +22,9 @@ func decode_int(color: Color) -> int:
 func get_int(x: int, y: int) -> int:
 	return decode_int(_image.get_pixel(x, y) )
 
+func get_intv(point: Vector2i) -> int:
+	return get_int(point.x, point.y)
+
 func set_int(x: int, y: int, value: int) -> void:
 	_image.set_pixel(x, y, encode_int(value) )
 

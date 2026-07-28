@@ -62,7 +62,7 @@ func set_data(new_data: ShipData) -> void:
 	for ship_part in data.node_parts:
 		_create_part_node(ship_part)
 	texture = data.get_texture()
-	size = Grid.METERS_PER_TILE * data.get_ship_rect().size
+	size = Measurement.METERS_PER_TILE * data.get_ship_rect().size
 	value = data.cost
 	reset_stats()
 

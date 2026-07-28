@@ -7,13 +7,13 @@ var _ship: Ship
 
 func _init() -> void:
 	axis = Vector3.Axis.AXIS_Y
-	pixel_size = Grid.METERS_PER_PX
+	pixel_size = Measurement.METERS_PER_PX
 
 func get_ship() -> Ship:
 	return _ship
 
 func get_size_2d() -> Vector2:
-	return Grid.METERS_PER_TILE * data.get_size() if data != null else Vector2.ZERO
+	return Measurement.METERS_PER_TILE * data.get_size() if data != null else Vector2.ZERO
 
 func get_size_3d() -> Vector3:
 	var size_2d := get_size_2d()
@@ -35,15 +35,15 @@ func set_data(new_data: PartData) -> void:
 	if data != null:
 		return push_error("Part.data is read only!")
 	data = new_data
-	texture = data.get_image().get_texture()
+	texture = data.image.get_texture()
 
 func _ship_init(ship_part: ShipDataPart, ship: Ship) -> void:
 	_ship = ship
-	var xy := Grid.METERS_PER_TILE * (ship_part.get_center() - Rect2(ship.data.get_ship_rect() ).get_center() )
+	var xy := Measurement.METERS_PER_TILE * (ship_part.get_center() - Rect2(ship.data.get_ship_rect() ).get_center() )
 	position.x = xy.x
 	position.z = xy.y
-	rotation = Grid.placement_to_rotation(ship_part.get_placement() )
-	flip_h = Grid.is_placement_flipped(ship_part.get_placement() )
+	rotation.y = Rotation.to_radians(ship_part.get_rotation() )
+	flip_h = Rotation.is_flip_h(ship_part.get_rotation() )
 
 func _notification(what: int) -> void:
 	if what != NOTIFICATION_PARENTED or _ship == null:

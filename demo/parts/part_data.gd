@@ -1,7 +1,8 @@
 class_name PartData extends RefCounted
 
-signal image_changed
+signal image_changed()
 
+const DEFAULT_SIZE := Vector2i.ONE
 const MIN_SIZE := 1
 const MAX_SIZE := 16
 const CODE_LENGTH := 4
@@ -21,21 +22,24 @@ static var subtypes: Dictionary[String, Callable] = {
 	"flamethrower": FlamethrowerData.new
 }
 
-static func create_subtype(part_subtype: String, part_code: String, part_image_path: String, part_width := MIN_SIZE, part_height := MIN_SIZE) -> PartData:
-	return subtypes.get(part_subtype, PartData.new).call(part_code, part_image_path, part_width, part_height)
-
-var cost := StrategicResources.new()
-var cost_data: Dictionary:
-	get = get_cost_data,
-	set = set_cost_data
-var atlas_id := -1
-var y_level := 0.0:
-	set = set_y_level
+var subtype := ""
 var name := ""
 var tab := ""
 var description := ""
-var subtype := ""
-var connected = true
+var image := ImageAsset.NOT_FOUND:
+	set = set_image
+var image_path: String:
+	get = get_image_path,
+	set = set_image_path
+var cost := StrategicResources.new():
+	set = set_cost
+var cost_data: Dictionary:
+	get = get_cost_data,
+	set = set_cost_data
+var y_level := 0.0:
+	set = set_y_level
+var hp := 0.0
+var mass := 0.0
 var warp := 0.0
 var shield := 0.0
 var energy := 0.0
@@ -44,34 +48,29 @@ var shield_per_sec := 0.0
 var energy_per_sec := 0.0
 var thrust := 0.0
 var torque := 0.0
-var hp := 0.0
-var mass := 0.0
-var image_path: String:
-	set = set_image_path
 
 var _code: String
 var _size: Vector2i
-var _image: PartImage
+var _boundary := Boundary.FULL
 var _manager: PartManager
 
-func _init(init_code: String, init_image_path: String, init_width := MIN_SIZE, init_height := MIN_SIZE) -> void:
-	_code = init_code if init_code.length() == CODE_LENGTH else FALLBACK_CODE
-	_size = Vector2i(init_width, init_height).clampi(MIN_SIZE, MAX_SIZE)
-	image_path = init_image_path
+static func create_subtype(const_subtype: String, const_code: String, const_size := DEFAULT_SIZE, const_boundary := Boundary.ALL_EDGES) -> PartData:
+	return subtypes.get(const_subtype, PartData.new).call(const_code, const_size, const_boundary)
 
+func _init(const_code: String, const_size := DEFAULT_SIZE, const_boundary := Boundary.ALL_EDGES) -> void:
+	_code = const_code if const_code.length() == CODE_LENGTH else FALLBACK_CODE
+	_size = const_size.clampi(MIN_SIZE, MAX_SIZE)
+	_boundary = const_boundary
+
+## This return value MUST be kept constant
 func becomes_node_on_ship() -> bool:
-	return false # <- MUST BE CONSTANT
+	return false
 
-func create_part() -> Part:
-	var part := Part.new()
-	part.data = self
-	return part
+func is_image_valid() -> bool:
+	return image.get_size() == Measurement.PX_PER_TILE * _size
 
 func get_manager() -> PartManager:
 	return _manager
-
-func get_image() -> PartImage:
-	return _image
 
 func get_code() -> String:
 	return _code
@@ -82,14 +81,23 @@ func get_width() -> int:
 func get_height() -> int:
 	return _size.y
 
-func get_size(placement := Grid.PartPlacement.ROT_0) -> Vector2i:
-	return _size if placement % 2 == 0 else Vector2i(_size.y, _size.x)
+func get_size() -> Vector2i:
+	return _size
 
-func get_boundary(_placement := Grid.PartPlacement.ROT_0) -> int:
-	return ShipData.BoundaryFlags.FULL
+func get_boundary() -> int:
+	return _boundary
+
+func get_rotated_size(rotation: Rotation.Discrete) -> Vector2i:
+	return _size if Rotation.is_even(rotation) else Vector2i(_size.y, _size.x)
+
+func get_rotated_boundary(rotation: Rotation.Discrete) -> int:
+	return Boundary.inverse_transform(_boundary, rotation)
 
 func get_cost_data() -> Dictionary:
 	return cost.to_dict()
+
+func set_cost(new_cost: StrategicResources) -> void:
+	cost = new_cost if new_cost != null else cost
 
 func set_cost_data(new_cost_data: Dictionary) -> void:
 	cost.load_dict(new_cost_data)
@@ -97,9 +105,21 @@ func set_cost_data(new_cost_data: Dictionary) -> void:
 func set_y_level(new_y_level: float) -> void:
 	y_level = clampf(new_y_level, MIN_Y_LEVEL, MAX_Y_LEVEL)
 
+func get_image_path() -> String:
+	return image.get_path()
+
 func set_image_path(new_image_path: String) -> void:
-	if image_path == new_image_path:
+	image = ImageAsset.use(new_image_path)
+
+func set_image(new_image: ImageAsset) -> void:
+	if new_image == null:
+		new_image = ImageAsset.NOT_FOUND
+	if new_image == image:
 		return
-	image_path = new_image_path
-	_image = PartImage.new(new_image_path, _size.x, _size.y)
+	image = new_image
 	image_changed.emit()
+
+func create_part() -> Part:
+	var part := Part.new()
+	part.data = self
+	return part

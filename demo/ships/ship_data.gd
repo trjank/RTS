@@ -13,20 +13,13 @@ enum PartError {
 	OVERLAP = 1 << 2,
 	INCORRECT_SIZE_BYTES = 1 << 3
 }
-enum BoundaryFlags {
-	NONE = 0,
-	RIGHT = 1 << 0,
-	TOP = 1 << 1,
-	LEFT = 1 << 2,
-	BOTTOM = 1 << 3,
-	FULL = RIGHT | TOP | LEFT | BOTTOM
-}
 
+const NULL_ID := 0
+const MAX_NAME_LENGTH := 100
+const USE_MIPMAPS := false
 const MIN_GRID_SIZE := Vector2i.ONE
 const MAX_GRID_SIZE := Vector2i(256, 256)
-const USE_MIPMAPS := false
-const MAX_NAME_LENGTH := 100
-const NULL_PART_ID := 0
+
 const BYTES_U8 := 1
 const BYTES_U16 := 2
 const BYTES_UTF32_CHAR := 4
@@ -85,24 +78,6 @@ func get_texture() -> Texture:
 func is_empty() -> bool:
 	return _parts.size() <= 1
 
-func count_parts() -> int:
-	return _parts.size() - 1
-
-func count_part_clusters() -> int:
-	return _part_clusters.count_sets() - 1
-
-func are_parts_connected() -> bool:
-	return _part_clusters.count_sets() <= 2
-
-func has_part_id(part_id: int) -> bool:
-	return 0 <= part_id and part_id < _parts.size()
-
-func get_part(part_id: int) -> ShipDataPart:
-	return _parts[part_id]
-
-func get_part_at(xy: Vector2i) -> ShipDataPart:
-	return _parts[_part_ids.get_int(xy.x, xy.y) if _ship_bounds.has_point(xy) else NULL_PART_ID]
-
 func get_grid_rect() -> Rect2i:
 	return _grid_bounds
 
@@ -115,23 +90,57 @@ func get_center() -> Vector2:
 func get_grid_size() -> Vector2i:
 	return _grid_bounds.size
 
+func count_parts() -> int:
+	return _parts.size() - 1
+
+func count_part_clusters() -> int:
+	return _part_clusters.count_sets() - 1
+
+func are_parts_connected() -> bool:
+	return _part_clusters.count_sets() <= 2
+
+func part_id_atv(point: Vector2i) -> int:
+	return _part_ids.get_intv(point) if _ship_bounds.has_point(point) else NULL_ID
+
+func part_id_at(x: int, y: int) -> int:
+	return part_id_atv(Vector2i(x, y) )
+
+func part_atv(point: Vector2i) -> ShipDataPart:
+	return _parts[part_id_atv(point) ]
+
+func part_at(x: int, y: int) -> ShipDataPart:
+	return _parts[part_id_at(x, y) ]
+
+## Returns null for invalid ids or NULL_ID
+func get_part(part_id: int) -> ShipDataPart:
+	return _parts[part_id if 0 <= part_id and part_id < _parts.size() else NULL_ID]
+
+func get_part_data(part_id: int) -> PartData:
+	var part := get_part(part_id)
+	return part.get_data() if part != null else null
+
+## This creates a copy (if you can, use get_part instead)
+func get_parts() -> Array[ShipDataPart]:
+	var copy := _parts.duplicate()
+	copy.remove_at(NULL_ID)
+	return copy
+
+## For one-line set and save do: var success := set_name(..) and save()
 func set_name(new_name: String) -> bool:
-	new_name = new_name.substr(0, MAX_NAME_LENGTH)
+	new_name = new_name.left(MAX_NAME_LENGTH)
 	if name == new_name:
 		return false
-	# NOTE:    ^^^^^ This allows for one-line set and save
-	# (var success := set_name(..) and save() )
 	name = new_name
 	renamed.emit(name)
 	ui_update.emit()
 	return true
 
+## For one-line set and save do: var success := set_grid_size(..) and save()
 func set_grid_size(new_grid_size: Vector2i) -> bool:
 	new_grid_size = new_grid_size.clamp(MIN_GRID_SIZE, MAX_GRID_SIZE)
+	#
 	if get_grid_size() == new_grid_size:
 		return false
-	# NOTE:    ^^^^^ This allows for one-line set and save
-	# (var success := set_grid_size(..) and save() )
 	_grid_bounds.size = new_grid_size
 	_part_ids.resize(new_grid_size.x, new_grid_size.y)
 	clear()
@@ -142,7 +151,7 @@ func clear() -> void:
 	_image = null
 	_texture = null
 	_parts = [null]
-	_part_ids.fill(NULL_PART_ID)
+	_part_ids.fill(NULL_ID)
 	_part_clusters.resize(1)
 	_part_clusters.reset()
 	_ship_bounds = Rect2i()
@@ -188,54 +197,70 @@ func calculate_stats() -> void:
 		add_part_stats(part, part_counts[part] )
 	stats_updated.emit()
 
-func for_each_part(f: Callable) -> void:
-	for part_id in range(1, _parts.size() ):
-		f.call(_parts[part_id] )
+func to_counts(part_ids: PackedInt32Array, add_to: Dictionary[PartData, int] = {} ) -> Dictionary[PartData, int]:
+	for id in part_ids:
+		var data := get_part_data(id)
+		add_to[data] = add_to.get(data, 0) + 1
+	return add_to
 
-func _for_vertical_edge(x: int, y_start: int, y_end: int, f: Callable) -> void:
-	for y in range(y_start, y_end):
-		f.call(get_part_at(Vector2i(x, y) ) )
+func raycast_v(x: int, y_from: int, y_to: int, add_to := PackedInt32Array() ) -> PackedInt32Array:
+	for y in range(y_from, y_to):
+		add_to.append(part_id_at(x, y) )
+	return add_to
 
-func _for_horizontal_edge(y: int, x_start: int, x_end: int, f: Callable) -> void:
-	for x in range(x_start, x_end):
-		f.call(get_part_at(Vector2i(x, y) ) )
+func raycast_h(x_from: int, x_to: int, y: int, add_to := PackedInt32Array() ) -> PackedInt32Array:
+	for x in range(x_from, x_to):
+		add_to.append(part_id_at(x, y) )
+	return add_to
 
-func for_each_neighbor(part_id: int, boundary_flags: int, f: Callable) -> void:
+func _add_edge_h_neighbors(boundary_flags: int, rect: Rect2i, add_to: PackedInt32Array) -> void:
+	if boundary_flags & Boundary.TOP_EDGE:
+		raycast_h(rect.position.x, rect.end.x, rect.position.y - 1, add_to)
+	if boundary_flags & Boundary.BOTTOM_EDGE:
+		raycast_h(rect.position.x, rect.end.x, rect.end.y, add_to)
+
+func _add_edge_v_neighbors(boundary_flags: int, rect: Rect2i, add_to: PackedInt32Array) -> void:
+	if boundary_flags & Boundary.LEFT_EDGE:
+		raycast_v(rect.position.x - 1, rect.position.y, rect.end.y, add_to)
+	if boundary_flags & Boundary.RIGHT_EDGE:
+		raycast_v(rect.end.x, rect.position.y, rect.end.y, add_to)
+
+func _add_corner_neighbors(boundary_flags: int, rect: Rect2i, add_to: PackedInt32Array) -> void:
+	if boundary_flags & Boundary.TOP_LEFT_CORNER:
+		add_to.append(part_id_at(rect.position.x - 1, rect.position.y - 1) )
+	if boundary_flags & Boundary.TOP_RIGHT_CORNER:
+		add_to.append(part_id_at(rect.end.x, rect.position.y - 1) )
+	if boundary_flags & Boundary.BOTTOM_LEFT_CORNER:
+		add_to.append(part_id_at(rect.position.x - 1, rect.end.y) )
+	if boundary_flags & Boundary.BOTTOM_RIGHT_CORNER:
+		add_to.append(part_id_at(rect.end.x, rect.end.y) )
+
+func get_neighbors(part_id: int, boundary_flags: int) -> PackedInt32Array:
+	var neighbors := PackedInt32Array()
 	var rect := _parts[part_id].get_rect()
-	if boundary_flags & BoundaryFlags.LEFT:
-		_for_vertical_edge(rect.position.x - 1, rect.position.y, rect.end.y, f)
-	if boundary_flags & BoundaryFlags.RIGHT:
-		_for_vertical_edge(rect.end.x, rect.position.y, rect.end.y, f)
-	if boundary_flags & BoundaryFlags.TOP:
-		_for_horizontal_edge(rect.position.y - 1, rect.position.x, rect.end.x, f)
-	if boundary_flags & BoundaryFlags.BOTTOM:
-		_for_horizontal_edge(rect.end.y, rect.position.x, rect.end.x, f)
+	_add_corner_neighbors(boundary_flags, rect, neighbors)
+	_add_edge_h_neighbors(boundary_flags, rect, neighbors)
+	_add_edge_v_neighbors(boundary_flags, rect, neighbors)
+	return neighbors
 
-func add_part(part_data: PartData, top_left_corner: Vector2i, placement := Grid.PartPlacement.ROT_0, serialize_part := true) -> PartError:
+## If serialize_part is false, the part cannot be saved to a ShipDatabase
+func add_part(part_data: PartData, top_left_corner: Vector2i, rotation := Rotation.Discrete.ROT_0, serialize_part := true) -> PartError:
 	if part_data == null:
 		return PartError.IS_NULL
-	var boundary := part_data.get_boundary(placement)
-	var size := part_data.get_size(placement)
+	var boundary := part_data.get_rotated_boundary(rotation)
+	var size := part_data.get_rotated_size(rotation)
 	var rect := Rect2i(top_left_corner, size)
-	# NOTE: Only parts with no boundary can be placed on top of other parts
+	# NOTE: Parts with no boundary can be placed on top of other parts
 	if not _grid_bounds.encloses(rect):
 		return PartError.OUT_OF_BOUNDS
-	if boundary != BoundaryFlags.NONE and not _part_ids.rect_equals(rect, NULL_PART_ID):
+	if boundary != Boundary.NONE and not _part_ids.rect_equals(rect, NULL_ID):
 		return PartError.OVERLAP
-	var part_id := _part_clusters.create_set()
-	var part := ShipDataPart.new(part_id, part_data, rect, placement, boundary)
-	_parts.push_back(part)
-	if part_data.becomes_node_on_ship():
-		node_parts.push_back(part)
-	if serialize_part:
-		_serialize_part(part_id)
-	add_to_part_count(part_data)
-	_connect_part_to_grid(part_id, boundary, rect)
+	_create_part(part_data, rect, rotation, boundary, serialize_part)
 	return PartError.OK
 
-func _create_part(part_data: PartData, rect: Rect2i, placement: Grid.PartPlacement, boundary: int, serialize_part: bool) -> void:
+func _create_part(part_data: PartData, rect: Rect2i, rotation: Rotation.Discrete, boundary: int, serialize_part: bool) -> void:
 	var part_id := _part_clusters.create_set()
-	var part := ShipDataPart.new(part_id, part_data, rect, placement, boundary)
+	var part := ShipDataPart.new(part_id, part_data, rect, rotation, boundary)
 	_parts.push_back(part)
 	if part_data.becomes_node_on_ship():
 		node_parts.push_back(part)
@@ -243,19 +268,19 @@ func _create_part(part_data: PartData, rect: Rect2i, placement: Grid.PartPlaceme
 		_serialize_part(part_id)
 	add_to_part_count(part_data)
 	_connect_part_to_grid(part_id, boundary, rect)
+
+## NOTE: This cannot be undone except with clear()
+func connect_parts(part_id: int, neighbor_id: int) -> void:
+	if neighbor_id != NULL_ID:
+		_part_clusters.union_sets(neighbor_id, part_id)
 
 func _connect_part_to_grid(part_id: int, boundary: int, rect: Rect2i) -> void:
 	_ship_bounds = rect if _ship_bounds.size == Vector2i.ZERO else _ship_bounds.merge(rect)
-	if boundary == BoundaryFlags.NONE:
-		return _part_clusters.union_sets(part_id, NULL_PART_ID)
+	if boundary == Boundary.NONE:
+		return _part_clusters.union_sets(part_id, NULL_ID)
+	for neighbor_id in get_neighbors(part_id, boundary):
+		connect_parts(part_id, neighbor_id)
 	_part_ids.fill_rect(rect, part_id)
-	# NOTE: DisjointSets gives us a near O(1) way to update connectedness
-	for_each_neighbor(part_id, boundary, _connect_neighbor_to_part.bind(part_id) )
-
-func _connect_neighbor_to_part(neighbor: ShipDataPart, part_id: int) -> void:
-	if neighbor != null:
-		_part_clusters.union_sets(neighbor.get_id(), part_id)
-	#                  ^^^^^^^^^^ VERY fast, but hard to undo (so no remove_part method)
 
 func serialize() -> PackedByteArray:
 	assert(_bytes.get_size() % BYTES_PER_PART == 0)
@@ -278,12 +303,12 @@ func _serialize_part(part_id: int) -> void:
 	var part := _parts[part_id]
 	_bytes.put_u16(part.get_rect().position.x)
 	_bytes.put_u16(part.get_rect().position.y)
-	_bytes.put_u8(part.get_placement() )
+	_bytes.put_u8(part.get_rotation() )
 	_bytes.put_data(part.get_data().get_code().to_utf32_buffer() )
 
 func _deserialize_part(part_manager: PartManager) -> PartError:
 	var top_left_corner := Vector2i(_bytes.get_u16(), _bytes.get_u16() )
-	var placement := _bytes.get_u8() as Grid.PartPlacement
+	var placement := _bytes.get_u8() as Rotation.Discrete
 	var i := _bytes.get_position()
 	var code := _bytes.data_array.slice(i, i + BYTES_UTF32_CODE).get_string_from_utf32()
 	var part := part_manager.get_part(code)
@@ -291,21 +316,21 @@ func _deserialize_part(part_manager: PartManager) -> PartError:
 	return add_part(part, top_left_corner, placement, false)
 
 func generate_image() -> void:
-	var size := Grid.PX_PER_TILE * _ship_bounds.size
-	var offset := Grid.PX_PER_TILE * _ship_bounds.position
-	_image = Image.create_empty(size.x, size.y, USE_MIPMAPS, PartImage.FORMAT)
+	var size := Measurement.PX_PER_TILE * _ship_bounds.size
+	var offset := Measurement.PX_PER_TILE * _ship_bounds.position
+	_image = ImageAsset.blank_image(size, USE_MIPMAPS)
 	# NOTE: Draw order does not matter because they are guaranteed to not overlap
-	for_each_part(_draw_part.bind(offset) )
-	# Generate the texture immediately, since UI will immediately need it
+	for i in range(1, _parts.size() ):
+		_draw_part(_parts[i], offset)
 	_texture = ImageTexture.create_from_image(_image)
 	generated_image.emit(_image, _texture)
 	ui_update.emit()
 
 func _draw_part(part: ShipDataPart, offset: Vector2i) -> void:
-	if part.get_boundary() == BoundaryFlags.NONE:
+	if part.get_boundary() == Boundary.NONE or not part.get_data().is_image_valid():
 		return
 	var part_image := part.get_image()
 	var from := Rect2i(Vector2i.ZERO, part_image.get_size() )
-	var to := Grid.PX_PER_TILE * part.get_rect().position
+	var to := Measurement.PX_PER_TILE * part.get_rect().position
 	# NOTE: This uses the CPU, but is very fast due to c++ memcpy
 	_image.blit_rect(part_image, from, to - offset)

@@ -65,19 +65,19 @@ func smooth_rotate(radians: float, duration_sec := rotation_duration_sec) -> voi
 func snap_rotation() -> void:
 	if _rotation_tween != null:
 		_rotation_tween.custom_step(MAX_ROTATION_DURATION_SEC)
-	rotation.y = snappedf(rotation.y, Grid.ROTATION_INCREMENT)
+	rotation.y = snappedf(rotation.y, Rotation.INCREMENT)
 
 func snap_to_grid() -> void:
 	if not is_node_ready():
 		return
 	snap_rotation()
-	size_3d = size_3d.snappedf(Grid.METERS_PER_TILE)
+	size_3d = size_3d.snappedf(Measurement.METERS_PER_TILE)
 	var half_size := 0.5 * size_3d * transform.basis
-	position = half_size + (position - half_size).snappedf(Grid.METERS_PER_TILE)
+	position = half_size + (position - half_size).snappedf(Measurement.METERS_PER_TILE)
 
 func spawn_part(center: Vector3, part_data: PartData) -> PartHitbox:
 	var part := PartHitbox.create()
-	var span := Grid.METERS_PER_TILE * part_data.get_size()
+	var span := Measurement.METERS_PER_TILE * part_data.get_size()
 	part.data = part_data
 	_reset(center, span)
 	add_child(part)
@@ -167,9 +167,9 @@ func _handle_drag_input(event: InputEvent) -> void:
 	if event.is_action_pressed("flip"):
 		flip()
 	if event.is_action_pressed("rotate clockwise"):
-		smooth_rotate(-Grid.ROTATION_INCREMENT)
+		smooth_rotate(-Rotation.INCREMENT)
 	if event.is_action_pressed("rotate counterclockwise"):
-		smooth_rotate(Grid.ROTATION_INCREMENT)
+		smooth_rotate(Rotation.INCREMENT)
 	if event.is_action_released("select"):
 		stop_dragging()
 
@@ -177,7 +177,7 @@ func _on_mouse_selection_selected_single(node: Node3D, center: Vector3) -> void:
 	if node == null:
 		return _reset()
 	if node != self and not is_ancestor_of(node):
-		select( [node], center, Grid.METERS_PER_TILE * Vector2.ONE)
+		select( [node], center, Measurement.METERS_PER_TILE * Vector2.ONE)
 	begin_dragging()
 
 func _on_mouse_selection_selected_multiple(nodes: Array[Node3D], center: Vector3, span: Vector2) -> void:

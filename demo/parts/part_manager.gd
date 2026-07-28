@@ -17,7 +17,6 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"description": TYPE_STRING,
 	"code": TYPE_STRING,
 	"subtype": TYPE_STRING,
-	"connected": TYPE_BOOL,
 	"cost_data": TYPE_DICTIONARY,
 	"warp": TYPE_FLOAT,
 	"shield": TYPE_FLOAT,
@@ -34,6 +33,7 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"height": TYPE_INT,
 	"y_level": TYPE_FLOAT,
 	"image_path": TYPE_STRING,
+	"boundary": TYPE_INT,
 # For WeaponData below
 	"projectile_code": TYPE_STRING,
 # For WeaponModifierData below
@@ -90,9 +90,6 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 
 var _parts: Dictionary[String, PartData] = {}
 
-static func is_dictionary(variant: Variant) -> bool:
-	return variant is Dictionary
-
 func clear() -> void:
 	_parts.clear()
 
@@ -105,14 +102,16 @@ func has_part(code: String) -> bool:
 func get_part(code: String) -> PartData:
 	return _parts.get(code)
 
-func for_each_part(f: Callable) -> void:
-	for part in _parts:
-		f.call(_parts[part] )
+## This creates a copy (if you can, use get_part instead)
+func get_parts() -> Array[PartData]:
+	var copy := [] as Array[PartData]
+	copy.assign(_parts.values() )
+	return copy
 
-func create_part(code: String, image_path: String, width: int, height: int, subtype = "") -> PartData:
+func create_part(code: String, size := PartData.DEFAULT_SIZE, subtype = "", boundary := Boundary.ALL_EDGES) -> PartData:
 	if code.length() != PartData.CODE_LENGTH or has_part(code) or not subtype in PartData.subtypes:
 		return null
-	var part := PartData.create_subtype(subtype, code, image_path, width, height)
+	var part := PartData.create_subtype(subtype, code, size, boundary)
 	_parts[code] = part
 	part._manager = self
 	part_created.emit(part)
@@ -123,19 +122,20 @@ func load_part(code: String, properties: Dictionary) -> LoadError:
 	var subtype = properties.get("subtype", "")
 	var width: int = properties.get("width", PartData.MIN_SIZE)
 	var height: int = properties.get("height", PartData.MIN_SIZE)
-	var image_path: String = properties.get("image_path", "")
 	#
 	if not TypeChecker.type_check(properties, VALID_PART_PROPERTIES, true, TypeChecker.CAST_NUMBERS_AND_COLORS):
 		return LoadError.INVALID_PART_PROPERTIES
-	var part := create_part(code, image_path, width, height, subtype)
+	var part := create_part(code, Vector2i(width, height), subtype)
 	if part == null:
 		return LoadError.INVALID_PART
 	for property in properties:
 		part.set(property, properties[property] )
 	return LoadError.OK
 
-func load_dictionary(data: Dictionary) -> int:
-	if not data.values().all(is_dictionary):
+func load_dict(data: Dictionary) -> int:
+	var is_dict := func(value: Variant) -> bool: return value is Dictionary
+	#
+	if not data.values().all(is_dict):
 		return LoadError.INCORRECT_FORMAT
 	var error: int = LoadError.OK
 	for code in data:
@@ -149,4 +149,4 @@ func load_json(file_path: String) -> int:
 		return LoadError.FILE_NOT_FOUND
 	if not data is Dictionary:
 		return LoadError.INCORRECT_FORMAT
-	return load_dictionary(data)
+	return load_dict(data)

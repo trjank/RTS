@@ -2,16 +2,16 @@ class_name WeaponData extends PartData
 
 var projectile_code := "NULL"
 
-func create_part() -> Part:
-	var weapon := Weapon.new()
-	weapon.data = self
-	return weapon
+func _init(const_code: String, const_size := DEFAULT_SIZE, _const_boundary := Boundary.ALL_EDGES) -> void:
+	super(const_code, const_size, Boundary.NONE)
 
 func becomes_node_on_ship() -> bool:
-	return true # <- MUST BE CONSTANT
+	return true
 
 func get_projectile() -> ProjectileData:
 	return _manager.get_part(projectile_code) as ProjectileData
 
-func get_boundary(_placement := Grid.PartPlacement.ROT_0) -> int:
-	return ShipData.BoundaryFlags.NONE
+func create_part() -> Part:
+	var weapon := Weapon.new()
+	weapon.data = self
+	return weapon
