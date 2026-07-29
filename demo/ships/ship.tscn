@@ -41,6 +41,8 @@ size = Vector2(5, 0.5)
 pip_count = 10
 value = 4.0
 max_value = 10.0
+base_color = Color(0.10416663, 0, 0.25, 1)
+pip_color = Color(0.4166665, 0, 1, 1)
 
 [node name="HPBar" parent="UI" index="1" instance=ExtResource("3_an5v1")]
 transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 0)
@@ -54,6 +56,8 @@ size = Vector2(5, 0.5)
 pip_count = 10
 value = 5.0
 max_value = 10.0
+base_color = Color(0.25, 0.0775, 0.0775, 1)
+pip_color = Color(1, 0.32, 0.32, 1)
 
 [node name="EnergyBar" parent="UI" index="2" instance=ExtResource("3_an5v1")]
 transform = Transform3D(2.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 1.5)
@@ -69,6 +73,8 @@ size = Vector2(2.5, 0.5)
 pip_count = 10
 value = 3.0
 max_value = 10.0
+base_color = Color(0.25, 0.175, 0, 1)
+pip_color = Color(1, 0.7, 0, 1)
 
 [node name="BehaviorIndicator" type="Label3D" parent="UI" index="3"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0)

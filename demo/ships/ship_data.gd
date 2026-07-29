@@ -50,7 +50,7 @@ var _image: Image
 var _texture: ImageTexture
 var _grid_bounds := Rect2i(Vector2i.ZERO, MIN_GRID_SIZE)
 var _ship_bounds := Rect2i()
-var _part_ids := Int32Grid.new(MIN_GRID_SIZE.x, MIN_GRID_SIZE.y)
+var _part_ids := PackedInt32Grid.new(MIN_GRID_SIZE)
 var _parts: Array[ShipDataPart] = [null]
 var _part_clusters := DisjointSets.new()
 var _bytes := StreamPeerBuffer.new()
@@ -142,7 +142,7 @@ func set_grid_size(new_grid_size: Vector2i) -> bool:
 	if get_grid_size() == new_grid_size:
 		return false
 	_grid_bounds.size = new_grid_size
-	_part_ids.resize(new_grid_size.x, new_grid_size.y)
+	_part_ids.size = new_grid_size
 	clear()
 	resized.emit(new_grid_size)
 	return true
@@ -253,7 +253,7 @@ func add_part(part_data: PartData, top_left_corner: Vector2i, rotation := Rotati
 	# NOTE: Parts with no boundary can be placed on top of other parts
 	if not _grid_bounds.encloses(rect):
 		return PartError.OUT_OF_BOUNDS
-	if boundary != Boundary.NONE and not _part_ids.rect_equals(rect, NULL_ID):
+	if boundary != Boundary.NONE and not _part_ids.is_rect_empty(rect, NULL_ID):
 		return PartError.OVERLAP
 	_create_part(part_data, rect, rotation, boundary, serialize_part)
 	return PartError.OK

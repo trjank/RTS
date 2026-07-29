@@ -91,6 +91,14 @@ func update_ui() -> void:
 	energy_bar.position.z = -size.y
 	hp_bar.position.z = energy_bar.position.z - energy_bar.size.y - PIP_BAR_SPACING
 	shield_bar.position.z = hp_bar.position.z - hp_bar.size.y - PIP_BAR_SPACING
+	#
+	hp_bar.max_value = _max_hp
+	shield_bar.max_value = _max_shield
+	energy_bar.max_value = _max_energy
+	#
+	hp_bar.visible = not is_zero_approx(_max_hp)
+	shield_bar.visible = not is_zero_approx(_max_shield)
+	energy_bar.visible = not is_zero_approx(_max_energy)
 
 func _on_death_animation() -> void:
 	part_nodes.queue_free()
@@ -157,6 +165,6 @@ func update_behavior_indicator() -> void:
 func _process(_dt: float) -> void:
 	update_behavior_indicator()
 	ui.global_rotation = Vector3.ZERO
-	#bar_hp.value = hp
-	#bar_shield.value = shield
-	#bar_energy.value = energy
+	hp_bar.value = hp
+	shield_bar.value = shield
+	energy_bar.value = energy

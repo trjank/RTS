@@ -518,7 +518,7 @@
 		"modifier_data": {
 			"multiplier_cooldown": 0.8
 		},
-		"image_path": "res://part_images/weapon_modifier_energy.png"
+		"image_path": "res://part_images/weapon_modifier_cooldown.png"
 	},
 	"WME1": {
 		"name": "Energy Modifier",
@@ -534,6 +534,6 @@
 		"modifier_data": {
 			"multiplier_energy": 0.9
 		},
-		"image_path": "res://part_images/weapon_modifier_cooldown.png"
+		"image_path": "res://part_images/weapon_modifier_energy.png"
 	}
 }

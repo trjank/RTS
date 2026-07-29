@@ -13,6 +13,7 @@ size = Vector2(1, 1)
 center_offset = Vector3(0, 0, 0.5)
 
 [node name="Flamethrower" type="Area3D" node_paths=PackedStringArray("mesh", "hitbox", "sound_effect")]
+monitorable = false
 script = ExtResource("1_datqr")
 mesh = NodePath("MeshInstance3D")
 hitbox = NodePath("CollisionShape3D")
