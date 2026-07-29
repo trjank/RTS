@@ -88,9 +88,9 @@ func update_ui() -> void:
 	if not is_node_ready():
 		return
 	ui.visible = selected
-	energy_bar.position.z = -size.y
-	hp_bar.position.z = energy_bar.position.z - energy_bar.size.y - PIP_BAR_SPACING
-	shield_bar.position.z = hp_bar.position.z - hp_bar.size.y - PIP_BAR_SPACING
+	hp_bar.position.z = -size.y
+	energy_bar.position.z = hp_bar.position.z - hp_bar.size.y - PIP_BAR_SPACING
+	shield_bar.position.z = energy_bar.position.z - energy_bar.size.y - PIP_BAR_SPACING
 	#
 	hp_bar.max_value = _max_hp
 	shield_bar.max_value = _max_shield

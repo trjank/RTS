@@ -237,6 +237,19 @@ func _on_death_animation() -> void:
 func order_attack() -> void:
 	attack()
 
+func is_near() -> bool:
+	return true
+
+func issue_command(behavior: BehaviorFlags, arg1 := 0.0, arg2 := 0.0) -> bool:
+	match behavior:
+		BehaviorFlags.ATTACK: attack(arg1)
+		BehaviorFlags.FLEE: flee(arg1)
+		BehaviorFlags.TRACK: track()
+		BehaviorFlags.BROADSIDE: broadside(arg1, arg2)
+		BehaviorFlags.KITE: kite(arg1, arg2)
+		_: return false # (do not pass multiple flags)
+	return true
+
 ## NOTE: This rams by default
 func attack(min_distance := RAMMING_DISTANCE) -> void:
 	_behavior_flags |= BehaviorFlags.ATTACK

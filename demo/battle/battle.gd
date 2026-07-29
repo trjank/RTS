@@ -34,6 +34,7 @@ const BOT_ICON := preload("res://icons/bot.png")
 @export var energy_label: Label
 @export var military_science_label: Label
 
+var friendly_fire_enabled := false
 var can_pause := false
 var rng := RandomNumberGenerator.new()
 var scenery: Array[Scenery] = []
@@ -182,6 +183,7 @@ func stop() -> bool:
 		return false
 	var winners := get_alive_teams()
 	_status = Status.STOPPED
+	round_timer.stop()
 	set_physics_process(false)
 	stopped.emit(winners)
 	return true

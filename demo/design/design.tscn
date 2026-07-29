@@ -1,11 +1,13 @@
-[gd_scene load_steps=22 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=27 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="2_6gxgq"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="3_rmp56"]
 [ext_resource type="Material" uid="uid://bpeukeun10hch" path="res://effects/blur.tres" id="4_rmp56"]
-[ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="6_r41aq"]
+[ext_resource type="Texture2D" uid="uid://d1n2lc651kf1t" path="res://icons/cog.png" id="6_7jtw0"]
+[ext_resource type="Texture2D" uid="uid://c2q6pt8rrkqvv" path="res://icons/cog_rotated.png" id="7_7jtw0"]
 [ext_resource type="Material" uid="uid://bju5xmrwu2sfx" path="res://effects/grid_lines.tres" id="8_7jtw0"]
+[ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="8_q8dch"]
 [ext_resource type="Script" uid="uid://rrpw8rs1x5wn" path="res://design/grid.gd" id="8_r41aq"]
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/parts_container.tscn" id="9_3c8mw"]
 [ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/part_selection.gd" id="10_6vk6i"]
@@ -21,12 +23,34 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 bg_color = Color(0.262745, 0.305882, 0.368627, 0.392157)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lhyb1"]
+content_margin_left = 25.0
+content_margin_top = 0.0
+content_margin_right = 25.0
+content_margin_bottom = 0.0
+bg_color = Color(0.5019608, 0.24313726, 0.4117647, 1)
+border_width_left = 5
+border_color = Color(1, 1, 1, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmp56"]
-content_margin_left = 30.0
-content_margin_top = 20.0
-content_margin_right = 30.0
-content_margin_bottom = 20.0
-bg_color = Color(1, 0.6666667, 0, 0.19607843)
+content_margin_left = 22.0
+content_margin_top = 22.0
+content_margin_right = 25.0
+content_margin_bottom = 32.0
+bg_color = Color(0.5, 0.25333333, 0.13, 1)
+border_width_bottom = 10
+border_color = Color(0.25, 0.12666667, 0.065, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3c8mw"]
+content_margin_left = 22.0
+content_margin_top = 32.0
+content_margin_right = 25.0
+content_margin_bottom = 22.0
+bg_color = Color(0.5019608, 0.25490198, 0.12941177, 1)
+border_width_top = 10
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q8dch"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_rmp56"]
 viewport_path = NodePath("World/SubViewport")
@@ -145,14 +169,54 @@ tabs = {
 "weapons": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Weapons")
 }
 
-[node name="TestButton" type="Button" parent="UI/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
-size_flags_horizontal = 6
+theme_override_constants/separation = 25
+
+[node name="PanelContainer" type="PanelContainer" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lhyb1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="BehaviorSwapButton" type="TextureButton" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("6_7jtw0")
+texture_hover = ExtResource("7_7jtw0")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+text = "Behavior: NAME —"
+vertical_alignment = 1
+
+[node name="CPULabel" type="Label" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "20 CPU"
+vertical_alignment = 1
+
+[node name="TestButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 48
 theme_override_styles/normal = SubResource("StyleBoxFlat_rmp56")
-text = "Test your ship"
-icon = ExtResource("6_r41aq")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3c8mw")
+theme_override_styles/hover = SubResource("StyleBoxFlat_rmp56")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_q8dch")
+text = "Test ship"
+icon = ExtResource("8_q8dch")
 
 [node name="World" type="Node3D" parent="."]
 
@@ -222,7 +286,7 @@ ok_button_text = "Return to design"
 
 [connection signal="button_pressed" from="UI/VBoxContainer/HBoxContainer/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
 [connection signal="part_clicked" from="UI/VBoxContainer/HBoxContainer/PartsContainer" to="." method="_on_parts_container_part_clicked"]
-[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/TestButton" to="." method="_on_test_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/VBoxContainer/TestButton" to="." method="_on_test_button_pressed"]
 [connection signal="selected_multiple" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selected_multiple"]
 [connection signal="selected_single" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selected_single"]
 [connection signal="selection_started" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selection_started"]

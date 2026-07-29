@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene load_steps=14 format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main/main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="2_67ri8"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://c60au813wrr5i" path="res://main_menu/main_menu.tscn" id="6_4dugh"]
 [ext_resource type="PackedScene" uid="uid://owpblejfs8ky" path="res://ships_screen/ships_screen.tscn" id="6_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://dos22dgb4cqta" path="res://singleplayer/singleplayer.tscn" id="10_0i4oc"]
+[ext_resource type="PackedScene" uid="uid://2vhw5b8l4nvs" path="res://training_grounds/training_grounds.tscn" id="10_bsumw"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_grrlh"]
@@ -24,7 +25,8 @@ nodes = {
 1: NodePath("Design"),
 2: NodePath("Battle"),
 3: NodePath("Fleets"),
-4: NodePath("Singleplayer")
+4: NodePath("Singleplayer"),
+5: NodePath("TrainingGrounds")
 }
 camera = NodePath("World/CameraBody/Camera3D")
 camera_body = NodePath("World/CameraBody")
@@ -96,3 +98,7 @@ shape = SubResource("SphereShape3D_grrlh")
 [node name="MainMenu" parent="." instance=ExtResource("6_4dugh")]
 
 [node name="Singleplayer" parent="." instance=ExtResource("10_0i4oc")]
+
+[node name="TrainingGrounds" parent="." instance=ExtResource("10_bsumw")]
+
+[connection signal="state_changed" from="." to="TrainingGrounds" method="_on_main_state_changed"]

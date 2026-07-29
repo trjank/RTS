@@ -1,11 +1,14 @@
 class_name Main extends Node
 
+signal state_changed(new_state: State)
+
 enum State {
 	MAIN_MENU,
 	DESIGN,
 	BATTLE,
 	FLEET,
-	SINGLEPLAYER
+	SINGLEPLAYER,
+	TRAINING_GROUNDS
 }
 
 const MAX_ADAPTIVE_FOV := 170.0
@@ -58,12 +61,15 @@ func change_camera(from: State, to: State) -> void:
 	camera_body.freeze = to == State.MAIN_MENU
 
 func set_state(new_state: State) -> void:
+	if new_state == state:
+		return
 	toggle_node(_world_nodes[state], false)
 	toggle_node(_ui_nodes[state], false)
 	toggle_node(_world_nodes[new_state], true)
 	toggle_node(_ui_nodes[new_state], true)
 	change_camera(state, new_state)
 	state = new_state
+	state_changed.emit(new_state)
 
 func _process(_dt: float) -> void:
 	camera.fov = get_adaptive_fov() if state == State.MAIN_MENU else base_fov

@@ -104,4 +104,4 @@ func _on_fleet_container_button_pressed(new_slot: int) -> void:
 	slot = new_slot
 
 func _on_test_button_pressed() -> void:
-	print("testing!")
+	globals.main.state = Main.State.TRAINING_GROUNDS
