@@ -108,7 +108,7 @@ func _create_part_node(ship_part: ShipDataPart) -> void:
 	#
 	var part := ship_part.get_data().create_part()
 	part_nodes.add_child(part)
-	part._ship_init(ship_part, self)
+	part.on_ship_ready(ship_part, self)
 
 func is_enemy(unit: Unit) -> bool:
 	return player_owner == null or unit.player_owner == null or player_owner.team != unit.player_owner.team

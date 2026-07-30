@@ -3,9 +3,8 @@ class_name WeaponMountData extends PartData
 var modifiers := WeaponModifiers.new()
 var angle_degrees := 0.0
 var arc_degrees := 0.0
-var modifier_boundary_flags: int = Boundary.FULL
+var modifier_boundary := Boundary.FULL
+var modifier_efficiency := 1.0
 
-func on_ship_data_finalize(ship_data: ShipData) -> void:
-	var final_modifiers := WeaponModifiers.new()
-	final_modifiers.add(modifiers)
-	ship_data.for_each_neighbor(1, modifier_boundary_flags, final_modifiers.add)
+func create_ship_data_part(id := ShipData.NULL_ID, rect := Rect2i(), rotation := Rotation.Discrete.ROT_0, boundary := _boundary) -> ShipDataPart:
+	return ShipDataWeaponMount.new(id, self, rect, rotation, boundary)

@@ -37,15 +37,11 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 # For WeaponData below
 	"projectile_code": TYPE_STRING,
 # For WeaponModifierData below
-	"flat_range": TYPE_FLOAT,
-	"flat_energy": TYPE_FLOAT,
-	"flat_speed": TYPE_FLOAT,
-	"flat_cooldown": TYPE_FLOAT,
-	"multiplier_range": TYPE_FLOAT,
-	"multiplier_energy": TYPE_FLOAT,
-	"multiplier_speed": TYPE_FLOAT,
-	"multiplier_cooldown": TYPE_FLOAT,
 	"modifier_data": TYPE_DICTIONARY,
+	"modshare_efficiency": TYPE_FLOAT,
+	"modifier_boundary": TYPE_INT,
+# For WeaponMountData below
+	"modifier_efficiency": TYPE_FLOAT,
 # For ProjectileData below
 	"lifetime_sec": TYPE_FLOAT,
 	"damage": TYPE_FLOAT,

@@ -37,7 +37,7 @@ func set_data(new_data: PartData) -> void:
 	data = new_data
 	texture = data.image.get_texture()
 
-func _ship_init(ship_part: ShipDataPart, ship: Ship) -> void:
+func on_ship_ready(ship_part: ShipDataPart, ship: Ship) -> void:
 	_ship = ship
 	var xy := Measurement.METERS_PER_TILE * (ship_part.get_center() - Rect2(ship.data.get_ship_rect() ).get_center() )
 	position.x = xy.x

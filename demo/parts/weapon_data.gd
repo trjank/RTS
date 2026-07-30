@@ -11,6 +11,9 @@ func becomes_node_on_ship() -> bool:
 func get_projectile() -> ProjectileData:
 	return _manager.get_part(projectile_code) as ProjectileData
 
+func create_ship_data_part(id := ShipData.NULL_ID, rect := Rect2i(), rotation := Rotation.Discrete.ROT_0, boundary := _boundary) -> ShipDataPart:
+	return ShipDataWeapon.new(id, self, rect, rotation, boundary)
+
 func create_part() -> Part:
 	var weapon := Weapon.new()
 	weapon.data = self

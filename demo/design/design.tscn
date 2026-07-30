@@ -37,16 +37,16 @@ content_margin_left = 22.0
 content_margin_top = 22.0
 content_margin_right = 25.0
 content_margin_bottom = 32.0
-bg_color = Color(0.5, 0.25333333, 0.13, 1)
+bg_color = Color(0.21999997, 0.5, 0.19999999, 1)
 border_width_bottom = 10
-border_color = Color(0.25, 0.12666667, 0.065, 1)
+border_color = Color(0.11020832, 0.25, 0.0975, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3c8mw"]
 content_margin_left = 22.0
 content_margin_top = 32.0
 content_margin_right = 25.0
 content_margin_bottom = 22.0
-bg_color = Color(0.5019608, 0.25490198, 0.12941177, 1)
+bg_color = Color(0.21960784, 0.5019608, 0.2, 1)
 border_width_top = 10
 border_color = Color(0.8, 0.8, 0.8, 0)
 
@@ -183,7 +183,7 @@ layout_mode = 2
 theme_override_constants/separation = 15
 
 [node name="BehaviorSwapButton" type="TextureButton" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2(48, 48)
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("6_7jtw0")
@@ -194,7 +194,7 @@ stretch_mode = 5
 [node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
-text = "Behavior: NAME —"
+text = "Behavior: DEFAULT —"
 vertical_alignment = 1
 
 [node name="CPULabel" type="Label" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
@@ -209,6 +209,7 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 48
 theme_override_styles/normal = SubResource("StyleBoxFlat_rmp56")

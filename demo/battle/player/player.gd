@@ -83,6 +83,8 @@ func set_team(new_team: Team) -> void:
 	team = new_team
 
 func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
+	if ship_data.finalize() != ShipData.PlacementError.OK:
+		print("SHIP HAS PROBLEMS")
 	var ship := Ship.create()
 	add_child(ship)
 	ship.data = ship_data

@@ -484,6 +484,7 @@
 			"multiplier_range": 1.1,
 			"multiplier_cooldown": 1.15
 		},
+		"modshare_efficiency": 0.9,
 		"image_path": "res://part_images/weapon_modifier_range.png"
 	},
 	"WMR2": {

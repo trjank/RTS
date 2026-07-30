@@ -33,8 +33,8 @@ static func from_dict(dict: Dictionary, always_copy := false) -> StrategicResour
 	return resources if resources.load_dict(dict) or always_copy else NONE
 
 func to_dict() -> Dictionary:
-	var dict := SYNTAX.duplicate()
-	for property in dict:
+	var dict := {}
+	for property in SYNTAX:
 		dict[property] = get(property)
 	return dict
 

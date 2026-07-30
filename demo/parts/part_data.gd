@@ -8,7 +8,7 @@ const MAX_SIZE := 16
 const CODE_LENGTH := 4
 const FALLBACK_CODE := "NULL"
 const MIN_Y_LEVEL := 0.0
-const MAX_Y_LEVEL := 1.0
+const MAX_Y_LEVEL := 10.0 * Measurement.METERS_PER_TILE
 
 static var subtypes: Dictionary[String, Callable] = {
 	"": PartData.new,
@@ -118,6 +118,9 @@ func set_image(new_image: ImageAsset) -> void:
 		return
 	image = new_image
 	image_changed.emit()
+
+func create_ship_data_part(id := ShipData.NULL_ID, rect := Rect2i(), rotation := Rotation.Discrete.ROT_0, boundary := _boundary) -> ShipDataPart:
+	return ShipDataPart.new(id, self, rect, rotation, boundary)
 
 func create_part() -> Part:
 	var part := Part.new()

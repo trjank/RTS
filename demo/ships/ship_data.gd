@@ -5,6 +5,7 @@ signal renamed(new_name: String)
 signal resized(new_grid_size: Vector2i)
 signal generated_image(new_image: Image, new_texture: ImageTexture)
 signal stats_updated
+signal finalized
 
 enum PartError {
 	OK = 0,
@@ -12,6 +13,11 @@ enum PartError {
 	OUT_OF_BOUNDS = 1 << 1,
 	OVERLAP = 1 << 2,
 	INCORRECT_SIZE_BYTES = 1 << 3
+}
+enum PlacementError {
+	OK = 0,
+	WEAPON_HAS_NO_MOUNT = 1 << 0,
+	USELESS_MODIFIER = 1 << 1
 }
 
 const NULL_ID := 0
@@ -45,6 +51,7 @@ var torque := 0.0
 var part_counts: Dictionary[PartData, int]
 var center: Vector2
 var node_parts: Array[ShipDataPart] = []
+var is_finalized := false
 
 var _image: Image
 var _texture: ImageTexture
@@ -56,6 +63,7 @@ var _part_clusters := DisjointSets.new()
 var _bytes := StreamPeerBuffer.new()
 var _db: ShipDatabase
 var _id := -1
+var _placement_error: int = PlacementError.OK
 
 func get_db() -> ShipDatabase:
 	return _db
@@ -77,6 +85,9 @@ func get_texture() -> Texture:
 
 func is_empty() -> bool:
 	return _parts.size() <= 1
+
+func get_placement_error_flags() -> int:
+	return _placement_error
 
 func get_grid_rect() -> Rect2i:
 	return _grid_bounds
@@ -197,11 +208,16 @@ func calculate_stats() -> void:
 		add_part_stats(part, part_counts[part] )
 	stats_updated.emit()
 
-func to_counts(part_ids: PackedInt32Array, add_to: Dictionary[PartData, int] = {} ) -> Dictionary[PartData, int]:
-	for id in part_ids:
-		var data := get_part_data(id)
-		add_to[data] = add_to.get(data, 0) + 1
-	return add_to
+func finalize(forceful := false) -> int:
+	if is_finalized and not forceful:
+		return _placement_error
+	for i in range(1, _parts.size() ):
+		_placement_error |= _parts[i].on_ship_data_pre_finalize(self)
+	for i in range(1, _parts.size() ):
+		_placement_error |= _parts[i].on_ship_data_post_finalize(self)
+	is_finalized = true
+	finalized.emit()
+	return _placement_error
 
 func raycast_v(x: int, y_from: int, y_to: int, add_to := PackedInt32Array() ) -> PackedInt32Array:
 	for y in range(y_from, y_to):
@@ -256,11 +272,12 @@ func add_part(part_data: PartData, top_left_corner: Vector2i, rotation := Rotati
 	if boundary != Boundary.NONE and not _part_ids.is_rect_empty(rect, NULL_ID):
 		return PartError.OVERLAP
 	_create_part(part_data, rect, rotation, boundary, serialize_part)
+	is_finalized = false
 	return PartError.OK
 
 func _create_part(part_data: PartData, rect: Rect2i, rotation: Rotation.Discrete, boundary: int, serialize_part: bool) -> void:
 	var part_id := _part_clusters.create_set()
-	var part := ShipDataPart.new(part_id, part_data, rect, rotation, boundary)
+	var part := part_data.create_ship_data_part(part_id, rect, rotation, boundary)
 	_parts.push_back(part)
 	if part_data.becomes_node_on_ship():
 		node_parts.push_back(part)

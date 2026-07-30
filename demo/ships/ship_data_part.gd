@@ -5,7 +5,6 @@ var _data: PartData
 var _rect: Rect2i
 var _rotation: Rotation.Discrete
 var _boundary: int
-var _calculations := {}
 
 func _init(init_id: int, init_data: PartData, init_rect: Rect2i, init_rotation: Rotation.Discrete, init_boundary: int) -> void:
 	_id = init_id
@@ -35,5 +34,10 @@ func get_image() -> Image:
 func get_boundary() -> int:
 	return _boundary
 
-func get_calculations() -> Dictionary:
-	return _calculations
+## Runs after every ShipDataPart has been added to ShipData, but before on_ship_data_post_finalize
+func on_ship_data_pre_finalize(_ship_data: ShipData) -> ShipData.PlacementError:
+	return ShipData.PlacementError.OK
+
+## Runs after every ShipDataPart has been added to ShipData, but after on_ship_data_pre_finalize
+func on_ship_data_post_finalize(_ship_data: ShipData) -> ShipData.PlacementError:
+	return ShipData.PlacementError.OK

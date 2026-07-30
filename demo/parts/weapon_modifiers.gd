@@ -35,8 +35,8 @@ static func from_dict(dict: Dictionary, always_copy := false) -> StrategicResour
 	return resources if resources.load_dict(dict) or always_copy else NONE
 
 func to_dict() -> Dictionary:
-	var dict := SYNTAX.duplicate()
-	for property in dict:
+	var dict := {}
+	for property in SYNTAX:
 		dict[property] = get(property)
 	return dict
 
@@ -90,3 +90,21 @@ func add(from: WeaponModifiers) -> void:
 	add_flat(from)
 	add_multipliers(from)
 	add_special_flags(from)
+
+func apply_flat_efficiency(efficiency := 1.0) -> void:
+	flat_damage *= efficiency
+	flat_range *= efficiency
+	flat_energy *= efficiency
+	flat_speed *= efficiency
+	flat_cooldown *= efficiency
+
+func apply_multiplier_efficiency(efficiency := 1.0) -> void:
+	multiplier_damage **= efficiency
+	multiplier_range **= efficiency
+	multiplier_energy **= efficiency
+	multiplier_speed **= efficiency
+	multiplier_cooldown **= efficiency
+
+func apply_efficiency(efficiency := 1.0) -> void:
+	apply_flat_efficiency(efficiency)
+	apply_multiplier_efficiency(efficiency)
