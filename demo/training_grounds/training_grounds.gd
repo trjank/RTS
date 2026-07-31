@@ -1,6 +1,6 @@
 class_name TrainingGrounds extends Battle
 
-const MAP_PRESET_PATH := "res://map/presets/black_hole.json"
+const MAP_PRESET_PATH := "res://map/presets/test.json"
 const SHIP_DB := null
 
 func _ready() -> void:

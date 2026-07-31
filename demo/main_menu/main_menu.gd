@@ -45,4 +45,5 @@ func _ready() -> void:
 	super()
 	#
 	map = Map.from_json(MAP_PRESET_PATH)
+	gamemode = Gamemode.SANDBOX
 	start()
