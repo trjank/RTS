@@ -37,16 +37,16 @@ content_margin_left = 22.0
 content_margin_top = 22.0
 content_margin_right = 25.0
 content_margin_bottom = 32.0
-bg_color = Color(0.21999997, 0.5, 0.19999999, 1)
+bg_color = Color(0.5, 0.19999999, 0.20499992, 1)
 border_width_bottom = 10
-border_color = Color(0.11020832, 0.25, 0.0975, 1)
+border_color = Color(0.25, 0.099999994, 0.10249996, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3c8mw"]
 content_margin_left = 22.0
 content_margin_top = 32.0
 content_margin_right = 25.0
 content_margin_bottom = 22.0
-bg_color = Color(0.21960784, 0.5019608, 0.2, 1)
+bg_color = Color(0.5019608, 0.2, 0.20392157, 1)
 border_width_top = 10
 border_color = Color(0.8, 0.8, 0.8, 0)
 
@@ -211,7 +211,7 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 15
-theme_override_constants/icon_max_width = 48
+theme_override_constants/icon_max_width = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_rmp56")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_3c8mw")
 theme_override_styles/hover = SubResource("StyleBoxFlat_rmp56")
