@@ -6,6 +6,8 @@
 	"max_orbit_radius": 0.0,
 	"min_orbit_offset": 0.0,
 	"max_orbit_offset": 0.0,
+	"min_rotation": 0.0,
+	"max_rotation": 0.0,
 	"min_tilt": -85.0,
 	"max_tilt": -85.0,
 	"min_radius": 2.0,

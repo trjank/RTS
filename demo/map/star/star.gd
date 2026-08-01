@@ -20,12 +20,8 @@ const MAX_TEMPERATURE := 1.0
 func _ready() -> void:
 	super()
 	#
-	var min_energy := float(_map.preset.get("min_energy", MIN_ENERGY) )
-	var max_energy := float(_map.preset.get("max_energy", MAX_ENERGY) )
-	var min_temperature := float(_map.preset.get("min_temperature", MIN_TEMPERATURE) )
-	var max_temperature := float(_map.preset.get("max_temperature", MAX_TEMPERATURE) )
-	energy = _rng.randf_range(min_energy, max_energy)
-	temperature = _rng.randf_range(min_temperature, max_temperature)
+	energy = generate_randf_range("min_energy", "max_energy", MIN_ENERGY, MAX_ENERGY)
+	temperature = generate_randf_range("min_temperature", "max_temperature", MIN_TEMPERATURE, MAX_TEMPERATURE)
 
 func set_mass(new_mass: float) -> void:
 	super(new_mass)

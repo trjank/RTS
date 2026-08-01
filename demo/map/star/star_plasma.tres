@@ -7,10 +7,8 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_8lp25")
-shader_parameter/texture_emission = ExtResource("3_7473v")
-shader_parameter/uv_scale = Vector3(0.5, 0.5, 0.5)
-shader_parameter/uv_offset = Vector3(0, 0, 0)
 shader_parameter/uv_blend_sharpness = 3.0000001425
 shader_parameter/distortion_speed = 0.30000001425
 shader_parameter/distortion_strength = 0.30000001425
+shader_parameter/texture_emission = ExtResource("3_7473v")
 shader_parameter/distortion_noise = ExtResource("1_nblov")

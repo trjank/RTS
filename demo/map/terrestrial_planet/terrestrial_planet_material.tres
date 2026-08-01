@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://dqej8nkoler0c"]
 
-[ext_resource type="Shader" uid="uid://c54eyipbxrdgo" path="res://map/terrestrial_planet/colored_slopes.gdshader" id="1_4dltr"]
-[ext_resource type="Texture2D" uid="uid://dl7in75rg2q8h" path="res://map/terrestrial_planet/biome_color.tres" id="2_hvr6n"]
+[ext_resource type="Shader" uid="uid://c54eyipbxrdgo" path="res://map/terrestrial_planet/terrestrial_planet.gdshader" id="1_4dltr"]
+[ext_resource type="Texture2D" uid="uid://dl7in75rg2q8h" path="res://map/terrestrial_planet/biome_texture.tres" id="2_hvr6n"]
 
 [resource]
 render_priority = 0

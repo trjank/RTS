@@ -1,10 +1,11 @@
+@tool
 class_name Spawnpoint extends Scenery
 
 var distance := 0.0
 var angle := 0.0
 var arc := 0.0:
 	set = set_arc
-var team := "A"
+var team := ""
 var spawn_order := PackedInt32Array()
 
 func get_max_players() -> int:

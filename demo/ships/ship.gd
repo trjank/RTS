@@ -150,15 +150,15 @@ func distance_sorter(a: Node3D, b: Node3D) -> bool:
 func update_behavior_indicator() -> void:
 	var behavior := get_behavior_flags()
 	var text := ""
-	if behavior & BehaviorFlags.KITE:
+	if behavior & Behavior.KITE:
 		text += " KITE "
-	if behavior & BehaviorFlags.BROADSIDE:
+	if behavior & Behavior.BROADSIDE:
 		text += " BROADSIDE "
-	if behavior & BehaviorFlags.TRACK:
+	if behavior & Behavior.TRACK:
 		text += " TRACK "
-	if behavior & BehaviorFlags.FLEE:
+	if behavior & Behavior.FLEE:
 		text += " FLEE "
-	if behavior & BehaviorFlags.ATTACK:
+	if behavior & Behavior.ATTACK:
 		text += " ATTACK "
 	behavior_indicator.text = text
 

@@ -146,7 +146,7 @@ alignment = 0
 [node name="DesignButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="5"]
 layout_mode = 2
 theme_override_constants/h_separation = 15
-theme_override_constants/icon_max_width = 32
+theme_override_constants/icon_max_width = 40
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
 theme_override_styles/pressed = ExtResource("4_a3n4j")
@@ -158,7 +158,7 @@ alignment = 0
 [node name="FleetsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="6"]
 layout_mode = 2
 theme_override_constants/h_separation = 14
-theme_override_constants/icon_max_width = 32
+theme_override_constants/icon_max_width = 40
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
 theme_override_styles/pressed = ExtResource("4_a3n4j")
@@ -171,7 +171,7 @@ alignment = 0
 layout_mode = 2
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_constants/h_separation = 15
-theme_override_constants/icon_max_width = 32
+theme_override_constants/icon_max_width = 40
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
 theme_override_styles/pressed = ExtResource("4_a3n4j")

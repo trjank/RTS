@@ -1,3 +1,4 @@
+@tool
 class_name Planet extends Orbiter
 
 const LABEL_OFFSET_METERS := 2.0
@@ -13,6 +14,7 @@ const MIN_CAPTURE_TIME_SEC := 0.1
 @export var hitbox: StaticBody3D
 @export var hitbox_shape: CollisionShape3D
 @export var progress_bar: PipBar
+@export var low_lod_icon: Sprite3D
 
 var resource_rate := StrategicResources.new()
 var capturable := true:
@@ -28,6 +30,8 @@ var radius := MIN_RADIUS:
 var team_owner: Team:
 	set = set_team_owner
 var capture_zone_radius_ratio := 1.5
+var low_lod := true:
+	set = set_low_lod
 
 var _capturing_team: Team
 var _contesting_team: Team
@@ -38,17 +42,6 @@ static func _ship_to_team(ship: Ship) -> Team:
 
 func _ready() -> void:
 	super()
-	#
-	var min_radius := float(_map.preset.get("min_radius", MIN_RADIUS) )
-	var max_radius := float(_map.preset.get("max_radius", MAX_RADIUS) )
-	var min_tilt := float(_map.preset.get("min_tilt", 0.0) )
-	var max_tilt := float(_map.preset.get("max_tilt", 360.0) )
-	capture_zone_radius_ratio = float(_map.preset.get("capture_zone_radius_ratio", 1.5) )
-	capturable = _map.preset.get("capturable", true)
-	radius = _rng.randf_range(min_radius, max_radius)
-	mesh_instance.rotation.x = deg_to_rad(_rng.randf_range(min_tilt, max_tilt) )
-	display_name = _map.preset.get("display_name", "")
-	ui.position = Vector3.ZERO
 	#
 	zone.collision_mask = globals.Layer.SHIPS
 	hitbox.collision_mask = globals.Layer.CAMERA | globals.Layer.SCENERY
@@ -71,6 +64,12 @@ func get_capture_ratio() -> float:
 
 func count_capturing_ships(team: Team) -> int:
 	return _team_ship_count.get(team, 0)
+
+func set_low_lod(is_low_lod: bool) -> void:
+	low_lod = is_low_lod
+	low_lod_icon.visible = is_low_lod
+	ui.visible = not is_low_lod
+	mesh_instance.visible = not is_low_lod
 
 func set_display_name(new_display_name: String) -> void:
 	display_name = new_display_name
@@ -103,6 +102,7 @@ func set_radius(new_radius: float) -> void:
 	label.position.z = -radius - LABEL_OFFSET_METERS
 	# NOTE: Ensure the mesh's size is one for this to work
 	mesh_instance.scale = radius * Vector3.ONE
+	low_lod_icon.pixel_size = Measurement.METERS_PER_PX * radius
 
 func set_team_owner(new_team_owner: Team) -> void:
 	if team_owner == new_team_owner:
@@ -119,11 +119,12 @@ func _physics_process(dt: float) -> void:
 	#
 	if _contesting_team == null:
 		return
-	dt *= _battle_state.time_scale
+	dt *= battle_state.time_scale
 	capture_progress += dt if _contesting_team == _capturing_team else -dt
 
 func _process(_dt: float) -> void:
 	ui.global_rotation = Vector3.ZERO
+	#low_lod = global_position.distance_to(get_viewport().get_camera_3d().global_position) > 50.0
 
 func update_contesting_team() -> void:
 	_team_ship_count.clear()
@@ -133,6 +134,16 @@ func update_contesting_team() -> void:
 		_team_ship_count[team] = _team_ship_count.get(team, 0) + 1
 	for team in _team_ship_count:
 		_contesting_team = team if _contesting_team == null or _team_ship_count[team] > _team_ship_count[_contesting_team] else _contesting_team
+
+func generate_from_map() -> void:
+	super()
+	#
+	capturable = map.preset.get("capturable", true)
+	capture_zone_radius_ratio = float(map.preset.get("capture_zone_radius_ratio", 1.5) )
+	radius = generate_randf_range("min_radius", "max_radius", MIN_RADIUS, MAX_RADIUS)
+	mesh_instance.rotation.x = generate_randf_radians("min_tilt", "max_tilt")
+	display_name = map.preset.get("display_name", "")
+	ui.position = Vector3.ZERO
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	assert(body is Ship, "(Planet) Incorrect collision mask")

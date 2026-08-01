@@ -3,7 +3,7 @@
 [ext_resource type="Shader" uid="uid://c84xabaihtkbt" path="res://pips/pips.gdshader" id="1_2542w"]
 
 [resource]
-render_priority = 0
+render_priority = 2
 shader = ExtResource("1_2542w")
 shader_parameter/shadow_darkness = 0.5
 shader_parameter/shadow_start = 0.70000003325

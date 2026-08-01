@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bvi7rt1l6hfoy"]
+[gd_scene load_steps=6 format=3 uid="uid://bvi7rt1l6hfoy"]
 
 [ext_resource type="Script" uid="uid://yubit2roc71n" path="res://map/planet/planet.gd" id="1_3aqce"]
 [ext_resource type="PackedScene" uid="uid://hvicroe1d56b" path="res://pips/pip_bar.tscn" id="2_td387"]
+[ext_resource type="Texture2D" uid="uid://ctvddjv0bfnih" path="res://icons/planet.png" id="3_8feeh"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_uj2kf"]
 resource_local_to_scene = true
@@ -9,7 +10,7 @@ resource_local_to_scene = true
 [sub_resource type="SphereShape3D" id="SphereShape3D_td387"]
 resource_local_to_scene = true
 
-[node name="Planet" type="Node3D" node_paths=PackedStringArray("ui", "label", "mesh_instance", "zone", "zone_shape", "hitbox", "hitbox_shape", "progress_bar")]
+[node name="Planet" type="Node3D" node_paths=PackedStringArray("ui", "label", "mesh_instance", "zone", "zone_shape", "hitbox", "hitbox_shape", "progress_bar", "low_lod_icon")]
 script = ExtResource("1_3aqce")
 ui = NodePath("UI")
 label = NodePath("UI/Label3D")
@@ -19,6 +20,7 @@ zone_shape = NodePath("Area3D/CollisionShape3D")
 hitbox = NodePath("Hitbox")
 hitbox_shape = NodePath("Hitbox/CollisionShape3D")
 progress_bar = NodePath("UI/PipBar")
+low_lod_icon = NodePath("LowLODIcon")
 metadata/_custom_type_script = "uid://yubit2roc71n"
 
 [node name="UI" type="Node3D" parent="."]
@@ -45,6 +47,12 @@ max_value = 5.0
 pip_color = Color(1, 0.32, 0.32, 1)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="LowLODIcon" type="Sprite3D" parent="."]
+visible = false
+pixel_size = 0.03
+axis = 1
+texture = ExtResource("3_8feeh")
 
 [node name="Area3D" type="Area3D" parent="."]
 collision_layer = 0

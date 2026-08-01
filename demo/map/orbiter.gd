@@ -1,3 +1,4 @@
+@tool
 class_name Orbiter extends Scenery
 
 const GRAVITATIONAL_CONSTANT := 0.1
@@ -52,20 +53,17 @@ func set_orbit_offset(new_orbit_offset: float) -> void:
 	orbit_offset = fposmod(new_orbit_offset, TAU)
 	_update_position()
 
+func generate_from_map() -> void:
+	super()
+	#
+	var copy_offset := TAU * generation_index / generation_count
+	orbit_radius = generate_randf_range("min_orbit_radius", "max_orbit_radius", MIN_ORBIT_RADIUS, MAX_ORBIT_RADIUS)
+	orbit_offset = generate_randf_radians("min_orbit_offset", "max_orbit_offset") + copy_offset
+	angle = rotation.y
+
 func _update_rotation() -> void:
 	rotation.y = angle - orbit_angle
 
 func _update_position() -> void:
 	var position_2d := orbit_radius * Vector2.from_angle(orbit_angle)
 	position = Vector3(position_2d.x, 0.0, position_2d.y)
-
-func _ready() -> void:
-	super()
-	#
-	var min_orbit_radius := float(_map.preset.get("min_orbit_radius", MIN_ORBIT_RADIUS) )
-	var max_orbit_radius := float(_map.preset.get("max_orbit_radius", MAX_ORBIT_RADIUS) )
-	var min_orbit_offset := float(_map.preset.get("min_orbit_offset", 0.0) )
-	var max_orbit_offset := float(_map.preset.get("max_orbit_offset", 360.0) )
-	orbit_radius = _rng.randf_range(min_orbit_radius, max_orbit_radius)
-	orbit_offset = deg_to_rad(_rng.randf_range(min_orbit_offset, max_orbit_offset) ) + TAU * generation_index / generation_count
-	angle = rotation.y

@@ -1,15 +1,27 @@
-[gd_scene load_steps=5 format=3 uid="uid://kgwkhxm0tx30"]
+[gd_scene load_steps=7 format=3 uid="uid://kgwkhxm0tx30"]
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_r64pv"]
 [ext_resource type="Script" uid="uid://b1pi3lljww0ts" path="res://map/moon/moon.gd" id="2_gugrx"]
-[ext_resource type="Material" uid="uid://citpj5kv4ckl2" path="res://map/moon/moon_material.tres" id="2_hp1cs"]
+[ext_resource type="Material" uid="uid://cgyagpnjk1kec" path="res://map/moon/moon_material.tres" id="3_gugrx"]
 [ext_resource type="ArrayMesh" uid="uid://cjtm8qg0o7o2b" path="res://map/moon/mesh_craters_low.res" id="3_vm6sf"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_gugrx"]
+resource_local_to_scene = true
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_nxbwu"]
+resource_local_to_scene = true
 
 [node name="Moon" instance=ExtResource("1_r64pv")]
 script = ExtResource("2_gugrx")
 
 [node name="MeshInstance3D" parent="." index="1"]
-material_override = ExtResource("2_hp1cs")
+material_override = ExtResource("3_gugrx")
 mesh = ExtResource("3_vm6sf")
 
 [node name="Structure" type="Node3D" parent="." index="3"]
+
+[node name="CollisionShape3D" parent="Area3D" index="0"]
+shape = SubResource("SphereShape3D_gugrx")
+
+[node name="CollisionShape3D" parent="Hitbox" index="0"]
+shape = SubResource("SphereShape3D_nxbwu")

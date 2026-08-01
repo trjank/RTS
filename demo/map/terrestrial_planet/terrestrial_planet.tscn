@@ -1,42 +1,85 @@
-[gd_scene load_steps=9 format=3 uid="uid://cbim2p730crar"]
+[gd_scene load_steps=15 format=3 uid="uid://cbim2p730crar"]
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_ltjny"]
 [ext_resource type="Script" uid="uid://d3piswu2k7xgg" path="res://map/terrestrial_planet/terrestrial_planet.gd" id="2_3s5t7"]
-[ext_resource type="Material" uid="uid://dqej8nkoler0c" path="res://map/terrestrial_planet/color_slopes.tres" id="3_swokb"]
+[ext_resource type="Material" uid="uid://dqej8nkoler0c" path="res://map/terrestrial_planet/terrestrial_planet_material.tres" id="3_swokb"]
 [ext_resource type="Material" uid="uid://t5t610eblwbo" path="res://map/planet/atmosphere.tres" id="3_vq1xi"]
 [ext_resource type="ArrayMesh" uid="uid://dk37dx2qtx2xt" path="res://map/terrestrial_planet/mesh_mountains_low.res" id="4_56eyt"]
-[ext_resource type="Material" uid="uid://bvmmc24trphj1" path="res://map/terrestrial_planet/water_material.tres" id="5_56eyt"]
+[ext_resource type="Shader" uid="uid://tn20ub6fnjbp" path="res://map/terrestrial_planet/water.gdshader" id="5_56eyt"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_vq1xi"]
-material = ExtResource("5_56eyt")
-radius = 1.01
-height = 2.02
+[sub_resource type="Gradient" id="Gradient_56eyt"]
+offsets = PackedFloat32Array(0.0032258064, 1)
+colors = PackedColorArray(0.4499998, 0, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_56eyt"]
+noise_type = 2
+frequency = 0.0375
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_56eyt"]
+noise = SubResource("FastNoiseLite_56eyt")
+color_ramp = SubResource("Gradient_56eyt")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_56eyt"]
+render_priority = 1
+shader = ExtResource("5_56eyt")
+shader_parameter/albedo = Color(0, 1, 0.9166665, 0.39215687)
+shader_parameter/wave_texture = SubResource("NoiseTexture2D_56eyt")
+
+[sub_resource type="SphereMesh" id="SphereMesh_56eyt"]
+radius = 1.03
+height = 2.06
+radial_segments = 32
+rings = 16
 
 [sub_resource type="SphereMesh" id="SphereMesh_hpp1k"]
-radius = 1.1
-height = 2.2
+radius = 1.15
+height = 2.3
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_56eyt"]
+resource_local_to_scene = true
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6wf2m"]
+resource_local_to_scene = true
 
 [node name="TerrestrialPlanet" instance=ExtResource("1_ltjny")]
 script = ExtResource("2_3s5t7")
+temperature = 0.0
+humidity = 0.0
+sun_scorch = 0.0
 
 [node name="MeshInstance3D" parent="." index="1"]
 transform = Transform3D(1, 0, 0, 0, -0.9983418, 0.05756398, 0, -0.05756398, -0.9983418, 0, 0, 0)
 material_override = ExtResource("3_swokb")
-instance_shader_parameters/flat_color = Color(0.20533332, 0.77, 0, 1)
-instance_shader_parameters/shore_color = Color(1, 1, 1, 1)
-instance_shader_parameters/shore_height = 1.02
-instance_shader_parameters/steep_color = Color(0.39, 0.32948497, 0.19889998, 1)
+instance_shader_parameters/biome_color = Color(0.017844556, 0.62350696, 1, 1)
+instance_shader_parameters/flat_color = Color(1, 1, 1, 1)
+instance_shader_parameters/shore_color = Color(0.91449445, 0.98574907, 1, 1)
+instance_shader_parameters/shore_height = 1.04
+instance_shader_parameters/steep_color = Color(0.37145695, 0.39774114, 0.39292234, 1)
 mesh = ExtResource("4_56eyt")
 
 [node name="Water" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
-mesh = SubResource("SphereMesh_vq1xi")
+visible = false
+material_override = SubResource("ShaderMaterial_56eyt")
+mesh = SubResource("SphereMesh_56eyt")
 skeleton = NodePath("../..")
 
 [node name="Atmosphere" type="MeshInstance3D" parent="MeshInstance3D" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0)
+visible = false
 material_override = ExtResource("3_vq1xi")
-instance_shader_parameters/atmosphere_color = Color(0.8269897, 1.5919749, 1.8247963, 1)
-instance_shader_parameters/density = 2.000000095
-instance_shader_parameters/fresnel_effect_strength = 2.000000095
+instance_shader_parameters/atmosphere_color = Color(0.44, 0.86933345, 1, 1)
+instance_shader_parameters/density = 10.0
+instance_shader_parameters/fresnel_effect_strength = 2.46800011723
 mesh = SubResource("SphereMesh_hpp1k")
 skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" parent="Area3D" index="0"]
+shape = SubResource("SphereShape3D_56eyt")
+
+[node name="Hitbox" parent="." index="4"]
+collision_layer = 17
+collision_mask = 17
+
+[node name="CollisionShape3D" parent="Hitbox" index="0"]
+shape = SubResource("SphereShape3D_6wf2m")

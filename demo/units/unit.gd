@@ -5,7 +5,7 @@ class_name Unit extends RigidBody3D
 signal warped(from: Vector3, to: Vector3)
 signal died
 
-enum BehaviorFlags {
+enum Behavior {
 	NONE = 0,
 	ATTACK = 1 << 0,
 	FLEE = 1 << 1,
@@ -66,7 +66,7 @@ var _time_to_move := 0.0
 var _radar_signature := RadarSignature.new()
 var _waypoints: Array[Target] = []
 var _attack_position := Vector3.ZERO
-var _behavior_flags: int = BehaviorFlags.NONE
+var _behavior_flags: int = Behavior.NONE
 var _internal_movement_locked := false
 var _dying := false
 
@@ -214,7 +214,7 @@ func queue_waypoint(waypoint: Target) -> bool:
 	return true
 
 func pop_waypoint() -> bool:
-	_behavior_flags = BehaviorFlags.NONE
+	_behavior_flags = Behavior.NONE
 	_distance_to_target = INF
 	return _waypoints.pop_front() != null
 
@@ -240,33 +240,33 @@ func order_attack() -> void:
 func is_near() -> bool:
 	return true
 
-func issue_command(behavior: BehaviorFlags, arg1 := 0.0, arg2 := 0.0) -> bool:
+func issue_command(behavior: Behavior, arg1 := 0.0, arg2 := 0.0) -> bool:
 	match behavior:
-		BehaviorFlags.ATTACK: attack(arg1)
-		BehaviorFlags.FLEE: flee(arg1)
-		BehaviorFlags.TRACK: track()
-		BehaviorFlags.BROADSIDE: broadside(arg1, arg2)
-		BehaviorFlags.KITE: kite(arg1, arg2)
+		Behavior.ATTACK: attack(arg1)
+		Behavior.FLEE: flee(arg1)
+		Behavior.TRACK: track()
+		Behavior.BROADSIDE: broadside(arg1, arg2)
+		Behavior.KITE: kite(arg1, arg2)
 		_: return false # (do not pass multiple flags)
 	return true
 
 ## NOTE: This rams by default
 func attack(min_distance := RAMMING_DISTANCE) -> void:
-	_behavior_flags |= BehaviorFlags.ATTACK
+	_behavior_flags |= Behavior.ATTACK
 	#
 	_attack_position = get_waypoint().global_position
 	_internal_movement_locked = _distance_to_waypoint <= min_distance
 
 ## NOTE: When safe_distance is reached, the current waypoint is popped
 func flee(safe_distance := DEFAULT_SAFE_DISTANCE) -> void:
-	_behavior_flags |= BehaviorFlags.FLEE
+	_behavior_flags |= Behavior.FLEE
 	#
 	_attack_position = get_waypoint().position - safe_distance * _direction_to_waypoint
 	_internal_movement_locked = false
 
 ## NOTE: This is similar to attack(), but has better prediction for nukes and melee
 func track() -> void:
-	_behavior_flags |= BehaviorFlags.TRACK
+	_behavior_flags |= Behavior.TRACK
 	#
 	var dt := _radar_signature.get_intersect_time(get_waypoint() )
 	if dt <= 0:
@@ -277,7 +277,7 @@ func track() -> void:
 func broadside(distance: float, approach_angle := deg_to_rad(45.0) ) -> void:
 	assert(approach_angle < deg_to_rad(90.0) )
 	#
-	_behavior_flags |= BehaviorFlags.BROADSIDE
+	_behavior_flags |= Behavior.BROADSIDE
 	#
 	var smooth_factor := broadside_curve.sample_baked(_distance_to_waypoint - distance)
 	approach_angle = _quaternion_to_target.get_angle() * lerpf(BROADSIDE_CORRECTION_ANGLE, approach_angle, smooth_factor)
@@ -285,7 +285,7 @@ func broadside(distance: float, approach_angle := deg_to_rad(45.0) ) -> void:
 	_internal_movement_locked = false
 
 func kite(min_distance: float, max_distance: float) -> void:
-	_behavior_flags |= BehaviorFlags.KITE
+	_behavior_flags |= Behavior.KITE
 	#
 	if _distance_to_waypoint < min_distance:
 		return flee()
@@ -353,7 +353,7 @@ func _calculate_trajectory() -> bool:
 	if not get_waypoint().is_alive() or is_at_target():
 		return not pop_waypoint()
 	_calculate_trajectory_to_waypoint()
-	_behavior_flags = BehaviorFlags.NONE
+	_behavior_flags = Behavior.NONE
 	order_attack()
 	_calculate_trajectory_to_target()
 	return true

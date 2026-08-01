@@ -28,11 +28,14 @@ const PRESET_SYNTAX: Dictionary[String, Variant.Type] = {
 	"min_tilt": TYPE_FLOAT,
 	"max_tilt": TYPE_FLOAT,
 	"capture_zone_radius_ratio": TYPE_FLOAT,
+# For TerrestrialPlanet below
+	"min_temperature": TYPE_FLOAT,
+	"max_temperature": TYPE_FLOAT,
+	"min_humidity": TYPE_FLOAT,
+	"max_humidity": TYPE_FLOAT,
 # For Star below
 	"min_energy": TYPE_FLOAT,
-	"max_energy": TYPE_FLOAT,
-	"min_temperature": TYPE_FLOAT,
-	"max_temperature": TYPE_FLOAT
+	"max_energy": TYPE_FLOAT
 }
 
 var subtype: String
@@ -105,9 +108,9 @@ func save_json(path: String, nested := false) -> bool:
 
 func _generate_one(index: int, count: int, parent: Node3D, battle_state: BattleState, rng: RandomNumberGenerator, node_storage: Array[Scenery], depth_limit := 1, shared_variables := {} ) -> int:
 	var scenery := Scenery.create(subtype)
-	scenery._rng = rng
-	scenery._battle_state = battle_state
-	scenery._map = self
+	scenery.rng = rng
+	scenery.battle_state = battle_state
+	scenery.map = self
 	scenery.generation_index = index
 	scenery.generation_count = count
 	parent.add_child(scenery)

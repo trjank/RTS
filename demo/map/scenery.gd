@@ -1,3 +1,4 @@
+@tool
 class_name Scenery extends Node3D
 
 const MIN_MASS := 0.0
@@ -11,6 +12,8 @@ static var subtypes: Dictionary[String, PackedScene] = {
 	"Asteroid": load("res://map/asteroid/asteroid.tscn"),
 	"Moon": load("res://map/moon/moon.tscn")
 }
+static var TEST_RNG := RandomNumberGenerator.new():
+	set(__): push_error("(Scenery) TEST_RNG is immutable!")
 
 static func create(subtype: String) -> Scenery:
 	assert(subtype in subtypes)
@@ -22,20 +25,35 @@ var generation_count := 1
 var hp := INF
 var mass := MIN_MASS:
 	set = set_mass
+var rng := TEST_RNG:
+	set = set_rng
 var time := 0.0:
 	set = set_time
 var resources := StrategicResources.new()
+var map: Map
+var battle_state: BattleState
 
 var _target := SceneryTarget.new()
-var _map: Map
-var _rng: RandomNumberGenerator
-var _battle_state: BattleState
+
+func _ready() -> void:
+	if map != null:
+		generate_from_map()
+	_target._scenery = self
 
 func get_target() -> SceneryTarget:
 	return _target
 
 func set_mass(new_mass: float) -> void:
 	mass = maxf(new_mass, MIN_MASS)
+
+func set_rng(new_rng: RandomNumberGenerator) -> void:
+	assert(new_rng != null)
+	#
+	rng = new_rng
+
+## Override this to add additional functionality
+func set_time(new_time: float) -> void:
+	time = new_time
 
 func kill() -> void:
 	queue_free()
@@ -45,27 +63,27 @@ func hit(damage: float) -> void:
 	if hp <= 0:
 		kill()
 
-## Override this to add additional functionality
-func set_time(new_time: float) -> void:
-	time = new_time
-
 ## Override this to pass data between Scenery objects during generation
 func use_shared_variables(shared_variables := {} ) -> void:
 	shared_variables["scenery_count"] = shared_variables.get("scenery_count", 0) + 1
 
-func _ready() -> void:
-	_target._scenery = self
-	# NOTE: INF causes undefined behavior for randf_range
-	var min_mass := float(_map.preset.get("min_mass", MIN_MASS) )
-	var max_mass := float(_map.preset.get("max_mass", MAX_MASS) )
-	var min_rotation := float(_map.preset.get("min_rotation", 0.0) )
-	var max_rotation := float(_map.preset.get("max_rotation", min_rotation) )
-	mass = _rng.randf_range(min_mass, max_mass)
-	rotation.y = deg_to_rad(_rng.randf_range(min_rotation, max_rotation) )
+func generate_from_map() -> void:
+	mass = generate_randf_range("min_mass", "max_mass", MIN_MASS, MAX_MASS)
+	rotation.y = generate_randf_radians("min_rotation", "max_rotation")
+
+func generate_randf_radians(min_name: String, max_name: String) -> float:
+	# Map uses degrees, but radians are more useful
+	return deg_to_rad(generate_randf_range(min_name, max_name, 0.0, 360.0) )
+
+## NOTE: INF causes undefined behavior for randf_range
+func generate_randf_range(min_name: String, max_name: String, default_min := 0.0, default_max := 1.0) -> float:
+	var min_value := float(map.preset.get(min_name, default_min) )
+	var max_value := float(map.preset.get(max_name, default_max) )
+	return rng.randf_range(min_value, max_value)
 
 func _exit_tree() -> void:
 	_target._scenery = null
 
 func _physics_process(dt: float) -> void:
+	time = battle_state.time if battle_state != null else time + dt
 	_target.global_position = global_position
-	time = _battle_state.time if _battle_state != null else time + dt
