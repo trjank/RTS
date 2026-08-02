@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=27 format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cx7lh1wwowlht" path="res://icons/menu.png" id="3_iorop"]
 [ext_resource type="StyleBox" uid="uid://qbg2x0y2va1d" path="res://battle/button_normal.tres" id="3_rxlun"]
 [ext_resource type="Script" uid="uid://bwysy4g5mfiae" path="res://battle/formation_indicator.gd" id="4_7fucf"]
+[ext_resource type="Texture2D" uid="uid://cms7xiyps10hd" path="res://icons/crystals.png" id="4_phvbk"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_qybyd"]
 [ext_resource type="StyleBox" uid="uid://cpus28fjbdw4d" path="res://battle/button_pressed.tres" id="4_rxlun"]
 [ext_resource type="Texture2D" uid="uid://bpeacb6y6j5no" path="res://icons/hourglass.png" id="5_eu6g2"]
@@ -57,7 +58,7 @@ material = SubResource("StandardMaterial3D_7fucf")
 radius = 0.05
 height = 0.1
 
-[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection", "alloy_label", "energy_label", "military_science_label")]
+[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection", "alloy_label", "crystal_label", "military_science_label", "time_left")]
 script = ExtResource("1_nohcx")
 world = NodePath("World")
 round_timer = NodePath("RoundTimer")
@@ -66,8 +67,9 @@ players_container = NodePath("World/Players")
 fleet_container = NodePath("UI/FleetContainer")
 mouse_selection = NodePath("World/MouseSelection")
 alloy_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/AlloyCount")
-energy_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/EnergyCount")
+crystal_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/CrystalsCount")
 military_science_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/MilitaryScienceCount")
+time_left = NodePath("UI/PanelContainer/HBoxContainer/Resources/TimeLeft")
 metadata/_custom_type_script = "uid://bvfy718iilaa1"
 
 [node name="UI" type="Control" parent="."]
@@ -138,20 +140,20 @@ theme_override_constants/outline_size = 5
 text = "1000"
 vertical_alignment = 1
 
-[node name="EnergyIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/Resources"]
+[node name="CrystalsIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/Resources"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
-texture = ExtResource("4_qybyd")
+texture = ExtResource("4_phvbk")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="EnergyCount" type="Label" parent="UI/PanelContainer/HBoxContainer/Resources"]
+[node name="CrystalsCount" type="Label" parent="UI/PanelContainer/HBoxContainer/Resources"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 0.8666667, 0.34117648, 1)
-theme_override_colors/font_outline_color = Color(1, 0.8666667, 0.34117648, 1)
+theme_override_colors/font_color = Color(1, 0.45999998, 0.45999998, 1)
+theme_override_colors/font_outline_color = Color(1, 0.45882353, 0.45882353, 1)
 theme_override_constants/outline_size = 5
 text = "1000"
 vertical_alignment = 1
@@ -168,8 +170,8 @@ stretch_mode = 5
 [node name="MilitaryScienceCount" type="Label" parent="UI/PanelContainer/HBoxContainer/Resources"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.4, 0.9882353, 1, 1)
-theme_override_colors/font_outline_color = Color(0.4, 0.9882353, 1, 1)
+theme_override_colors/font_color = Color(0.33599997, 0.83160007, 0.84, 1)
+theme_override_colors/font_outline_color = Color(0.3372549, 0.83137256, 0.8392157, 1)
 theme_override_constants/outline_size = 5
 text = "0"
 vertical_alignment = 1
@@ -183,16 +185,13 @@ texture = ExtResource("5_eu6g2")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="TimeLeft" type="RichTextLabel" parent="UI/PanelContainer/HBoxContainer/Resources"]
+[node name="TimeLeft" type="Label" parent="UI/PanelContainer/HBoxContainer/Resources"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/default_color = Color(0.38, 1, 0.50400007, 1)
+theme_override_colors/font_color = Color(0.38039216, 1, 0.5058824, 1)
 theme_override_colors/font_outline_color = Color(0.38039216, 1, 0.5058824, 1)
 theme_override_constants/outline_size = 5
 text = "29m 30s"
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
 vertical_alignment = 1
 
 [node name="SelectionInfo" type="GridContainer" parent="UI/PanelContainer/HBoxContainer" node_paths=PackedStringArray("count_label")]

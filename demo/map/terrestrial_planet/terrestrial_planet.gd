@@ -1,21 +1,15 @@
 @tool
 class_name TerrestrialPlanet extends Planet
 
-#static var MOUNTAINS_LOD_MESH := LODMesh.new(
-	#preload("res://map/terrestrial_planet/mesh_mountains_low.res"),
-	#preload("res://map/terrestrial_planet/mesh_mountains_medium.res"),
-	#preload("res://map/terrestrial_planet/mesh_mountains_high.res")
-#):
-	#set(__): push_error("(TerrestrialPlanet) TerrestrialPlanet.MOUNTAINS_LOD_MESH is immutable!")
-
 const MIN_TEMPERATURE := 0.0
 const MAX_TEMPERATURE := 1.0
 const MIN_HUMIDITY := 0.0
 const MAX_HUMIDITY := 1.0
 
-@export var temperature := 0.0:
+@export var atmosphere: MeshInstance3D
+@export_range(0.0, 1.0, 0.01) var temperature := 0.0:
 	set = set_temperature
-@export var humidity := 0.0:
+@export_range(0.0, 1.0, 0.01) var humidity := 0.0:
 	set = set_humidity
 @export_tool_button("Generate Shader") var button := generate_shader
 
@@ -45,6 +39,7 @@ func generate_from_map() -> void:
 func generate_shader() -> void:
 	assert(rng != null)
 	#
+	atmosphere.set_instance_shader_parameter("density", _biome.generate_atmosphere_density(rng) )
 	mesh_instance.set_instance_shader_parameter("biome_color", _biome.generate_biome_color(rng) )
 	mesh_instance.set_instance_shader_parameter("flat_color", _biome.generate_flat_color(rng) )
 	mesh_instance.set_instance_shader_parameter("steep_color", _biome.generate_steep_color(rng) )

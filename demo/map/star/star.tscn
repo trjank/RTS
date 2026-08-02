@@ -18,13 +18,16 @@ resource_local_to_scene = true
 
 [node name="Star" instance=ExtResource("1_b5dfa")]
 script = ExtResource("2_v7ku8")
-energy = 0.0
-temperature = 0.0
+energy = 5.0
+temperature = 0.33
 
 [node name="MeshInstance3D" parent="." index="1"]
 material_override = ExtResource("3_v7ku8")
 cast_shadow = 0
-instance_shader_parameters/accretion_disk_light_color = Color(1, 0, 0, 1)
+instance_shader_parameters/accretion_disk_light_color = Color(1, 0.6019757, 0, 1)
+instance_shader_parameters/accretion_disk_light_dropoff = 5.000000142499999
+instance_shader_parameters/accretion_disk_light_glow = 8.0
+instance_shader_parameters/accretion_disk_start_rotation = 0.5
 mesh = SubResource("SphereMesh_v7ku8")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." index="3"]
@@ -34,10 +37,6 @@ omni_range = 4096.0
 
 [node name="CollisionShape3D" parent="Area3D" index="0"]
 shape = SubResource("SphereShape3D_v7ku8")
-
-[node name="Hitbox" parent="." index="5"]
-collision_layer = 17
-collision_mask = 17
 
 [node name="CollisionShape3D" parent="Hitbox" index="0"]
 shape = SubResource("SphereShape3D_xjd5i")

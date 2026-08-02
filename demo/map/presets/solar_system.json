@@ -67,10 +67,10 @@
 		"max_orbit_radius": 100.0,
 		"min_radius": 10.0,
 		"max_radius": 15.0,
-		"min_temperature": 1.0,
+		"min_temperature": 0.0,
 		"max_temperature": 1.0,
 		"min_humidity": 0.0,
-		"max_humidity": 0.0,
+		"max_humidity": 1.0,
 		"submaps": []
 	},
 	"JovianPlanet 1": {

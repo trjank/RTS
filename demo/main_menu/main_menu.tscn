@@ -49,7 +49,7 @@ visible = false
 visible = false
 
 [node name="Background" type="TextureRect" parent="UI" index="4"]
-modulate = Color(1, 1, 1, 0.8235294)
+modulate = Color(1, 1, 1, 0.78431374)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

@@ -20,8 +20,8 @@ static func create(subtype: String) -> Scenery:
 	#
 	return subtypes[subtype].instantiate() as Scenery
 
-var generation_index := 0
-var generation_count := 1
+var index := 0
+var count := 1
 var hp := INF
 var mass := MIN_MASS:
 	set = set_mass
@@ -63,9 +63,13 @@ func hit(damage: float) -> void:
 	if hp <= 0:
 		kill()
 
-## Override this to pass data between Scenery objects during generation
+## Used to pass data between Scenery and Battle during generation
 func use_shared_variables(shared_variables := {} ) -> void:
 	shared_variables["scenery_count"] = shared_variables.get("scenery_count", 0) + 1
+
+## Used to pass data between Scenery objects during generation
+func use_layer_variables(_layer_variables := {} ) -> void:
+	pass # (override this method)
 
 func generate_from_map() -> void:
 	mass = generate_randf_range("min_mass", "max_mass", MIN_MASS, MAX_MASS)

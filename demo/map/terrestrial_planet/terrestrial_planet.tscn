@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_ltjny"]
 [ext_resource type="Script" uid="uid://d3piswu2k7xgg" path="res://map/terrestrial_planet/terrestrial_planet.gd" id="2_3s5t7"]
 [ext_resource type="Material" uid="uid://dqej8nkoler0c" path="res://map/terrestrial_planet/terrestrial_planet_material.tres" id="3_swokb"]
-[ext_resource type="ArrayMesh" uid="uid://b2yfn0tpthdki" path="res://map/terrestrial_planet/mesh_mountains_low.res" id="4_56eyt"]
+[ext_resource type="ArrayMesh" uid="uid://dk37dx2qtx2xt" path="res://map/terrestrial_planet/mesh_mountains_medium.res" id="4_swokb"]
 [ext_resource type="Shader" uid="uid://kv7l8dtml8ip" path="res://map/planet/atmosphere_dynamic_depth.gdshader" id="5_swokb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_56eyt"]
@@ -24,27 +24,31 @@ resource_local_to_scene = true
 [sub_resource type="SphereShape3D" id="SphereShape3D_6wf2m"]
 resource_local_to_scene = true
 
-[node name="TerrestrialPlanet" instance=ExtResource("1_ltjny")]
+[node name="TerrestrialPlanet" node_paths=PackedStringArray("atmosphere") instance=ExtResource("1_ltjny")]
 script = ExtResource("2_3s5t7")
-temperature = 1.0
-humidity = 0.0
+atmosphere = NodePath("MeshInstance3D/Atmosphere")
+temperature = 0.47
+humidity = 0.39
+
+[node name="UI" parent="." index="0"]
+transform = Transform3D(0.9999996, 0, 0, 0, 1, 0, 0, 0, 0.9999996, 0, 1, 0)
 
 [node name="MeshInstance3D" parent="." index="1"]
 transform = Transform3D(1, 0, 0, 0, -0.9983418, 0.05756398, 0, -0.05756398, -0.9983418, 0, 0, 0)
 material_override = ExtResource("3_swokb")
 instance_shader_parameters/biome_color = Color(0, 0, 0, 1)
-instance_shader_parameters/flat_color = Color(1.017957, 0.013866961, 0, 1)
-instance_shader_parameters/shore_color = Color(0.07494973, 0.07494973, 0.07494973, 1)
-instance_shader_parameters/shore_height = 1.03
-instance_shader_parameters/steep_color = Color(0.10312323, 0.103123255, 0.10312323, 1)
-instance_shader_parameters/water_color = Color(2.454227, 0.462104, 0, 1)
-mesh = ExtResource("4_56eyt")
+instance_shader_parameters/flat_color = Color(0.20015302, 0.7543392, 0, 1)
+instance_shader_parameters/shore_color = Color(0.59769434, 0.856911, 0.5840514, 1)
+instance_shader_parameters/shore_height = 1.02
+instance_shader_parameters/steep_color = Color(0.44761327, 0.4359544, 0.4103056, 1)
+instance_shader_parameters/water_color = Color(0, 0.27931938, 1, 1)
+mesh = ExtResource("4_swokb")
 
 [node name="Atmosphere" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0)
 material_override = SubResource("ShaderMaterial_56eyt")
 instance_shader_parameters/atmosphere_color = Color(1, 1, 1, 1)
-instance_shader_parameters/density = 1.0000000475
+instance_shader_parameters/density = 0.7482556
 instance_shader_parameters/rim_strength = 10.0
 mesh = SubResource("SphereMesh_hpp1k")
 skeleton = NodePath("../..")

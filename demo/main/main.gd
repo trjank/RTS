@@ -12,7 +12,7 @@ enum State {
 }
 
 const MAX_ADAPTIVE_FOV := 170.0
-const DEFAULT_ADAPTIVE_FOV_RATIO := 1e-4
+const DEFAULT_ADAPTIVE_FOV_RATIO := 3e-4
 
 @export var base_fov := 75.0
 @export var nodes: Dictionary[State, Node]

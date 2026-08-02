@@ -14,6 +14,7 @@ static var VOLCANO := Biome.from_folder("res://map/terrestrial_planet/volcano", 
 
 static var biomes: Array[Biome] = [TEMPERATE_FOREST, DESERT, TUNDRA, TROPICAL_RAINFOREST, VOLCANO]
 
+var atmosphere_density_curve: Curve
 var biome_color_gradient: Gradient
 var flat_color_gradient: Gradient
 var steep_color_gradient: Gradient
@@ -38,12 +39,16 @@ static func to_biome(temperature: float, humidity: float) -> Biome:
 static func from_folder(folder_path: String, init_temperature_humidity := Vector2.ZERO) -> Biome:
 	var biome := Biome.new()
 	biome.temperature_humidity = init_temperature_humidity
+	biome.atmosphere_density_curve = load(folder_path + "/atmosphere_density_curve.tres")
 	biome.biome_color_gradient = load(folder_path + "/temperature_biome_color_gradient.tres")
 	biome.flat_color_gradient = load(folder_path + "/temperature_flat_color_gradient.tres")
 	biome.steep_color_gradient = load(folder_path + "/temperature_steep_color_gradient.tres")
 	biome.shore_color_gradient = load(folder_path + "/temperature_shore_color_gradient.tres")
 	biome.water_color_gradient = load(folder_path + "/temperature_water_color_gradient.tres")
 	return biome
+
+func generate_atmosphere_density(rng: RandomNumberGenerator) -> float:
+	return atmosphere_density_curve.sample(rng.randf() )
 
 func generate_biome_color(rng: RandomNumberGenerator) -> Color:
 	return biome_color_gradient.sample(rng.randf() )

@@ -10,14 +10,14 @@ const float SCHWARZCHILD_RADIUS = 0.4;
 const float MIN_DT = 0.2 * SCHWARZCHILD_RADIUS;
 const float MAX_DT = 1.0 * SCHWARZCHILD_RADIUS;
 const float ACCRETION_DISK_OUTER_RADIUS = 1.0;
-const float ACCRETION_DISK_INNER_RADIUS = 0.55;
-const float ACCRETION_DISK_GLOW = 10.0;
+const float ACCRETION_DISK_INNER_RADIUS = 0.5;
 // KEEP THIS AS SMALL AS POSSIBLE (HUGE PERFORMANCE IMPACT)
 const int NUM_TIME_STEPS = 24;
 
 uniform sampler2D SCREEN_TEXTURE: hint_screen_texture;
 uniform sampler2D accretion_disk_texture;
 
+instance uniform float accretion_disk_light_glow = 5.0;
 instance uniform vec3 accretion_disk_light_color: source_color = vec3(0.0, 1.0, 5.0);
 instance uniform float accretion_disk_start_rotation = 0.5;
 instance uniform float accretion_disk_rotation_speed: hint_range(-1.0, 1.0) = 1.0;
@@ -67,7 +67,7 @@ vec3 calculate_accretion_disk_light(vec2 xy, float r) {
 	float brightness = mix(brightness1, brightness2, 0.5 + 0.5 * cos( (TAU / ANIMATION_PERIOD) * t1) );
 	// Make the light brighter on the inner disk compared to outer disk
 	// The inner disk rotates quicker, is hotter, and has a stronger glow
-	brightness *= ACCRETION_DISK_GLOW * exp( (ACCRETION_DISK_INNER_RADIUS - r) * accretion_disk_light_dropoff) * (ACCRETION_DISK_OUTER_RADIUS - r);
+	brightness *= accretion_disk_light_glow * exp( (ACCRETION_DISK_INNER_RADIUS - r) * accretion_disk_light_dropoff) * (ACCRETION_DISK_OUTER_RADIUS - r);
 	return accretion_disk_light_color * brightness;
 }
 

@@ -106,18 +106,19 @@ func save_json(path: String, nested := false) -> bool:
 	file.close()
 	return true
 
-func _generate_one(index: int, count: int, parent: Node3D, battle_state: BattleState, rng: RandomNumberGenerator, node_storage: Array[Scenery], depth_limit := 1, shared_variables := {} ) -> int:
+func _generate_one(index: int, count: int, parent: Node3D, battle_state: BattleState, rng: RandomNumberGenerator, node_storage: Array[Scenery], depth_limit := 1, shared_variables := {}, layer_variables := {} ) -> int:
 	var scenery := Scenery.create(subtype)
 	scenery.rng = rng
 	scenery.battle_state = battle_state
 	scenery.map = self
-	scenery.generation_index = index
-	scenery.generation_count = count
+	scenery.index = index
+	scenery.count = count
 	parent.add_child(scenery)
 	var error: int = GenerationError.OK
 	#
 	for submap in submaps:
 		error |= submap.generate(scenery, battle_state, rng, node_storage, depth_limit - 1, shared_variables)
+	scenery.use_layer_variables(layer_variables)
 	scenery.use_shared_variables(shared_variables)
 	node_storage.push_back(scenery)
 	return error
@@ -135,8 +136,9 @@ func generate(parent: Node3D, battle_state: BattleState, rng: RandomNumberGenera
 	var min_count := int(preset.get("min_count", 1) )
 	var max_count := int(preset.get("max_count", min_count) )
 	var count := rng.randi_range(min_count, max_count)
+	var layer_variables := {}
 	var error: int = GenerationError.OK
 	#
 	for i in count:
-		error |= _generate_one(i, count, parent, battle_state, rng, node_storage, depth_limit, shared_variables)
+		error |= _generate_one(i, count, parent, battle_state, rng, node_storage, depth_limit, shared_variables, layer_variables)
 	return error

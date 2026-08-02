@@ -31,8 +31,9 @@ const BOT_ICON := preload("res://icons/bot.png")
 @export var fleet_container: FleetContainer
 @export var mouse_selection: MouseSelection
 @export var alloy_label: Label
-@export var energy_label: Label
+@export var crystal_label: Label
 @export var military_science_label: Label
+@export var time_left: Label
 
 var friendly_fire_enabled := false
 var can_pause := false
@@ -329,8 +330,10 @@ func _handle_team_rename(old_name: String, new_name: String, team: Team) -> void
 
 func _process(_dt: float) -> void:
 	alloy_label.text = "%.1f" % me.resources.alloy
-	energy_label.text = "%.1f" % me.resources.energy
+	crystal_label.text = "%.1f" % me.resources.crystals
 	military_science_label.text = "%.1f" % me.resources.military_science
+	var seconds := int(round_timer.time_left)
+	time_left.text = "%dm %02ds" % [int(seconds / 60.0), seconds % 60]
 
 func _physics_process(dt: float) -> void:
 	_state.time += _state.time_scale * dt
