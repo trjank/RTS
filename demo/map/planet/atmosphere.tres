@@ -1,9 +1,0 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://t5t610eblwbo"]
-
-[ext_resource type="Shader" uid="uid://cu1aeord18dpm" path="res://map/planet/atmosphere.gdshader" id="1_ftqiy"]
-
-[resource]
-render_priority = 0
-shader = ExtResource("1_ftqiy")
-shader_parameter/direct_light_color = Color(0, 1, 0.88333344, 1)
-shader_parameter/indirect_light_color = Color(1, 0, 0, 1)

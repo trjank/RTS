@@ -1,15 +1,23 @@
-[gd_scene load_steps=13 format=3 uid="uid://b8pwym56tfmx"]
+[gd_scene load_steps=14 format=3 uid="uid://b8pwym56tfmx"]
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_miubj"]
 [ext_resource type="Script" uid="uid://se4t0qo4oph6" path="res://map/jovian_planet/jovian_planet.gd" id="2_eosxs"]
 [ext_resource type="Material" uid="uid://buq67i5hatvas" path="res://map/jovian_planet/jovian_planet_material.tres" id="3_1hplw"]
 [ext_resource type="Shader" uid="uid://cglj04vnxxu42" path="res://map/jovian_planet/rings.gdshader" id="4_2jo2d"]
-[ext_resource type="Material" uid="uid://t5t610eblwbo" path="res://map/planet/atmosphere.tres" id="4_ag2gk"]
+[ext_resource type="Shader" uid="uid://dpsu2uuxk3jpf" path="res://map/planet/atmosphere_constant_depth.gdshader" id="4_ag2gk"]
 [ext_resource type="Texture2D" uid="uid://cjugbjvydgy28" path="res://map/jovian_planet/ring_texture.tres" id="5_1hplw"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_fc2gh"]
 radius = 1.0
 height = 2.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hl5rp"]
+render_priority = 0
+shader = ExtResource("4_ag2gk")
+shader_parameter/glint = 0.10000000149012
+shader_parameter/glint_concentration = 10.0
+shader_parameter/direct_light_color = Color(0, 3.5683625, 4.415934, 1)
+shader_parameter/indirect_light_color = Color(4.415934, 0, 0, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_hl5rp"]
 radius = 1.01
@@ -42,10 +50,10 @@ mesh = SubResource("SphereMesh_fc2gh")
 
 [node name="Atmosphere" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0)
-material_override = ExtResource("4_ag2gk")
+material_override = SubResource("ShaderMaterial_hl5rp")
 instance_shader_parameters/atmosphere_color = Color(1, 1, 1, 1)
-instance_shader_parameters/density = 1.754000083315
-instance_shader_parameters/rim_strength = 0.7790000370025
+instance_shader_parameters/density = 0.50000002375
+instance_shader_parameters/rim_strength = 10.0
 mesh = SubResource("SphereMesh_hl5rp")
 skeleton = NodePath("../..")
 
