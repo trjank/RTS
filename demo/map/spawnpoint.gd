@@ -15,8 +15,9 @@ func set_arc(new_arc: float) -> void:
 	arc = absf(new_arc)
 
 func use_shared_variables(shared_variables := {} ) -> void:
-	var spawnpoints := shared_variables.get_or_add("spawnpoints", [] as Array[Spawnpoint] ) as Array[Spawnpoint]
-	spawnpoints.append(self)
+	var teams := shared_variables.get_or_add("spawnpoints", {} ) as Dictionary
+	var team_spawnpoints := teams.get_or_add("team", [] ) as Array
+	team_spawnpoints.append(self)
 
 func get_player_angle(i: int) -> float:
 	var separation := arc / get_max_players()

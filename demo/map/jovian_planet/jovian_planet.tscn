@@ -1,17 +1,22 @@
-[gd_scene load_steps=11 format=3 uid="uid://b8pwym56tfmx"]
+[gd_scene load_steps=13 format=3 uid="uid://b8pwym56tfmx"]
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_miubj"]
 [ext_resource type="Script" uid="uid://se4t0qo4oph6" path="res://map/jovian_planet/jovian_planet.gd" id="2_eosxs"]
 [ext_resource type="Material" uid="uid://buq67i5hatvas" path="res://map/jovian_planet/jovian_planet_material.tres" id="3_1hplw"]
 [ext_resource type="Shader" uid="uid://cglj04vnxxu42" path="res://map/jovian_planet/rings.gdshader" id="4_2jo2d"]
+[ext_resource type="Material" uid="uid://t5t610eblwbo" path="res://map/planet/atmosphere.tres" id="4_ag2gk"]
 [ext_resource type="Texture2D" uid="uid://cjugbjvydgy28" path="res://map/jovian_planet/ring_texture.tres" id="5_1hplw"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_fc2gh"]
 radius = 1.0
 height = 2.0
 
+[sub_resource type="SphereMesh" id="SphereMesh_hl5rp"]
+radius = 1.01
+height = 2.02
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1hplw"]
-render_priority = 0
+render_priority = 1
 shader = ExtResource("4_2jo2d")
 shader_parameter/radial_noise = ExtResource("5_1hplw")
 shader_parameter/color_primary = Color(0, 0, 0, 1)
@@ -35,7 +40,16 @@ instance_shader_parameters/primary_color = Color(1, 0.35000002, 0, 1)
 instance_shader_parameters/secondary_color = Color(1, 0.7783333, 0.3, 1)
 mesh = SubResource("SphereMesh_fc2gh")
 
-[node name="Rings" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
+[node name="Atmosphere" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0)
+material_override = ExtResource("4_ag2gk")
+instance_shader_parameters/atmosphere_color = Color(1, 1, 1, 1)
+instance_shader_parameters/density = 1.754000083315
+instance_shader_parameters/rim_strength = 0.7790000370025
+mesh = SubResource("SphereMesh_hl5rp")
+skeleton = NodePath("../..")
+
+[node name="Rings" type="MeshInstance3D" parent="MeshInstance3D" index="1"]
 transform = Transform3D(0.9531907, -0.3023699, 0, 0.3023699, 0.9531907, 0, 0, 0, 1, 0, 0, 0)
 material_override = SubResource("ShaderMaterial_1hplw")
 mesh = SubResource("PlaneMesh_eosxs")

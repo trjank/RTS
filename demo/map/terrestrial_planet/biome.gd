@@ -3,7 +3,7 @@ class_name Biome extends RefCounted
 
 static var DESERT := Biome.from_folder("res://map/terrestrial_planet/desert", Vector2(1.0, 0.3) ):
 	set(__): push_error("(Biome) Biome.DESERT is immutable!")
-static var TEMPERATE_FOREST := Biome.from_folder("res://map/terrestrial_planet/temperate_forest", Vector2(0.2, 0.5) ):
+static var TEMPERATE_FOREST := Biome.from_folder("res://map/terrestrial_planet/temperate_forest", Vector2(0.5, 0.5) ):
 	set(__): push_error("(Biome) Biome.TEMPERATE_FOREST is immutable!")
 static var TROPICAL_RAINFOREST := Biome.from_folder("res://map/terrestrial_planet/tropical_rainforest", Vector2(1.0, 1.0) ):
 	set(__): push_error("(Biome) Biome.TROPICAL_RAINFOREST is immutable!")

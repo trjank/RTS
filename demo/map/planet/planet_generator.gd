@@ -4,9 +4,9 @@ class_name PlanetGenerator extends EditorScript
 # NOTE: You can right click this script and select "Run" to generate a mesh
 
 const HEIGHT_MAP_SCALE := 300.0
-const RESOLUTION_LOW := 64
-const RESOLUTION_MEDIUM := 128
-const RESOLUTION_HIGH := 256
+const RESOLUTION_LOW := 32
+const RESOLUTION_MEDIUM := 64
+const RESOLUTION_HIGH := 128
 # NOTE: Ensure this file does not already exist (the script will not overwrite)
 const EXPORT_PATH := "res://map/planet/generated_mesh.res"
 
@@ -53,11 +53,11 @@ static func make_low_poly(mesh: Mesh) -> ArrayMesh:
 	return st.commit()
 
 func _run() -> void:
-	var resolution := RESOLUTION_MEDIUM
+	var resolution := RESOLUTION_LOW
 	var radius := 1.0
-	var height_variation := 0.02
-	var height_map := preload("res://map/moon/crater_height_map.tres")
-	var color_ramp := preload("res://map/moon/crater_color_ramp.tres")
+	var height_variation := 0.2
+	var height_map := preload("res://map/terrestrial_planet/mountain_height_map.tres")
+	var color_ramp := preload("res://map/terrestrial_planet/mountain_color_ramp.tres")
 	#
 	var mesh := generate_mesh(resolution, radius, height_variation, height_map, color_ramp)
 	mesh = make_low_poly(mesh)

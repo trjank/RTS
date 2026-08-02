@@ -1,5 +1,7 @@
 shader_type spatial;
 
+render_mode cull_back;
+
 #include "res://map/triplanar_mapping.gdshaderinc"
 
 uniform sampler2D biome_texture;
@@ -11,6 +13,7 @@ instance uniform vec3 biome_color: source_color;
 instance uniform vec3 flat_color: source_color;
 instance uniform vec3 steep_color: source_color;
 instance uniform vec3 shore_color: source_color;
+instance uniform vec3 water_color: source_color;
 instance uniform float shore_height = 1.01;
 
 varying float flatness;
@@ -23,9 +26,14 @@ void vertex() {
 	height = length(VERTEX);
 	vec3 uv_power_normal = to_uv_power_normal(NORMAL, uv_blend_sharpness);
 	biome_value = triplanar_texture(biome_texture, uv_power_normal, VERTEX).r;
+	
+	VERTEX = normalize(VERTEX) * max(height, 1.01);
 }
 
 void fragment() {
 	ALBEDO = height < shore_height ? shore_color : mix(steep_color, flat_color, flatness);
 	ALBEDO = mix(ALBEDO, biome_color, biome_value);
+	if (height < 1.01) {
+		ALBEDO = water_color;
+	}
 }

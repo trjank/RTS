@@ -1,6 +1,13 @@
 @tool
 class_name TerrestrialPlanet extends Planet
 
+#static var MOUNTAINS_LOD_MESH := LODMesh.new(
+	#preload("res://map/terrestrial_planet/mesh_mountains_low.res"),
+	#preload("res://map/terrestrial_planet/mesh_mountains_medium.res"),
+	#preload("res://map/terrestrial_planet/mesh_mountains_high.res")
+#):
+	#set(__): push_error("(TerrestrialPlanet) TerrestrialPlanet.MOUNTAINS_LOD_MESH is immutable!")
+
 const MIN_TEMPERATURE := 0.0
 const MAX_TEMPERATURE := 1.0
 const MIN_HUMIDITY := 0.0
@@ -10,7 +17,6 @@ const MAX_HUMIDITY := 1.0
 	set = set_temperature
 @export var humidity := 0.0:
 	set = set_humidity
-@export var sun_scorch := 0.0
 @export_tool_button("Generate Shader") var button := generate_shader
 
 var _biome := Biome.TEMPERATE_FOREST

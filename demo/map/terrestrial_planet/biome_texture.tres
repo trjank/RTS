@@ -13,3 +13,4 @@ domain_warp_fractal_octaves = 1
 noise = SubResource("FastNoiseLite_i0g27")
 color_ramp = SubResource("Gradient_i0g27")
 seamless = true
+seamless_blend_skirt = 0.265
