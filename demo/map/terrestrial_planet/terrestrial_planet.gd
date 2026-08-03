@@ -40,6 +40,7 @@ func generate_shader() -> void:
 	assert(rng != null)
 	#
 	atmosphere.set_instance_shader_parameter("density", _biome.generate_atmosphere_density(rng) )
+	atmosphere.set_instance_shader_parameter("color", _biome.generate_atmosphere_color(rng) )
 	mesh_instance.set_instance_shader_parameter("biome_color", _biome.generate_biome_color(rng) )
 	mesh_instance.set_instance_shader_parameter("flat_color", _biome.generate_flat_color(rng) )
 	mesh_instance.set_instance_shader_parameter("steep_color", _biome.generate_steep_color(rng) )

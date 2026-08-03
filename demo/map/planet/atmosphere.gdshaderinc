@@ -9,9 +9,9 @@ uniform float glint_concentration: hint_range(0.0, 100.0) = 10.0;
 uniform vec3 direct_light_color: source_color = vec3(1.0, 1.0, 1.0);
 uniform vec3 indirect_light_color: source_color = vec3(1.0, 0.0, 0.0);
 
-instance uniform vec3 atmosphere_color: source_color = vec3(1.0, 1.0, 1.0);
 instance uniform float rim_strength: hint_range(0.0, 10.0) = 0.0;
 instance uniform float density: hint_range(0.0, 10.0) = 1.0;
+instance uniform vec3 color: source_color = vec3(1.0, 1.0, 1.0);
 
 float to_world_depth(float depth, vec2 screen_uv, mat4 inv_projection_matrix) {
 	// NOTE: These normalized coordinates are only for the Forward+ renderer
@@ -32,7 +32,7 @@ void fragment() {
 #endif
 	// More light is reflected at the edges (this is the Fresnel effect)
 	float rim_intensity = rim_strength * exp(-dot(NORMAL, VIEW) * rim_strength);
-	ALBEDO = atmosphere_color * (atmosphere + rim_intensity);
+	ALBEDO = color * (atmosphere + rim_intensity);
 	ALPHA = max(atmosphere, 0.0);
 }
 

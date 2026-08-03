@@ -43,7 +43,7 @@ func battle_tick(_battle: Battle, _dt: float) -> void:
 func spawn_player(_player: Player, position: Vector3) -> SpawnError:
 	return SpawnError.OK if position.is_finite() else SpawnError.INVALID_PLAYER_SPAWN
 
-func spawn_team(team: Team, spawnpoints: Array[Spawnpoint] ) -> SpawnError:
+func spawn_team(team: Team, spawnpoints: Array[Spawnpoint] ) -> int:
 	if team == null:
 		return SpawnError.INVALID_TEAM
 	spawnpoints.sort_custom(Spawnpoint.priority_sorter)
@@ -51,9 +51,9 @@ func spawn_team(team: Team, spawnpoints: Array[Spawnpoint] ) -> SpawnError:
 	#
 	for i in team.count_players():
 		error |= spawn_player(team.get_player(i), spawnpoints[i % spawnpoints.size() ].generate_spawn_position() )
-	return error as SpawnError
+	return error
 
-func spawn_teams(battle: Battle) -> SpawnError:
+func spawn_teams(battle: Battle) -> int:
 	assert(battle != null)
 	#
 	var spawnpoints := Spawnpoint.get_team_spawnpoints(battle.get_map_data() )
@@ -70,7 +70,7 @@ func spawn_teams(battle: Battle) -> SpawnError:
 	#
 	for i in team_names.size():
 		error |= spawn_team(battle.get_team(team_names[i] ), spawnpoints[spawnpoint_team_names[i] ] )
-	return error as SpawnError
+	return error
 
 func get_dynamic_spawnpoint(player: Player) -> Vector3:
 	# NOTE: We do not need the battle's RandomNumberGenerator since this is a client request

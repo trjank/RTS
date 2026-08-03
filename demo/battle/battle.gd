@@ -124,7 +124,7 @@ func get_players() -> Array[Player]:
 	copy.assign(_players.values() )
 	return copy
 
-## This creates a copy (if you can, use get_player instead)
+## This creates a copy (if you can, use get_team instead)
 func get_teams() -> Array[Team]:
 	var copy := [] as Array[Team]
 	copy.assign(_teams.values() )
