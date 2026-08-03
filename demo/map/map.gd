@@ -9,21 +9,28 @@ enum GenerationError {
 
 # NOTE: You do not have to use all of these properties
 const PRESET_SYNTAX: Dictionary[String, Variant.Type] = {
+	"x": TYPE_FLOAT,
+	"y": TYPE_FLOAT,
+	"z": TYPE_FLOAT,
 	"min_mass": TYPE_FLOAT,
 	"max_mass": TYPE_FLOAT,
 	"min_count": TYPE_INT,
 	"max_count": TYPE_INT,
 	"min_rotation": TYPE_FLOAT,
 	"max_rotation": TYPE_FLOAT,
+# For Spawnpoint below
+	"team_name": TYPE_STRING,
+	"priority": TYPE_INT,
+	"spread": TYPE_FLOAT,
 # For Orbiter below
 	"min_orbit_radius": TYPE_FLOAT,
 	"max_orbit_radius": TYPE_FLOAT,
 	"min_orbit_offset": TYPE_FLOAT,
 	"max_orbit_offset": TYPE_FLOAT,
 # For Planet below
+	"display_name": TYPE_STRING,
 	"min_radius": TYPE_FLOAT,
 	"max_radius": TYPE_FLOAT,
-	"display_name": TYPE_STRING,
 	"capturable": TYPE_BOOL,
 	"min_tilt": TYPE_FLOAT,
 	"max_tilt": TYPE_FLOAT,

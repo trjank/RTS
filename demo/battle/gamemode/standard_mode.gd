@@ -22,10 +22,10 @@ func is_capital_ship_compatible(ship: ShipData) -> bool:
 func is_ship_compatible(ship: ShipData, slot: int) -> bool:
 	return is_capital_ship_compatible(ship) if slot == CAPITAL_SHIP_SLOT else is_normal_ship_compatible(ship)
 
-func _field_capital_ship(player: Player, _spawnpoints: Array[Spawnpoint] ) -> void:
-	player.get_battle_data()["capital_ship"] = player.spawn_ship_slot(CAPITAL_SHIP_SLOT)
-	#capital_ship.died.connect(player.alive)
-
-func on_battle_start(battle: Battle) -> void:
-	var spawnpoints := get_map_spawnpoints(battle)
-	battle.for_each_player(_field_capital_ship.bind(spawnpoints) )
+func spawn_player(player: Player, position: Vector3) -> SpawnError:
+	if not position.is_finite():
+		return SpawnError.INVALID_PLAYER_SPAWN
+	var capital_ship := player.spawn_ship_slot(CAPITAL_SHIP_SLOT, position)
+	player.get_battle_data()["capital_ship"] = capital_ship
+	# TODO: Connect kill signal for capital_ship
+	return SpawnError.OK

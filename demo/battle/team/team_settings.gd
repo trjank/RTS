@@ -21,7 +21,7 @@ func set_battle(new_battle: Battle) -> void:
 	if battle != null:
 		_disconnect_signals(battle)
 	if new_battle != null:
-		new_battle.for_each_team(add_team)
+		_add_battle_teams(new_battle)
 		_connect_signals(new_battle)
 	battle = new_battle
 
@@ -45,6 +45,10 @@ func _clear_teams() -> void:
 	for team in _team_boxes:
 		_team_boxes[team].queue_free()
 	_team_boxes.clear()
+
+func _add_battle_teams(new_battle: Battle) -> void:
+	for team in new_battle.get_teams():
+		add_team(team)
 
 func _disconnect_signals(old_battle: Battle) -> void:
 	request_join_team.disconnect(old_battle.request_join_team)

@@ -3,6 +3,7 @@ class_name Scenery extends Node3D
 
 const MIN_MASS := 0.0
 const MAX_MASS := 1.0e10
+const ROMAN_NUMERAL_TABLE: PackedStringArray = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 
 # NOTE: Do NOT use preload (this variable is static)
 static var subtypes: Dictionary[String, PackedScene] = {
@@ -10,7 +11,8 @@ static var subtypes: Dictionary[String, PackedScene] = {
 	"TerrestrialPlanet": load("res://map/terrestrial_planet/terrestrial_planet.tscn"),
 	"JovianPlanet": load("res://map/jovian_planet/jovian_planet.tscn"),
 	"Asteroid": load("res://map/asteroid/asteroid.tscn"),
-	"Moon": load("res://map/moon/moon.tscn")
+	"Moon": load("res://map/moon/moon.tscn"),
+	"Spawnpoint": load("res://map/spawnpoint.tscn")
 }
 static var TEST_RNG := RandomNumberGenerator.new():
 	set(__): push_error("(Scenery) TEST_RNG is immutable!")
@@ -20,8 +22,10 @@ static func create(subtype: String) -> Scenery:
 	#
 	return subtypes[subtype].instantiate() as Scenery
 
-var index := 0
-var count := 1
+var index := 0:
+	set = set_index
+var count := 1:
+	set = set_count
 var hp := INF
 var mass := MIN_MASS:
 	set = set_mass
@@ -43,6 +47,15 @@ func _ready() -> void:
 func get_target() -> SceneryTarget:
 	return _target
 
+func get_roman_numeral() -> String:
+	return ROMAN_NUMERAL_TABLE[index] if index <= 10 else ""
+
+func set_index(new_index: int) -> void:
+	index = maxi(new_index, 0)
+
+func set_count(new_count: int) -> void:
+	count = maxi(new_count, 0)
+
 func set_mass(new_mass: float) -> void:
 	mass = maxf(new_mass, MIN_MASS)
 
@@ -51,7 +64,6 @@ func set_rng(new_rng: RandomNumberGenerator) -> void:
 	#
 	rng = new_rng
 
-## Override this to add additional functionality
 func set_time(new_time: float) -> void:
 	time = new_time
 
@@ -72,6 +84,9 @@ func use_layer_variables(_layer_variables := {} ) -> void:
 	pass # (override this method)
 
 func generate_from_map() -> void:
+	position.x = map.preset.get("x", position.x)
+	position.y = map.preset.get("y", position.y)
+	position.z = map.preset.get("z", position.z)
 	mass = generate_randf_range("min_mass", "max_mass", MIN_MASS, MAX_MASS)
 	rotation.y = generate_randf_radians("min_rotation", "max_rotation")
 

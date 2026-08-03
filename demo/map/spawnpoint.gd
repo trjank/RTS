@@ -1,31 +1,23 @@
 @tool
 class_name Spawnpoint extends Scenery
 
-var distance := 0.0
-var angle := 0.0
-var arc := 0.0:
-	set = set_arc
-var team := ""
-var spawn_order := PackedInt32Array()
+var team_name := ""
+var priority := 0
+var spread := 0.0
 
-func get_max_players() -> int:
-	return spawn_order.size()
+static func priority_sorter(a: Spawnpoint, b: Spawnpoint) -> bool:
+	return a.priority < b.priority
 
-func set_arc(new_arc: float) -> void:
-	arc = absf(new_arc)
+static func get_team_spawnpoints(map_data: Dictionary) -> Dictionary[String, Array]:
+	return map_data.get("spawnpoints", {} as Dictionary[String, Array] )
 
 func use_shared_variables(shared_variables := {} ) -> void:
-	var teams := shared_variables.get_or_add("spawnpoints", {} ) as Dictionary
-	var team_spawnpoints := teams.get_or_add("team", [] ) as Array
+	var teams: Dictionary = shared_variables.get_or_add("spawnpoints", {} as Dictionary[String, Array] )
+	var team_spawnpoints: Array[Spawnpoint] = teams.get_or_add(team_name, [] as Array[Spawnpoint] )
 	team_spawnpoints.append(self)
 
-func get_player_angle(i: int) -> float:
-	var separation := arc / get_max_players()
-	return (angle + i * separation + 0.5 * arc) if i > 0 else angle
-
-func get_player_spawn(i: int) -> Vector3:
-	var radians := deg_to_rad(get_player_angle(i) )
-	return Vector3.RIGHT.rotated(Vector3.UP, radians)
-
-func get_global_player_spawn(i: int) -> Vector3:
-	return to_global(get_player_spawn(i) )
+func generate_spawn_position() -> Vector3:
+	var offset_distance := rng.randf_range(0.0, spread)
+	var offset_rotation := rng.randf_range(0.0, TAU)
+	var offset := Vector3(offset_distance, 0.0, 0.0).rotated(Vector3.UP, offset_rotation)
+	return to_global(offset)

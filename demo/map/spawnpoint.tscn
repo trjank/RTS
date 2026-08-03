@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1y3oaf4wq4yq"]
+
+[ext_resource type="Script" uid="uid://w8hocxprwk6m" path="res://map/spawnpoint.gd" id="1_oksiv"]
+
+[node name="Spawnpoint" type="Node3D"]
+script = ExtResource("1_oksiv")
+metadata/_custom_type_script = "uid://w8hocxprwk6m"

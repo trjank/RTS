@@ -8,7 +8,8 @@ enum Status {
 enum StartError {
 	OK,
 	ALREADY_RUNNING,
-	INCOMPATIBLE_MAP
+	INCOMPATIBLE_MAP,
+	SPAWN_FAILURE
 }
 
 signal started
@@ -59,9 +60,6 @@ var _map_root: Node3D
 var _state := BattleState.new()
 var _map_data := {}
 
-static func is_team_alive(team: Team) -> bool:
-	return team.is_alive()
-
 func _init() -> void:
 	_default_team = create_team("Spectators")
 	gamemode = Gamemode.STANDARD
@@ -75,10 +73,22 @@ func _ready() -> void:
 	me.fleet = globals.client.fleet
 	host = me
 
+func is_team_alive(team: Team) -> bool:
+	return team != _default_team and team.is_alive()
+
+func is_team_name_alive(team_name: String) -> bool:
+	return is_team_alive(_teams[team_name] )
+
+func count_players() -> int:
+	return _players.size()
+
+func count_teams() -> int:
+	return _teams.size()
+
 func get_player(player_name: String) -> Player:
 	return _players.get(player_name)
 
-func get_team(team_name: String) -> Player:
+func get_team(team_name: String) -> Team:
 	return _teams.get(team_name)
 
 func get_default_team() -> Team:
@@ -90,14 +100,35 @@ func get_status() -> Status:
 func get_state() -> BattleState:
 	return _state
 
-func get_alive_teams() -> Array[Team]:
-	return _teams.values().filter(is_team_alive)
-
 func get_map() -> Map:
 	return _state.map
 
 func get_map_data() -> Dictionary:
 	return _map_data
+
+func get_team_names() -> PackedStringArray:
+	return PackedStringArray(_teams.keys() )
+
+func get_alive_team_names() -> PackedStringArray:
+	return PackedStringArray(_teams.keys().filter(is_team_name_alive) )
+
+func get_player_names() -> PackedStringArray:
+	return PackedStringArray(_players.keys() )
+
+func get_alive_teams() -> Array[Team]:
+	return _teams.values().filter(is_team_alive)
+
+## This creates a copy (if you can, use get_player instead)
+func get_players() -> Array[Player]:
+	var copy := [] as Array[Player]
+	copy.assign(_players.values() )
+	return copy
+
+## This creates a copy (if you can, use get_player instead)
+func get_teams() -> Array[Team]:
+	var copy := [] as Array[Team]
+	copy.assign(_teams.values() )
+	return copy
 
 func set_plane(new_plane: Plane) -> void:
 	plane = new_plane
@@ -170,6 +201,8 @@ func start() -> StartError:
 		return StartError.INCOMPATIBLE_MAP
 	reset_teams()
 	generate_map()
+	if gamemode.spawn_teams(self) != Gamemode.SpawnError.OK:
+		return StartError.SPAWN_FAILURE
 	set_physics_process(true)
 	_status = Status.RUNNING
 	_state.time = 0.0
@@ -288,14 +321,6 @@ func reset_teams() -> void:
 		_reset_player(_players[player] )
 	for team in _teams:
 		_teams[team].reset_stats()
-
-func for_each_player(f: Callable) -> void:
-	for player in _players:
-		f.call(_players[player] )
-
-func for_each_team(f: Callable) -> void:
-	for team in _teams:
-		f.call(_teams[team] )
 
 func _reset_player(player: Player) -> void:
 	player.get_battle_data().clear()

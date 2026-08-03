@@ -142,7 +142,10 @@ func generate_from_map() -> void:
 	capture_zone_radius_ratio = float(map.preset.get("capture_zone_radius_ratio", 1.5) )
 	radius = generate_randf_range("min_radius", "max_radius", MIN_RADIUS, MAX_RADIUS)
 	mesh_instance.rotation.x = generate_randf_radians("min_tilt", "max_tilt")
-	display_name = map.preset.get("display_name", "")
+	display_name = map.preset.get("display_name", "").format({
+		"index": index + 1,
+		"roman_numeral": get_roman_numeral()
+	})
 	ui.position = Vector3.ZERO
 
 func _on_area_3d_body_entered(body: Node3D) -> void:

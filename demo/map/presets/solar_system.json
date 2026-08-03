@@ -1,34 +1,36 @@
 {
 	"root": {
 		"subtype": "Star",
+		"display_name": "Xelos",
 		"capturable": false,
-		"display_name": "",
-		"max_count": 1,
-		"max_energy": 3.0,
-		"max_mass": 100.0,
-		"max_orbit_offset": 0.0,
-		"max_orbit_radius": 0.0,
-		"max_radius": 10.0,
 		"min_count": 1,
+		"max_count": 1,
 		"min_energy": 3.0,
+		"max_energy": 3.0,
 		"min_mass": 100.0,
+		"max_mass": 100.0,
+		"min_rotation": 0.0,
+		"max_rotation": 0.0,
 		"min_orbit_offset": 0.0,
+		"max_orbit_offset": 0.0,
 		"min_orbit_radius": 0.0,
+		"max_orbit_radius": 0.0,
 		"min_radius": 10.0,
-		"submaps": ["TerrestrialPlanet 1", "TerrestrialPlanet 2", "JovianPlanet 1"]
+		"max_radius": 10.0,
+		"submaps": ["TerrestrialPlanet 1", "TerrestrialPlanet 2", "JovianPlanet 1", "Spawnpoint 1"]
 	},
 	"Moon 1": {
 		"subtype": "Moon",
 		"capturable": false,
-		"display_name": "Moon",
+		"display_name": "",
 		"min_count": 0,
 		"max_count": 2,
 		"min_mass": 1.0,
 		"max_mass": 10.0,
 		"min_orbit_offset": 0.0,
 		"max_orbit_offset": 0.0,
-		"min_orbit_radius": 20.0,
-		"max_orbit_radius": 25.0,
+		"min_orbit_radius": 25.0,
+		"max_orbit_radius": 30.0,
 		"min_radius": 5.0,
 		"max_radius": 7.0,
 		"submaps": []
@@ -36,7 +38,7 @@
 	"TerrestrialPlanet 1": {
 		"subtype": "TerrestrialPlanet",
 		"capturable": true,
-		"display_name": "Terrestrial Planet",
+		"display_name": "Xelos-A {roman_numeral}",
 		"min_count": 3,
 		"max_count": 3,
 		"min_mass": 1000.0,
@@ -56,7 +58,7 @@
 	"TerrestrialPlanet 2": {
 		"subtype": "TerrestrialPlanet",
 		"capturable": true,
-		"display_name": "Terrestrial Planet",
+		"display_name": "Xelos-B {index}",
 		"min_count": 3,
 		"max_count": 3,
 		"min_mass": 1000.0,
@@ -92,5 +94,10 @@
 		"min_humidity": 0.5,
 		"max_humidity": 0.5,
 		"submaps": ["Moon 1"]
+	},
+	"Spawnpoint 1": {
+		"subtype": "Spawnpoint",
+		"x": 200.0,
+		"submaps": []
 	}
 }

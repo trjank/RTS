@@ -40,6 +40,9 @@ func _init(init_name := "", init_color := Color.WHITE, max_players := 10) -> voi
 	color = init_color
 	_max_players = max_players
 
+func count_players() -> int:
+	return _players.size()
+
 func count_captures() -> int:
 	return _captures.size()
 
@@ -48,6 +51,12 @@ func is_full() -> bool:
 
 func is_alive() -> bool:
 	return _players.any(is_player_alive)
+
+func get_player(i: int) -> Player:
+	return _players[i]
+
+func get_players() -> Array[Player]:
+	return _players.duplicate()
 
 func get_alive_players() -> Array:
 	return _players.filter(is_player_alive)
