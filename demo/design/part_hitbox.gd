@@ -34,11 +34,10 @@ func get_top_left_corner() -> Vector2i:
 	return Vector2i(corner_2d.round() )
 
 func get_discrete_rotation() -> Rotation.Discrete:
-	var h_flip := scale.x < 0
-	var v_flip := scale.z < 0
-	var h_rotation := rotation.y + PI if v_flip else rotation.y
-	# NOTE: Godot's transform implementation often flips negative signs
-	return Rotation.from_radians(h_rotation, h_flip and v_flip)
+	# NOTE: Do NOT use scale.x and rotation.y (there are multiple equivalent transforms)
+	var h_flip := basis.x.cross(basis.z).y > 0.0
+	var xz_rotation := atan2(-basis.x.z, basis.x.x)
+	return Rotation.from_radians(xz_rotation + PI if h_flip else xz_rotation, h_flip)
 
 func set_discrete_rotation(new_rotation: Rotation.Discrete) -> void:
 	rotation.y = Rotation.to_radians(new_rotation)
@@ -57,6 +56,7 @@ func set_data(new_data: PartData) -> void:
 		_part.queue_free()
 	data = new_data
 	_part = new_data.create_part()
-	position.y = data.y_level
 	collision_shape.shape.size = get_size_3d()
 	add_child(_part)
+	position.y = data.y_level
+	_part.position.y = 0.0

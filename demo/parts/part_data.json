@@ -1,4 +1,52 @@
 {
+	"HAF1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 1,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_1x1.png"
+	},
+	"HAF2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_2x2.png"
+	},
+	"HAF3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor 3x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 3,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_3x3.png"
+	},
+	"HAF4": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor 4x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_4x4.png"
+	},
 	"HAW1": {
 		"cost_data": {
 			"alloy": 10.0
@@ -11,17 +59,137 @@
 		"tab": "armor",
 		"image_path": "res://part_images/armor_heavy_wedge_1x1.png"
 	},
+	"HAW2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor Wedge 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_wedge_1x2.png"
+	},
+	"HAW3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor Wedge 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_wedge_1x3.png"
+	},
+	"HAW4": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor Wedge 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_wedge_1x4.png"
+	},
 	"HAT1": {
 		"cost_data": {
 			"alloy": 10.0
 		},
-		"name": "Triangular Heavy Armor 1x1",
+		"name": "Heavy Armor Triangle 1x1",
 		"mass": 10,
 		"hp": 100,
 		"width": 1,
 		"height": 1,
 		"tab": "armor",
-		"image_path": "res://part_images/armor_heavy_triangular_1x1.png"
+		"image_path": "res://part_images/armor_heavy_triangle_1x1.png"
+	},
+	"HAT2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor Triangle 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_2x2.png"
+	},
+	"HAT3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor Triangle 3x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 3,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_3x3.png"
+	},
+	"HAT4": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor Triangle 4x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_4x4.png"
+	},
+	"HAT5": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor Triangle 1x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_1x2.png"
+	},
+	"HAT6": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor Triangle 1x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_1x3.png"
+	},
+	"HAT7": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor Triangle 1x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_1x4.png"
+	},
+	"HAT8": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor Triangle 2x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_2x3.png"
 	},
 	"HAS1": {
 		"cost_data": {
@@ -46,30 +214,6 @@
 		"height": 1,
 		"tab": "armor",
 		"image_path": "res://part_images/armor_heavy_curved_1x1.png"
-	},
-	"HAF1": {
-		"cost_data": {
-			"alloy": 10.0
-		},
-		"name": "Heavy Armor 1x1",
-		"mass": 10,
-		"hp": 100,
-		"width": 1,
-		"height": 1,
-		"tab": "armor",
-		"image_path": "res://part_images/armor_heavy_1x1.png"
-	},
-	"HAT2": {
-		"cost_data": {
-			"alloy": 10.0
-		},
-		"name": "Triangular Heavy Armor 1x2",
-		"mass": 10,
-		"hp": 100,
-		"width": 1,
-		"height": 2,
-		"tab": "armor",
-		"image_path": "res://part_images/armor_heavy_triangular_1x2.png"
 	},
 	"HAS2": {
 		"cost_data": {
@@ -118,18 +262,6 @@
 		"height": 2,
 		"tab": "armor",
 		"image_path": "res://part_images/armor_heavy_curved_2x2.png"
-	},
-	"HAF2": {
-		"cost_data": {
-			"alloy": 10.0
-		},
-		"name": "Heavy Armor 2x2",
-		"mass": 10,
-		"hp": 100,
-		"width": 2,
-		"height": 2,
-		"tab": "armor",
-		"image_path": "res://part_images/armor_heavy_2x2.png"
 	},
 	"ENT1": {
 		"cost_data": {
@@ -354,6 +486,36 @@
 		"projectile_code": "PFT1",
 		"image_path": "res://part_images/weapon_battleship_cannon_4x4.png"
 	},
+	"FLW1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Flak Launcher 2x2",
+		"subtype": "weapon",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "weapons",
+		"y_level": 0.1,
+		"projectile_code": "PBE2",
+		"image_path": "res://part_images/weapon_flak_2x2.png"
+	},
+	"GCW1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Gauss Cannon 2x2",
+		"subtype": "weapon",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "weapons",
+		"y_level": 0.1,
+		"projectile_code": "PBE1",
+		"image_path": "res://part_images/weapon_gauss_cannon_2x2.png"
+	},
 	"LPW1": {
 		"cost_data": {
 			"alloy": 10.0
@@ -386,7 +548,7 @@
 		"trail_width_ratio": 0.5,
 		"trail_force": 0.2,
 		"trail_roundness": 1.2,
-		"image_path": "res://part_images/projectile_bullet_generic.png"
+		"image_path": "res://part_images/projectile_bullet_missile.png"
 	},
 	"PDR1": {
 		"damage": 100.0,
@@ -398,8 +560,7 @@
 		"thickness": 1.0,
 		"outer_beam_color": "blue",
 		"glow": 2.0,
-		"lifetime_sec": 1.0,
-		"image_path": "res://part_images/projectile_bullet_generic.png"
+		"lifetime_sec": 1.0
 	},
 	"PFT1": {
 		"damage": 100.0,
@@ -414,8 +575,67 @@
 		"glow": 2.0,
 		"volatility": 0.5,
 		"start_color": "green",
-		"end_color": "red",
-		"image_path": "res://part_images/projectile_bullet_generic.png"
+		"end_color": "red"
+	},
+	"PBE1": {
+		"damage": 10.0,
+		"name": "Energy Bullet Long",
+		"subtype": "bullet",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"glow": 10.0,
+		"tab": "hidden",
+		"y_level": 0.1,
+		"lifetime_sec": 3.0,
+		"launch_velocity": 10.0,
+		"sound_variation": 0.25,
+		"trail_enabled": true,
+		"trail_width_ratio": 0.5,
+		"trail_force": 0.2,
+		"trail_roundness": 1.2,
+		"image_path": "res://part_images/projectile_bullet_energy_long.png"
+	},
+	"PBE2": {
+		"damage": 10.0,
+		"name": "Marble Bullet",
+		"subtype": "bullet",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"glow": 10.0,
+		"tab": "hidden",
+		"y_level": 0.1,
+		"lifetime_sec": 3.0,
+		"launch_velocity": 10.0,
+		"sound_variation": 0.25,
+		"trail_enabled": true,
+		"trail_width_ratio": 0.5,
+		"trail_force": 0.2,
+		"trail_roundness": 1.2,
+		"image_path": "res://part_images/projectile_bullet_marble.png"
+	},
+	"PBN1": {
+		"damage": 10.0,
+		"name": "Nuke",
+		"subtype": "bullet",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"glow": 10.0,
+		"tab": "hidden",
+		"y_level": 0.1,
+		"lifetime_sec": 3.0,
+		"launch_velocity": 10.0,
+		"sound_variation": 0.25,
+		"trail_enabled": true,
+		"trail_width_ratio": 0.5,
+		"trail_force": 0.2,
+		"trail_roundness": 1.2,
+		"image_path": "res://part_images/projectile_bullet_nuke.png"
 	},
 	"WMD1": {
 		"name": "Damage Modifier A",

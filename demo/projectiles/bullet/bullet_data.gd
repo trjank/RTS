@@ -27,8 +27,10 @@ func create_projectile(from: Weapon, to: Target, _cache: Array[Node3D] ) -> void
 	assert(from != null)
 	#
 	var bullet := Bullet.create()
+	var ship := from.get_ship()
 	bullet.data = self
-	from.get_ship().add_sibling(bullet)
+	bullet.add_collision_exception_with(ship)
+	ship.add_sibling(bullet)
 	bullet.global_transform = from.global_transform
 	bullet.launch(from.get_ship().linear_velocity)
 	bullet.set_target(to)

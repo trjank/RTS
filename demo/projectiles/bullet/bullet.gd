@@ -9,7 +9,10 @@ var data: BulletData:
 static func create() -> Bullet:
 	return preload("res://projectiles/bullet/bullet.tscn").instantiate()
 
-func _init() -> void:
+func _ready() -> void:
+	super()
+	#
+	collision_mask = globals.Layer.SHIPS
 	collision_layer = globals.Layer.PROJECTILES
 
 func set_data(new_data: BulletData) -> void:
@@ -18,7 +21,7 @@ func set_data(new_data: BulletData) -> void:
 	data = new_data
 	size = Vector2(50.0, 50.0)
 	mass = data.mass
-	texture = data.get_image().get_texture()
+	texture = data.image.get_texture()
 	torque = data.torque
 	linear_damp = data.linear_damp
 	create_trail()

@@ -92,8 +92,17 @@ func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 	ship.position = spawnpoint
 	return ship
 
+func build_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
+	if not resources.can_afford(ship_data.cost):
+		return null
+	resources.subtract(ship_data.cost)
+	return spawn_ship(ship_data, spawnpoint)
+
 func spawn_ship_slot(slot: int, spawnpoint := Vector3.ZERO) -> Ship:
 	return spawn_ship(fleet.get_ship(slot), spawnpoint) if fleet != null else null
+
+func build_ship_slot(slot: int, spawnpoint := Vector3.ZERO) -> Ship:
+	return build_ship(fleet.get_ship(slot), spawnpoint) if fleet != null else null
 
 func register_death(unit: Unit) -> void:
 	if team != null:

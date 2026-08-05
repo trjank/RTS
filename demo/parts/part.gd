@@ -41,6 +41,7 @@ func on_ship_ready(ship_part: ShipDataPart, ship: Ship) -> void:
 	_ship = ship
 	var xy := Measurement.METERS_PER_TILE * (ship_part.get_center() - Rect2(ship.data.get_ship_rect() ).get_center() )
 	position.x = xy.x
+	position.y = data.y_level
 	position.z = xy.y
 	rotation.y = Rotation.to_radians(ship_part.get_rotation() )
 	flip_h = Rotation.is_flip_h(ship_part.get_rotation() )

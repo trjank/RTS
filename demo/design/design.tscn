@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene load_steps=46 format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="2_6gxgq"]
@@ -10,11 +10,24 @@
 [ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="8_q8dch"]
 [ext_resource type="Script" uid="uid://rrpw8rs1x5wn" path="res://design/grid.gd" id="8_r41aq"]
 [ext_resource type="PackedScene" uid="uid://dfjm11tydfbwt" path="res://design/parts_container.tscn" id="9_3c8mw"]
+[ext_resource type="Texture2D" uid="uid://dfyamahqhhp5u" path="res://icons/radio_unchecked.png" id="9_on51i"]
+[ext_resource type="Texture2D" uid="uid://dx6fdu1yy0fot" path="res://icons/dropdown.png" id="9_q8dch"]
+[ext_resource type="Texture2D" uid="uid://dgogkgiafu7ls" path="res://icons/radio_checked.png" id="9_qg3uy"]
+[ext_resource type="Texture2D" uid="uid://dxw85xqlbrtor" path="res://icons/grid_16x16.png" id="10_3c8mw"]
 [ext_resource type="Script" uid="uid://c1y8rv0ogtakj" path="res://design/part_selection.gd" id="10_6vk6i"]
+[ext_resource type="Texture2D" uid="uid://c6jyfe2t4shc" path="res://icons/radio_disabled.png" id="10_licix"]
+[ext_resource type="Texture2D" uid="uid://c35408v2yxg3n" path="res://icons/grid_32x32.png" id="11_lhyb1"]
+[ext_resource type="Texture2D" uid="uid://bnjup0rblr3lt" path="res://icons/grid_64x64.png" id="12_7h8co"]
 [ext_resource type="Material" uid="uid://dq44yn5k5uawo" path="res://effects/stripes.tres" id="12_r41aq"]
 [ext_resource type="PackedScene" uid="uid://cyxuko5kc8x27" path="res://design/stats_box.tscn" id="12_rmp56"]
 [ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://main/mouse_selection.tscn" id="13_r41aq"]
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="14_7jtw0"]
+[ext_resource type="Texture2D" uid="uid://dis8re4t4sak3" path="res://icons/grid_128x128.png" id="15_5l545"]
+[ext_resource type="StyleBox" uid="uid://ccm7o2ltg8ejv" path="res://design/import_export_button.tres" id="16_3qscj"]
+[ext_resource type="Texture2D" uid="uid://bivi51ylimnuw" path="res://icons/file_upload.png" id="16_licix"]
+[ext_resource type="Texture2D" uid="uid://dcuv7ojpu16cm" path="res://icons/file_download.png" id="17_cg3po"]
+[ext_resource type="PackedScene" uid="uid://cw7xoatbakxvj" path="res://design/export_ship_popup.tscn" id="27_ponbb"]
+[ext_resource type="PackedScene" uid="uid://g4tamy5fjdty" path="res://design/import_ship_popup.tscn" id="28_ponbb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r41aq"]
 content_margin_left = 0.0
@@ -29,8 +42,33 @@ content_margin_top = 0.0
 content_margin_right = 25.0
 content_margin_bottom = 0.0
 bg_color = Color(0.5019608, 0.24313726, 0.4117647, 1)
-border_width_left = 5
 border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Theme" id="Theme_cg3po"]
+PopupMenu/constants/h_separation = 20
+PopupMenu/icons/radio_checked = ExtResource("9_qg3uy")
+PopupMenu/icons/radio_checked_disabled = ExtResource("10_licix")
+PopupMenu/icons/radio_unchecked = ExtResource("9_on51i")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cg3po"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cg3po"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3qscj"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 25.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bggdi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3qscj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmp56"]
 content_margin_left = 22.0
@@ -72,14 +110,17 @@ albedo_color = Color(0.35000002, 0.72916675, 1, 1)
 resource_local_to_scene = true
 material = ExtResource("12_r41aq")
 
-[node name="Design" type="Node" node_paths=PackedStringArray("part_selection", "parts_container", "fleet_container", "grid", "save_popup", "stats_box")]
+[node name="Design" type="Node" node_paths=PackedStringArray("part_selection", "parts_container", "fleet_container", "grid", "stats_box", "save_popup", "export_popup", "import_popup", "resize_option_button")]
 script = ExtResource("1_wctwy")
 part_selection = NodePath("World/Grid/PartSelection")
 parts_container = NodePath("UI/VBoxContainer/HBoxContainer/PartsContainer")
 fleet_container = NodePath("UI/VBoxContainer/HBoxContainer/FleetContainer")
 grid = NodePath("World/Grid")
-save_popup = NodePath("SaveShipPopup")
 stats_box = NodePath("World/SubViewport/StatsBox")
+save_popup = NodePath("SaveShipPopup")
+export_popup = NodePath("ExportShipPopup")
+import_popup = NodePath("ImportShipPopup")
+resize_option_button = NodePath("UI/VBoxContainer/HBoxContainer/HFlowContainer/ResizeOptionButton")
 metadata/_custom_type_script = "uid://cphbaayi2hnoj"
 metadata/_edit_vertical_guides_ = [136.0]
 
@@ -169,20 +210,23 @@ tabs = {
 "weapons": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Weapons")
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer"]
+[node name="HFlowContainer" type="HFlowContainer" parent="UI/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
-theme_override_constants/separation = 25
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_lhyb1")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="BehaviorSwapButton" type="TextureButton" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="BehaviorSwapButton" type="TextureButton" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -191,13 +235,13 @@ texture_hover = ExtResource("7_7jtw0")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 text = "Behavior: DEFAULT —"
 vertical_alignment = 1
 
-[node name="CPULabel" type="Label" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="CPULabel" type="Label" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
@@ -205,7 +249,60 @@ theme_override_constants/outline_size = 5
 text = "20 CPU"
 vertical_alignment = 1
 
-[node name="TestButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="ResizeOptionButton" type="OptionButton" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_cg3po")
+theme_override_constants/h_separation = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_cg3po")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cg3po")
+theme_override_styles/hover = SubResource("StyleBoxFlat_cg3po")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cg3po")
+theme_override_constants/arrow_margin = 10
+theme_override_icons/arrow = ExtResource("9_q8dch")
+selected = 0
+item_count = 4
+popup/item_0/text = "16x16 Grid"
+popup/item_0/icon = ExtResource("10_3c8mw")
+popup/item_0/id = 0
+popup/item_1/text = "32x32 Grid"
+popup/item_1/icon = ExtResource("11_lhyb1")
+popup/item_1/id = 1
+popup/item_2/text = "64x64 Grid"
+popup/item_2/icon = ExtResource("12_7h8co")
+popup/item_2/id = 2
+popup/item_3/text = "128x128 Grid"
+popup/item_3/icon = ExtResource("15_5l545")
+popup/item_3/id = 3
+
+[node name="ExportButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 40
+theme_override_styles/normal = ExtResource("16_3qscj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3qscj")
+theme_override_styles/hover = ExtResource("16_3qscj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bggdi")
+text = "Export"
+icon = ExtResource("16_licix")
+
+[node name="ImportButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 40
+theme_override_styles/normal = ExtResource("16_3qscj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3qscj")
+theme_override_styles/hover = ExtResource("16_3qscj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3qscj")
+text = "Import"
+icon = ExtResource("17_cg3po")
+
+[node name="TestButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -285,12 +382,23 @@ unresizable = true
 theme = ExtResource("14_7jtw0")
 ok_button_text = "Return to design"
 
+[node name="ExportShipPopup" parent="." instance=ExtResource("27_ponbb")]
+visible = false
+
+[node name="ImportShipPopup" parent="." instance=ExtResource("28_ponbb")]
+visible = false
+
 [connection signal="button_pressed" from="UI/VBoxContainer/HBoxContainer/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
 [connection signal="part_clicked" from="UI/VBoxContainer/HBoxContainer/PartsContainer" to="." method="_on_parts_container_part_clicked"]
-[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/VBoxContainer/TestButton" to="." method="_on_test_button_pressed"]
+[connection signal="item_selected" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/ResizeOptionButton" to="." method="_on_resize_option_button_item_selected"]
+[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/ExportButton" to="." method="_on_export_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/ImportButton" to="." method="_on_import_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/TestButton" to="." method="_on_test_button_pressed"]
 [connection signal="selected_multiple" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selected_multiple"]
 [connection signal="selected_single" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selected_single"]
 [connection signal="selection_started" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selection_started"]
 [connection signal="save_changed" from="World/Grid" to="." method="_on_grid_save_changed"]
+[connection signal="ship_changed" from="World/Grid" to="." method="_on_grid_ship_changed"]
+[connection signal="requested_import" from="ImportShipPopup" to="." method="_on_import_ship_popup_requested_import"]
 
 [editable path="UI/VBoxContainer/HBoxContainer/FleetContainer"]

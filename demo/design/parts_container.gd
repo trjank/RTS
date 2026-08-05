@@ -7,9 +7,12 @@ signal part_clicked(part_data: PartData)
 var part_manager: PartManager:
 	set = set_part_manager
 
+static func part_sorter(a: PartData, b: PartData) -> bool:
+	return a.get_width() < b.get_width() or (a.get_width() == b.get_width() and a.get_height() < b.get_height() )
+
 func set_part_manager(new_part_manager: PartManager) -> void:
 	if part_manager == new_part_manager:
-		return # (prevent wasting time when many parts are loaded)
+		return
 	clear()
 	if part_manager != null:
 		part_manager.part_created.disconnect(_add_part)
@@ -33,7 +36,10 @@ func _remove_part(node: Node) -> void:
 		node.queue_free()
 
 func _add_parts(new_part_manager: PartManager) -> void:
-	for part in new_part_manager.get_parts():
+	var parts := new_part_manager.get_parts()
+	parts.sort_custom(part_sorter)
+	#
+	for part in parts:
 		_add_part(part)
 
 func _add_part(part_data: PartData) -> void:

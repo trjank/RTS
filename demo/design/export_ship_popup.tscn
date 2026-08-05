@@ -1,0 +1,85 @@
+[gd_scene load_steps=10 format=3 uid="uid://cw7xoatbakxvj"]
+
+[ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="1_dvlcb"]
+[ext_resource type="Script" uid="uid://b61lwx80nmnrw" path="res://design/export_ship_popup.gd" id="2_skbic"]
+[ext_resource type="Texture2D" uid="uid://xcn08lar0481" path="res://icons/copy.png" id="3_m782l"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dvlcb"]
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+bg_color = Color(0.1, 0.1, 0.1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dvlcb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5l545"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ponbb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nv4rx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bjr7s"]
+
+[node name="ExportShipPopup" type="AcceptDialog" node_paths=PackedStringArray("label", "copy_button")]
+auto_translate_mode = 1
+oversampling_override = 1.0
+title = "EXPORT SHIP"
+initial_position = 2
+size = Vector2i(794, 303)
+visible = true
+exclusive = false
+unresizable = true
+theme = ExtResource("1_dvlcb")
+ok_button_text = "Return to design"
+script = ExtResource("2_skbic")
+label = NodePath("VBoxContainer/HBoxContainer/ScrollContainer/ShipStringLabel")
+copy_button = NodePath("VBoxContainer/HBoxContainer/CopyButton")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 744.0
+offset_bottom = 178.0
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Here is your ship's code, for you to import or share."
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_dvlcb")
+vertical_scroll_mode = 0
+
+[node name="ShipStringLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+focus_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_dvlcb")
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+selection_enabled = true
+
+[node name="CopyButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5l545")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ponbb")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_nv4rx")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bjr7s")
+text = "Copy"
+icon = ExtResource("3_m782l")
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/CopyButton" to="." method="_on_copy_button_pressed"]

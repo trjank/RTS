@@ -354,10 +354,10 @@ func _handle_team_rename(old_name: String, new_name: String, team: Team) -> void
 	team.display_name = new_name
 
 func _process(_dt: float) -> void:
-	alloy_label.text = "%.1f" % me.resources.alloy
-	crystal_label.text = "%.1f" % me.resources.crystals
-	military_science_label.text = "%.1f" % me.resources.military_science
 	var seconds := int(round_timer.time_left)
+	alloy_label.text = StrategicResources.to_str(me.resources.alloy)
+	crystal_label.text = StrategicResources.to_str(me.resources.crystals)
+	military_science_label.text = StrategicResources.to_str(me.resources.military_science)
 	time_left.text = "%dm %02ds" % [int(seconds / 60.0), seconds % 60]
 
 func _physics_process(dt: float) -> void:
@@ -387,7 +387,7 @@ func _on_mouse_selection_mouse_moved(new_position: Vector3) -> void:
 func _on_fleet_container_button_pressed(slot: int) -> void:
 	if me == null:
 		return push_error("(Battle) No player found to spawn ship slot %d for!" % slot)
-	me.spawn_ship_slot(slot)
+	me.build_ship_slot(slot)
 
 func _on_mouse_selection_selected(bodies: Array[Node3D], _center: Vector3, _span: Vector2) -> void:
 	if me == null:

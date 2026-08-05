@@ -88,7 +88,9 @@ func contains_me() -> bool:
 	return _players.any(is_me)
 
 func copy() -> Team:
-	return Team.new(display_name, color, _max_players)
+	var team := Team.new(display_name, color, _max_players)
+	team.start_resources = start_resources
+	return team
 
 func register_capture(scenery: Scenery) -> void:
 	_captures[scenery] = true
@@ -105,6 +107,7 @@ func register_death(unit: Unit) -> void:
 	value_lost.add(unit.value)
 
 func reset_stats() -> void:
+	resource_rate.reset()
 	celestials_owned = 0
 	units_killed = 0
 	units_lost = 0

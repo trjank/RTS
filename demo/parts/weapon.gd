@@ -9,6 +9,9 @@ var projectile_data: ProjectileData:
 	set = set_projectile_data
 var _projectiles: Array[Node3D] = []
 
+func _ready() -> void:
+	render_priority = 1
+
 func on_ship_ready(ship_part: ShipDataPart, ship: Ship) -> void:
 	super.on_ship_ready(ship_part, ship)
 	#

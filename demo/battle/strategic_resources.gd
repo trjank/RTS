@@ -1,7 +1,13 @@
 class_name StrategicResources extends RefCounted
 
 static var NONE := StrategicResources.new():
-	set(__): push_error("StrategicResources.NONE is immutable")
+	set(__): push_error("(StrategicResources) StrategicResources.NONE is immutable!")
+static var INFINITE := StrategicResources.from_dict({
+	"alloy": INF,
+	"crystals": INF,
+	"military_science": INF
+}):
+	set(__): push_error("(StrategicResources) StrategicResources.INFINITE is immutable!")
 
 const SYNTAX: Dictionary[String, Variant.Type] = {
 	"alloy": TYPE_FLOAT,
@@ -27,6 +33,9 @@ var min_military_science := 0.0
 var max_alloy := INF
 var max_crystals := INF
 var max_military_science := INF
+
+static func to_str(resource_value: float) -> String:
+	return "%.1f" % resource_value if is_finite(resource_value) else "∞"
 
 static func from_dict(dict: Dictionary, always_copy := false) -> StrategicResources:
 	var resources := StrategicResources.new()
@@ -54,37 +63,36 @@ func set_crystals(new_crystals: float) -> void:
 func set_military_science(new_military_science: float) -> void:
 	military_science = clampf(new_military_science, min_military_science, max_military_science)
 
-func can_afford(needs: StrategicResources) -> bool:
-	return alloy <= needs.alloy and crystals <= needs.crystals and military_science <= needs.military_science
+func can_afford(cost: StrategicResources) -> bool:
+	return cost.alloy <= alloy and cost.crystals <= crystals and cost.military_science <= military_science
 
 func reset() -> void:
 	alloy = 0.0
 	crystals = 0.0
 	military_science = 0.0
 
-## NOTE: This does not make a copy
 func add_alloy(from: StrategicResources, multiplier := 1.0) -> void:
 	alloy += from.alloy * multiplier
 	min_alloy += from.min_alloy * multiplier
 	max_alloy += from.max_alloy * multiplier
 
-## NOTE: This does not make a copy
 func add_crystals(from: StrategicResources, multiplier := 1.0) -> void:
 	crystals += from.crystals * multiplier
 	min_crystals += from.min_crystals * multiplier
 	max_crystals += from.max_crystals * multiplier
 
-## NOTE: This does not make a copy
 func add_military_science(from: StrategicResources, multiplier := 1.0) -> void:
 	military_science += from.military_science * multiplier
 	min_military_science += from.min_military_science * multiplier
 	max_military_science += from.max_military_science * multiplier
 
-## NOTE: This does not make a copy
 func add(from: StrategicResources, multiplier := 1.0) -> void:
 	add_alloy(from, multiplier)
 	add_crystals(from, multiplier)
 	add_military_science(from, multiplier)
+
+func subtract(from: StrategicResources, multiplier := 1.0) -> void:
+	add(from, -multiplier)
 
 ## This ensures total alloy is always conserved
 func transfer_alloy(to: StrategicResources, alloy_limit := INF) -> void:

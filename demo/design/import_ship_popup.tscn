@@ -1,0 +1,105 @@
+[gd_scene load_steps=8 format=3 uid="uid://g4tamy5fjdty"]
+
+[ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="1_hkdr2"]
+[ext_resource type="Script" uid="uid://i8oo2uykxccu" path="res://design/import_ship_popup.gd" id="2_dkstq"]
+[ext_resource type="Texture2D" uid="uid://dxepsqmp7nfuv" path="res://icons/warning.png" id="2_o38yd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o38yd"]
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+bg_color = Color(0.1, 0.1, 0.1, 1)
+border_width_bottom = 3
+border_color = Color(0.5, 0.5, 0.5, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dkstq"]
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+bg_color = Color(0.1, 0.1, 0.1, 1)
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkdr2"]
+content_margin_left = 25.0
+content_margin_top = 15.0
+content_margin_right = 25.0
+content_margin_bottom = 15.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o38yd"]
+
+[node name="ImportShipPopup" type="ConfirmationDialog" node_paths=PackedStringArray("text_edit")]
+auto_translate_mode = 1
+oversampling_override = 1.0
+title = "IMPORT SHIP"
+initial_position = 2
+size = Vector2i(1022, 394)
+visible = true
+exclusive = false
+unresizable = true
+theme = ExtResource("1_hkdr2")
+script = ExtResource("2_dkstq")
+text_edit = NodePath("VBoxContainer/TextEdit")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 972.0
+offset_bottom = 269.0
+theme_override_constants/separation = 25
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("2_o38yd")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "This will clear your ship and replace it with the imported version."
+
+[node name="TextEdit" type="TextEdit" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_o38yd")
+theme_override_styles/focus = SubResource("StyleBoxFlat_dkstq")
+placeholder_text = "Paste a ship code here"
+
+[node name="CustomButtons" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 25
+
+[node name="CancelButton" type="Button" parent="VBoxContainer/CustomButtons"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hkdr2")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hkdr2")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hkdr2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_o38yd")
+text = "Cancel"
+
+[node name="OKButton" type="Button" parent="VBoxContainer/CustomButtons"]
+layout_mode = 2
+text = "Load"
+
+[connection signal="pressed" from="VBoxContainer/CustomButtons/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/CustomButtons/OKButton" to="." method="_on_ok_button_pressed"]

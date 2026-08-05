@@ -3,14 +3,25 @@ class_name Design extends Node
 signal slot_changed(new_slot: int)
 
 const SELECTED_COLOR := Color(2.454, 1.027, 1.027, 1.0)
-const STANDARD_SHIP_SIZE := Vector2i(16, 16)
+# NOTE: This prefix ensures random text does not destroy the current ship
+const SHIP_STRING_PREFIX := "ship"
+const SHIP_STRING_DELIMETER := ":"
+# NOTE: a 128x128 grid may result in a 4096x4096 px image (so try not to go beyond it)
+const SMALL_GRID  := Vector2i(16, 16)
+const MEDIUM_GRID := Vector2i(32, 32)
+const LARGE_GRID  := Vector2i(64, 64)
+const HUGE_GRID   := Vector2i(128, 128)
+const GRID_SIZES: Array[Vector2i] = [SMALL_GRID, MEDIUM_GRID, LARGE_GRID, HUGE_GRID]
 
 @export var part_selection: PartSelection
 @export var parts_container: PartsContainer
 @export var fleet_container: FleetContainer
 @export var grid: Grid
-@export var save_popup: AcceptDialog
 @export var stats_box: StatsBox
+@export var save_popup: AcceptDialog
+@export var export_popup: ExportShipPopup
+@export var import_popup: ImportShipPopup
+@export var resize_option_button: OptionButton
 
 var slot := -1:
 	set = set_slot
@@ -73,7 +84,7 @@ func popup_error_message(error_flags: int) -> void:
 
 func _create_new_ship() -> bool:
 	var ship := ShipData.new()
-	ship.grid_size = STANDARD_SHIP_SIZE
+	ship.grid_size = SMALL_GRID
 	globals.ship_db.create_ship(ship)
 	return fleet.set_ship(slot, ship) and fleet.save_ships()
 
@@ -105,3 +116,39 @@ func _on_fleet_container_button_pressed(new_slot: int) -> void:
 
 func _on_test_button_pressed() -> void:
 	globals.main.state = Main.State.TRAINING_GROUNDS
+
+func convert_ship_to_string(ship_data := grid.ship) -> String:
+	if ship_data == null:
+		return ""
+	var size_str := str(ship_data.grid_size.x) + SHIP_STRING_DELIMETER + str(ship_data.grid_size.y)
+	var byte_str := Marshalls.raw_to_base64(ship_data.serialize() )
+	return SHIP_STRING_PREFIX + SHIP_STRING_DELIMETER + size_str + SHIP_STRING_DELIMETER + byte_str
+
+func load_ship_from_string(ship_string: String) -> int:
+	var split := ship_string.split(SHIP_STRING_DELIMETER)
+	if split.size() != 4 or split[0] != SHIP_STRING_PREFIX:
+		return ShipData.PartError.INCORRECT_SIZE_BYTES
+	var bytes := Marshalls.base64_to_raw(split[3] )
+	grid.ship.grid_size = Vector2i(int(split[1] ), int(split[2] ) )
+	var error := grid.ship.deserialize(bytes, globals.part_manager)
+	grid.sync()
+	return error
+
+func _on_export_button_pressed() -> void:
+	export_popup.ship_string = convert_ship_to_string()
+	import_popup.hide()
+	export_popup.show()
+
+func _on_import_button_pressed() -> void:
+	export_popup.hide()
+	import_popup.show()
+
+func _on_resize_option_button_item_selected(index: int) -> void:
+	grid.ship.grid_size = GRID_SIZES[index]
+	grid.force_recalculate_error()
+
+func _on_grid_ship_changed(_grid: Grid) -> void:
+	resize_option_button.selected = GRID_SIZES.find(grid.ship.grid_size) if grid.ship != null else 0
+
+func _on_import_ship_popup_requested_import(ship_string: String) -> void:
+	load_ship_from_string(ship_string)
