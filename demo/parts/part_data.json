@@ -47,6 +47,18 @@
 		"tab": "armor",
 		"image_path": "res://part_images/armor_heavy_4x4.png"
 	},
+	"HAF5": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor 2x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_2x3.png"
+	},
 	"HAW1": {
 		"cost_data": {
 			"alloy": 10.0
@@ -191,18 +203,6 @@
 		"tab": "armor",
 		"image_path": "res://part_images/armor_heavy_triangle_2x3.png"
 	},
-	"HAS1": {
-		"cost_data": {
-			"alloy": 10.0
-		},
-		"name": "Slanted Heavy Armor 1x1",
-		"mass": 10,
-		"hp": 100,
-		"width": 1,
-		"height": 1,
-		"tab": "armor",
-		"image_path": "res://part_images/armor_heavy_slanted_1x1.png"
-	},
 	"HAC1": {
 		"cost_data": {
 			"alloy": 10.0
@@ -213,45 +213,9 @@
 		"width": 1,
 		"height": 1,
 		"tab": "armor",
-		"image_path": "res://part_images/armor_heavy_curved_1x1.png"
-	},
-	"HAS2": {
-		"cost_data": {
-			"alloy": 10.0
-		},
-		"name": "Slanted Heavy Armor 1x2",
-		"mass": 10,
-		"hp": 100,
-		"width": 1,
-		"height": 2,
-		"tab": "armor",
-		"image_path": "res://part_images/armor_heavy_slanted_1x2.png"
+		"image_path": "res://part_images/armor_heavy_curve_1x1.png"
 	},
 	"HAC2": {
-		"cost_data": {
-			"alloy": 10.0
-		},
-		"name": "Curved Heavy Armor 1x2",
-		"mass": 10,
-		"hp": 100,
-		"width": 1,
-		"height": 2,
-		"tab": "armor",
-		"image_path": "res://part_images/armor_heavy_curved_1x2.png"
-	},
-	"HAS3": {
-		"cost_data": {
-			"alloy": 10.0
-		},
-		"name": "Slanted Heavy Armor 2x2",
-		"mass": 10,
-		"hp": 100,
-		"width": 2,
-		"height": 2,
-		"tab": "armor",
-		"image_path": "res://part_images/armor_heavy_slanted_2x2.png"
-	},
-	"HAC3": {
 		"cost_data": {
 			"alloy": 10.0
 		},
@@ -261,7 +225,511 @@
 		"width": 2,
 		"height": 2,
 		"tab": "armor",
-		"image_path": "res://part_images/armor_heavy_curved_2x2.png"
+		"image_path": "res://part_images/armor_heavy_curve_2x2.png"
+	},
+	"HAC3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Curved Heavy Armor 3x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 3,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_curve_3x3.png"
+	},
+	"HAC4": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Curved Heavy Armor 4x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_curve_4x4.png"
+	},
+	"HAC5": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Inverted Curved Heavy Armor 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 1,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_curve_inverted_1x1.png"
+	},
+	"HAC6": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Inverted Curved Heavy Armor 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_curve_inverted_2x2.png"
+	},
+	"HAC7": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Inverted Curved Heavy Armor 3x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 3,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_curve_inverted_3x3.png"
+	},
+	"HAC8": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Inverted Curved Heavy Armor 4x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_curve_inverted_4x4.png"
+	},
+	"HAS1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Shaded Heavy Armor 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 1,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_1x1.png"
+	},
+	"HAS2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Shaded Heavy Armor 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_2x2.png"
+	},
+	"HAS3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Shaded Heavy Armor 3x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 3,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_3x3.png"
+	},
+	"HAS4": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Shaded Heavy Armor 4x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_4x4.png"
+	},
+	"HSS1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Slanted Shaded Heavy Armor 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 1,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_1x1.png"
+	},
+	"HSS2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Slanted Shaded Heavy Armor 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_2x2.png"
+	},
+	"HSS3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Slanted Shaded Heavy Armor 3x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 3,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_3x3.png"
+	},
+	"HSS4": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Slanted Shaded Heavy Armor 4x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_4x4.png"
+	},
+	"HSS5": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Slanted Shaded Heavy Armor 1x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_1x2.png"
+	},
+	"HSS6": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Slanted Shaded Heavy Armor 1x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_1x3.png"
+	},
+	"HSS7": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Slanted Shaded Heavy Armor 1x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_1x4.png"
+	},
+	"HSS8": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Slanted Shaded Heavy Armor 2x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_2x3.png"
+	},
+	"HSF1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 1,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_full_1x1.png"
+	},
+	"HSF2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_full_2x2.png"
+	},
+	"HSF3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor 3x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 3,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_full_3x3.png"
+	},
+	"HSF4": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor 4x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_full_4x4.png"
+	},
+	"HSF5": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor 2x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_full_2x3.png"
+	},
+	"HSA1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Asymmetric Slanted Shaded Heavy Armor 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_asymmetric_2x2.png"
+	},
+	"HSA2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Asymmetric Slanted Shaded Heavy Armor 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 3,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_asymmetric_3x3.png"
+	},
+	"HSA3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Asymmetric Slanted Shaded Heavy Armor 3x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_shadow_slanted_asymmetric_4x4.png"
+	},
+	"HST1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor Triangle 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 1,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_shadow_full_1x1.png"
+	},
+	"HST2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor Triangle 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_shadow_full_2x2.png"
+	},
+	"HST3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor Triangle 3x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 3,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_shadow_full_3x3.png"
+	},
+	"HST4": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor Triangle 4x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_shadow_full_4x4.png"
+	},
+	"HST5": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor Triangle 1x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_shadow_full_1x2.png"
+	},
+	"HST6": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor Triangle 1x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_shadow_full_1x3.png"
+	},
+	"HST7": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor Triangle 1x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_shadow_full_1x4.png"
+	},
+	"HST8": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Full Shaded Heavy Armor Triangle 2x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_triangle_shadow_full_2x3.png"
+	},
+	"EB01": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Battery 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 1,
+		"tab": "energy",
+		"image_path": "res://part_images/battery_1x1.png"
+	},
+	"EB02": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Battery 1x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 2,
+		"tab": "energy",
+		"image_path": "res://part_images/battery_1x2.png"
+	},
+	"EB03": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Battery 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "energy",
+		"image_path": "res://part_images/battery_2x2.png"
+	},
+	"ESP1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Solar Panel 1x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 1,
+		"tab": "energy",
+		"image_path": "res://part_images/solar_panel_1x1.png"
+	},
+	"ESP2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Solar Panel 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "energy",
+		"image_path": "res://part_images/solar_panel_2x2.png"
+	},
+	"ESP3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Solar Panel 4x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "energy",
+		"image_path": "res://part_images/solar_panel_4x4.png"
+	},
+	"ENR1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Fission Reactor 2x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 2,
+		"tab": "energy",
+		"image_path": "res://part_images/reactor_2x2.png"
+	},
+	"ENR2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Fission Reactor 4x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "energy",
+		"image_path": "res://part_images/reactor_4x4.png"
 	},
 	"ENT1": {
 		"cost_data": {

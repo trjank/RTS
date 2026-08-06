@@ -8,6 +8,7 @@ var _ship: Ship
 func _init() -> void:
 	axis = Vector3.Axis.AXIS_Y
 	pixel_size = Measurement.METERS_PER_PX
+	texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 
 func get_ship() -> Ship:
 	return _ship

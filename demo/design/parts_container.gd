@@ -8,7 +8,7 @@ var part_manager: PartManager:
 	set = set_part_manager
 
 static func part_sorter(a: PartData, b: PartData) -> bool:
-	return a.get_width() < b.get_width() or (a.get_width() == b.get_width() and a.get_height() < b.get_height() )
+	return a.get_width() < b.get_width() or (a.get_width() == b.get_width() and a.name < b.name)
 
 func set_part_manager(new_part_manager: PartManager) -> void:
 	if part_manager == new_part_manager:
