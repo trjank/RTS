@@ -42,17 +42,10 @@ static func from_dict(dict: Dictionary, always_copy := false) -> StrategicResour
 	return resources if resources.load_dict(dict) or always_copy else NONE
 
 func to_dict() -> Dictionary:
-	var dict := {}
-	for property in SYNTAX:
-		dict[property] = get(property)
-	return dict
+	return TypeChecker.to_dict(self, SYNTAX)
 
 func load_dict(dict: Dictionary) -> bool:
-	if not TypeChecker.type_check(dict, SYNTAX, true, TypeChecker.CAST_NUMBERS):
-		return false
-	for property in dict:
-		set(property, dict[property] )
-	return true
+	return TypeChecker.load_dict(self, dict, SYNTAX, TypeChecker.CAST_NUMBERS)
 
 func set_alloy(new_alloy: float) -> void:
 	alloy = clampf(new_alloy, min_alloy, max_alloy)
@@ -72,19 +65,19 @@ func reset() -> void:
 	military_science = 0.0
 
 func add_alloy(from: StrategicResources, multiplier := 1.0) -> void:
-	alloy += from.alloy * multiplier
-	min_alloy += from.min_alloy * multiplier
-	max_alloy += from.max_alloy * multiplier
+	alloy     += multiplier * from.alloy
+	min_alloy += multiplier * from.min_alloy
+	max_alloy += multiplier * from.max_alloy
 
 func add_crystals(from: StrategicResources, multiplier := 1.0) -> void:
-	crystals += from.crystals * multiplier
-	min_crystals += from.min_crystals * multiplier
-	max_crystals += from.max_crystals * multiplier
+	crystals     += multiplier * from.crystals
+	min_crystals += multiplier * from.min_crystals
+	max_crystals += multiplier * from.max_crystals
 
 func add_military_science(from: StrategicResources, multiplier := 1.0) -> void:
-	military_science += from.military_science * multiplier
-	min_military_science += from.min_military_science * multiplier
-	max_military_science += from.max_military_science * multiplier
+	military_science     += multiplier * from.military_science
+	min_military_science += multiplier * from.min_military_science
+	max_military_science += multiplier * from.max_military_science
 
 func add(from: StrategicResources, multiplier := 1.0) -> void:
 	add_alloy(from, multiplier)
@@ -112,7 +105,7 @@ func transfer_military_science(to: StrategicResources, military_science_limit :=
 	military_science -= military_science_transfer
 	to.military_science += military_science_transfer
 
-## This ensures total tactical resources are always conserved
+## This ensures total strategic resources are always conserved
 func transfer(to: StrategicResources, rate: StrategicResources, dt := 1.0) -> void:
 	transfer_alloy(to, rate.alloy * dt)
 	transfer_crystals(to, rate.crystals * dt)

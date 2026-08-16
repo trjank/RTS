@@ -58,5 +58,5 @@ func set_data(new_data: PartData) -> void:
 	_part = new_data.create_part()
 	collision_shape.shape.size = get_size_3d()
 	add_child(_part)
-	position.y = data.y_level
+	position.y = data.y
 	_part.position.y = 0.0

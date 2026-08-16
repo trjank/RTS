@@ -3,6 +3,7 @@ extends Node
 signal main_ready
 
 enum Layer {
+	NONE = 0,
 	CAMERA = 1 << 0,
 	UNITS = 1 << 1,
 	SHIPS = 1 << 2,

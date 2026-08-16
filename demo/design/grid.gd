@@ -31,6 +31,22 @@ func set_size(new_size: Vector2i) -> void:
 	grid_center_marker.position = mesh.center_offset
 	set_instance_shader_parameter("num_tiles", Vector2(size) )
 
+func set_ship(new_ship: ShipData) -> void:
+	if ship == new_ship:
+		return
+	if ship != null:
+		_clear_ship()
+	ship = new_ship
+	if ship != null:
+		_load_ship()
+	else:
+		size = Vector2i.ZERO
+	ship_changed.emit(self)
+
+## Used in case that parts are modified or reparented outside this class
+func force_recalculate_error() -> void:
+	_update_error(RECALCULATE_ERROR)
+
 func is_cached(which_ship := ship) -> bool:
 	return which_ship in _parts_cache
 
@@ -48,18 +64,6 @@ func uncache(which_ship := ship) -> void:
 
 func clear_cache() -> void:
 	_parts_cache.keys().all(uncache)
-
-func set_ship(new_ship: ShipData) -> void:
-	if ship == new_ship:
-		return
-	if ship != null:
-		_clear_ship()
-	ship = new_ship
-	if ship != null:
-		_load_ship()
-	else:
-		size = Vector2i.ZERO
-	ship_changed.emit(self)
 
 func _clear_ship() -> void:
 	if ship in _parts_cache:
@@ -85,16 +89,11 @@ func add_part(part: Node) -> void:
 	part.reparent(_parts)
 	_update_error(RECALCULATE_ERROR)
 
-## Used in case that parts are modified or reparented outside this class
-func force_recalculate_error() -> void:
-	_update_error(RECALCULATE_ERROR)
-
 func save(lazy := true) -> int:
-	var error_flags := _error_cache[ship]
-	if lazy and error_flags != RECALCULATE_ERROR:
-		return error_flags
+	if lazy and _error_cache[ship] != RECALCULATE_ERROR:
+		return _error_cache[ship]
 	ship.clear()
-	error_flags = ShipData.PartError.OK
+	var error_flags: int = ShipData.PartError.OK
 	#
 	for node in _parts.get_children():
 		error_flags |= _save_part(node)
@@ -106,8 +105,8 @@ func _save_part(part: PartHitbox) -> ShipData.PartError:
 	part.overlapping = error == ShipData.PartError.OVERLAP
 	return error
 
-func sync() -> void:
-	if ship == null:
+func sync(lazy := true) -> void:
+	if ship == null or (lazy and _error_cache.get(ship, RECALCULATE_ERROR) != RECALCULATE_ERROR):
 		return
 	var parts := Node3D.new()
 	add_child(parts, false, INTERNAL_MODE_BACK)
@@ -116,6 +115,7 @@ func sync() -> void:
 	if ship in _parts_cache:
 		_parts_cache[ship] = parts
 	_parts = parts
+	#
 	for part in ship.get_parts():
 		_load_part(part)
 	_update_error(ShipData.PartError.OK)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://daj6sg1k83uns"
-path="res://.godot/imported/weapon_railgun_2x2.png-13759f1a1aac074be9dcbb84b26894e3.ctex"
+uid="uid://bdr8yvl0qwu1p"
+path="res://.godot/imported/warp_drive_2x1.png-d7a6005b3eee1c907d48aa1fdca3d882.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://part_images/weapon_railgun_2x2.png"
-dest_files=["res://.godot/imported/weapon_railgun_2x2.png-13759f1a1aac074be9dcbb84b26894e3.ctex"]
+source_file="res://part_images/warp_drive_2x1.png"
+dest_files=["res://.godot/imported/warp_drive_2x1.png-d7a6005b3eee1c907d48aa1fdca3d882.ctex"]
 
 [params]
 

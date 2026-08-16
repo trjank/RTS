@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bm87xgb755vnc"]
 
-[ext_resource type="Shader" uid="uid://ci0x3dwslybqq" path="res://trails/flame_trail.gdshader" id="1_rc62j"]
+[ext_resource type="Shader" uid="uid://ci0x3dwslybqq" path="res://trails/trail.gdshader" id="1_rc62j"]
 
 [resource]
 render_priority = -1

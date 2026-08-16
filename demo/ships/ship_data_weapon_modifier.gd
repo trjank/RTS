@@ -4,8 +4,14 @@ var _modifiers := WeaponModifiers.new()
 var _modshare_efficiency := 1.0
 var _useless := true
 
+func _init(init_id: int, init_data: WeaponModifierData, init_rect: Rect2i, init_rotation: Rotation.Discrete, init_boundary: int) -> void:
+	super(init_id, init_data, init_rect, init_rotation, init_boundary)
+
 func is_useless() -> bool:
 	return _useless
+
+func get_data() -> WeaponModifierData:
+	return _data
 
 func get_modifiers() -> WeaponModifiers:
 	return _modifiers

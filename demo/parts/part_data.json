@@ -51,6 +51,42 @@
 		"cost_data": {
 			"alloy": 10.0
 		},
+		"name": "Heavy Armor 1x2",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 2,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_1x2.png"
+	},
+	"HAF6": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor 1x3",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 3,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_1x3.png"
+	},
+	"HAF7": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Heavy Armor 1x4",
+		"mass": 10,
+		"hp": 100,
+		"width": 1,
+		"height": 4,
+		"tab": "armor",
+		"image_path": "res://part_images/armor_heavy_1x4.png"
+	},
+	"HAF8": {
+		"cost_data": {
+			"alloy": 10.0
+		},
 		"name": "Heavy Armor 2x3",
 		"mass": 10,
 		"hp": 100,
@@ -645,6 +681,7 @@
 		"width": 1,
 		"height": 1,
 		"tab": "energy",
+		"energy": 1000.0,
 		"image_path": "res://part_images/battery_1x1.png"
 	},
 	"EB02": {
@@ -657,6 +694,7 @@
 		"width": 1,
 		"height": 2,
 		"tab": "energy",
+		"energy": 2000.0,
 		"image_path": "res://part_images/battery_1x2.png"
 	},
 	"EB03": {
@@ -669,6 +707,7 @@
 		"width": 2,
 		"height": 2,
 		"tab": "energy",
+		"energy": 4000.0,
 		"image_path": "res://part_images/battery_2x2.png"
 	},
 	"ESP1": {
@@ -681,6 +720,7 @@
 		"width": 1,
 		"height": 1,
 		"tab": "energy",
+		"energy_per_sec": 100.0,
 		"image_path": "res://part_images/solar_panel_1x1.png"
 	},
 	"ESP2": {
@@ -693,6 +733,7 @@
 		"width": 2,
 		"height": 2,
 		"tab": "energy",
+		"energy_per_sec": 400.0,
 		"image_path": "res://part_images/solar_panel_2x2.png"
 	},
 	"ESP3": {
@@ -705,6 +746,7 @@
 		"width": 4,
 		"height": 4,
 		"tab": "energy",
+		"energy_per_sec": 1600.0,
 		"image_path": "res://part_images/solar_panel_4x4.png"
 	},
 	"ENR1": {
@@ -735,18 +777,6 @@
 		"cost_data": {
 			"alloy": 10.0
 		},
-		"name": "Energy Transfer 1x1",
-		"mass": 10,
-		"hp": 100,
-		"width": 1,
-		"height": 1,
-		"tab": "energy",
-		"image_path": "res://part_images/energy_transfer_1x1.png"
-	},
-	"ENT2": {
-		"cost_data": {
-			"alloy": 10.0
-		},
 		"name": "Energy Transfer 2x2",
 		"mass": 10,
 		"hp": 100,
@@ -754,6 +784,20 @@
 		"height": 2,
 		"tab": "energy",
 		"image_path": "res://part_images/energy_transfer_2x2.png"
+	},
+	"MWD1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Warp Drive 2x1",
+		"mass": 10,
+		"hp": 100,
+		"width": 2,
+		"height": 1,
+		"tab": "movement",
+		"warp": 100.0,
+		"warp_per_sec": 10.0,
+		"image_path": "res://part_images/warp_drive_2x1.png"
 	},
 	"THB1": {
 		"cost_data": {
@@ -936,7 +980,7 @@
 		"width": 2,
 		"height": 2,
 		"tab": "weapons",
-		"y_level": 0.1,
+		"y": 0.1,
 		"image_path": "res://part_images/weapon_mining_beam_2x2.png"
 	},
 	"BCW1": {
@@ -950,9 +994,24 @@
 		"width": 4,
 		"height": 4,
 		"tab": "weapons",
-		"y_level": 0.1,
-		"projectile_code": "PFT1",
+		"y": 0.1,
+		"projectile_code": "PLZ1",
 		"image_path": "res://part_images/weapon_battleship_cannon_4x4.png"
+	},
+	"FTW1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Flamethrower 4x4",
+		"subtype": "weapon",
+		"mass": 10.0,
+		"hp": 100.0,
+		"width": 4,
+		"height": 4,
+		"tab": "weapons",
+		"y": 0.1,
+		"projectile_code": "PFT2",
+		"image_path": "res://part_images/weapon_flamethrower_4x4.png"
 	},
 	"FLW1": {
 		"cost_data": {
@@ -965,7 +1024,7 @@
 		"width": 2,
 		"height": 2,
 		"tab": "weapons",
-		"y_level": 0.1,
+		"y": 0.1,
 		"projectile_code": "PBE2",
 		"image_path": "res://part_images/weapon_flak_2x2.png"
 	},
@@ -980,7 +1039,7 @@
 		"width": 2,
 		"height": 2,
 		"tab": "weapons",
-		"y_level": 0.1,
+		"y": 0.1,
 		"projectile_code": "PBE1",
 		"image_path": "res://part_images/weapon_gauss_cannon_2x2.png"
 	},
@@ -995,8 +1054,23 @@
 		"width": 2,
 		"height": 2,
 		"tab": "weapons",
-		"y_level": 0.1,
+		"y": 0.1,
 		"image_path": "res://part_images/weapon_light_point_defense_2x2.png"
+	},
+	"RGW1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Railgun 4x8",
+		"subtype": "weapon",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 8,
+		"tab": "weapons",
+		"y": 0.1,
+		"projectile_code": "PLZ1",
+		"image_path": "res://part_images/weapon_railgun_4x8.png"
 	},
 	"PBM1": {
 		"damage": 10.0,
@@ -1008,7 +1082,7 @@
 		"height": 2,
 		"glow": 10.0,
 		"tab": "hidden",
-		"y_level": 0.1,
+		"y": 0.1,
 		"lifetime_sec": 3.0,
 		"launch_velocity": 10.0,
 		"sound_variation": 0.25,
@@ -1028,22 +1102,60 @@
 		"thickness": 1.0,
 		"outer_beam_color": "blue",
 		"glow": 2.0,
-		"lifetime_sec": 1.0
+		"lifetime_sec": 1.0,
+		"effective_range": 100.0
+	},
+	"PLZ1": {
+		"damage": 100.0,
+		"name": "Laser",
+		"subtype": "laser",
+		"mass": 10,
+		"hp": 100,
+		"tab": "hidden",
+		"glow": 3.0,
+		"lifetime_sec": 1.0,
+		"drift_speed": 1.0,
+		"volatility": 5.0,
+		"thickness": 2.0,
+		"inner_color": "black",
+		"outer_color": "purple",
+		"effective_range": 100.0,
+		"multihit_modifier_data": {
+			"flat_range": 10.0
+		}
 	},
 	"PFT1": {
 		"damage": 100.0,
 		"name": "Flame Thrower",
 		"subtype": "flamethrower",
 		"tab": "hidden",
-		"thickness": 2.0,
-		"speed": 10.0,
-		"fade_speed": 10.0,
+		"thickness": 10.0,
+		"speed": 100.0,
 		"max_range": 10.0,
 		"lifetime_sec": 1.0,
 		"glow": 2.0,
 		"volatility": 0.5,
+		"particulates": 0.3,
 		"start_color": "green",
-		"end_color": "red"
+		"end_color": "red",
+		"effective_range": 50.0
+	},
+	"PFT2": {
+		"damage": 100.0,
+		"name": "Aurora Disintegrator",
+		"subtype": "flamethrower",
+		"tab": "hidden",
+		"thickness": 10.0,
+		"speed": 100.0,
+		"max_range": 10.0,
+		"lifetime_sec": 1.0,
+		"glow": 2.0,
+		"volatility": 0.8,
+		"particulates": 0.01,
+		"start_color": "green",
+		"end_color": "purple",
+		"pitch_scale": 0.5,
+		"effective_range": 40.0
 	},
 	"PBE1": {
 		"damage": 10.0,
@@ -1055,7 +1167,7 @@
 		"height": 2,
 		"glow": 10.0,
 		"tab": "hidden",
-		"y_level": 0.1,
+		"y": 0.1,
 		"lifetime_sec": 3.0,
 		"launch_velocity": 10.0,
 		"sound_variation": 0.25,
@@ -1075,7 +1187,7 @@
 		"height": 2,
 		"glow": 10.0,
 		"tab": "hidden",
-		"y_level": 0.1,
+		"y": 0.1,
 		"lifetime_sec": 3.0,
 		"launch_velocity": 10.0,
 		"sound_variation": 0.25,
@@ -1095,7 +1207,7 @@
 		"height": 2,
 		"glow": 10.0,
 		"tab": "hidden",
-		"y_level": 0.1,
+		"y": 0.1,
 		"lifetime_sec": 3.0,
 		"launch_velocity": 10.0,
 		"sound_variation": 0.25,
@@ -1224,5 +1336,16 @@
 			"multiplier_energy": 0.9
 		},
 		"image_path": "res://part_images/weapon_modifier_energy.png"
+	},
+	"WNG1": {
+		"name": "Wing",
+		"subtype": "wing",
+		"tab": "movement",
+		"width": 1,
+		"height": 4,
+		"cost_data": {
+			"alloy": 2.0
+		},
+		"image_path": "res://part_images/armor_heavy_1x4.png",
 	}
 }

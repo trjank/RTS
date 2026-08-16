@@ -1,0 +1,6 @@
+[gd_resource type="NoiseTexture2D" load_steps=2 format=3 uid="uid://csxgjqqwf4u1r"]
+
+[ext_resource type="FastNoiseLite" uid="uid://2rip6i13awyj" path="res://effects/shield_noise.tres" id="1_vseam"]
+
+[resource]
+noise = ExtResource("1_vseam")

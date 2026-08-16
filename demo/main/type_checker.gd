@@ -14,7 +14,6 @@ const CAST_NUMBERS_AND_COLORS: Dictionary[Variant.Type, Variant.Type] = {
 	TYPE_STRING: TYPE_COLOR
 }
 
-## Use to validate user input (e.g. parsing JSON)
 static func type_check_key(key: Variant, data: Dictionary, template: Dictionary[String, Variant.Type], strict_keys := true, allowed_casts: Dictionary[Variant.Type, Variant.Type] = {} ) -> bool:
 	if not key in template:
 		return not strict_keys
@@ -22,6 +21,18 @@ static func type_check_key(key: Variant, data: Dictionary, template: Dictionary[
 	var type_allowed := template[key]
 	return type == type_allowed or allowed_casts.get(type, TYPE_NIL) == type_allowed
 
-## Use to validate user input (e.g. parsing JSON)
 static func type_check(data: Dictionary, template: Dictionary[String, Variant.Type], strict_keys := true, allowed_casts: Dictionary[Variant.Type, Variant.Type] = {} ) -> bool:
 	return data.keys().all(type_check_key.bind(data, template, strict_keys, allowed_casts) )
+
+static func to_dict(object: Object, syntax: Dictionary[String, Variant.Type] ) -> Dictionary:
+	var dict := {}
+	for property in syntax:
+		dict[property] = object.get(property)
+	return dict
+
+static func load_dict(object: Object, dict: Dictionary, syntax: Dictionary[String, Variant.Type], allowed_casts: Dictionary[Variant.Type, Variant.Type] = {} ) -> bool:
+	if not type_check(dict, syntax, true, allowed_casts):
+		return false
+	for property in dict:
+		object.set(property, dict[property] )
+	return true

@@ -51,9 +51,10 @@ var torque := 0.0
 var part_counts: Dictionary[PartData, int]
 var center: Vector2
 var node_parts: Array[ShipDataPart] = []
+var image: Image:
+	set = set_image
 var is_finalized := false
 
-var _image: Image
 var _texture: ImageTexture
 var _grid_bounds := Rect2i(Vector2i.ZERO, MIN_GRID_SIZE)
 var _ship_bounds := Rect2i()
@@ -64,6 +65,11 @@ var _bytes := StreamPeerBuffer.new()
 var _db: ShipDatabase
 var _id := -1
 var _placement_error: int = PlacementError.OK
+var _material := ShaderMaterial.new()
+
+func _init() -> void:
+	_material.shader = preload("res://ships/ship.gdshader")
+	_material.set_shader_parameter("shield_texture", preload("res://ships/shield_texture.tres") )
 
 func get_db() -> ShipDatabase:
 	return _db
@@ -76,9 +82,6 @@ func sync() -> bool:
 
 func save() -> bool:
 	return _db != null and _db.save_ship(self)
-
-func get_image() -> Image:
-	return _image
 
 func get_texture() -> Texture:
 	return _texture
@@ -100,6 +103,9 @@ func get_center() -> Vector2:
 
 func get_grid_size() -> Vector2i:
 	return _grid_bounds.size
+
+func get_material() -> ShaderMaterial:
+	return _material
 
 func count_parts() -> int:
 	return _parts.size() - 1
@@ -158,9 +164,14 @@ func set_grid_size(new_grid_size: Vector2i) -> bool:
 	resized.emit(new_grid_size)
 	return true
 
+func set_image(new_image: Image) -> void:
+	image = new_image
+	_texture = ImageTexture.create_from_image(image) if image != null else null
+	_material.set_shader_parameter("ship_texture", _texture)
+	_material.set_shader_parameter("size", _ship_bounds.size * Measurement.METERS_PER_PX)
+
 func clear() -> void:
-	_image = null
-	_texture = null
+	image = null
 	_parts = [null]
 	_part_ids.fill(NULL_ID)
 	_part_clusters.resize(1)
@@ -335,19 +346,19 @@ func _deserialize_part(part_manager: PartManager) -> PartError:
 func generate_image() -> void:
 	var size := Measurement.PX_PER_TILE * _ship_bounds.size
 	var offset := Measurement.PX_PER_TILE * _ship_bounds.position
-	_image = ImageAsset.blank_image(size, USE_MIPMAPS)
+	var assembled_image = ImageAsset.blank_image(size, USE_MIPMAPS)
 	# NOTE: Draw order does not matter because they are guaranteed to not overlap
 	for i in range(1, _parts.size() ):
-		_draw_part(_parts[i], offset)
-	_texture = ImageTexture.create_from_image(_image)
-	generated_image.emit(_image, _texture)
+		_draw_part(assembled_image, _parts[i], offset)
+	image = assembled_image
+	generated_image.emit(image, _texture)
 	ui_update.emit()
 
-func _draw_part(part: ShipDataPart, offset: Vector2i) -> void:
+func _draw_part(to_image: Image, part: ShipDataPart, offset: Vector2i) -> void:
 	if part.get_boundary() == Boundary.NONE or not part.get_data().is_image_valid():
 		return
 	var part_image := part.get_image()
 	var from := Rect2i(Vector2i.ZERO, part_image.get_size() )
 	var to := Measurement.PX_PER_TILE * part.get_rect().position
 	# NOTE: This uses the CPU, but is very fast due to c++ memcpy
-	_image.blit_rect(part_image, from, to - offset)
+	to_image.blit_rect(part_image, from, to - offset)

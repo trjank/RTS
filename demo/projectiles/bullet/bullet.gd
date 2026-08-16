@@ -1,10 +1,14 @@
 class_name Bullet extends Unit
 
+const COLLISION_MASK: int = globals.Layer.SHIPS
+const COLLISION_LAYER: int = globals.Layer.PROJECTILES
+
 var data: BulletData:
 	set = set_data
 
 @export var sound_effect: AudioStreamPlayer3D
-@export var trail: MeshInstance3D
+
+var _trail: Trail
 
 static func create() -> Bullet:
 	return preload("res://projectiles/bullet/bullet.tscn").instantiate()
@@ -12,22 +16,35 @@ static func create() -> Bullet:
 func _ready() -> void:
 	super()
 	#
-	collision_mask = globals.Layer.SHIPS
-	collision_layer = globals.Layer.PROJECTILES
+	collision_mask = COLLISION_MASK
+	collision_layer = COLLISION_LAYER
+
+func is_missile() -> bool:
+	return not is_zero_approx(torque)
+
+func get_trail() -> Trail:
+	return _trail
 
 func set_data(new_data: BulletData) -> void:
 	if new_data == null:
 		return queue_free()
+	if data.trail_enabled:
+		_create_trail()
 	data = new_data
 	size = Vector2(50.0, 50.0)
 	mass = data.mass
 	texture = data.image.get_texture()
 	torque = data.torque
 	linear_damp = data.linear_damp
-	create_trail()
 
 func begin_death_timer() -> void:
-	get_tree().create_timer(data.lifetime_sec).timeout.connect(queue_free)
+	get_tree().create_timer(data.lifetime_sec).timeout.connect(kill)
+
+func order_attack() -> void:
+	if is_missile():
+		track()
+	else:
+		attack()
 
 func play_sound_effect() -> void:
 	var min_pitch_scale := 1.0 - data.sound_variation
@@ -35,26 +52,12 @@ func play_sound_effect() -> void:
 	sound_effect.pitch_scale = randf_range(min_pitch_scale, max_pitch_scale)
 	sound_effect.play()
 
-func create_trail() -> void:
-	trail.visible = data.trail_enabled
-	trail.set_instance_shader_parameter("inner_color", data.trail_inner_color * data.trail_glow)
-	trail.set_instance_shader_parameter("outer_color", data.trail_outer_color * data.trail_glow)
-	trail.set_instance_shader_parameter("flicker_strength", data.trail_flicker_strength)
-	trail.set_instance_shader_parameter("roundness", data.trail_roundness)
-	trail.set_instance_shader_parameter("random_phase_offset", randf_range(0.0, TAU) )
-
 func launch(inertia_velocity := Vector3.ZERO) -> void:
 	linear_velocity = inertia_velocity + data.launch_velocity * get_global_forward_direction()
 	play_sound_effect()
 
-func _process(_dt: float) -> void:
-	trail.scale.x = data.trail_width_ratio
-	trail.scale.z = data.trail_force * get_speed()
-
-func order_attack() -> void:
-	assert(data != null)
-	#
-	if data.is_missile():
-		track()
-	else:
-		attack()
+func _create_trail() -> void:
+	_trail = Trail.create()
+	_trail.data = data.trail
+	_trail.scale = Vector3(data.trail_width_ratio, 0.0, data.trail_length)
+	add_child(_trail)

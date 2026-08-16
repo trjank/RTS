@@ -23,7 +23,7 @@ signal team_removed(team: Team)
 
 const MAX_NUM_TEAMS := 10
 const MAX_NUM_PLAYERS := 100
-const BOT_ICON := preload("res://icons/bot.png")
+const BOT_ICON := preload("res://icons/cpu.png")
 
 @export var world: Node3D
 @export var round_timer: Timer

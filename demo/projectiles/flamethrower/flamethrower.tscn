@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d07c60sv6ju2p" path="res://projectiles/flamethrower/flamethrower.gd" id="1_datqr"]
 [ext_resource type="Material" uid="uid://dkveakw5wbgpi" path="res://projectiles/flamethrower/material.tres" id="1_y842h"]
-[ext_resource type="AudioStream" uid="uid://cldu7rtpn7f0l" path="res://sound_effects/flamethrower.wav" id="3_7kduk"]
+[ext_resource type="AudioStream" uid="uid://ddnibdd10c714" path="res://sound_effects/flamethrower.wav" id="3_7kduk"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_fhojo"]
 resource_local_to_scene = true
@@ -24,13 +24,15 @@ metadata/_custom_type_script = "uid://d07c60sv6ju2p"
 shape = SubResource("BoxShape3D_fhojo")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
 sorting_offset = 1.0
-instance_shader_parameters/constriction = 0.54800002603
-instance_shader_parameters/end_color = Color(1.8247963, 0, 0, 1)
-instance_shader_parameters/exit_roundness = 5.0
+instance_shader_parameters/alpha = 1.0
+instance_shader_parameters/constriction = 0.400000019
+instance_shader_parameters/end_color = Color(0, 0.16178523, 1.8247963, 1)
+instance_shader_parameters/fade = 0.2
 instance_shader_parameters/softness = 0.2000000095
-instance_shader_parameters/start_color = Color(0.132, 1.825, 0, 1)
+instance_shader_parameters/start_color = Color(1.8247963, 0, 0.062539995, 1)
+instance_shader_parameters/texture_scale = 0.3
 instance_shader_parameters/uv_length = 1.0
 instance_shader_parameters/uv_ratio = 1.0
 instance_shader_parameters/uv_speed = 1.0

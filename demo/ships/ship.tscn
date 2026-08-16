@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bclfkleo04c2s"]
+[gd_scene load_steps=7 format=3 uid="uid://bclfkleo04c2s"]
 
 [ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://units/unit.tscn" id="1_aujvj"]
 [ext_resource type="Script" uid="uid://c1kpbbaqx8xxa" path="res://ships/ship.gd" id="1_n6m1k"]
 [ext_resource type="PackedScene" uid="uid://hvicroe1d56b" path="res://pips/pip_bar.tscn" id="3_an5v1"]
+[ext_resource type="Material" uid="uid://j3s8wx61unm0" path="res://ships/ship_material.tres" id="3_d0hxi"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_6juyh"]
 resource_local_to_scene = true
@@ -19,6 +20,11 @@ behavior_indicator = NodePath("UI/BehaviorIndicator")
 part_nodes = NodePath("PartNodes")
 detection = NodePath("Detection")
 
+[node name="Sprite3D" parent="." index="0"]
+material_override = ExtResource("3_d0hxi")
+instance_shader_parameters/player_color = Color(0, 0, 0, 1)
+instance_shader_parameters/shield = 1.0
+
 [node name="CollisionShape3D" parent="." index="1"]
 shape = SubResource("SphereShape3D_6juyh")
 
@@ -30,7 +36,7 @@ shape = SubResource("SphereShape3D_6juyh")
 transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, -1.5)
 instance_shader_parameters/base_color = Color(0.10416663, 0, 0.25, 1)
 instance_shader_parameters/border_color = Color(1, 1, 1, 1)
-instance_shader_parameters/border_width = 0.03
+instance_shader_parameters/border_width = 0.050000002375
 instance_shader_parameters/pip_color = Color(0.4166665, 0, 1, 1)
 instance_shader_parameters/pip_progress = 0.4
 instance_shader_parameters/pip_width = 0.497
@@ -47,7 +53,7 @@ pip_color = Color(0.4166665, 0, 1, 1)
 [node name="HPBar" parent="UI" index="1" instance=ExtResource("3_an5v1")]
 transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 0)
 instance_shader_parameters/base_color = Color(0.25, 0.0775, 0.0775, 1)
-instance_shader_parameters/border_width = 0.03
+instance_shader_parameters/border_width = 0.050000002375
 instance_shader_parameters/pip_width = 0.497
 instance_shader_parameters/size = Vector2(5, 0.5)
 skeleton = NodePath("../..")
@@ -61,9 +67,10 @@ pip_color = Color(1, 0.32, 0.32, 1)
 
 [node name="EnergyBar" parent="UI" index="2" instance=ExtResource("3_an5v1")]
 transform = Transform3D(2.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 1.5)
-instance_shader_parameters/base_color = Color(0.25, 0.175, 0, 1)
-instance_shader_parameters/border_width = 0.03
-instance_shader_parameters/pip_color = Color(1, 0.7, 0, 1)
+instance_shader_parameters/base_color = Color(0, 0.5, 0.5, 1)
+instance_shader_parameters/border_color = Color(1, 1, 1, 1)
+instance_shader_parameters/border_width = 0.050000002375
+instance_shader_parameters/pip_color = Color(0, 1, 1, 1)
 instance_shader_parameters/pip_progress = 0.3
 instance_shader_parameters/pip_width = 0.24700000000000003
 instance_shader_parameters/size = Vector2(2.5, 0.5)
@@ -73,15 +80,17 @@ size = Vector2(2.5, 0.5)
 pip_count = 10
 value = 3.0
 max_value = 10.0
-base_color = Color(0.25, 0.175, 0, 1)
-pip_color = Color(1, 0.7, 0, 1)
+base_color = Color(0, 0.5, 0.5, 1)
+pip_color = Color(0, 1, 1, 1)
 
 [node name="BehaviorIndicator" type="Label3D" parent="UI" index="3"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0)
-pixel_size = 0.01
+pixel_size = 0.05
 billboard = 1
-render_priority = 1
-outline_render_priority = 0
+render_priority = 2
+outline_render_priority = 1
+modulate = Color(0, 0, 0, 1)
+outline_modulate = Color(1, 1, 1, 1)
 text = "NONE"
 
 [node name="Detection" type="Area3D" parent="." index="4"]

@@ -2,8 +2,14 @@ class_name ShipDataWeaponMount extends ShipDataPart
 
 var _modifiers := WeaponModifiers.new()
 
+func _init(init_id: int, init_data: WeaponMountData, init_rect: Rect2i, init_rotation: Rotation.Discrete, init_boundary: int) -> void:
+	super(init_id, init_data, init_rect, init_rotation, init_boundary)
+
 func get_modifiers() -> WeaponModifiers:
 	return _modifiers
+
+func get_data() -> WeaponMountData:
+	return _data
 
 func _add_modifier(part_data: ShipDataPart) -> void:
 	if part_data is ShipDataWeaponModifier:

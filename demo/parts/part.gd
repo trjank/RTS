@@ -13,6 +13,9 @@ func _init() -> void:
 func get_ship() -> Ship:
 	return _ship
 
+func get_player_owner() -> Player:
+	return _ship.player_owner if _ship != null else null
+
 func get_size_2d() -> Vector2:
 	return Measurement.METERS_PER_TILE * data.get_size() if data != null else Vector2.ZERO
 
@@ -41,11 +44,9 @@ func set_data(new_data: PartData) -> void:
 func on_ship_ready(ship_part: ShipDataPart, ship: Ship) -> void:
 	_ship = ship
 	var xy := Measurement.METERS_PER_TILE * (ship_part.get_center() - Rect2(ship.data.get_ship_rect() ).get_center() )
-	position.x = xy.x
-	position.y = data.y_level
-	position.z = xy.y
+	position = Vector3(xy.x, data.y, xy.y)
 	rotation.y = Rotation.to_radians(ship_part.get_rotation() )
-	flip_h = Rotation.is_flip_h(ship_part.get_rotation() )
+	scale.x = -1.0 if Rotation.is_flip_h(ship_part.get_rotation() ) else 1.0
 
 func _notification(what: int) -> void:
 	if what != NOTIFICATION_PARENTED or _ship == null:

@@ -5,7 +5,8 @@
 [ext_resource type="AudioStream" uid="uid://xkeql7cdl8cg" path="res://sound_effects/death_ray.wav" id="3_b6x20"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_27fsr"]
-resource_local_to_scene = true
+size = Vector2(1, 1)
+center_offset = Vector3(0, 0, -0.5)
 
 [node name="DeathRay" type="MeshInstance3D" node_paths=PackedStringArray("sound_effect")]
 material_override = ExtResource("1_27fsr")

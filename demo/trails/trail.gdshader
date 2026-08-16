@@ -7,7 +7,7 @@ const float FLICKER_SPEED = 30.0;
 instance uniform vec3 outer_color: source_color = vec3(2.0, 0.0, 0.0);
 instance uniform vec3 inner_color: source_color = vec3(1.5, 1.5, 0.5);
 instance uniform float roundness: hint_range(0.5, 2.0) = 1.0;
-instance uniform float flicker_strength: hint_range(0.0, 0.2) = 0.1;
+instance uniform float flicker_strength: hint_range(0.0, 1.0) = 0.1;
 instance uniform float random_phase_offset = 0.0;
 
 void fragment() {

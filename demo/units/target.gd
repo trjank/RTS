@@ -5,6 +5,7 @@ const NO_INTERSECTION := -1.0
 var global_position: Vector3
 var linear_velocity: Vector3
 var speed := 0.0
+var is_warp_point := false
 
 static func from_node(node: Node) -> Target:
 	if node is Unit:
@@ -32,6 +33,12 @@ func hit(_damage: float, _from: Player = null, _penetration := 0.0) -> void:
 func drain_energy(_energy_drain: float) -> void:
 	pass # (override this method)
 
+func find_nearest(_predicate: Callable) -> Node:
+	return null
+
+func find_near(_predicate: Callable) -> Array[Node]:
+	return []
+
 func get_intersection_point(intersection_time: float) -> Vector3:
 	return global_position + intersection_time * linear_velocity
 
@@ -41,9 +48,11 @@ func get_approx_intersect_time(other_target: Target) -> float:
 func get_intersect_time(other_target: Target) -> float:
 	return other_target.get_intersect_time_from(global_position, speed)
 
+## NOTE: This always returns a positive time, and never returns NO_INTERSECTION
 func get_approx_intersect_time_from(from: Vector3, other_speed: float) -> float:
 	return from.distance_to(global_position) / other_speed
 
+## NOTE: This may return NO_INTERSECTION
 func get_intersect_time_from(from: Vector3, other_speed: float) -> float:
 	# Need to apply the quadratic formula
 	var dx := global_position - from

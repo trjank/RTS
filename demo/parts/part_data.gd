@@ -7,8 +7,8 @@ const MIN_SIZE := 1
 const MAX_SIZE := 16
 const CODE_LENGTH := 4
 const FALLBACK_CODE := "NULL"
-const MIN_Y_LEVEL := 0.0
-const MAX_Y_LEVEL := 10.0 * Measurement.METERS_PER_TILE
+const MIN_Y := 0.0
+const MAX_Y := 10.0 * Measurement.METERS_PER_TILE
 
 static var subtypes: Dictionary[String, Callable] = {
 	"": PartData.new,
@@ -19,7 +19,8 @@ static var subtypes: Dictionary[String, Callable] = {
 	"laser": LaserData.new,
 	"bullet": BulletData.new,
 	"death_ray": DeathRayData.new,
-	"flamethrower": FlamethrowerData.new
+	"flamethrower": FlamethrowerData.new,
+	"wing": WingData.new
 }
 
 var subtype := ""
@@ -36,8 +37,8 @@ var cost := StrategicResources.new():
 var cost_data: Dictionary:
 	get = get_cost_data,
 	set = set_cost_data
-var y_level := 0.0:
-	set = set_y_level
+var y := 0.0:
+	set = set_y
 var hp := 0.0
 var mass := 0.0
 var warp := 0.0
@@ -93,6 +94,12 @@ func get_rotated_size(rotation: Rotation.Discrete) -> Vector2i:
 func get_rotated_boundary(rotation: Rotation.Discrete) -> int:
 	return Boundary.inverse_transform(_boundary, rotation)
 
+func get_rotated_torque(_rotation: Rotation.Discrete) -> float:
+	return torque
+
+func get_rotated_thrust(_rotation: Rotation.Discrete) -> float:
+	return thrust
+
 func get_cost_data() -> Dictionary:
 	return cost.to_dict()
 
@@ -102,8 +109,8 @@ func set_cost(new_cost: StrategicResources) -> void:
 func set_cost_data(new_cost_data: Dictionary) -> void:
 	cost.load_dict(new_cost_data)
 
-func set_y_level(new_y_level: float) -> void:
-	y_level = clampf(new_y_level, MIN_Y_LEVEL, MAX_Y_LEVEL)
+func set_y(new_y: float) -> void:
+	y = clampf(new_y, MIN_Y, MAX_Y)
 
 func get_image_path() -> String:
 	return image.get_path()

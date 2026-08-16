@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://cxopnfnommsm8" path="res://projectiles/flamethrower/flame_texture.tres" id="2_x7hb3"]
 
 [resource]
-render_priority = 0
+render_priority = 2
 shader = ExtResource("1_26uwv")
 shader_parameter/flame_texture = ExtResource("2_x7hb3")
-shader_parameter/fade = 0.2000000095

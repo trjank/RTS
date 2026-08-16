@@ -1,14 +1,19 @@
 class_name Thruster extends Part
 
-@export var trail: MeshInstance3D
+@export var trail: Trail
 
 func _ready() -> void:
-	trail.set_instance_shader_parameter("outer_color", data.trail_glow * data.trail_outer_color)
-	trail.set_instance_shader_parameter("inner_color", data.trail_glow * data.trail_inner_color)
-	trail.set_instance_shader_parameter("roundness", data.trail_roundness)
-	trail.set_instance_shader_parameter("flicker_strength", data.trail_flicker_strength)
-	trail.set_instance_shader_parameter("random_phase_offset", randf_range(0.0, TAU) )
+	var thruster_data: ThrusterData = data
+	trail.data = thruster_data.trail
+	trail.update_shader()
+	trail.randomize_flicker()
+
+func set_data(new_data: PartData) -> void:
+	super(new_data as ThrusterData)
 
 func _process(_dt: float) -> void:
-	trail.scale.x = data.trail_width_ratio * get_size_2d().x
-	trail.scale.z = data.trail_force * _ship.get_speed() if _ship != null else 1.0
+	var thruster_data: ThrusterData = data
+	var speed := maxf(_ship.linear_velocity.dot(get_global_forward_direction() ), 0.0) if _ship != null else 1.0
+	var turn_speed := maxf(_ship.angular_velocity.y * get_forward_direction().cross(position).y, 0.0) if _ship != null else 0.0
+	trail.scale.x = thruster_data.trail_width_ratio * get_size_2d().x
+	trail.scale.z = thruster_data.trail_length_speed_ratio * (speed + turn_speed)

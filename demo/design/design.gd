@@ -5,7 +5,7 @@ signal slot_changed(new_slot: int)
 const SELECTED_COLOR := Color(2.454, 1.027, 1.027, 1.0)
 # NOTE: This prefix ensures random text does not destroy the current ship
 const SHIP_STRING_PREFIX := "ship"
-const SHIP_STRING_DELIMETER := ":"
+const SHIP_STRING_DELIMETER := "%"
 # NOTE: a 128x128 grid may result in a 4096x4096 px image (so try not to go beyond it)
 const SMALL_GRID  := Vector2i(16, 16)
 const MEDIUM_GRID := Vector2i(32, 32)
@@ -91,6 +91,9 @@ func _create_new_ship() -> bool:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("save"):
 		save()
+	if event.is_action_pressed("undo"):
+		part_selection.delete_parts()
+		grid.sync()
 
 func _on_grid_save_changed(ship: ShipData, saved: bool) -> void:
 	var ship_slot := fleet._ships.find(ship)
@@ -111,12 +114,6 @@ func _on_fleet_ship_changed(new_ship: ShipData, which_slot: int) -> void:
 	grid.cache()
 	stats_box.ship = new_ship
 
-func _on_fleet_container_button_pressed(new_slot: int) -> void:
-	slot = new_slot
-
-func _on_test_button_pressed() -> void:
-	globals.main.state = Main.State.TRAINING_GROUNDS
-
 func convert_ship_to_string(ship_data := grid.ship) -> String:
 	if ship_data == null:
 		return ""
@@ -131,8 +128,14 @@ func load_ship_from_string(ship_string: String) -> int:
 	var bytes := Marshalls.base64_to_raw(split[3] )
 	grid.ship.grid_size = Vector2i(int(split[1] ), int(split[2] ) )
 	var error := grid.ship.deserialize(bytes, globals.part_manager)
-	grid.sync()
+	grid.sync(false)
 	return error
+
+func _on_fleet_container_button_pressed(new_slot: int) -> void:
+	slot = new_slot
+
+func _on_test_button_pressed() -> void:
+	globals.main.state = Main.State.TRAINING_GROUNDS
 
 func _on_export_button_pressed() -> void:
 	export_popup.ship_string = convert_ship_to_string()

@@ -2,7 +2,7 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://cldu7rtpn7f0l"
+uid="uid://ddnibdd10c714"
 path="res://.godot/imported/flamethrower.wav-0cc1c7149194933adb8d5d3e20a53b5a.sample"
 
 [deps]
@@ -18,7 +18,7 @@ force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false
 edit/normalize=false
-edit/loop_mode=0
+edit/loop_mode=3
 edit/loop_begin=0
 edit/loop_end=-1
 compress/mode=2

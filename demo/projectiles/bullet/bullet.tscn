@@ -3,18 +3,17 @@
 [ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://units/unit.tscn" id="1_d4ogn"]
 [ext_resource type="Script" uid="uid://1li4eghsm5c5" path="res://projectiles/bullet/bullet.gd" id="2_yvssa"]
 [ext_resource type="AudioStream" uid="uid://ca34vcr4ki33k" path="res://sound_effects/missile_launch_1.wav" id="3_g1w5t"]
-[ext_resource type="PlaneMesh" uid="uid://dbl564nq45ww8" path="res://trails/flame_trail_mesh.tres" id="4_sils6"]
+[ext_resource type="PlaneMesh" uid="uid://dbl564nq45ww8" path="res://trails/mesh.tres" id="4_sils6"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1mdu2"]
 resource_local_to_scene = true
 
-[node name="Bullet" node_paths=PackedStringArray("sound_effect", "trail") instance=ExtResource("1_d4ogn")]
+[node name="Bullet" node_paths=PackedStringArray("sound_effect") instance=ExtResource("1_d4ogn")]
 collision_layer = 0
 collision_mask = 0
 linear_damp = 0.5
 script = ExtResource("2_yvssa")
 sound_effect = NodePath("AudioStreamPlayer3D")
-trail = NodePath("Trail")
 
 [node name="Sprite3D" parent="." index="0"]
 sorting_offset = 1.0

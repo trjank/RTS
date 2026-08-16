@@ -1,27 +1,34 @@
 class_name DeathRayData extends ProjectileData
 
-const MASK := globals.Layer.SHIPS
-
-var thickness := 0.5
-var max_range := 10.0
-var charge_time_sec := 0.0
-var inner_beam_color := Color.WHITE
-var outer_beam_color := Color.GREEN
-var inner_beam_size := 0.05
-var volatility := 0.05
-var glow := 3.0
-var hit_damage_multiplier := 1.0
-var hit_energy_drain_multiplier := 1.0
 var max_hits := 10
+var multihit_modifiers := WeaponModifiers.new()
+var multihit_modifiers_data: Dictionary:
+	get = get_multihit_modifiers_data,
+	set = set_multihit_modifiers_data
+var thickness := 0.5
+var inner_beam_size := 0.05
+var glow := 3.0
+var inner_color := Color.WHITE
+var outer_color := Color.GREEN
+var volatility := 0.05
 
-func calculate_net_damage(hits := max_hits) -> float:
-	return hits * damage if is_equal_approx(hit_damage_multiplier, 1.0) else damage * (1.0 - hit_damage_multiplier ** hits) / (1.0 - hit_damage_multiplier)
+func get_speed() -> float:
+	return INF
+
+func get_multihit_modifiers_data() -> Dictionary:
+	return multihit_modifiers.to_dict()
+
+func set_multihit_modifiers_data(new_multihit_modifiers_data: Dictionary) -> void:
+	multihit_modifiers.load_dict(new_multihit_modifiers_data)
 
 func create_projectile(from: Weapon, to: Target, _cache: Array[Node3D] ) -> void:
 	assert(from != null)
 	#
 	var death_ray := DeathRay.create()
+	var excluded := from.get_ship().get_rid()
 	death_ray.data = self
+	death_ray.modifiers = from.modifiers
+	death_ray.player_owner = from.get_player_owner()
 	from.get_ship().add_sibling(death_ray)
 	death_ray.begin_death_timer()
-	death_ray.raycast_and_hit(from.global_position, to.global_position, MASK)
+	death_ray.raycast_and_hit(from.global_position, to.global_position, [excluded] )

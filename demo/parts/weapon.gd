@@ -1,22 +1,38 @@
 class_name Weapon extends Part
 
-var rest_angle := 0.0:
-	set = set_rest_angle
-var firing_arc := PI:
-	set = set_firing_arc
+enum TargetError {
+	OK,
+	INVALID_DATA,
+	NOT_IN_RANGE,
+	NOT_IN_ARC
+}
 
 var projectile_data: ProjectileData:
 	set = set_projectile_data
+var arc := 0.0:
+	set = set_arc
+var modifiers := WeaponModifiers.NONE:
+	set = set_modifiers
+var target_prediction := true
+
+# This is an optional cache to reuse projectiles
 var _projectiles: Array[Node3D] = []
 
 func _ready() -> void:
 	render_priority = 1
 
-func on_ship_ready(ship_part: ShipDataPart, ship: Ship) -> void:
-	super.on_ship_ready(ship_part, ship)
-	#
-	ship.target_changed.connect(fire)
-	projectile_data = ship_part.get_data().get_projectile()
+func is_valid_rotation(rotation_y: float) -> bool:
+	return absf(rotation_y) <= 0.5 * arc
+
+func set_data(new_data: PartData) -> void:
+	super(new_data as WeaponData)
+
+func set_arc(new_arc: float) -> void:
+	arc = absf(new_arc)
+	rotation.y = 0.0
+
+func set_modifiers(new_modifiers: WeaponModifiers) -> void:
+	modifiers = new_modifiers if new_modifiers != null else WeaponModifiers.NONE
 
 func set_projectile_data(new_projectile_data: ProjectileData) -> void:
 	if projectile_data == new_projectile_data:
@@ -24,19 +40,41 @@ func set_projectile_data(new_projectile_data: ProjectileData) -> void:
 	projectile_data = new_projectile_data
 	_projectiles.clear()
 
-func set_rest_angle(new_rest_angle: float) -> void:
-	rest_angle = new_rest_angle
-	rotation.y = rest_angle
+func on_ship_ready(ship_part: ShipDataPart, ship: Ship) -> void:
+	super(ship_part, ship)
+	#
+	var ship_weapon: ShipDataWeapon = ship_part
+	update_projectile()
+	update_mount(ship_weapon.get_mount() )
+	ship.target_changed.connect(fire)
 
-func set_firing_arc(new_firing_arc: float) -> void:
-	firing_arc = absf(new_firing_arc)
-	rotation.y = rest_angle
+func update_projectile() -> void:
+	assert(data != null)
+	#
+	var weapon_data: WeaponData = data
+	projectile_data = weapon_data.get_projectile()
+	target_prediction = weapon_data.target_prediction
 
-func fire(target: Target) -> bool:
-	if target == null or projectile_data == null:
-		return false
-	if false: # firing restrictions
-		return false
-	look_at(target.global_position)
+func update_mount(new_mount: ShipDataWeaponMount) -> void:
+	arc = deg_to_rad(new_mount.get_data().arc_degrees) if new_mount != null else 0.0
+	modifiers = new_mount.get_modifiers() if new_mount != null else WeaponModifiers.NONE
+
+func calculate_target_position(target: Target) -> Vector3:
+	if not target_prediction:
+		return target.global_position
+	var time := target.get_approx_intersect_time_from(global_position, projectile_data.get_speed() )
+	return target.get_intersection_point(time)
+
+func fire(target: Target) -> TargetError:
+	if target == null or projectile_data == null or data == null:
+		return TargetError.INVALID_DATA
+	var target_position := calculate_target_position(target)
+	var local := to_local(target_position)
+	var new_rotation := rotation.y + atan2(-local.x, -local.z)
+	if not is_valid_rotation(new_rotation):
+		return TargetError.NOT_IN_ARC
+	if target_position.distance_to(global_position) > projectile_data.effective_range:
+		return TargetError.NOT_IN_RANGE
+	rotation.y = new_rotation
 	projectile_data.create_projectile(self, target, _projectiles)
-	return true
+	return TargetError.OK

@@ -34,8 +34,8 @@ func is_dynamic_spawnpoint(target: Target) -> bool:
 func is_valid_team(_team: String) -> bool:
 	return true
 
-func on_battle_start(battle: Battle) -> void:
-	spawn_teams(battle)
+func on_battle_start(_battle: Battle) -> void:
+	pass
 
 func battle_tick(_battle: Battle, _dt: float) -> void:
 	pass # (Add any frequent or timed events here)

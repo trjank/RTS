@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dfjm11tydfbwt"]
+[gd_scene load_steps=16 format=3 uid="uid://dfjm11tydfbwt"]
 
 [ext_resource type="Theme" uid="uid://cal7gtgcxq77i" path="res://main/main_theme.tres" id="1_0c2qi"]
 [ext_resource type="Script" uid="uid://1ytf1odlubls" path="res://design/parts_container.gd" id="2_xb30u"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="5_rmcst"]
 [ext_resource type="Texture2D" uid="uid://bpjtv7lqrx5h5" path="res://icons/tab_weapons.png" id="6_okk5v"]
 [ext_resource type="Script" uid="uid://i5q68fmq3nhl" path="res://design/part_tabs.gd" id="7_8jmok"]
+[ext_resource type="Texture2D" uid="uid://che80qlbicbl7" path="res://icons/skull.png" id="7_a14qr"]
 [ext_resource type="Texture2D" uid="uid://dmu4kvuuj6yn8" path="res://icons/stats_thrust.png" id="7_rrp5i"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8jmok"]
@@ -78,12 +79,13 @@ theme_override_styles/button_pressed = SubResource("StyleBoxFlat_rrp5i")
 theme_override_styles/button_highlight = SubResource("StyleBoxFlat_rrp5i")
 current_tab = 0
 clip_tabs = false
-tab_count = 5
+tab_count = 6
 tab_0/icon = ExtResource("5_rmcst")
 tab_1/icon = ExtResource("4_l0dbo")
 tab_2/icon = ExtResource("6_okk5v")
 tab_3/icon = ExtResource("7_rrp5i")
-tab_4/disabled = true
+tab_4/icon = ExtResource("7_a14qr")
+tab_5/disabled = true
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -130,11 +132,18 @@ theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 metadata/_tab_index = 3
 
-[node name="Hidden" type="HFlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
+[node name="Decals" type="HFlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
 visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 20
 metadata/_tab_index = 4
+
+[node name="Hidden" type="HFlowContainer" parent="VBoxContainer/MarginContainer/ScrollContainer/PartTabs"]
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+metadata/_tab_index = 5
 
 [connection signal="tab_changed" from="VBoxContainer/PanelContainer/TabBar" to="VBoxContainer/MarginContainer/ScrollContainer/PartTabs" method="_on_tab_bar_tab_changed"]

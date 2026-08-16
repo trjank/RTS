@@ -31,22 +31,26 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"size": TYPE_VECTOR2I,
 	"width": TYPE_INT,
 	"height": TYPE_INT,
-	"y_level": TYPE_FLOAT,
+	"y": TYPE_FLOAT,
 	"image_path": TYPE_STRING,
 	"boundary": TYPE_INT,
 # For WeaponData below
 	"projectile_code": TYPE_STRING,
+	"barrel_z": TYPE_FLOAT,
+	"center_z": TYPE_FLOAT,
 # For WeaponModifierData below
 	"modifier_data": TYPE_DICTIONARY,
 	"modshare_efficiency": TYPE_FLOAT,
 	"modifier_boundary": TYPE_INT,
 # For WeaponMountData below
 	"modifier_efficiency": TYPE_FLOAT,
+	"arc_degrees": TYPE_FLOAT,
 # For ProjectileData below
 	"lifetime_sec": TYPE_FLOAT,
 	"damage": TYPE_FLOAT,
 	"energy_drain": TYPE_FLOAT,
 	"shield_penetration": TYPE_FLOAT,
+	"effective_range": TYPE_FLOAT,
 	"can_mine": TYPE_BOOL,
 	"mining_rate_data": TYPE_DICTIONARY,
 # For BulletData below
@@ -62,12 +66,12 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"trail_width_ratio": TYPE_FLOAT,
 	"trail_force": TYPE_FLOAT,
 # For LaserData below
-	"color": TYPE_COLOR,
-	"glow": TYPE_FLOAT,
-	"chain_range": TYPE_FLOAT,
 	"max_chains": TYPE_INT,
-	"chain_multiplier": TYPE_FLOAT,
-	"display_width": TYPE_FLOAT,
+	"glow": TYPE_FLOAT,
+	"drift_speed": TYPE_FLOAT,
+	"inner_color": TYPE_COLOR,
+	"outer_color": TYPE_COLOR,
+	"multihit_modifier_data": TYPE_DICTIONARY,
 # For DeathRayData below
 	"thickness": TYPE_FLOAT,
 	"max_range": TYPE_FLOAT,
@@ -80,9 +84,14 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"max_hits": TYPE_INT,
 # For FlamethrowerData below
 	"speed": TYPE_FLOAT,
-	"fade_speed": TYPE_FLOAT,
+	"particulates": TYPE_FLOAT,
+	"pitch_scale": TYPE_FLOAT,
 	"start_color": TYPE_COLOR,
-	"end_color": TYPE_COLOR
+	"end_color": TYPE_COLOR,
+# For WingData below
+	"z": TYPE_FLOAT,
+	"wing_min_tilt": TYPE_FLOAT,
+	"wing_max_tilt": TYPE_FLOAT
 }
 
 var _parts: Dictionary[String, PartData] = {}

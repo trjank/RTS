@@ -14,15 +14,17 @@ enum Behavior {
 	KITE = 1 << 4
 }
 
+const MAX_NUM_WAYPOINTS := 10
 const RAMMING_DISTANCE := 0.0
 const DEFAULT_SAFE_DISTANCE := 10_000.0
 const BROADSIDE_DISTANCE := 10_000.0
-const MAX_NUM_WAYPOINTS := 5
-const MIN_WARP_TURN_ANGLE := deg_to_rad(135.0)
 const BROADSIDE_CORRECTION_ANGLE := deg_to_rad(100.0)
 const HITBOX_SIZE_RATIO := 0.5 * sqrt(2)
+const WARP_TRAIL_DURATION_SEC := 1.0
 
-static var enable_warp_trails := true
+static var WARP_TRAIL := TrailData.new():
+	set(__): push_error("(Unit) Unit.WARP_TRAIL is immutable!")
+static var warp_trails_enabled := true
 static var color_cloak := Color.GREEN
 static var color_selected := Color(1.0, 0.4, 0.4, 1.0)
 
@@ -43,7 +45,8 @@ var hp := 1.0:
 var warp := 0.0
 var thrust := 0.0
 var torque := 10000.0
-var player_owner: Player
+var player_owner: Player:
+	set = set_player_owner
 var movement_locked := false
 var size := Vector2.ZERO:
 	set = set_size
@@ -51,7 +54,6 @@ var selected := false:
 	set = set_selected
 var warp_keep_momentum := false
 var kill_credit: Player
-var death_explosion := Explosion.DULL
 
 var _stop_distance := 0.0
 var _stop_rotation := 0.0
@@ -68,7 +70,6 @@ var _waypoints: Array[Target] = []
 var _attack_position := Vector3.ZERO
 var _behavior_flags: int = Behavior.NONE
 var _internal_movement_locked := false
-var _dying := false
 
 ## NOTE: This is useful for Array.map
 static func to_radar_signature(unit: Unit) -> RadarSignature:
@@ -100,8 +101,7 @@ func is_queue_empty() -> bool:
 	return _waypoints.is_empty()
 
 func can_warp() -> bool:
-	return false
-	#return (_distance_to_target <= warp and _waypoints.size() == 1) or MIN_WARP_TURN_ANGLE <= absf(_angle_to_target)
+	return not is_queue_empty() and get_waypoint().is_warp_point and _distance_to_target <= warp
 
 func get_behavior_flags() -> int:
 	return _behavior_flags
@@ -150,6 +150,9 @@ func get_max_angular_velocity() -> float:
 	# -> |ω_max| = turnrate / (mass * angular_damp)
 	return torque / (mass * angular_damp)
 
+func set_player_owner(new_player_owner: Player) -> void:
+	player_owner = new_player_owner
+
 func set_size(new_size: Vector2) -> void:
 	size = new_size
 	update_ui()
@@ -177,6 +180,12 @@ func hit(damage: float, from: Player = null, _penetration := 0.0) -> void:
 
 func drain_energy(_energy_drain: float) -> void:
 	pass # (override this method)
+
+func find_nearest(_predicate: Callable) -> Node:
+	return null
+
+func find_near(_predicate: Callable) -> Array[Node]:
+	return []
 
 func update_inertia_tensor() -> void:
 	# This makes the mass distribution sphere-like, but not affected by radius
@@ -219,20 +228,14 @@ func pop_waypoint() -> bool:
 	return _waypoints.pop_front() != null
 
 func kill() -> void:
+	if is_queued_for_deletion():
+		return
 	if kill_credit != null:
 		kill_credit.register_kill(self)
 	if player_owner != null:
 		player_owner.register_death(self)
-	if death_explosion.is_empty() or not is_node_ready():
-		queue_free()
-		died.emit()
-	elif not _dying:
-		_on_death_animation()
-		_dying = true
-		died.emit()
-
-func _on_death_animation() -> void:
-	pass
+	queue_free()
+	died.emit()
 
 func order_attack() -> void:
 	attack()
@@ -367,13 +370,14 @@ func _update_radar_signature() -> void:
 	_radar_signature.global_position = global_position
 
 func _create_warp_trail(from: Vector3, to: Vector3) -> void:
-	if not enable_warp_trails:
+	if not warp_trails_enabled:
 		return
-	#var warp_trail := WarpTrail.create()
-	#add_sibling(warp_trail)
-	#warp_trail.global_transform = Transform2D.IDENTITY
-	#warp_trail.set_point_position(0, from)
-	#warp_trail.set_point_position(1, to)
+	var trail := Trail.create()
+	add_sibling(trail)
+	trail.data = WARP_TRAIL
+	trail.move(from, to)
+	trail.pulse(WARP_TRAIL_DURATION_SEC)
+	get_tree().create_timer(WARP_TRAIL_DURATION_SEC).timeout.connect(trail.queue_free)
 
 func _warp_to_attack_position(state: PhysicsDirectBodyState3D) -> void:
 	if not can_warp():
@@ -384,7 +388,6 @@ func _warp_to_attack_position(state: PhysicsDirectBodyState3D) -> void:
 	var from := global_position
 	var to := from + distance * _direction_to_target
 	warp -= distance
-	#state.transform = global_transform.rotated(Vector3.UP, _angle_to_target)
 	state.transform.origin = to
 	_create_warp_trail(from, to)
 	warped.emit(from, to)

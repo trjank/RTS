@@ -1,6 +1,5 @@
 class_name BulletData extends ProjectileData
 
-const MIN_MISSILE_TORQUE = 0.1
 const MIN_SOUND_VARIATION := 0.0
 const MAX_SOUND_VARIATION := 0.25
 
@@ -9,16 +8,21 @@ var linear_damp := 0.0
 var sound_variation := 0.1:
 	set = set_sound_variation
 var trail_enabled := false
-var trail_inner_color := Color.ORANGE
-var trail_outer_color := Color.RED
-var trail_glow := 2.0
-var trail_roundness := 1.0
-var trail_flicker_strength := 0.1
-var trail_force := 1.0
+var trail := TrailData.new()
+var trail_data: Dictionary:
+	get = get_trail_data,
+	set = set_trail_data
+var trail_length := 1.0
 var trail_width_ratio := 1.0
 
-func is_missile() -> bool:
-	return MIN_MISSILE_TORQUE <= torque
+func get_speed() -> float:
+	return launch_velocity
+
+func get_trail_data() -> Dictionary:
+	return trail.to_dict()
+
+func set_trail_data(new_trail_data: Dictionary) -> void:
+	trail.load_dict(new_trail_data)
 
 func set_sound_variation(new_sound_variation: float) -> void:
 	sound_variation = clampf(new_sound_variation, MIN_SOUND_VARIATION, MAX_SOUND_VARIATION)

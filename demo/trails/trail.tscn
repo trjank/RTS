@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfoj0ue4beeq3"]
+
+[ext_resource type="PlaneMesh" uid="uid://dbl564nq45ww8" path="res://trails/mesh.tres" id="1_31scp"]
+[ext_resource type="Script" uid="uid://bbupgfjd4r3fy" path="res://trails/trail.gd" id="2_e7ofa"]
+
+[node name="Trail" type="MeshInstance3D"]
+instance_shader_parameters/flicker_strength = 0.1
+instance_shader_parameters/inner_color = Color(1.5, 1.5, 0.5, 1)
+instance_shader_parameters/roundness = 1.00000002375
+mesh = ExtResource("1_31scp")
+script = ExtResource("2_e7ofa")

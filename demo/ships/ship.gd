@@ -21,7 +21,7 @@ var target: Target
 var _max_hp := 0.0
 var _max_shield := 0.0
 var _max_energy := 0.0
-var _detection_cache := []
+var _detection_cache: Array[Node3D] = []
 
 static func create() -> Ship:
 	return preload("res://ships/ship.tscn").instantiate()
@@ -62,9 +62,18 @@ func set_data(new_data: ShipData) -> void:
 	for ship_part in data.node_parts:
 		_create_part_node(ship_part)
 	texture = data.get_texture()
+	sprite.material_override = data.get_material()
 	size = Measurement.METERS_PER_TILE * data.get_ship_rect().size
 	value = data.cost
 	reset_stats()
+
+func set_player_owner(new_player_owner: Player) -> void:
+	super(new_player_owner)
+	#
+	var color := player_owner.color
+	color.ok_hsl_l = 0.5
+	sprite.set_instance_shader_parameter("player_color", color if player_owner != null else Color.BLACK)
+	#sprite.set_instance_shader_parameter("player_color", player_owner.color if player_owner != null else Color.BLACK)
 
 func clear_stats() -> void:
 	thrust = 0.0
@@ -77,6 +86,7 @@ func reset_stats() -> void:
 	if data == null:
 		return
 	_max_hp = data.max_hp
+	_max_energy = data.max_energy
 	thrust = data.thrust
 	hp = data.max_hp
 	mass = data.mass
@@ -120,11 +130,11 @@ func _update_detection_cache() -> void:
 	_detection_cache = detection.get_overlapping_bodies()
 	_detection_cache.sort_custom(distance_sorter)
 
-func filter_nearest(predicate: Callable) -> Array:
+func find_near(predicate: Callable) -> Array[Node]:
 	_update_detection_cache()
 	return _detection_cache.filter(predicate)
 
-func get_nearest(predicate: Callable) -> Unit:
+func find_nearest(predicate: Callable) -> Unit:
 	_update_detection_cache()
 	var i := _detection_cache.find_custom(predicate, 1)
 	return _detection_cache[i] if i != -1 else null
@@ -161,6 +171,9 @@ func update_behavior_indicator() -> void:
 	if behavior & Behavior.ATTACK:
 		text += " ATTACK "
 	behavior_indicator.text = text
+
+func _physics_process(dt: float) -> void:
+	energy += data.energy_per_sec * dt
 
 func _process(_dt: float) -> void:
 	update_behavior_indicator()

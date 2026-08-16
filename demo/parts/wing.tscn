@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://bkfcir7187rip"]
+
+[ext_resource type="Script" uid="uid://dhj8sho3jn8bf" path="res://parts/wing.gd" id="1_kut5d"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_6fbdy"]
+left_to_right = 1.0
+size = Vector3(0.32, 1, 2)
+
+[node name="Wing" type="Sprite3D" node_paths=PackedStringArray("upper_wing", "lower_wing")]
+script = ExtResource("1_kut5d")
+upper_wing = NodePath("UpperWing")
+lower_wing = NodePath("LowerWing")
+metadata/_custom_type_script = "uid://cqb5k1nnxgccm"
+
+[node name="UpperWing" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9396926, 0.34202012, 0, -0.34202012, 0.9396926, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("PrismMesh_6fbdy")
+
+[node name="LowerWing" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.93969256, -0.3420201, 0, 0.3420201, 0.93969256, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("PrismMesh_6fbdy")

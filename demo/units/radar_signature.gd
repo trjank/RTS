@@ -27,9 +27,13 @@ func as_unit() -> Unit:
 	return _unit
 
 func hit(damage: float, from: Player = null, penetration := 0.0) -> void:
-	if is_alive():
-		_unit.hit(damage, from, penetration)
+	if is_alive(): _unit.hit(damage, from, penetration)
 
 func drain_energy(energy_drain: float) -> void:
-	if is_alive():
-		_unit.drain_energy(energy_drain)
+	if is_alive(): _unit.drain_energy(energy_drain)
+
+func find_nearest(predicate: Callable) -> Node:
+	return _unit.find_nearest(predicate) if is_alive() else null
+
+func find_near(predicate: Callable) -> Array[Node]:
+	return _unit.find_near(predicate) if is_alive() else []

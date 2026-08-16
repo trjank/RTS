@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://j3s8wx61unm0"]
+
+[ext_resource type="Shader" uid="uid://dqlphe6ptpn60" path="res://ships/ship.gdshader" id="1_c1ceg"]
+[ext_resource type="Texture2D" uid="uid://csxgjqqwf4u1r" path="res://ships/shield_texture.tres" id="2_ou1e1"]
+[ext_resource type="Texture2D" uid="uid://xmt7t8to3f6j" path="res://icons/texture_not_found.png" id="2_p6ls0"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_c1ceg")
+shader_parameter/size = Vector2(1, 1)
+shader_parameter/ship_texture = ExtResource("2_p6ls0")
+shader_parameter/shield_texture = ExtResource("2_ou1e1")
