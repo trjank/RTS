@@ -2,7 +2,7 @@ class_name Ship extends Unit
 
 signal target_changed(new_target: Target)
 
-const PIP_BAR_SPACING := -0.03
+static var show_behavior := false
 
 @export var hp_bar: PipBar
 @export var shield_bar: PipBar
@@ -33,6 +33,7 @@ func _ready() -> void:
 	super()
 	#
 	collision_layer |= globals.Layer.SHIPS
+	behavior_indicator.visible = show_behavior
 
 func set_hp(new_hp: float) -> void:
 	super(minf(new_hp, _max_hp) )
@@ -98,17 +99,10 @@ func update_ui() -> void:
 	if not is_node_ready():
 		return
 	ui.visible = selected
-	hp_bar.position.z = -size.y
-	energy_bar.position.z = hp_bar.position.z - hp_bar.size.y - PIP_BAR_SPACING
-	shield_bar.position.z = energy_bar.position.z - energy_bar.size.y - PIP_BAR_SPACING
-	#
 	hp_bar.max_value = _max_hp
 	shield_bar.max_value = _max_shield
 	energy_bar.max_value = _max_energy
-	#
-	hp_bar.visible = not is_zero_approx(_max_hp)
 	shield_bar.visible = not is_zero_approx(_max_shield)
-	energy_bar.visible = not is_zero_approx(_max_energy)
 
 func _on_death_animation() -> void:
 	part_nodes.queue_free()

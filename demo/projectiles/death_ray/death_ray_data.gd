@@ -31,4 +31,4 @@ func create_projectile(from: Weapon, to: Target, _cache: Array[Node3D] ) -> void
 	death_ray.player_owner = from.get_player_owner()
 	from.get_ship().add_sibling(death_ray)
 	death_ray.begin_death_timer()
-	death_ray.raycast_and_hit(from.global_position, to.global_position, [excluded] )
+	death_ray.raycast_and_hit(from.get_global_barrel_position(), to.global_position, [excluded] )

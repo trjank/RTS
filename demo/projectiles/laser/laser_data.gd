@@ -38,4 +38,4 @@ func create_projectile(from: Weapon, to: Target, _cache: Array[Node3D] ) -> void
 	laser.modifiers = from.modifiers
 	laser.player_owner = from.get_player_owner()
 	laser.begin_death_timer()
-	laser.multihit(from.global_position, to)
+	laser.multihit(from.get_global_barrel_position(), to)

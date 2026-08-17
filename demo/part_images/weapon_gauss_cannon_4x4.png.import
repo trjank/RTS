@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2abxfywv8ax1"
-path="res://.godot/imported/weapon_gauss_cannon_2x2.png-5c4e305d609961904c03ac65ef17ed20.ctex"
+uid="uid://pf5ke33087qj"
+path="res://.godot/imported/weapon_gauss_cannon_4x4.png-d0943a4a66a81e63d4680df518eef96d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://part_images/weapon_gauss_cannon_2x2.png"
-dest_files=["res://.godot/imported/weapon_gauss_cannon_2x2.png-5c4e305d609961904c03ac65ef17ed20.ctex"]
+source_file="res://part_images/weapon_gauss_cannon_4x4.png"
+dest_files=["res://.godot/imported/weapon_gauss_cannon_4x4.png-d0943a4a66a81e63d4680df518eef96d.ctex"]
 
 [params]
 

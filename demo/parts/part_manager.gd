@@ -34,6 +34,10 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"y": TYPE_FLOAT,
 	"image_path": TYPE_STRING,
 	"boundary": TYPE_INT,
+# For ThrusterData below
+	"trail_length_speed_ratio": TYPE_FLOAT,
+	"trail_width_ratio": TYPE_FLOAT,
+	"trail_data": TYPE_DICTIONARY,
 # For WeaponData below
 	"projectile_code": TYPE_STRING,
 	"barrel_z": TYPE_FLOAT,
@@ -58,13 +62,7 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"linear_damp": TYPE_FLOAT,
 	"sound_variation": TYPE_FLOAT,
 	"trail_enabled": TYPE_BOOL,
-	"trail_inner_color": TYPE_COLOR,
-	"trail_outer_color": TYPE_COLOR,
-	"trail_glow": TYPE_FLOAT,
-	"trail_roundness": TYPE_FLOAT,
-	"trail_flicker_strength": TYPE_FLOAT,
-	"trail_width_ratio": TYPE_FLOAT,
-	"trail_force": TYPE_FLOAT,
+	"trail_length": TYPE_FLOAT,
 # For LaserData below
 	"max_chains": TYPE_INT,
 	"glow": TYPE_FLOAT,

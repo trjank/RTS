@@ -28,14 +28,13 @@ func get_trail() -> Trail:
 func set_data(new_data: BulletData) -> void:
 	if new_data == null:
 		return queue_free()
-	if data.trail_enabled:
-		_create_trail()
 	data = new_data
 	size = Vector2(50.0, 50.0)
 	mass = data.mass
 	texture = data.image.get_texture()
 	torque = data.torque
 	linear_damp = data.linear_damp
+	_create_trail()
 
 func begin_death_timer() -> void:
 	get_tree().create_timer(data.lifetime_sec).timeout.connect(kill)
@@ -57,6 +56,8 @@ func launch(inertia_velocity := Vector3.ZERO) -> void:
 	play_sound_effect()
 
 func _create_trail() -> void:
+	if not data.trail_enabled:
+		return
 	_trail = Trail.create()
 	_trail.data = data.trail
 	_trail.scale = Vector3(data.trail_width_ratio, 0.0, data.trail_length)

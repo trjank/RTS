@@ -824,10 +824,12 @@
 		"width": 2,
 		"height": 2,
 		"thrust": 1000,
-		"trail_roundness": 0.8,
-		"trail_inner_color": "white",
-		"trail_outer_color": "blue",
 		"tab": "movement",
+		"trail_data": {
+			"roundness": 0.8,
+			"inner_color": "white",
+			"outer_color": "blue"
+		},
 		"image_path": "res://part_images/thruster_bulk_2x2.png"
 	},
 	"THC1": {
@@ -855,12 +857,14 @@
 		"width": 2,
 		"height": 2,
 		"thrust": 1000,
-		"trail_roundness": 1.5,
-		"trail_glow": 1.5,
-		"trail_force": 0.2,
-		"trail_inner_color": "white",
-		"trail_outer_color": "green",
 		"tab": "movement",
+		"trail_length_speed_ratio": 0.2,
+		"trail_data": {
+			"roundness": 1.5,
+			"glow": 1.5,
+			"inner_color": "white",
+			"outer_color": "green"
+		},
 		"image_path": "res://part_images/thruster_cruiser_2x2.png"
 	},
 	"THF1": {
@@ -969,7 +973,7 @@
 		"tab": "weapons",
 		"image_path": "res://part_images/mount_2x4_spinal.png"
 	},
-	"MBW1": {
+	"WMB1": {
 		"cost_data": {
 			"alloy": 10.0
 		},
@@ -983,7 +987,7 @@
 		"y": 0.1,
 		"image_path": "res://part_images/weapon_mining_beam_2x2.png"
 	},
-	"BCW1": {
+	"WBC1": {
 		"cost_data": {
 			"alloy": 10.0
 		},
@@ -995,10 +999,10 @@
 		"height": 4,
 		"tab": "weapons",
 		"y": 0.1,
-		"projectile_code": "PLZ1",
+		"projectile_code": "PLZ2",
 		"image_path": "res://part_images/weapon_battleship_cannon_4x4.png"
 	},
-	"FTW1": {
+	"WFT1": {
 		"cost_data": {
 			"alloy": 10.0
 		},
@@ -1010,10 +1014,26 @@
 		"height": 4,
 		"tab": "weapons",
 		"y": 0.1,
-		"projectile_code": "PFT2",
+		"projectile_code": "PFT1",
+		"barrel_z": 1.5,
 		"image_path": "res://part_images/weapon_flamethrower_4x4.png"
 	},
-	"FLW1": {
+	"WFT2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Aurora Disintegrator 4x4",
+		"subtype": "weapon",
+		"mass": 10.0,
+		"hp": 100.0,
+		"width": 4,
+		"height": 4,
+		"tab": "weapons",
+		"y": 0.1,
+		"projectile_code": "PFT2",
+		"image_path": "res://part_images/weapon_flamethrower_curved_4x4.png"
+	},
+	"WFL1": {
 		"cost_data": {
 			"alloy": 10.0
 		},
@@ -1028,22 +1048,23 @@
 		"projectile_code": "PBE2",
 		"image_path": "res://part_images/weapon_flak_2x2.png"
 	},
-	"GCW1": {
+	"WGC1": {
 		"cost_data": {
 			"alloy": 10.0
 		},
-		"name": "Gauss Cannon 2x2",
+		"name": "Gauss Cannon 4x4",
 		"subtype": "weapon",
 		"mass": 10,
 		"hp": 100,
-		"width": 2,
-		"height": 2,
+		"width": 4,
+		"height": 4,
 		"tab": "weapons",
 		"y": 0.1,
 		"projectile_code": "PBE1",
-		"image_path": "res://part_images/weapon_gauss_cannon_2x2.png"
+		"barrel_z": 2.0,
+		"image_path": "res://part_images/weapon_gauss_cannon_4x4.png"
 	},
-	"LPW1": {
+	"WLP1": {
 		"cost_data": {
 			"alloy": 10.0
 		},
@@ -1057,7 +1078,7 @@
 		"y": 0.1,
 		"image_path": "res://part_images/weapon_light_point_defense_2x2.png"
 	},
-	"RGW1": {
+	"WRG1": {
 		"cost_data": {
 			"alloy": 10.0
 		},
@@ -1069,8 +1090,55 @@
 		"height": 8,
 		"tab": "weapons",
 		"y": 0.1,
-		"projectile_code": "PLZ1",
+		"barrel_z": 4.0,
+		"center_z": -1.0,
+		"projectile_code": "PDR1",
 		"image_path": "res://part_images/weapon_railgun_4x8.png"
+	},
+	"WLV1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Voidspark Lance 4x4",
+		"subtype": "weapon",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "weapons",
+		"y": 0.1,
+		"projectile_code": "PLZ1",
+		"image_path": "res://part_images/weapon_lance_voidspark_4x4.png"
+	},
+	"WLV2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Solspark Lance 4x4",
+		"subtype": "weapon",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 4,
+		"tab": "weapons",
+		"y": 0.1,
+		"projectile_code": "PLZ2",
+		"image_path": "res://part_images/weapon_lance_solspark_4x4.png"
+	},
+	"WC01": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Cannon 4x8",
+		"subtype": "weapon",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 8,
+		"tab": "weapons",
+		"y": 0.1,
+		"projectile_code": "PBE1",
+		"image_path": "res://part_images/weapon_cannon_4x8.png"
 	},
 	"PBM1": {
 		"damage": 10.0,
@@ -1088,8 +1156,6 @@
 		"sound_variation": 0.25,
 		"trail_enabled": true,
 		"trail_width_ratio": 0.5,
-		"trail_force": 0.2,
-		"trail_roundness": 1.2,
 		"image_path": "res://part_images/projectile_bullet_missile.png"
 	},
 	"PDR1": {
@@ -1119,6 +1185,25 @@
 		"thickness": 2.0,
 		"inner_color": "black",
 		"outer_color": "purple",
+		"effective_range": 100.0,
+		"multihit_modifier_data": {
+			"flat_range": 10.0
+		}
+	},
+	"PLZ2": {
+		"damage": 100.0,
+		"name": "Solspark Beam",
+		"subtype": "laser",
+		"mass": 10,
+		"hp": 100,
+		"tab": "hidden",
+		"glow": 1.8,
+		"lifetime_sec": 1.0,
+		"drift_speed": 1.0,
+		"volatility": 5.0,
+		"thickness": 2.0,
+		"inner_color": "white",
+		"outer_color": "orange",
 		"effective_range": 100.0,
 		"multihit_modifier_data": {
 			"flat_range": 10.0
@@ -1173,8 +1258,11 @@
 		"sound_variation": 0.25,
 		"trail_enabled": true,
 		"trail_width_ratio": 0.5,
-		"trail_force": 0.2,
-		"trail_roundness": 1.2,
+		"trail_length": 0.2,
+		"trail_data": {
+			"inner_color": "white"
+		},
+		"effective_range": 100.0,
 		"image_path": "res://part_images/projectile_bullet_energy_long.png"
 	},
 	"PBE2": {
@@ -1193,8 +1281,6 @@
 		"sound_variation": 0.25,
 		"trail_enabled": true,
 		"trail_width_ratio": 0.5,
-		"trail_force": 0.2,
-		"trail_roundness": 1.2,
 		"image_path": "res://part_images/projectile_bullet_marble.png"
 	},
 	"PBN1": {
@@ -1213,8 +1299,6 @@
 		"sound_variation": 0.25,
 		"trail_enabled": true,
 		"trail_width_ratio": 0.5,
-		"trail_force": 0.2,
-		"trail_roundness": 1.2,
 		"image_path": "res://part_images/projectile_bullet_nuke.png"
 	},
 	"WMD1": {

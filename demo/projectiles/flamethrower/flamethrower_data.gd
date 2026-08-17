@@ -40,4 +40,5 @@ func create_projectile(from: Weapon, _to: Target, cache: Array[Node3D] ) -> void
 	flames.excluded = [from.get_ship().get_radar_signature() ]
 	flames.modifiers = from.modifiers
 	flames.player_owner = from.get_player_owner()
+	flames.position = from.get_barrel_position()
 	flames.burn()

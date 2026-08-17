@@ -14,6 +14,6 @@ func set_data(new_data: PartData) -> void:
 func _process(_dt: float) -> void:
 	var thruster_data: ThrusterData = data
 	var speed := maxf(_ship.linear_velocity.dot(get_global_forward_direction() ), 0.0) if _ship != null else 1.0
-	var turn_speed := maxf(_ship.angular_velocity.y * get_forward_direction().cross(position).y, 0.0) if _ship != null else 0.0
+	var turn_speed := maxf(_ship.angular_velocity.y * position.cross(get_forward_direction() ).y, 0.0) if _ship != null else 0.0
 	trail.scale.x = thruster_data.trail_width_ratio * get_size_2d().x
 	trail.scale.z = thruster_data.trail_length_speed_ratio * (speed + turn_speed)

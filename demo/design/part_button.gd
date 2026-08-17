@@ -20,6 +20,6 @@ func set_part_data(new_part_data: PartData) -> void:
 func update_ui() -> void:
 	if part_data == null or not is_node_ready():
 		return
-	tooltip_text = part_data.description if part_data.description != "" else part_data.name
+	tooltip_text = part_data.name
 	texture_normal = part_data.image.get_texture()
 	custom_minimum_size = Measurement.PX_PER_TILE * part_data.get_size()

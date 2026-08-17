@@ -35,7 +35,8 @@ func create_projectile(from: Weapon, to: Target, _cache: Array[Node3D] ) -> void
 	bullet.data = self
 	bullet.add_collision_exception_with(ship)
 	ship.add_sibling(bullet)
-	bullet.global_transform = from.global_transform
+	bullet.global_position = from.get_global_barrel_position()
+	bullet.global_rotation = from.global_rotation
 	bullet.launch(from.get_ship().linear_velocity)
 	bullet.set_target(to)
 	bullet.begin_death_timer()

@@ -3,6 +3,6 @@
 [ext_resource type="Shader" uid="uid://cgukly02spaaw" path="res://projectiles/death_ray/death_ray.gdshader" id="1_g6etx"]
 
 [resource]
-render_priority = 0
+render_priority = 2
 shader = ExtResource("1_g6etx")
 shader_parameter/flicker_speed = 55.0

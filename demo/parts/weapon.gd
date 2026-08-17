@@ -19,13 +19,24 @@ var target_prediction := true
 var _projectiles: Array[Node3D] = []
 
 func _ready() -> void:
-	render_priority = 1
+	render_priority = 3
 
 func is_valid_rotation(rotation_y: float) -> bool:
 	return absf(rotation_y) <= 0.5 * arc
 
+func get_barrel_position() -> Vector3:
+	return Vector3(0.0, 0.0, -Measurement.METERS_PER_TILE * get_data().barrel_z)
+
+func get_global_barrel_position() -> Vector3:
+	return to_global(get_barrel_position() )
+
+func get_data() -> WeaponData:
+	return data
+
 func set_data(new_data: PartData) -> void:
 	super(new_data as WeaponData)
+	#
+	offset.y = -Measurement.PX_PER_TILE * get_data().center_z if data != null else 0.0
 
 func set_arc(new_arc: float) -> void:
 	arc = absf(new_arc)
@@ -51,9 +62,8 @@ func on_ship_ready(ship_part: ShipDataPart, ship: Ship) -> void:
 func update_projectile() -> void:
 	assert(data != null)
 	#
-	var weapon_data: WeaponData = data
-	projectile_data = weapon_data.get_projectile()
-	target_prediction = weapon_data.target_prediction
+	projectile_data = get_data().get_projectile()
+	target_prediction = get_data().target_prediction
 
 func update_mount(new_mount: ShipDataWeaponMount) -> void:
 	arc = deg_to_rad(new_mount.get_data().arc_degrees) if new_mount != null else 0.0
@@ -71,6 +81,7 @@ func fire(target: Target) -> TargetError:
 	var target_position := calculate_target_position(target)
 	var local := to_local(target_position)
 	var new_rotation := rotation.y + atan2(-local.x, -local.z)
+	# NOTE: The center is used to check distance (not barrel position)
 	if not is_valid_rotation(new_rotation):
 		return TargetError.NOT_IN_ARC
 	if target_position.distance_to(global_position) > projectile_data.effective_range:

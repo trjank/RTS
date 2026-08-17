@@ -32,66 +32,60 @@ shape = SubResource("SphereShape3D_6juyh")
 
 [node name="UI" type="Node3D" parent="." index="3"]
 
-[node name="ShieldBar" parent="UI" index="0" instance=ExtResource("3_an5v1")]
-transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, -1.5)
-instance_shader_parameters/base_color = Color(0.10416663, 0, 0.25, 1)
-instance_shader_parameters/border_color = Color(1, 1, 1, 1)
-instance_shader_parameters/border_width = 0.050000002375
-instance_shader_parameters/pip_color = Color(0.4166665, 0, 1, 1)
-instance_shader_parameters/pip_progress = 0.4
-instance_shader_parameters/pip_width = 0.497
-instance_shader_parameters/size = Vector2(5, 0.5)
-skeleton = NodePath("../..")
-border_width = 0.03
-size = Vector2(5, 0.5)
-pip_count = 10
-value = 4.0
-max_value = 10.0
-base_color = Color(0.10416663, 0, 0.25, 1)
-pip_color = Color(0.4166665, 0, 1, 1)
-
-[node name="HPBar" parent="UI" index="1" instance=ExtResource("3_an5v1")]
-transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 0)
-instance_shader_parameters/base_color = Color(0.25, 0.0775, 0.0775, 1)
-instance_shader_parameters/border_width = 0.050000002375
-instance_shader_parameters/pip_width = 0.497
-instance_shader_parameters/size = Vector2(5, 0.5)
-skeleton = NodePath("../..")
-border_width = 0.03
-size = Vector2(5, 0.5)
-pip_count = 10
-value = 5.0
-max_value = 10.0
-base_color = Color(0.25, 0.0775, 0.0775, 1)
-pip_color = Color(1, 0.32, 0.32, 1)
-
-[node name="EnergyBar" parent="UI" index="2" instance=ExtResource("3_an5v1")]
-transform = Transform3D(2.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 1, 1.5)
+[node name="EnergyBar" parent="UI" index="0" instance=ExtResource("3_an5v1")]
+transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 instance_shader_parameters/base_color = Color(0, 0.5, 0.5, 1)
 instance_shader_parameters/border_color = Color(1, 1, 1, 1)
-instance_shader_parameters/border_width = 0.050000002375
 instance_shader_parameters/pip_color = Color(0, 1, 1, 1)
 instance_shader_parameters/pip_progress = 0.3
-instance_shader_parameters/pip_width = 0.24700000000000003
-instance_shader_parameters/size = Vector2(2.5, 0.5)
+instance_shader_parameters/pip_width = 0.49000000000000005
+instance_shader_parameters/size = Vector2(5, 1)
 skeleton = NodePath("../..")
-border_width = 0.03
-size = Vector2(2.5, 0.5)
+size = Vector2(5, 1)
 pip_count = 10
 value = 3.0
 max_value = 10.0
 base_color = Color(0, 0.5, 0.5, 1)
 pip_color = Color(0, 1, 1, 1)
 
+[node name="HPBar" parent="UI" index="1" instance=ExtResource("3_an5v1")]
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1)
+instance_shader_parameters/base_color = Color(0.25, 0.0775, 0.0775, 1)
+instance_shader_parameters/pip_width = 0.99
+instance_shader_parameters/size = Vector2(10, 1)
+skeleton = NodePath("../..")
+size = Vector2(10, 1)
+pip_count = 10
+value = 5.0
+max_value = 10.0
+base_color = Color(0.25, 0.0775, 0.0775, 1)
+pip_color = Color(1, 0.32, 0.32, 1)
+
+[node name="ShieldBar" parent="UI" index="2" instance=ExtResource("3_an5v1")]
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -2)
+instance_shader_parameters/base_color = Color(0.10416663, 0, 0.25, 1)
+instance_shader_parameters/border_color = Color(1, 1, 1, 1)
+instance_shader_parameters/pip_color = Color(0.4166665, 0, 1, 1)
+instance_shader_parameters/pip_progress = 0.4
+instance_shader_parameters/pip_width = 0.99
+instance_shader_parameters/size = Vector2(10, 1)
+skeleton = NodePath("../..")
+size = Vector2(10, 1)
+pip_count = 10
+value = 4.0
+max_value = 10.0
+base_color = Color(0.10416663, 0, 0.25, 1)
+pip_color = Color(0.4166665, 0, 1, 1)
+
 [node name="BehaviorIndicator" type="Label3D" parent="UI" index="3"]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, -4)
 pixel_size = 0.05
-billboard = 1
-render_priority = 2
-outline_render_priority = 1
-modulate = Color(0, 0, 0, 1)
-outline_modulate = Color(1, 1, 1, 1)
+render_priority = 4
+outline_render_priority = 3
+modulate = Color(0.86666656, 0.5, 1, 1)
+outline_modulate = Color(0.8666667, 0.5019608, 1, 1)
 text = "NONE"
+outline_size = 2
 
 [node name="Detection" type="Area3D" parent="." index="4"]
 collision_layer = 0

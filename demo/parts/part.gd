@@ -1,6 +1,7 @@
 class_name Part extends Sprite3D
 
 var data: PartData:
+	get = get_data,
 	set = set_data
 
 var _ship: Ship
@@ -35,9 +36,12 @@ func get_global_up_direction() -> Vector3:
 func get_global_forward_direction() -> Vector3:
 	return -global_transform.basis.z
 
+func get_data() -> PartData:
+	return data
+
 func set_data(new_data: PartData) -> void:
-	if data != null:
-		return push_error("Part.data is read only!")
+	if new_data == null:
+		return push_error("(Part) Invalid data!")
 	data = new_data
 	texture = data.image.get_texture()
 
