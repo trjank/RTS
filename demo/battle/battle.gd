@@ -327,6 +327,7 @@ func _reset_player(player: Player) -> void:
 	player.resources.reset()
 	player.resources.add(player.team.start_resources)
 	player.alive = true
+	player.clear_ships()
 
 func _find_unique_name(key: String, dictionary: Dictionary) -> String:
 	var count := 1

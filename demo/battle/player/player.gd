@@ -27,10 +27,12 @@ var selection: Array[Target] = []
 
 var _battle: Battle
 var _battle_data := {}
+var _ships := Node3D.new()
 
 func _init(init_display_name := "", init_color := Color.WHITE) -> void:
 	display_name = init_display_name
 	color = init_color
+	add_child(_ships, false, Node.INTERNAL_MODE_BACK)
 
 func is_me() -> bool:
 	return _battle != null and self == _battle.me
@@ -82,11 +84,16 @@ func set_team(new_team: Team) -> void:
 		new_team.add_player(self)
 	team = new_team
 
+func clear_ships() -> void:
+	_ships.queue_free()
+	_ships = Node3D.new()
+	add_child(_ships, false, Node.INTERNAL_MODE_BACK)
+
 func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 	if ship_data.finalize() != ShipData.PlacementError.OK:
 		print("SHIP HAS PROBLEMS")
 	var ship := Ship.create()
-	add_child(ship)
+	_ships.add_child(ship)
 	ship.data = ship_data
 	ship.player_owner = self
 	ship.position = spawnpoint

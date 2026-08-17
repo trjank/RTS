@@ -1107,7 +1107,7 @@
 	},
 	"PLZ1": {
 		"damage": 100.0,
-		"name": "Laser",
+		"name": "Voidspark Beam",
 		"subtype": "laser",
 		"mass": 10,
 		"hp": 100,
