@@ -42,7 +42,26 @@ content_margin_top = 0.0
 content_margin_right = 25.0
 content_margin_bottom = 0.0
 bg_color = Color(0.5019608, 0.24313726, 0.4117647, 1)
-border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmp56"]
+content_margin_left = 20.0
+content_margin_top = 22.0
+content_margin_right = 25.0
+content_margin_bottom = 30.0
+bg_color = Color(0.5, 0.19999999, 0.20499992, 1)
+border_width_bottom = 10
+border_color = Color(0.25, 0.099999994, 0.10249996, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3c8mw"]
+content_margin_left = 20.0
+content_margin_top = 32.0
+content_margin_right = 25.0
+content_margin_bottom = 20.0
+bg_color = Color(0.5019608, 0.2, 0.20392157, 1)
+border_width_top = 10
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q8dch"]
 
 [sub_resource type="Theme" id="Theme_cg3po"]
 PopupMenu/constants/h_separation = 20
@@ -52,9 +71,7 @@ PopupMenu/icons/radio_unchecked = ExtResource("9_on51i")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cg3po"]
 content_margin_left = 20.0
-content_margin_top = 10.0
-content_margin_right = 10.0
-content_margin_bottom = 10.0
+content_margin_right = 0.0
 bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cg3po"]
@@ -69,26 +86,6 @@ bg_color = Color(1, 1, 1, 1)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bggdi"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3qscj"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmp56"]
-content_margin_left = 22.0
-content_margin_top = 22.0
-content_margin_right = 25.0
-content_margin_bottom = 32.0
-bg_color = Color(0.5, 0.19999999, 0.20499992, 1)
-border_width_bottom = 10
-border_color = Color(0.25, 0.099999994, 0.10249996, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3c8mw"]
-content_margin_left = 22.0
-content_margin_top = 32.0
-content_margin_right = 25.0
-content_margin_bottom = 22.0
-bg_color = Color(0.5019608, 0.2, 0.20392157, 1)
-border_width_top = 10
-border_color = Color(0.8, 0.8, 0.8, 0)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q8dch"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_rmp56"]
 viewport_path = NodePath("World/SubViewport")
@@ -236,9 +233,9 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 92)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-text = "Behavior: DEFAULT —"
+text = "Behavior: DEFAULT"
 vertical_alignment = 1
 
 [node name="CPULabel" type="Label" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer"]
@@ -249,10 +246,23 @@ theme_override_constants/outline_size = 5
 text = "20 CPU"
 vertical_alignment = 1
 
-[node name="ResizeOptionButton" type="OptionButton" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
+[node name="TestButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+mouse_default_cursor_shape = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/icon_max_width = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_rmp56")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3c8mw")
+theme_override_styles/hover = SubResource("StyleBoxFlat_rmp56")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_q8dch")
+text = "Test ship"
+icon = ExtResource("8_q8dch")
+
+[node name="ResizeOptionButton" type="OptionButton" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
 theme = SubResource("Theme_cg3po")
 theme_override_constants/h_separation = 20
 theme_override_constants/icon_max_width = 0
@@ -280,7 +290,6 @@ popup/item_3/id = 3
 [node name="ExportButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 0
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 40
 theme_override_styles/normal = ExtResource("16_3qscj")
@@ -293,7 +302,6 @@ icon = ExtResource("16_licix")
 [node name="ImportButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 0
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 40
 theme_override_styles/normal = ExtResource("16_3qscj")
@@ -302,20 +310,6 @@ theme_override_styles/hover = ExtResource("16_3qscj")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_3qscj")
 text = "Import"
 icon = ExtResource("17_cg3po")
-
-[node name="TestButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-mouse_default_cursor_shape = 2
-theme_override_constants/h_separation = 15
-theme_override_constants/icon_max_width = 40
-theme_override_styles/normal = SubResource("StyleBoxFlat_rmp56")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_3c8mw")
-theme_override_styles/hover = SubResource("StyleBoxFlat_rmp56")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_q8dch")
-text = "Test ship"
-icon = ExtResource("8_q8dch")
 
 [node name="World" type="Node3D" parent="."]
 
@@ -391,10 +385,10 @@ visible = false
 
 [connection signal="button_pressed" from="UI/VBoxContainer/HBoxContainer/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
 [connection signal="part_clicked" from="UI/VBoxContainer/HBoxContainer/PartsContainer" to="." method="_on_parts_container_part_clicked"]
+[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/TestButton" to="." method="_on_test_button_pressed"]
 [connection signal="item_selected" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/ResizeOptionButton" to="." method="_on_resize_option_button_item_selected"]
 [connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/ExportButton" to="." method="_on_export_button_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/ImportButton" to="." method="_on_import_button_pressed"]
-[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/TestButton" to="." method="_on_test_button_pressed"]
 [connection signal="selected_multiple" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selected_multiple"]
 [connection signal="selected_single" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selected_single"]
 [connection signal="selection_started" from="World/MouseSelection" to="World/Grid/PartSelection" method="_on_mouse_selection_selection_started"]

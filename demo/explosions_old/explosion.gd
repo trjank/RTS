@@ -1,4 +1,4 @@
-class_name Explosion extends Object
+class_name ExplosionOld extends Object
 
 const SHATTER := {
 	"color_primary": Color(),

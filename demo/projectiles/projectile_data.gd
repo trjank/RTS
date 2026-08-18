@@ -5,6 +5,7 @@ const MIN_LIFETIME_SEC := 0.1
 var damage := 0.0
 var energy_drain := 0.0
 var shield_penetration := 0.0
+var push_force := 0.0
 var effective_range := 0.0
 var lifetime_sec := MIN_LIFETIME_SEC:
 	set = set_lifetime_sec

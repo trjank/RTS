@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dnxq467d6o0h6"]
 
-[ext_resource type="Material" uid="uid://cdixv77sp8fgn" path="res://explosions/muzzle_flash/material.tres" id="1_wes8o"]
+[ext_resource type="Material" uid="uid://cdixv77sp8fgn" path="res://explosion/muzzle_flash/material.tres" id="1_wes8o"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_gg8k2"]
 center_offset = Vector3(0, 0, -0.5)

@@ -84,7 +84,7 @@ func raycast_and_hit(from: Vector3, to: Vector3, exclude: Array[RID] = [] ) -> i
 	return colliders.size()
 
 func update_shader() -> void:
-	set_instance_shader_parameter("volatility", data.volatility)
-	set_instance_shader_parameter("outer_beam_color", data.glow * data.outer_color)
-	set_instance_shader_parameter("inner_beam_color", data.glow * data.inner_color)
-	set_instance_shader_parameter("inner_beam_size", data.inner_beam_size)
+	set_instance_shader_parameter("speed", data.drift_speed)
+	set_instance_shader_parameter("cohesion", data.cohesion)
+	set_instance_shader_parameter("start_color", data.glow * data.start_color)
+	set_instance_shader_parameter("end_color", data.glow * data.end_color)

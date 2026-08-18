@@ -10,10 +10,11 @@ center_offset = Vector3(0, 0, -0.5)
 
 [node name="DeathRay" type="MeshInstance3D" node_paths=PackedStringArray("sound_effect")]
 material_override = ExtResource("1_27fsr")
-transparency = 0.5
 instance_shader_parameters/alpha = 1.0
-instance_shader_parameters/inner_beam_size = 0.10800000513
-instance_shader_parameters/volatility = 0.050000002375
+instance_shader_parameters/cohesion = 0.2290000108775
+instance_shader_parameters/end_color = Color(0.5426666, 0.51, 1, 1)
+instance_shader_parameters/speed = 0.1
+instance_shader_parameters/start_color = Color(0.33999997, 1, 0.4389999, 1)
 mesh = SubResource("PlaneMesh_27fsr")
 script = ExtResource("1_7f011")
 sound_effect = NodePath("AudioStreamPlayer3D")

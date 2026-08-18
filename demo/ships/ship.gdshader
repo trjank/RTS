@@ -10,15 +10,15 @@ instance uniform float shield_speed = 3.0;
 instance uniform float shield: hint_range(0.0, 1.0) = 0.0;
 instance uniform vec3 player_color: source_color;
 
-vec2 calculate_parallax_uv(vec2 uv) {
-	return uv;
-}
-
 vec3 draw_shield(vec3 albedo, vec2 uv) {
 	float oscillator = 0.5 + 0.5 * sin(shield_speed * TIME + uv.y);
 	vec3 s = texture(shield_texture, uv * size).rgb;
 	return mix(albedo, shield * s, oscillator);
 }
+
+//void vertex() {
+	//NORMAL = normalize(VERTEX);
+//}
 
 void fragment() {
 	vec4 color = texture(ship_texture, UV);

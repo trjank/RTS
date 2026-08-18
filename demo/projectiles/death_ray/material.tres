@@ -1,8 +1,22 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bharayvlqs852"]
+[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://bharayvlqs852"]
 
 [ext_resource type="Shader" uid="uid://cgukly02spaaw" path="res://projectiles/death_ray/death_ray.gdshader" id="1_g6etx"]
+
+[sub_resource type="Gradient" id="Gradient_g6etx"]
+offsets = PackedFloat32Array(0.26451612, 0.6516129)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_g6etx"]
+noise_type = 2
+seed = 1
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_nxeiy"]
+noise = SubResource("FastNoiseLite_g6etx")
+color_ramp = SubResource("Gradient_g6etx")
+seamless = true
 
 [resource]
 render_priority = 2
 shader = ExtResource("1_g6etx")
 shader_parameter/flicker_speed = 55.0
+shader_parameter/particle_texture = SubResource("NoiseTexture2D_nxeiy")

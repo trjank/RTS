@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=28 format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
@@ -19,6 +19,7 @@
 [ext_resource type="Script" uid="uid://dwken4rn36b3k" path="res://battle/selection_info.gd" id="7_dxsh4"]
 [ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="7_rgsk0"]
 [ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="8_tkkqt"]
+[ext_resource type="PackedScene" uid="uid://ubyi17cymwls" path="res://explosion/fireball/explosion.tscn" id="18_sf8fp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1kiu"]
 content_margin_left = 0.0
@@ -344,6 +345,8 @@ script = ExtResource("4_7fucf")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
 environment = SubResource("Environment_70s20")
+
+[node name="Explosion" parent="World/WorldEnvironment" instance=ExtResource("18_sf8fp")]
 
 [node name="Players" type="Node3D" parent="World"]
 

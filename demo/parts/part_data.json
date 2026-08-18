@@ -1064,6 +1064,23 @@
 		"barrel_z": 2.0,
 		"image_path": "res://part_images/weapon_gauss_cannon_4x4.png"
 	},
+	"WNN1": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Neutron Needler 4x4",
+		"subtype": "weapon",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 8,
+		"tab": "weapons",
+		"y": 0.1,
+		"projectile_code": "PBE1",
+		"barrel_z": 2.0,
+		"center_z": -2.0,
+		"image_path": "res://part_images/weapon_neutron_needler_4x8.png"
+	},
 	"WLP1": {
 		"cost_data": {
 			"alloy": 10.0
@@ -1082,7 +1099,7 @@
 		"cost_data": {
 			"alloy": 10.0
 		},
-		"name": "Railgun 4x8",
+		"name": "Lucifer's Bane 4x8",
 		"subtype": "weapon",
 		"mass": 10,
 		"hp": 100,
@@ -1093,7 +1110,41 @@
 		"barrel_z": 4.0,
 		"center_z": -1.0,
 		"projectile_code": "PDR1",
-		"image_path": "res://part_images/weapon_railgun_4x8.png"
+		"image_path": "res://part_images/weapon_railgun_dark_4x8.png"
+	},
+	"WRG2": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Divine Railgun 4x8",
+		"subtype": "weapon",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 8,
+		"tab": "weapons",
+		"y": 0.1,
+		"barrel_z": 4.0,
+		"center_z": -1.0,
+		"projectile_code": "PDR2",
+		"image_path": "res://part_images/weapon_railgun_light_4x8.png"
+	},
+	"WRG3": {
+		"cost_data": {
+			"alloy": 10.0
+		},
+		"name": "Aurora Railgun 4x8",
+		"subtype": "weapon",
+		"mass": 10,
+		"hp": 100,
+		"width": 4,
+		"height": 6,
+		"tab": "weapons",
+		"y": 0.1,
+		"barrel_z": 3.0,
+		"center_z": 0.0,
+		"projectile_code": "PDR3",
+		"image_path": "res://part_images/weapon_railgun_curved_4x6.png"
 	},
 	"WLV1": {
 		"cost_data": {
@@ -1160,13 +1211,47 @@
 	},
 	"PDR1": {
 		"damage": 100.0,
+		"name": "Lucifer's Bane",
+		"subtype": "death_ray",
+		"mass": 10,
+		"hp": 100,
+		"tab": "hidden",
+		"thickness": 1.0,
+		"cohesion": 0.2,
+		"start_color": "black",
+		"end_color": "purple",
+		"glow": 3.0,
+		"drift_speed": 5.0,
+		"lifetime_sec": 0.5,
+		"effective_range": 100.0
+	},
+	"PDR2": {
+		"damage": 100.0,
+		"name": "Divine Light",
+		"subtype": "death_ray",
+		"mass": 10,
+		"hp": 100,
+		"tab": "hidden",
+		"thickness": 1.0,
+		"cohesion": 0.5,
+		"drift_speed": 0.7,
+		"start_color": "white",
+		"end_color": "yellow",
+		"glow": 2.0,
+		"lifetime_sec": 1.0,
+		"effective_range": 100.0
+	},
+	"PDR3": {
+		"damage": 100.0,
 		"name": "Death Ray",
 		"subtype": "death_ray",
 		"mass": 10,
 		"hp": 100,
 		"tab": "hidden",
 		"thickness": 1.0,
-		"outer_beam_color": "blue",
+		"cohesion": 0.3,
+		"start_color": "purple",
+		"end_color": "green",
 		"glow": 2.0,
 		"lifetime_sec": 1.0,
 		"effective_range": 100.0
@@ -1216,7 +1301,6 @@
 		"tab": "hidden",
 		"thickness": 10.0,
 		"speed": 100.0,
-		"max_range": 10.0,
 		"lifetime_sec": 1.0,
 		"glow": 2.0,
 		"volatility": 0.5,
@@ -1232,7 +1316,6 @@
 		"tab": "hidden",
 		"thickness": 10.0,
 		"speed": 100.0,
-		"max_range": 10.0,
 		"lifetime_sec": 1.0,
 		"glow": 2.0,
 		"volatility": 0.8,

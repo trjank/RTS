@@ -2,21 +2,24 @@ shader_type spatial;
 
 render_mode unshaded;
 
-uniform float flicker_speed = 75.0;
+const float NO_DIV_ZERO = 0.01;
+const vec2 TEXTURE_SCALE = vec2(1.0, 0.01);
 
-instance uniform vec3 outer_beam_color: source_color = vec3(0.0, 1.0, 0.0);
-instance uniform vec3 inner_beam_color: source_color = vec3(1.0, 1.0, 1.0);
-instance uniform float inner_beam_size: hint_range(0.0, 1.0) = 0.0;
-instance uniform float volatility: hint_range(0.0, 1.0) = 0.0;
-instance uniform float alpha = 1.0;
+uniform sampler2D particle_texture: repeat_enable;
+
+instance uniform float speed = 1.0;
+instance uniform float cohesion: hint_range(0.0, 1.0) = 1.0;
+instance uniform float alpha: hint_range(0.0, 1.0) = 1.0;
+instance uniform vec3 start_color: source_color;
+instance uniform vec3 end_color: source_color;
 
 void fragment() {
-	// Make beam appear cylindrical by making edges more transparent
-	float x = 2.0 * UV.x - 1.0;
-	float depth = sqrt(1.0 - x * x);
-	// Oscillate the size of the inner beam so the beam looks unstable
-	float flicker = volatility * sin(flicker_speed * TIME);
-	// Layer the inner and outer beams
-	ALBEDO = mix(outer_beam_color, inner_beam_color, step(1.0 - depth, inner_beam_size + flicker) );
-	ALPHA = alpha * depth;
+	float edge_distance = 1.0 - 2.0 * abs(UV.x - 0.5);
+	// Stretch the texture out to create lines instead of blobs
+	vec2 uv = TEXTURE_SCALE * UV + vec2(0.0, speed * TIME);
+	float particle = texture(particle_texture, uv).r;
+	// Make a gradient from start_color at bottom and end_color at the top
+	ALBEDO = mix(end_color, start_color, particle * UV.y);
+	ALPHA = edge_distance * mix(particle, 1.0, cohesion);
+	ALPHA = UV.y * pow(ALPHA, 1.0 / (NO_DIV_ZERO + alpha) );
 }

@@ -1,9 +1,0 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://cdixv77sp8fgn"]
-
-[ext_resource type="Shader" uid="uid://xrqas7x7jixj" path="res://explosions/muzzle_flash/muzzle_flash.gdshader" id="1_j3q1b"]
-[ext_resource type="Texture2D" uid="uid://707dqfuha3ff" path="res://explosions/muzzle_flash/noise_texture.tres" id="2_mmwd8"]
-
-[resource]
-render_priority = 0
-shader = ExtResource("1_j3q1b")
-shader_parameter/noise = ExtResource("2_mmwd8")

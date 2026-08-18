@@ -23,10 +23,10 @@ func are_in_same_set(a: int, b: int) -> bool:
 	return find_root_set(a) == find_root_set(b)
 
 func reset() -> void:
+	for s in _parents.size():
+		_parents[s] = s
 	_num_sets = _parents.size()
 	_sizes.fill(1)
-	for s in _num_sets:
-		_parents[s] = s
 
 func resize(new_num_sets: int) -> void:
 	_num_sets = new_num_sets
@@ -41,17 +41,19 @@ func create_set() -> int:
 	_sizes.push_back(1)
 	return s
 
+func _root_union(a: int, b: int) -> void:
+	_parents[a] = b
+	_sizes[b] = _sizes[a] + _sizes[b]
+	_num_sets -= 1
+
 # NOTE: Undo or removal is not supported
 func union_sets(a: int, b: int) -> void:
-	a = find_root_set(a)
-	b = find_root_set(b)
-	if a == b:
+	var a_root := find_root_set(a)
+	var b_root := find_root_set(b)
+	if a_root == b_root:
 		return
-	var combined_size := _sizes[a] + _sizes[b]
-	_num_sets -= 1
-	if _sizes[b] > _sizes[a]:
-		_parents[a] = b
-		_sizes[b] = combined_size
+	if _sizes[b_root] > _sizes[a_root]:
+		_root_union(a_root, b_root)
 	else:
-		_parents[b] = a
-		_sizes[a] = combined_size
+		_root_union(b_root, a_root)
+	assert(0 <= _num_sets)

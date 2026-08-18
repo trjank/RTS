@@ -1,16 +1,20 @@
 class_name DeathRayData extends ProjectileData
 
+const MIN_COHESION := 0.0
+const MAX_COHESION := 1.0
+
 var max_hits := 10
 var multihit_modifiers := WeaponModifiers.new()
 var multihit_modifiers_data: Dictionary:
 	get = get_multihit_modifiers_data,
 	set = set_multihit_modifiers_data
 var thickness := 0.5
-var inner_beam_size := 0.05
 var glow := 3.0
-var inner_color := Color.WHITE
-var outer_color := Color.GREEN
-var volatility := 0.05
+var start_color := Color.WHITE
+var end_color := Color.GREEN
+var cohesion := MAX_COHESION:
+	set = set_cohesion
+var drift_speed := 1.0
 
 func get_speed() -> float:
 	return INF
@@ -20,6 +24,9 @@ func get_multihit_modifiers_data() -> Dictionary:
 
 func set_multihit_modifiers_data(new_multihit_modifiers_data: Dictionary) -> void:
 	multihit_modifiers.load_dict(new_multihit_modifiers_data)
+
+func set_cohesion(new_cohesion: float) -> void:
+	cohesion = clampf(new_cohesion, MIN_COHESION, MAX_COHESION)
 
 func create_projectile(from: Weapon, to: Target, _cache: Array[Node3D] ) -> void:
 	assert(from != null)

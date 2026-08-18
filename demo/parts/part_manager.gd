@@ -72,16 +72,11 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"multihit_modifier_data": TYPE_DICTIONARY,
 # For DeathRayData below
 	"thickness": TYPE_FLOAT,
-	"max_range": TYPE_FLOAT,
-	"inner_beam_color": TYPE_COLOR,
-	"outer_beam_color": TYPE_COLOR,
-	"inner_beam_size": TYPE_FLOAT,
-	"volatility": TYPE_FLOAT,
-	"hit_damage_multiplier": TYPE_FLOAT,
-	"hit_energy_drain_multiplier": TYPE_FLOAT,
+	"cohesion": TYPE_FLOAT,
 	"max_hits": TYPE_INT,
 # For FlamethrowerData below
 	"speed": TYPE_FLOAT,
+	"volatility": TYPE_FLOAT,
 	"particulates": TYPE_FLOAT,
 	"pitch_scale": TYPE_FLOAT,
 	"start_color": TYPE_COLOR,

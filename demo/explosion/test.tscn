@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://dqnsr16eunvrr"]
 
-[ext_resource type="Material" uid="uid://dnvy4mm47cfq8" path="res://explosions/fireball/fireball_material.tres" id="1_rcl41"]
-[ext_resource type="Material" uid="uid://csihvni5dst88" path="res://explosions/shockwave/shockwave_material.tres" id="2_gobxy"]
+[ext_resource type="Material" uid="uid://dnvy4mm47cfq8" path="res://explosion/fireball/material.tres" id="1_rcl41"]
+[ext_resource type="Material" uid="uid://csihvni5dst88" path="res://explosion/shockwave/material.tres" id="2_gobxy"]
 [ext_resource type="Texture2D" uid="uid://c1fkfssn7ug34" path="res://icons/beaker.png" id="3_j00da"]
-[ext_resource type="Material" uid="uid://dioyn3s1mkspq" path="res://explosions/disintegration/disintegration_material.tres" id="3_pejxt"]
+[ext_resource type="Material" uid="uid://dioyn3s1mkspq" path="res://explosion/disintegration/disintegration_material.tres" id="3_pejxt"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_bg0v6"]
 
@@ -24,9 +24,7 @@ gravity = Vector3(0, 0, 0)
 sorting_offset = 1.0
 material_override = ExtResource("1_rcl41")
 instance_shader_parameters/alpha_threshold = 0.0
-instance_shader_parameters/emission_color = Color(1.8247963, 1.4195247, 0.6509062, 1)
-instance_shader_parameters/emission_threshold = 1.0
-instance_shader_parameters/height_variation = 0.422000020045
+instance_shader_parameters/height_variation = 0.3810000180975
 instance_shader_parameters/speed = 0.1830000086925
 mesh = SubResource("SphereMesh_bg0v6")
 
