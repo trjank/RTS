@@ -13,8 +13,8 @@ var player_owner: Player
 static func create() -> DeathRay:
 	return preload("res://projectiles/death_ray/death_ray.tscn").instantiate()
 
-static func axis_sorter(a: Node3D, b: Node3D, sort_axis: Vector3) -> bool:
-	return a.global_position.cross(sort_axis) < b.global_position.cross(sort_axis)
+static func axis_sorter(a: Node3D, b: Node3D, from: Vector3, sort_axis: Vector3) -> bool:
+	return (a.global_position - from).dot(sort_axis) < (b.global_position - from).dot(sort_axis)
 
 func _ready() -> void:
 	set_instance_shader_parameter("alpha", 1.0)
@@ -65,7 +65,7 @@ func raycast(length: float, exclude: Array[RID] = [] ) -> Array:
 func sorted_raycast(length: float, exclude: Array[RID] = [] ) -> Array:
 	var colliders := raycast(length, exclude)
 	var sort_axis := get_global_ray_direction()
-	colliders.sort_custom(axis_sorter.bind(sort_axis) )
+	colliders.sort_custom(axis_sorter.bind(global_position, sort_axis) )
 	return colliders
 
 func _penetrate(target: Target, multihit_modifiers: WeaponModifiers) -> void:

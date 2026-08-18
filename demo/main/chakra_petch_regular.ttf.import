@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://c1vaivixat7v"
-path="res://.godot/imported/ChakraPetch-Regular.ttf-c19372048135edcb05df0fc88b3f1943.fontdata"
+path="res://.godot/imported/chakra_petch_regular.ttf-b9a6a700998d0746b042f454535d3648.fontdata"
 
 [deps]
 
-source_file="res://main/ChakraPetch-Regular.ttf"
-dest_files=["res://.godot/imported/ChakraPetch-Regular.ttf-c19372048135edcb05df0fc88b3f1943.fontdata"]
+source_file="res://main/chakra_petch_regular.ttf"
+dest_files=["res://.godot/imported/chakra_petch_regular.ttf-b9a6a700998d0746b042f454535d3648.fontdata"]
 
 [params]
 

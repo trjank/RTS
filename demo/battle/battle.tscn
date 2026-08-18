@@ -19,7 +19,7 @@
 [ext_resource type="Script" uid="uid://dwken4rn36b3k" path="res://battle/selection_info.gd" id="7_dxsh4"]
 [ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="7_rgsk0"]
 [ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="8_tkkqt"]
-[ext_resource type="PackedScene" uid="uid://ubyi17cymwls" path="res://explosion/fireball/explosion.tscn" id="18_sf8fp"]
+[ext_resource type="PackedScene" uid="uid://ubyi17cymwls" path="res://explosion/explosion.tscn" id="18_sf8fp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1kiu"]
 content_margin_left = 0.0

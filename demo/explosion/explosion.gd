@@ -5,7 +5,7 @@ class_name Explosion extends MeshInstance3D
 @export_tool_button("implode") var implode_button = implode
 
 static func create() -> Explosion:
-	return preload("res://explosion/fireball/explosion.tscn").instantiate()
+	return preload("res://explosion/explosion.tscn").instantiate()
 
 func randomize_pattern() -> void:
 	set_instance_shader_parameter("random_offset", Vector2(randf(), randf() ) )

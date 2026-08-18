@@ -826,6 +826,7 @@
 		"thrust": 1000,
 		"tab": "movement",
 		"trail_data": {
+			"flicker_strength": 0.1,
 			"roundness": 0.8,
 			"inner_color": "white",
 			"outer_color": "blue"
@@ -1107,7 +1108,7 @@
 		"height": 8,
 		"tab": "weapons",
 		"y": 0.1,
-		"barrel_z": 4.0,
+		"barrel_z": 0.0,
 		"center_z": -1.0,
 		"projectile_code": "PDR1",
 		"image_path": "res://part_images/weapon_railgun_dark_4x8.png"
@@ -1124,7 +1125,7 @@
 		"height": 8,
 		"tab": "weapons",
 		"y": 0.1,
-		"barrel_z": 4.0,
+		"barrel_z": 0.0,
 		"center_z": -1.0,
 		"projectile_code": "PDR2",
 		"image_path": "res://part_images/weapon_railgun_light_4x8.png"
@@ -1141,7 +1142,7 @@
 		"height": 6,
 		"tab": "weapons",
 		"y": 0.1,
-		"barrel_z": 3.0,
+		"barrel_z": 0.0,
 		"center_z": 0.0,
 		"projectile_code": "PDR3",
 		"image_path": "res://part_images/weapon_railgun_curved_4x6.png"
@@ -1218,8 +1219,8 @@
 		"tab": "hidden",
 		"thickness": 1.0,
 		"cohesion": 0.2,
-		"start_color": "black",
-		"end_color": "purple",
+		"start_color": "purple",
+		"end_color": "black",
 		"glow": 3.0,
 		"drift_speed": 5.0,
 		"lifetime_sec": 0.5,
@@ -1248,13 +1249,16 @@
 		"mass": 10,
 		"hp": 100,
 		"tab": "hidden",
-		"thickness": 1.0,
+		"thickness": 2.0,
 		"cohesion": 0.3,
 		"start_color": "purple",
 		"end_color": "green",
 		"glow": 2.0,
 		"lifetime_sec": 1.0,
-		"effective_range": 100.0
+		"effective_range": 100.0,
+		"multihit_modifier_data": {
+			"multiplier_damage": 0.5
+		}
 	},
 	"PLZ1": {
 		"damage": 100.0,
