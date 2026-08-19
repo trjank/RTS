@@ -6,7 +6,7 @@ const SHIP_DB := null
 func _ready() -> void:
 	super()
 	#
-	gamemode = Gamemode.SANDBOX
+	gamemode = SandboxMode
 	map = Map.from_json(MAP_PRESET_PATH)
 	#me.spawn_ship(globals.client.fleet.)
 	me.team = get_team("Testers")

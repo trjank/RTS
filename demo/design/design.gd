@@ -29,9 +29,9 @@ var fleet: Fleet:
 	set = set_fleet
 
 func _ready() -> void:
-	globals.client.fleet_changed.connect(set_fleet)
-	fleet = globals.client.fleet
-	parts_container.part_manager = globals.part_manager
+	Globals.client.fleet_changed.connect(set_fleet)
+	fleet = Globals.client.fleet
+	parts_container.part_manager = Globals.part_manager
 	slot = 0
 
 func get_ship() -> ShipData:
@@ -85,7 +85,7 @@ func popup_error_message(error_flags: int) -> void:
 func _create_new_ship() -> bool:
 	var ship := ShipData.new()
 	ship.grid_size = SMALL_GRID
-	globals.ship_db.create_ship(ship)
+	Globals.ship_db.create_ship(ship)
 	return fleet.set_ship(slot, ship) and fleet.save_ships()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -127,7 +127,7 @@ func load_ship_from_string(ship_string: String) -> int:
 		return ShipData.PartError.INCORRECT_SIZE_BYTES
 	var bytes := Marshalls.base64_to_raw(split[3] )
 	grid.ship.grid_size = Vector2i(int(split[1] ), int(split[2] ) )
-	var error := grid.ship.deserialize(bytes, globals.part_manager)
+	var error := grid.ship.deserialize(bytes, Globals.part_manager)
 	grid.sync(false)
 	return error
 
@@ -135,7 +135,7 @@ func _on_fleet_container_button_pressed(new_slot: int) -> void:
 	slot = new_slot
 
 func _on_test_button_pressed() -> void:
-	globals.main.state = Main.State.TRAINING_GROUNDS
+	Globals.main.state = Main.State.TRAINING_GROUNDS
 
 func _on_export_button_pressed() -> void:
 	export_popup.ship_string = convert_ship_to_string()

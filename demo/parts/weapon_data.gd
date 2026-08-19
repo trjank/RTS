@@ -17,6 +17,8 @@ var reload_sec := MIN_RELOAD_SEC:
 var charge_sec := MIN_CHARGE_SEC:
 	set = set_charge_sec
 var target_prediction := false
+var muzzle_flash_enabled := false
+var muzzle_flash := ExplosionData.new()
 
 func _init(const_code: String, const_size := DEFAULT_SIZE, _const_boundary := Boundary.NONE) -> void:
 	super(const_code, const_size, Boundary.NONE)

@@ -1189,7 +1189,9 @@
 		"height": 8,
 		"tab": "weapons",
 		"y": 0.1,
+		"barrel_z": 4.0,
 		"projectile_code": "PBE1",
+		"muzzle_flash_enabled": true,
 		"image_path": "res://part_images/weapon_cannon_4x8.png"
 	},
 	"PBM1": {

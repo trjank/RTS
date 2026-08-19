@@ -15,19 +15,19 @@ func _on_back_button_pressed() -> void:
 func _ready() -> void:
 	for action in KeybindRow.get_custom_actions():
 		keybind_rows.add_child(KeybindRow.create(action) )
-	volume_slider.value = globals.volume
-	music_volume_slider.value = globals.music_volume
+	volume_slider.value = Globals.volume
+	music_volume_slider.value = Globals.music_volume
 
 func sync_keybind_rows() -> void:
 	for keybind_row in keybind_rows.get_children():
 		keybind_row.sync_to_input_map()
 
 func _on_volume_slider_value_changed(value: float) -> void:
-	globals.volume = value
+	Globals.volume = value
 	volume_value.text = "%.0f" % value
 
 func _on_music_volume_slider_value_changed(value: float) -> void:
-	globals.music_volume = value
+	Globals.music_volume = value
 	music_volume_value.text = "%.0f" % value
 
 func _on_reset_button_pressed() -> void:

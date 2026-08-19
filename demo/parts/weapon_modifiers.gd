@@ -4,7 +4,7 @@ enum SpecialFlags {
 	NONE = 0
 }
 
-const SYNTAX: Dictionary[String, Variant.Type] = {
+const PROPERTIES: Dictionary[String, Variant.Type] = {
 	"flat_damage": TYPE_FLOAT,
 	"flat_range": TYPE_FLOAT,
 	"flat_energy": TYPE_FLOAT,
@@ -41,10 +41,10 @@ static func from_dict(dict: Dictionary, always_copy := false) -> WeaponModifiers
 	return modifiers if modifiers.load_dict(dict) or always_copy else NONE
 
 func to_dict() -> Dictionary:
-	return TypeChecker.to_dict(self, SYNTAX)
+	return TypeChecker.to_dict(self, PROPERTIES)
 
 func load_dict(dict: Dictionary) -> bool:
-	return TypeChecker.load_dict(self, dict, SYNTAX, TypeChecker.CAST_NUMBERS)
+	return TypeChecker.load_dict(self, dict, PROPERTIES, TypeChecker.CAST_NUMBERS)
 
 func copy() -> WeaponModifiers:
 	var modifiers := WeaponModifiers.new()

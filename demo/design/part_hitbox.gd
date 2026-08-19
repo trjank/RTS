@@ -18,7 +18,7 @@ static func create() -> PartHitbox:
 	return preload("res://design/part_hitbox.tscn").instantiate()
 
 func _ready() -> void:
-	collision_layer = globals.Layer.PARTS
+	collision_layer = Globals.Layer.PARTS
 
 func get_size_2d() -> Vector2:
 	return Measurement.METERS_PER_TILE * data.get_size() if data != null else Vector2.ZERO

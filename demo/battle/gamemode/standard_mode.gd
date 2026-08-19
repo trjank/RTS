@@ -1,4 +1,4 @@
-class_name StandardMode extends Gamemode
+extends Gamemode
 
 const CAPITAL_SHIP_SLOT := 0
 
@@ -10,7 +10,7 @@ var _capital_ship_cost_limit := StrategicResources.from_dict({
 })
 
 func _init() -> void:
-	name = "Standard"
+	display_name = "Standard"
 	teams = [Team.APHELIONS, Team.FEDERATION, Team.SYZYGYSTS, Team.OCCULTARCHS]
 
 func is_normal_ship_compatible(ship: ShipData) -> bool:

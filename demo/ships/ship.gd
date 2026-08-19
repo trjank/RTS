@@ -32,7 +32,7 @@ var data: ShipData:
 func _ready() -> void:
 	super()
 	#
-	collision_layer |= globals.Layer.SHIPS
+	collision_layer |= Globals.Layer.SHIPS
 	behavior_indicator.visible = show_behavior
 
 func set_hp(new_hp: float) -> void:

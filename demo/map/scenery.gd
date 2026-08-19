@@ -35,7 +35,7 @@ var time := 0.0:
 	set = set_time
 var resources := StrategicResources.new()
 var map: Map
-var battle_state: BattleState
+var battle: Battle
 
 var _target := SceneryTarget.new()
 
@@ -48,7 +48,7 @@ func get_target() -> SceneryTarget:
 	return _target
 
 func get_roman_numeral() -> String:
-	return ROMAN_NUMERAL_TABLE[index] if index <= 10 else ""
+	return ROMAN_NUMERAL_TABLE[index] if index < ROMAN_NUMERAL_TABLE.size() else ""
 
 func set_index(new_index: int) -> void:
 	index = maxi(new_index, 0)
@@ -60,9 +60,7 @@ func set_mass(new_mass: float) -> void:
 	mass = maxf(new_mass, MIN_MASS)
 
 func set_rng(new_rng: RandomNumberGenerator) -> void:
-	assert(new_rng != null)
-	#
-	rng = new_rng
+	rng = new_rng if new_rng != null else TEST_RNG
 
 func set_time(new_time: float) -> void:
 	time = new_time
@@ -104,5 +102,5 @@ func _exit_tree() -> void:
 	_target._scenery = null
 
 func _physics_process(dt: float) -> void:
-	time = battle_state.time if battle_state != null else time + dt
+	time = battle.time if battle != null else time + dt
 	_target.global_position = global_position

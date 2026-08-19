@@ -19,8 +19,8 @@ var _ship_buttons: Dictionary[ShipData, ShipButton] = {}
 var _fleet_containers: Dictionary[Fleet, FleetContainer] = {}
 
 func _ready() -> void:
-	ship_db = globals.ship_db
-	fleet = globals.client.fleet
+	ship_db = Globals.ship_db
+	fleet = Globals.client.fleet
 
 func set_ship_db(new_ship_db: ShipDatabase) -> void:
 	ship_db = new_ship_db
@@ -33,7 +33,7 @@ func set_fleet(new_fleet: Fleet) -> void:
 		_fleet_containers[fleet].self_modulate = Color.WHITE
 	if new_fleet in _fleet_containers:
 		_fleet_containers[new_fleet].self_modulate = SELECTED_COLOR
-	globals.client.fleet = new_fleet
+	Globals.client.fleet = new_fleet
 	fleet = new_fleet
 	fleet_changed.emit(fleet)
 

@@ -10,8 +10,7 @@ enum LoadError {
 	INVALID_PART_PROPERTIES = 1 << 3
 }
 
-# NOTE: You do not have to use all of these properties
-const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
+const PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"name": TYPE_STRING,
 	"tab": TYPE_STRING,
 	"description": TYPE_STRING,
@@ -42,6 +41,7 @@ const VALID_PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"projectile_code": TYPE_STRING,
 	"barrel_z": TYPE_FLOAT,
 	"center_z": TYPE_FLOAT,
+	"muzzle_flash_enabled": TYPE_BOOL,
 # For WeaponModifierData below
 	"modifier_data": TYPE_DICTIONARY,
 	"modshare_efficiency": TYPE_FLOAT,
@@ -122,7 +122,7 @@ func load_part(code: String, properties: Dictionary) -> LoadError:
 	var width: int = properties.get("width", PartData.MIN_SIZE)
 	var height: int = properties.get("height", PartData.MIN_SIZE)
 	#
-	if not TypeChecker.type_check(properties, VALID_PART_PROPERTIES, true, TypeChecker.CAST_NUMBERS_AND_COLORS):
+	if not TypeChecker.type_check(properties, PART_PROPERTIES, true, TypeChecker.CAST_NUMBERS_AND_COLORS):
 		return LoadError.INVALID_PART_PROPERTIES
 	var part := create_part(code, Vector2i(width, height), subtype)
 	if part == null:

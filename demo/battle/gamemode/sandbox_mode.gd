@@ -1,10 +1,10 @@
-class_name SandboxMode extends Gamemode
+extends Gamemode
 
 static var TESTERS := Team.new("Testers"):
 	set(__): push_error("(SandboxMode) SandboxMode.TESTERS is immutable!")
 
 func _init() -> void:
-	name = "Sandbox"
+	display_name = "Sandbox"
 	TESTERS.start_resources = StrategicResources.INFINITE
 	teams = [TESTERS]
 

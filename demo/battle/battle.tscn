@@ -19,7 +19,7 @@
 [ext_resource type="Script" uid="uid://dwken4rn36b3k" path="res://battle/selection_info.gd" id="7_dxsh4"]
 [ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="7_rgsk0"]
 [ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="8_tkkqt"]
-[ext_resource type="PackedScene" uid="uid://ubyi17cymwls" path="res://explosion/explosion.tscn" id="18_sf8fp"]
+[ext_resource type="PackedScene" uid="uid://ctal01hmjjewl" path="res://explosion/explosions.tscn" id="20_sf8fp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1kiu"]
 content_margin_left = 0.0
@@ -44,8 +44,6 @@ glow_levels/5 = 0.25
 glow_blend_mode = 0
 
 [sub_resource type="SphereMesh" id="SphereMesh_iorop"]
-radius = 0.2
-height = 0.4
 
 [sub_resource type="MultiMesh" id="MultiMesh_rxlun"]
 transform_format = 1
@@ -59,7 +57,7 @@ material = SubResource("StandardMaterial3D_7fucf")
 radius = 0.05
 height = 0.1
 
-[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection", "alloy_label", "crystal_label", "military_science_label", "time_left")]
+[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection", "alloy_label", "crystal_label", "military_science_label", "time_left", "explosions")]
 script = ExtResource("1_nohcx")
 world = NodePath("World")
 round_timer = NodePath("RoundTimer")
@@ -71,6 +69,7 @@ alloy_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/AlloyCount")
 crystal_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/CrystalsCount")
 military_science_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/MilitaryScienceCount")
 time_left = NodePath("UI/PanelContainer/HBoxContainer/Resources/TimeLeft")
+explosions = NodePath("World/Explosions")
 metadata/_custom_type_script = "uid://bvfy718iilaa1"
 
 [node name="UI" type="Control" parent="."]
@@ -346,8 +345,6 @@ script = ExtResource("4_7fucf")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
 environment = SubResource("Environment_70s20")
 
-[node name="Explosion" parent="World/WorldEnvironment" instance=ExtResource("18_sf8fp")]
-
 [node name="Players" type="Node3D" parent="World"]
 
 [node name="UnitFormation" type="Node3D" parent="World" node_paths=PackedStringArray("mouse_selection", "multimesh_instance")]
@@ -367,6 +364,8 @@ single_select_mode = 2
 [node name="OriginMarker" type="MeshInstance3D" parent="World"]
 cast_shadow = 0
 mesh = SubResource("SphereMesh_7fucf")
+
+[node name="Explosions" parent="World" instance=ExtResource("20_sf8fp")]
 
 [node name="RoundTimer" type="Timer" parent="."]
 one_shot = true

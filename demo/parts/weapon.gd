@@ -88,4 +88,6 @@ func fire(target: Target) -> TargetError:
 		return TargetError.NOT_IN_RANGE
 	rotation.y = new_rotation
 	projectile_data.create_projectile(self, target, _projectiles)
+	if get_data().muzzle_flash_enabled and battle != null:
+		battle.explosions.create_explosion(get_global_barrel_position(), 0.0, 1.0, 0.5, get_data().muzzle_flash)
 	return TargetError.OK

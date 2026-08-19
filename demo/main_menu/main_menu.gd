@@ -24,13 +24,13 @@ func _on_singleplayer_button_pressed() -> void:
 	submenu = Submenu.SINGLEPLAYER
 
 func _on_multiplayer_button_pressed() -> void:
-	globals.main.state = Main.State.BATTLE
+	Globals.main.state = Main.State.BATTLE
 
 func _on_design_button_pressed() -> void:
-	globals.main.state = Main.State.DESIGN
+	Globals.main.state = Main.State.DESIGN
 
 func _on_fleets_button_pressed() -> void:
-	globals.main.state = Main.State.FLEET
+	Globals.main.state = Main.State.FLEET
 
 func _on_settings_button_pressed() -> void:
 	submenu = Submenu.SETTINGS
@@ -45,5 +45,5 @@ func _ready() -> void:
 	super()
 	#
 	map = Map.from_json(MAP_PRESET_PATH)
-	gamemode = Gamemode.SANDBOX
+	gamemode = SandboxMode
 	start()

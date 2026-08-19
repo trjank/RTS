@@ -94,6 +94,7 @@ func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 		print("SHIP HAS PROBLEMS")
 	var ship := Ship.create()
 	_ships.add_child(ship)
+	ship.battle = get_battle()
 	ship.data = ship_data
 	ship.player_owner = self
 	ship.position = spawnpoint

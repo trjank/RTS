@@ -1,20 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://ubyi17cymwls"]
+[gd_scene load_steps=5 format=3 uid="uid://ubyi17cymwls"]
 
-[ext_resource type="Material" uid="uid://dnvy4mm47cfq8" path="res://explosion/material.tres" id="1_x4qji"]
+[ext_resource type="Material" uid="uid://dnvy4mm47cfq8" path="res://explosion/explosion_material.tres" id="1_x4qji"]
 [ext_resource type="Script" uid="uid://bmosuyhadmbe8" path="res://explosion/explosion.gd" id="2_bbm0l"]
+[ext_resource type="AudioStream" uid="uid://ccoys12aogivc" path="res://sound_effects/explosion.wav" id="3_mp546"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_x4qji"]
 radial_segments = 16
 rings = 8
 
-[node name="Explosion" type="MeshInstance3D"]
+[node name="Explosion" type="MeshInstance3D" node_paths=PackedStringArray("sound_effect")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
 material_override = ExtResource("1_x4qji")
-instance_shader_parameters/alpha_threshold = 0.0
-instance_shader_parameters/color = Color(4.934354, 5.01444, 0, 1)
-instance_shader_parameters/height_variation = 1.0
-instance_shader_parameters/random_offset = Vector2(0.5551517, 0.13858809)
-instance_shader_parameters/smoke = 10.9090005181775
-instance_shader_parameters/speed = 0.446000021185
+instance_shader_parameters/age = 1.0
+instance_shader_parameters/color = Color(5.014, 2.292, 0, 1)
+instance_shader_parameters/fade_delay = 3.68800012768
+instance_shader_parameters/random_offset = Vector2(0.95512855, 0.956895)
+instance_shader_parameters/speed = 0.1350000064125
+instance_shader_parameters/volatility = 1.0
 mesh = SubResource("SphereMesh_x4qji")
 script = ExtResource("2_bbm0l")
+sound_effect = NodePath("AudioStreamPlayer3D")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_mp546")

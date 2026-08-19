@@ -1,6 +1,6 @@
 class_name DeathRay extends MeshInstance3D
 
-const COLLISION_MASK: int = globals.Layer.SHIPS | globals.Layer.PROJECTILES
+const COLLISION_MASK: int = Globals.Layer.SHIPS | Globals.Layer.PROJECTILES
 
 @export var sound_effect: AudioStreamPlayer3D
 

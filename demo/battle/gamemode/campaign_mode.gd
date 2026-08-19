@@ -1,5 +1,5 @@
-class_name CampaignMode extends Gamemode
+extends Gamemode
 
 func _init() -> void:
-	name = "Campaign"
+	display_name = "Campaign"
 	teams.push_front(Team.new("Test") )

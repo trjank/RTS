@@ -3,6 +3,7 @@ class_name Part extends Sprite3D
 var data: PartData:
 	get = get_data,
 	set = set_data
+var battle: Battle
 
 var _ship: Ship
 
@@ -45,15 +46,18 @@ func set_data(new_data: PartData) -> void:
 	data = new_data
 	texture = data.image.get_texture()
 
+func _notification(what: int) -> void:
+	assert(what != NOTIFICATION_PARENTED or _ship == null or _ship.is_ancestor_of(self) )
+
 func on_ship_ready(ship_part: ShipDataPart, ship: Ship) -> void:
+	assert(ship.is_ancestor_of(self) )
+	#
 	_ship = ship
-	var xy := Measurement.METERS_PER_TILE * (ship_part.get_center() - Rect2(ship.data.get_ship_rect() ).get_center() )
+	battle = ship.battle
+	_update_transform(ship_part)
+
+func _update_transform(ship_part: ShipDataPart) -> void:
+	var xy := Measurement.METERS_PER_TILE * (ship_part.get_center() - Rect2(_ship.data.get_ship_rect() ).get_center() )
 	position = Vector3(xy.x, data.y, xy.y)
 	rotation.y = Rotation.to_radians(ship_part.get_rotation() )
 	scale.x = -1.0 if Rotation.is_flip_h(ship_part.get_rotation() ) else 1.0
-
-func _notification(what: int) -> void:
-	if what != NOTIFICATION_PARENTED or _ship == null:
-		return
-	push_warning("(Part) Ship part reparented")
-	_ship = null

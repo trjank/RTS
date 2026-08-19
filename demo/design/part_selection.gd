@@ -26,8 +26,8 @@ static func is_part(node: Node) -> bool:
 	return node is PartHitbox
 
 func _ready() -> void:
-	collision_layer = globals.Layer.PARTS
-	mouse_selection.collision_mask = globals.Layer.PARTS
+	collision_layer = Globals.Layer.PARTS
+	mouse_selection.collision_mask = Globals.Layer.PARTS
 	size_3d = Vector3.ZERO
 
 func is_dragging() -> bool:

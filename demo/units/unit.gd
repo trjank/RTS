@@ -54,6 +54,7 @@ var selected := false:
 	set = set_selected
 var warp_keep_momentum := false
 var kill_credit: Player
+var battle: Battle
 
 var _stop_distance := 0.0
 var _stop_rotation := 0.0
@@ -81,8 +82,8 @@ func _ready() -> void:
 	sprite.pixel_size = Measurement.METERS_PER_PX
 	update_ui()
 	#
-	collision_layer = globals.Layer.UNITS | globals.Layer.SCENERY
-	collision_mask = globals.Layer.UNITS | globals.Layer.SCENERY
+	collision_layer = Globals.Layer.UNITS | Globals.Layer.SCENERY
+	collision_mask = Globals.Layer.UNITS | Globals.Layer.SCENERY
 
 func _exit_tree() -> void:
 	_radar_signature._unit = null
@@ -361,10 +362,10 @@ func _calculate_trajectory() -> bool:
 	_calculate_trajectory_to_target()
 	return true
 
+## NOTE: You can override this to add radar jamming
 func _update_radar_signature() -> void:
 	if _radar_signature.get_state() == RadarSignature.State.CLOAKED:
 		return
-	# TODO: Add any sort of radar jamming here
 	_radar_signature.speed = get_speed()
 	_radar_signature.linear_velocity = linear_velocity
 	_radar_signature.global_position = global_position

@@ -17,7 +17,10 @@ run/max_fps=60
 
 [autoload]
 
-globals="*res://main/globals.gd"
+Globals="*res://main/globals.gd"
+StandardMode="*res://battle/gamemode/standard_mode.gd"
+CampaignMode="*res://battle/gamemode/campaign_mode.gd"
+SandboxMode="*res://battle/gamemode/sandbox_mode.gd"
 
 [display]
 

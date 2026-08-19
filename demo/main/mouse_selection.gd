@@ -67,7 +67,7 @@ func get_mouse_origin_3d() -> Vector3:
 func get_mouse_direction_3d() -> Vector3:
 	return _mouse_direction_3d
 
-func get_nearest_nodes(point: Vector3, mask := globals.Layer.EVERYTHING, max_distance := single_select_near_range) -> Array:
+func get_nearest_nodes(point: Vector3, mask := Globals.Layer.EVERYTHING, max_distance := single_select_near_range) -> Array:
 	var shape := SphereShape3D.new()
 	var query := PhysicsShapeQueryParameters3D.new()
 	shape.radius = max_distance
@@ -77,12 +77,12 @@ func get_nearest_nodes(point: Vector3, mask := globals.Layer.EVERYTHING, max_dis
 	# NOTE: This only checks 32 nodes by default (set max_results to change this)
 	return get_world_3d().direct_space_state.intersect_shape(query).map(_to_collider)
 
-func get_nearest_node(point: Vector3, mask := globals.Layer.EVERYTHING, max_distance := single_select_near_range) -> Node3D:
+func get_nearest_node(point: Vector3, mask := Globals.Layer.EVERYTHING, max_distance := single_select_near_range) -> Node3D:
 	var nodes := get_nearest_nodes(point, mask, max_distance)
 	nodes.sort_custom(distance_sorter.bind(point) )
 	return null if nodes.is_empty() else nodes[0]
 
-func get_top_node(mask := globals.Layer.EVERYTHING, max_distance := single_select_ray_range) -> Node3D:
+func get_top_node(mask := Globals.Layer.EVERYTHING, max_distance := single_select_ray_range) -> Node3D:
 	var ray_end := _mouse_origin_3d + max_distance * _mouse_direction_3d
 	var query := PhysicsRayQueryParameters3D.create(_mouse_origin_3d, ray_end, mask)
 	return get_world_3d().direct_space_state.intersect_ray(query).get("collider")

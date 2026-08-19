@@ -23,7 +23,6 @@ signal team_removed(team: Team)
 
 const MAX_NUM_TEAMS := 10
 const MAX_NUM_PLAYERS := 100
-const BOT_ICON := preload("res://icons/cpu.png")
 
 @export var world: Node3D
 @export var round_timer: Timer
@@ -35,14 +34,12 @@ const BOT_ICON := preload("res://icons/cpu.png")
 @export var crystal_label: Label
 @export var military_science_label: Label
 @export var time_left: Label
+@export var explosions: Explosions
 
-var friendly_fire_enabled := false
-var can_pause := false
 var rng := RandomNumberGenerator.new()
 var scenery: Array[Scenery] = []
-var map: Map:
-	get = get_map,
-	set = set_map
+var map: Map
+var map_depth_limit := 5
 var gamemode: Gamemode:
 	set = set_gamemode
 var plane := Plane.PLANE_XZ:
@@ -51,26 +48,29 @@ var me: Player:
 	set = set_me
 var host: Player:
 	set = set_host
+var time := 0.0
+var time_scale := 1.0
+var friendly_fire_enabled := false
+var can_pause := false
 
 var _default_team: Team
 var _players: Dictionary[String, Player] = {}
 var _teams: Dictionary[String, Team] = {}
 var _status := Status.STOPPED
 var _map_root: Node3D
-var _state := BattleState.new()
 var _map_data := {}
 
 func _init() -> void:
 	_default_team = create_team("Spectators")
-	gamemode = Gamemode.STANDARD
+	gamemode = StandardMode
 	set_physics_process(false)
 
 func _ready() -> void:
-	globals.client.fleet_changed.connect(fleet_container.set_fleet)
-	fleet_container.set_fleet(globals.client.fleet)
+	Globals.client.fleet_changed.connect(fleet_container.set_fleet)
+	fleet_container.set_fleet(Globals.client.fleet)
 	mouse_selection.plane = plane
 	me = connect_player("dev")
-	me.fleet = globals.client.fleet
+	me.fleet = Globals.client.fleet
 	host = me
 
 func is_team_alive(team: Team) -> bool:
@@ -96,12 +96,6 @@ func get_default_team() -> Team:
 
 func get_status() -> Status:
 	return _status
-
-func get_state() -> BattleState:
-	return _state
-
-func get_map() -> Map:
-	return _state.map
 
 func get_map_data() -> Dictionary:
 	return _map_data
@@ -163,9 +157,6 @@ func set_gamemode(new_gamemode: Gamemode) -> bool:
 		load_team(team)
 	return true
 
-func set_map(new_map: Map) -> void:
-	_state.map = new_map
-
 func destroy_map() -> void:
 	if _map_root == null:
 		return
@@ -175,12 +166,13 @@ func destroy_map() -> void:
 	scenery.clear()
 
 func generate_map() -> void:
-	assert(_state.map != null)
-	#
+	if map == null:
+		return push_error("(Battle) No map to generate!")
 	destroy_map()
+	rng.seed = rng.seed
 	_map_root = Node3D.new()
 	world.add_child(_map_root)
-	var error := _state.map.generate(_map_root, _state, rng, scenery, _state.map_depth_limit, _map_data)
+	var error := map.generate(_map_root, self, rng, scenery, map_depth_limit, _map_data)
 	#
 	print("(Battle) Map generation: %s" % Map.GenerationError.find_key(error) )
 	print("(Battle) Generated %d scenery objects" % _map_data.get("scenery_count", 0) )
@@ -188,7 +180,7 @@ func generate_map() -> void:
 func start_countdown() -> StartError:
 	if _status != Status.STOPPED:
 		return StartError.ALREADY_RUNNING
-	if not _state.gamemode.is_map_compatible(map):
+	if not gamemode.is_map_compatible(map):
 		return StartError.INCOMPATIBLE_MAP
 	_status = Status.STARTING
 	countdown_timer.start()
@@ -205,8 +197,8 @@ func start() -> StartError:
 		return StartError.SPAWN_FAILURE
 	set_physics_process(true)
 	_status = Status.RUNNING
-	_state.time = 0.0
-	_state.time_scale = 1.0
+	time = 0.0
+	time_scale = 1.0
 	gamemode.on_battle_start(self)
 	round_timer.start()
 	started.emit()
@@ -241,7 +233,6 @@ func connect_player(player_name: String, color := Color.WHITE) -> Player:
 func disconnect_player(player_name: String) -> bool:
 	if not player_name in _players:
 		return false
-	# NOTE: queue_free disconnects all signals
 	var player := _players[player_name]
 	player.queue_free()
 	player_left.emit(player)
@@ -255,8 +246,8 @@ func request_add_bot(team: Team) -> Player:
 	if bot == null:
 		return null
 	bot.team = team
-	bot.icon = BOT_ICON
 	bot.is_bot = true
+	gamemode.setup_bot(bot)
 	return bot
 
 func can_join_team(team: Team, player := me) -> bool:
@@ -286,7 +277,7 @@ func cast_vote() -> void:
 	pass
 
 func load_team(team: Team) -> Team:
-	if _status != Status.STOPPED or MAX_NUM_TEAMS <= _teams.size():
+	if _status != Status.STOPPED or team == null or MAX_NUM_TEAMS <= _teams.size():
 		return null
 	team = team.copy()
 	team.display_name = _find_unique_name(team.display_name, _teams)
@@ -362,7 +353,8 @@ func _process(_dt: float) -> void:
 	time_left.text = "%dm %02ds" % [int(seconds / 60.0), seconds % 60]
 
 func _physics_process(dt: float) -> void:
-	_state.time += _state.time_scale * dt
+	dt *= time_scale
+	time += dt
 	gamemode.battle_tick(self, dt)
 
 func _on_countdown_timer_timeout() -> void:
@@ -376,10 +368,10 @@ func _on_round_timer_timeout() -> void:
 	assert(can_stop)
 
 func _on_design_button_pressed() -> void:
-	globals.main.state = Main.State.DESIGN
+	Globals.main.state = Main.State.DESIGN
 
 func _on_menu_button_pressed() -> void:
-	globals.main.state = Main.State.MAIN_MENU
+	Globals.main.state = Main.State.MAIN_MENU
 
 func _on_mouse_selection_mouse_moved(new_position: Vector3) -> void:
 	if me != null:

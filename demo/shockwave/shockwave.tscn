@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://beeyou77c2knf"]
 
-[ext_resource type="Material" uid="uid://csihvni5dst88" path="res://explosion/shockwave/material.tres" id="1_x7271"]
+[ext_resource type="Material" uid="uid://csihvni5dst88" path="res://shockwave/material.tres" id="1_x7271"]
 [ext_resource type="Texture2D" uid="uid://xmt7t8to3f6j" path="res://icons/texture_not_found.png" id="2_2fnit"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_j5s51"]

@@ -105,7 +105,7 @@ func _on_name_text_submitted(new_text: String) -> bool:
 	return fleet != null and fleet.set_name(new_text) and fleet.save_metadata()
 
 func _on_fleet_swap_button_pressed() -> void:
-	globals.main.state = Main.State.FLEET
+	Globals.main.state = Main.State.FLEET
 
 func _on_fleet_ship_changed(new_ship: ShipData, slot: int) -> void:
 	get_button(slot).ship = new_ship

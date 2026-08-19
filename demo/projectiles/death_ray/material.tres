@@ -18,5 +18,4 @@ seamless = true
 [resource]
 render_priority = 2
 shader = ExtResource("1_g6etx")
-shader_parameter/flicker_speed = 55.0
 shader_parameter/particle_texture = SubResource("NoiseTexture2D_nxeiy")

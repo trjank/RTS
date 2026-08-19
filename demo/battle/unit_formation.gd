@@ -210,7 +210,7 @@ func _do_paths_intersect(i: int, j: int) -> bool:
 	return Geometry2D.segment_intersects_segment(from_i, to_i, from_j, to_j) != null
 
 func get_nearest_unit(point: Vector3) -> RadarSignature:
-	var unit := mouse_selection.get_nearest_node(point, globals.Layer.UNITS, MAX_SELECTION_DISTANCE)
+	var unit := mouse_selection.get_nearest_node(point, Globals.Layer.UNITS, MAX_SELECTION_DISTANCE)
 	return unit.get_radar_signature() if unit is Unit else null
 
 func snap_targets() -> void:

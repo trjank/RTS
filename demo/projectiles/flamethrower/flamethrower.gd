@@ -1,7 +1,7 @@
 class_name Flamethrower extends Area3D
 
-const COLLISION_MASK: int = globals.Layer.SHIPS
-const COLLISION_LAYER: int = globals.Layer.NONE
+const COLLISION_MASK: int = Globals.Layer.SHIPS
+const COLLISION_LAYER: int = Globals.Layer.NONE
 const MIN_PITCH_SCALE := 0.01
 
 @export var mesh: MeshInstance3D

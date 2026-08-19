@@ -43,9 +43,9 @@ static func _ship_to_team(ship: Ship) -> Team:
 func _ready() -> void:
 	super()
 	#
-	zone.collision_mask = globals.Layer.SHIPS
-	hitbox.collision_mask = globals.Layer.CAMERA | globals.Layer.SCENERY
-	hitbox.collision_layer = globals.Layer.CAMERA | globals.Layer.SCENERY
+	zone.collision_mask = Globals.Layer.SHIPS
+	hitbox.collision_mask = Globals.Layer.CAMERA | Globals.Layer.SCENERY
+	hitbox.collision_layer = Globals.Layer.CAMERA | Globals.Layer.SCENERY
 
 func is_captured() -> bool:
 	return team_owner != null
@@ -119,7 +119,7 @@ func _physics_process(dt: float) -> void:
 	#
 	if _contesting_team == null:
 		return
-	dt *= battle_state.time_scale
+	dt *= battle.time_scale
 	capture_progress += dt if _contesting_team == _capturing_team else -dt
 
 func _process(_dt: float) -> void:

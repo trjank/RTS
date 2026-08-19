@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://binqdh0br7cmd"]
+
+[ext_resource type="Shader" uid="uid://cjr4efeogn3qb" path="res://explosion/explosions.gdshader" id="1_kypvg"]
+[ext_resource type="Texture2D" uid="uid://0e0s12m2h278" path="res://explosion/height_map.tres" id="2_2cn82"]
+
+[resource]
+render_priority = 5
+shader = ExtResource("1_kypvg")
+shader_parameter/smoke = 14.0
+shader_parameter/height_map = ExtResource("2_2cn82")

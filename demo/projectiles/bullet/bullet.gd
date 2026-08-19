@@ -1,10 +1,11 @@
 class_name Bullet extends Unit
 
-const COLLISION_MASK: int = globals.Layer.SHIPS
-const COLLISION_LAYER: int = globals.Layer.PROJECTILES
+const COLLISION_MASK: int = Globals.Layer.SHIPS
+const COLLISION_LAYER: int = Globals.Layer.PROJECTILES
 
 var data: BulletData:
 	set = set_data
+var death_explosion: ExplosionData
 
 @export var sound_effect: AudioStreamPlayer3D
 
@@ -38,6 +39,13 @@ func set_data(new_data: BulletData) -> void:
 
 func begin_death_timer() -> void:
 	get_tree().create_timer(data.lifetime_sec).timeout.connect(kill)
+
+func kill() -> void:
+	super()
+	#
+	var explosion := Explosion.create()
+	add_sibling(explosion)
+	explosion.global_position = global_position
 
 func order_attack() -> void:
 	if is_missile():

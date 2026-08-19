@@ -38,7 +38,7 @@ static func toggle_node(node: Node, enable: bool) -> void:
 func _ready() -> void:
 	for substate in nodes:
 		prepare_subscene(substate, nodes[substate] )
-	globals.main = self
+	Globals.main = self
 
 func get_world_node(node_state := state) -> Node3D:
 	return _world_nodes[node_state]
