@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="Biome" load_steps=9 format=3 uid="uid://dapv2yjy8df7h"]
+
+[ext_resource type="Script" uid="uid://c8v3w6nluuvtf" path="res://map/terrestrial_planet/biome.gd" id="5_ky8cn"]
+
+[sub_resource type="Gradient" id="Gradient_bjli4"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="Curve" id="Curve_7bgqa"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_ejbmn"]
+colors = PackedColorArray(1, 0.96862745, 0.4, 1, 1, 0.16666669, 0, 1)
+
+[sub_resource type="Gradient" id="Gradient_2iep3"]
+colors = PackedColorArray(1, 0.96999997, 0.39999998, 1, 1, 0.39999998, 0.39999998, 1)
+
+[sub_resource type="Gradient" id="Gradient_lfmkl"]
+colors = PackedColorArray(1, 0.6445, 0.20999998, 1, 1, 0.41960785, 0.21176471, 1)
+
+[sub_resource type="Gradient" id="Gradient_gntl7"]
+colors = PackedColorArray(1, 0.71, 0.39999998, 1, 0.47, 0.47, 0.47, 1)
+
+[sub_resource type="Gradient" id="Gradient_6lxdb"]
+colors = PackedColorArray(0, 0.8156863, 1, 1, 0, 1, 0.7166667, 1)
+
+[resource]
+script = ExtResource("5_ky8cn")
+atmosphere_density_curve = SubResource("Curve_7bgqa")
+atmosphere_color_gradient = SubResource("Gradient_bjli4")
+biome_color_gradient = SubResource("Gradient_ejbmn")
+flat_color_gradient = SubResource("Gradient_2iep3")
+steep_color_gradient = SubResource("Gradient_gntl7")
+shore_color_gradient = SubResource("Gradient_lfmkl")
+water_color_gradient = SubResource("Gradient_6lxdb")
+temperature_humidity = Vector2(1, 0.3)
+metadata/_custom_type_script = "uid://c8v3w6nluuvtf"

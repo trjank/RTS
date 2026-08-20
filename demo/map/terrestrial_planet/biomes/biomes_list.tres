@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Biomes" load_steps=8 format=3 uid="uid://w7yxqv6ual1w"]
+
+[ext_resource type="Script" uid="uid://c8v3w6nluuvtf" path="res://map/terrestrial_planet/biome.gd" id="1_622fh"]
+[ext_resource type="Resource" uid="uid://dapv2yjy8df7h" path="res://map/terrestrial_planet/biomes/desert.tres" id="2_habre"]
+[ext_resource type="Script" uid="uid://cm30u7lpe15ox" path="res://map/terrestrial_planet/biomes.gd" id="2_pwkul"]
+[ext_resource type="Resource" uid="uid://cqpa0jr577tfq" path="res://map/terrestrial_planet/biomes/temperate_forest.tres" id="3_habre"]
+[ext_resource type="Resource" uid="uid://x1i2rsph1mnc" path="res://map/terrestrial_planet/biomes/tropical_rainforest.tres" id="4_pcoe7"]
+[ext_resource type="Resource" uid="uid://diba1qy3kx2ua" path="res://map/terrestrial_planet/biomes/tundra.tres" id="5_65md7"]
+[ext_resource type="Resource" uid="uid://t2nnmj7dhpeo" path="res://map/terrestrial_planet/biomes/volcano.tres" id="6_lei3p"]
+
+[resource]
+script = ExtResource("2_pwkul")
+biomes = Array[ExtResource("1_622fh")]([ExtResource("2_habre"), ExtResource("3_habre"), ExtResource("4_pcoe7"), ExtResource("5_65md7"), ExtResource("6_lei3p")])
+metadata/_custom_type_script = "uid://cm30u7lpe15ox"
