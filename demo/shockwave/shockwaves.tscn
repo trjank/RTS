@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://k55tf3pcr005"]
+
+[ext_resource type="Material" uid="uid://bgfh8jixexc3p" path="res://shockwave/shockwaves_material.tres" id="1_c1jjq"]
+[ext_resource type="Script" uid="uid://3bx8c45fw2xi" path="res://shockwave/shockwaves.gd" id="1_n5q7n"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_n5q7n"]
+radius = 1.0
+height = 2.0
+radial_segments = 16
+rings = 8
+
+[sub_resource type="MultiMesh" id="MultiMesh_n5q7n"]
+transform_format = 1
+use_custom_data = true
+visible_instance_count = 0
+mesh = SubResource("SphereMesh_n5q7n")
+
+[node name="Shockwaves" type="MultiMeshInstance3D"]
+material_override = ExtResource("1_c1jjq")
+multimesh = SubResource("MultiMesh_n5q7n")
+script = ExtResource("1_n5q7n")
+metadata/_custom_type_script = "uid://3bx8c45fw2xi"

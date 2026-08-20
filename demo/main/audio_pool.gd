@@ -8,11 +8,21 @@ const MIN_SIZE := 0
 @export var pitch_scale := 1.0
 @export var attenuation := 1.0
 
-var _players: Array[AudioStreamPlayer3D] = []
+var _audio_players: Array[AudioStreamPlayer3D] = []
 
 func set_size(new_size) -> void:
+	for audio_player in _audio_players:
+		audio_player.queue_free()
 	size = maxi(new_size, MIN_SIZE)
-	_players.resize(size)
+	_audio_players.resize(size)
+	#
+	for i in size:
+		_audio_players[i] = _create_audio_player()
+
+func _create_audio_player() -> AudioStreamPlayer3D:
+	var audio_player := AudioStreamPlayer3D.new()
+	add_child(audio_player, false, Node.INTERNAL_MODE_BACK)
+	return audio_player
 
 func get_closest() -> AudioStreamPlayer3D:
 	return null

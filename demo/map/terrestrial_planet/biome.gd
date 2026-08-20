@@ -1,6 +1,7 @@
 @tool
 class_name Biome extends Resource
 
+# NOTE: You cannot use preload here since the variable is static
 static var biomes: Array[Biome] = load("res://map/terrestrial_planet/biomes/biomes_list.tres").biomes
 
 @export var atmosphere_density_curve: Curve

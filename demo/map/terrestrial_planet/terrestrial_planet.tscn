@@ -39,18 +39,18 @@ transform = Transform3D(0.9999996, 0, 0, 0, 1, 0, 0, 0, 0.9999996, 0, 1, 0)
 transform = Transform3D(1, 0, 0, 0, -0.9983418, 0.05756398, 0, -0.05756398, -0.9983418, 0, 0, 0)
 material_override = ExtResource("3_swokb")
 instance_shader_parameters/biome_color = Color(0, 0, 0, 1)
-instance_shader_parameters/flat_color = Color(1.2472334, 0.19092071, 0, 1)
-instance_shader_parameters/shore_color = Color(0.14241654, 0.14241654, 0.14241654, 1)
+instance_shader_parameters/flat_color = Color(1.7541358, 0.58236533, 0, 1)
+instance_shader_parameters/shore_color = Color(0.93683565, 0.93683565, 0.93683565, 1)
 instance_shader_parameters/shore_height = 1.02
-instance_shader_parameters/steep_color = Color(0.1438463, 0.14384632, 0.1438463, 1)
-instance_shader_parameters/water_color = Color(1.8247963, 0.09129131, 0, 1)
+instance_shader_parameters/steep_color = Color(0.022581305, 0.02258131, 0.022581305, 1)
+instance_shader_parameters/water_color = Color(1.8247963, 0.061161518, 0, 1)
 mesh = ExtResource("4_swokb")
 
 [node name="Atmosphere" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0)
 material_override = SubResource("ShaderMaterial_56eyt")
-instance_shader_parameters/color = Color(1, 0.60241586, 0.5322539, 1)
-instance_shader_parameters/density = 0.39483464
+instance_shader_parameters/color = Color(1, 0.5813454, 0.5074651, 1)
+instance_shader_parameters/density = 0.42071146
 instance_shader_parameters/rim_strength = 10.0
 mesh = SubResource("SphereMesh_hpp1k")
 skeleton = NodePath("../..")

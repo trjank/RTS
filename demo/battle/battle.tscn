@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene load_steps=29 format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="7_rgsk0"]
 [ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="8_tkkqt"]
 [ext_resource type="PackedScene" uid="uid://ctal01hmjjewl" path="res://explosion/explosions.tscn" id="20_sf8fp"]
+[ext_resource type="PackedScene" uid="uid://k55tf3pcr005" path="res://shockwave/shockwaves.tscn" id="21_ihybe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1kiu"]
 content_margin_left = 0.0
@@ -57,7 +58,7 @@ material = SubResource("StandardMaterial3D_7fucf")
 radius = 0.05
 height = 0.1
 
-[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection", "alloy_label", "crystal_label", "military_science_label", "time_left", "explosions")]
+[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection", "alloy_label", "crystal_label", "military_science_label", "time_left", "explosions", "shockwaves")]
 script = ExtResource("1_nohcx")
 world = NodePath("World")
 round_timer = NodePath("RoundTimer")
@@ -70,6 +71,7 @@ crystal_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/CrystalsCoun
 military_science_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/MilitaryScienceCount")
 time_left = NodePath("UI/PanelContainer/HBoxContainer/Resources/TimeLeft")
 explosions = NodePath("World/Explosions")
+shockwaves = NodePath("World/Shockwaves")
 metadata/_custom_type_script = "uid://bvfy718iilaa1"
 
 [node name="UI" type="Control" parent="."]
@@ -366,6 +368,8 @@ cast_shadow = 0
 mesh = SubResource("SphereMesh_7fucf")
 
 [node name="Explosions" parent="World" instance=ExtResource("20_sf8fp")]
+
+[node name="Shockwaves" parent="World" instance=ExtResource("21_ihybe")]
 
 [node name="RoundTimer" type="Timer" parent="."]
 one_shot = true

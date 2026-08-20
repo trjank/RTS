@@ -75,6 +75,16 @@ func calculate_target_position(target: Target) -> Vector3:
 	var time := target.get_approx_intersect_time_from(global_position, projectile_data.get_speed() )
 	return target.get_intersection_point(time)
 
+func create_muzzle_flash() -> void:
+	if not get_data().muzzle_flash_enabled or battle == null:
+		return
+	var explosion := battle.shockwaves.create_shockwave()
+	explosion.position = get_global_barrel_position()
+	explosion.duration_sec = 0.5
+	#var explosion := battle.explosions.create_explosion(get_data().muzzle_flash)
+	#explosion.position = get_global_barrel_position()
+	#explosion.duration_sec = 0.5
+
 func fire(target: Target) -> TargetError:
 	if target == null or projectile_data == null or data == null:
 		return TargetError.INVALID_DATA
@@ -88,6 +98,5 @@ func fire(target: Target) -> TargetError:
 		return TargetError.NOT_IN_RANGE
 	rotation.y = new_rotation
 	projectile_data.create_projectile(self, target, _projectiles)
-	if get_data().muzzle_flash_enabled and battle != null:
-		battle.explosions.create_explosion(get_global_barrel_position(), 0.0, 1.0, 0.5, get_data().muzzle_flash)
+	create_muzzle_flash()
 	return TargetError.OK

@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://beeyou77c2knf"]
+[gd_scene load_steps=5 format=3 uid="uid://beeyou77c2knf"]
 
-[ext_resource type="Material" uid="uid://csihvni5dst88" path="res://shockwave/material.tres" id="1_x7271"]
+[ext_resource type="Material" uid="uid://csihvni5dst88" path="res://shockwave/shockwave_material.tres" id="1_x7271"]
 [ext_resource type="Texture2D" uid="uid://xmt7t8to3f6j" path="res://icons/texture_not_found.png" id="2_2fnit"]
+[ext_resource type="Script" uid="uid://cen0bsytiwejl" path="res://shockwave/shockwave.gd" id="2_ew3vu"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_j5s51"]
 material = ExtResource("1_x7271")
@@ -9,8 +10,9 @@ radial_segments = 16
 rings = 8
 
 [node name="Shockwave" type="MeshInstance3D"]
-instance_shader_parameters/distortion = 0.238000011305
+instance_shader_parameters/distortion = 0.31200001482
 mesh = SubResource("SphereMesh_j5s51")
+script = ExtResource("2_ew3vu")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -1.0662314)

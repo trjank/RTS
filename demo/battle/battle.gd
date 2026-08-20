@@ -35,6 +35,7 @@ const MAX_NUM_PLAYERS := 100
 @export var military_science_label: Label
 @export var time_left: Label
 @export var explosions: Explosions
+@export var shockwaves: Shockwaves
 
 var rng := RandomNumberGenerator.new()
 var scenery: Array[Scenery] = []
