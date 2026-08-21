@@ -859,12 +859,12 @@
 		"height": 2,
 		"thrust": 1000,
 		"tab": "movement",
-		"trail_length_speed_ratio": 0.2,
 		"trail_data": {
 			"roundness": 1.5,
 			"glow": 1.5,
 			"inner_color": "white",
-			"outer_color": "green"
+			"outer_color": "green",
+			"length_ratio": 0.2
 		},
 		"image_path": "res://part_images/thruster_cruiser_2x2.png"
 	},
@@ -1208,8 +1208,6 @@
 		"lifetime_sec": 3.0,
 		"launch_velocity": 10.0,
 		"sound_variation": 0.25,
-		"trail_enabled": true,
-		"trail_width_ratio": 0.5,
 		"image_path": "res://part_images/projectile_bullet_missile.png"
 	},
 	"PDR1": {
@@ -1346,11 +1344,14 @@
 		"launch_velocity": 50.0,
 		"sound_variation": 0.25,
 		"trail_enabled": true,
-		"trail_width_ratio": 0.2,
-		"trail_length": 5.0,
 		"trail_data": {
 			"inner_color": "white",
-			"outer_color": "black"
+			"outer_color": "black",
+			"length_ratio": 4.0,
+			"width_ratio": 0.2
+		},
+		"death_explosion_data": {
+			"color": "orange"
 		},
 		"effective_range": 100.0,
 		"image_path": "res://part_images/projectile_bullet_energy_long.png"
@@ -1369,8 +1370,6 @@
 		"lifetime_sec": 3.0,
 		"launch_velocity": 10.0,
 		"sound_variation": 0.25,
-		"trail_enabled": true,
-		"trail_width_ratio": 0.5,
 		"image_path": "res://part_images/projectile_bullet_marble.png"
 	},
 	"PBN1": {
@@ -1387,8 +1386,6 @@
 		"lifetime_sec": 3.0,
 		"launch_velocity": 10.0,
 		"sound_variation": 0.25,
-		"trail_enabled": true,
-		"trail_width_ratio": 0.5,
 		"image_path": "res://part_images/projectile_bullet_nuke.png"
 	},
 	"WMD1": {

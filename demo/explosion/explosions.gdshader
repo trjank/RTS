@@ -31,5 +31,4 @@ void vertex() {
 void fragment() {
 	ALBEDO = COLOR.rgb * exp(-smoke * height);
 	ALPHA = step(pow(age, fade_delay), height);
-	ALPHA = 1.0;
 }

@@ -15,6 +15,8 @@ func create_explosion_at(at: Vector3, data := ExplosionData.DEFAULT) -> Explosio
 	return create_explosion(data, Transform3D(Basis.IDENTITY, at) )
 
 func create_explosion(data := ExplosionData.DEFAULT, init_transform := Transform3D.IDENTITY) -> ExplosionInstance:
+	if data == null:
+		return null
 	var instance := create_instance()
 	instance.data = data
 	set_instance_transform(instance, init_transform)

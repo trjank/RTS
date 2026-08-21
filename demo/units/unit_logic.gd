@@ -1,35 +1,36 @@
 class_name UnitLogic extends RefCounted
 
-signal behavior_added
-signal behavior_removed
+signal block_added
+signal block_removed
+
+const MAX_NUM_BLOCKS := 100
 
 static var DEFAULT := UnitLogic.new():
 	set(__): push_error("(UnitLogic) UnitLogic.DEFAULT is immutable!")
 
-var name := "DEFAULT"
+var display_name := "DEFAULT"
 
-var _stack := PackedInt32Array()
-var _stack_args := PackedFloat32Array()
-#var _conditions := PackedInt32Array()
-#var _condition_args := PackedFloat32Array()
+var _blocks: Array[LogicBlock] = []
 
-func count_behaviors() -> int:
-	return _stack.size()
+func count_blocks() -> int:
+	return _blocks.size()
 
-func get_cpu_cost() -> int:
-	return _stack.size()
+func calculate_cpu_cost() -> int:
+	return _blocks.reduce(func(sum: int, block: LogicBlock) -> int: return sum + block.calculate_cpu_cost(), 0)
 
-func add_behavior() -> void:
-	behavior_added.emit()
-
-func remove_behavior() -> void:
-	behavior_removed.emit()
-
-func execute_all(unit: Unit) -> bool:
-	if unit == null:
+func add_block() -> bool:
+	if MAX_NUM_BLOCKS <= _blocks.size():
 		return false
+	block_added.emit()
+	return true
+
+func remove_block() -> void:
+	block_removed.emit()
+
+func execute(unit: Unit) -> bool:
+	assert(unit != null)
+	#
 	var i := 0
-	var condition := false
-	while not condition:
-		condition = unit.check_condition() and unit.issue_command(_stack[i], _stack_args[i] )
-	return condition
+	while not _blocks[i].execute(unit):
+		i += 1
+	return i < _blocks.size()

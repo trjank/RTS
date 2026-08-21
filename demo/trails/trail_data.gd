@@ -5,7 +5,9 @@ const SYNTAX: Dictionary[String, Variant.Type] = {
 	"roundness": TYPE_FLOAT,
 	"glow": TYPE_FLOAT,
 	"inner_color": TYPE_COLOR,
-	"outer_color": TYPE_COLOR
+	"outer_color": TYPE_COLOR,
+	"width_ratio": TYPE_FLOAT,
+	"length_ratio": TYPE_FLOAT
 }
 const MIN_ROUNDNESS := 0.0
 const MIN_GLOW := 0.0
@@ -19,6 +21,8 @@ var roundness := 1.0:
 	set = set_roundness
 var glow := 2.0:
 	set = set_glow
+var length_ratio := 1.0
+var width_ratio := 1.0
 var inner_color := Color.ORANGE
 var outer_color := Color.RED
 

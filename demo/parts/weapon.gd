@@ -78,16 +78,15 @@ func calculate_target_position(target: Target) -> Vector3:
 func create_muzzle_flash() -> void:
 	if not get_data().muzzle_flash_enabled or battle == null:
 		return
-	var shockwave := battle.shockwaves.create_shockwave_at(get_global_barrel_position() )
-	shockwave.duration_sec = 0.5
-	shockwave.distortion = 0.1
-	#var explosion_transform := Transform3D(global_basis, get_global_barrel_position() )
-	#var explosion := battle.explosions.create_explosion(get_data().muzzle_flash, explosion_transform)
-	#get_data().muzzle_flash.glow = 50.0
-	#get_data().muzzle_flash.skew = 1.0
-	#get_data().muzzle_flash.color = Color.ORANGE_RED
-	#explosion.start_radius = 0.5
-	#explosion.duration_sec = 0.5
+	#var shockwave := battle.shockwaves.create_shockwave_at(get_global_barrel_position() )
+	#shockwave.duration_sec = 0.5
+	#shockwave.distortion = 0.1
+	var explosion_transform := Transform3D(global_basis, get_global_barrel_position() )
+	var explosion := battle.explosions.create_explosion(get_data().muzzle_flash, explosion_transform)
+	get_data().muzzle_flash.skew = 1.0
+	get_data().muzzle_flash.fade_delay = 5.0
+	explosion.start_radius = 0.8
+	explosion.duration_sec = 0.3
 
 func fire(target: Target) -> TargetError:
 	if target == null or projectile_data == null or data == null:

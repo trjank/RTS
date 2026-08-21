@@ -1,0 +1,97 @@
+[gd_scene load_steps=8 format=3 uid="uid://cttfymcne3g5w"]
+
+[ext_resource type="PackedScene" uid="uid://vfsqecgyh3d8" path="res://unit_logic_editor/logic_block_condition_editor.tscn" id="1_cls68"]
+[ext_resource type="Script" uid="uid://bmsxehfmo745a" path="res://unit_logic_editor/logic_block_editor.gd" id="1_fk1q8"]
+[ext_resource type="Texture2D" uid="uid://oachrng7auhu" path="res://icons/delete.png" id="1_itqrd"]
+[ext_resource type="Texture2D" uid="uid://bc2ocllol2460" path="res://icons/add.png" id="2_i2owq"]
+[ext_resource type="Texture2D" uid="uid://dx6fdu1yy0fot" path="res://icons/dropdown.png" id="2_n4xlx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cls68"]
+content_margin_left = 25.0
+content_margin_top = 25.0
+content_margin_right = 25.0
+content_margin_bottom = 25.0
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wujjx"]
+content_margin_left = 25.0
+content_margin_top = 25.0
+content_margin_right = 25.0
+content_margin_bottom = 25.0
+bg_color = Color(0.25, 0.25, 0.25, 1)
+
+[node name="LogicBlockEditor" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cls68")
+script = ExtResource("1_fk1q8")
+
+[node name="VBoxContainer" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "#1"
+
+[node name="Conditions" type="HFlowContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 25
+theme_override_constants/v_separation = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/Conditions"]
+layout_mode = 2
+text = "IF"
+
+[node name="ConditionBlock" parent="VBoxContainer/Conditions" instance=ExtResource("1_cls68")]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VBoxContainer/Conditions"]
+layout_mode = 2
+text = "AND"
+
+[node name="ConditionBlock2" parent="VBoxContainer/Conditions" instance=ExtResource("1_cls68")]
+layout_mode = 2
+
+[node name="AddConditionButton" type="Button" parent="VBoxContainer/Conditions"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 32
+icon = ExtResource("2_i2owq")
+
+[node name="DeleteButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("1_itqrd")
+
+[node name="Behavior" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wujjx")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Behavior"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="VBoxContainer/Behavior/HBoxContainer"]
+layout_mode = 2
+text = "THEN"
+
+[node name="BehaviorOptionButton" type="OptionButton" parent="VBoxContainer/Behavior/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+theme_override_icons/arrow = ExtResource("2_n4xlx")
+selected = 0
+item_count = 1
+popup/item_0/text = "BEHAVIOR"
+popup/item_0/id = 0
+
+[node name="Arg1" type="SpinBox" parent="VBoxContainer/Behavior/HBoxContainer"]
+layout_mode = 2
+
+[node name="Arg2" type="SpinBox" parent="VBoxContainer/Behavior/HBoxContainer"]
+layout_mode = 2
+
+[connection signal="item_selected" from="VBoxContainer/Behavior/HBoxContainer/BehaviorOptionButton" to="." method="_on_behavior_option_button_item_selected"]

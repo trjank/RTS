@@ -34,8 +34,6 @@ const PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"image_path": TYPE_STRING,
 	"boundary": TYPE_INT,
 # For ThrusterData below
-	"trail_length_speed_ratio": TYPE_FLOAT,
-	"trail_width_ratio": TYPE_FLOAT,
 	"trail_data": TYPE_DICTIONARY,
 # For WeaponData below
 	"projectile_code": TYPE_STRING,
@@ -62,7 +60,7 @@ const PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"linear_damp": TYPE_FLOAT,
 	"sound_variation": TYPE_FLOAT,
 	"trail_enabled": TYPE_BOOL,
-	"trail_length": TYPE_FLOAT,
+	"death_explosion_data": TYPE_DICTIONARY,
 # For LaserData below
 	"max_chains": TYPE_INT,
 	"glow": TYPE_FLOAT,

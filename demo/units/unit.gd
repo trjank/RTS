@@ -13,6 +13,24 @@ enum Behavior {
 	BROADSIDE = 1 << 3,
 	KITE = 1 << 4
 }
+enum Condition {
+	SPEED,
+	MASS,
+	HP,
+	MAX_HP,
+	HP_RATIO,
+	ENERGY,
+	MAX_ENERGY,
+	TARGET_SPEED,
+	TARGET_MASS,
+	TARGET_HP,
+	TARGET_MAX_HP,
+	TARGET_HP_RATIO,
+	TARGET_ENERGY,
+	TEAM_ADVANTAGE,
+	BATTLE_TIME,
+	BATTLE_TIME_RATIO
+}
 
 const MAX_NUM_WAYPOINTS := 10
 const RAMMING_DISTANCE := 0.0
@@ -139,14 +157,14 @@ func get_radar_signature() -> RadarSignature:
 
 func get_max_speed() -> float:
 	# NOTE: This comes from balancing forces:
-	#    thrust = -F_drag
+	# thrust = -F_drag
 	# -> thrust = -mass * linear_damp * v_max
 	# -> |v_max| = thrust / (mass * linear_damp)
 	return thrust / (mass * linear_damp)
 
 func get_max_angular_velocity() -> float:
 	# NOTE: This comes from balancing forces:
-	#    torque = -T_drag
+	# torque = -T_drag
 	# -> torque = -mass * angular_damp * ω_max
 	# -> |ω_max| = turnrate / (mass * angular_damp)
 	return torque / (mass * angular_damp)
@@ -254,6 +272,21 @@ func issue_command(behavior: Behavior, arg1 := 0.0, arg2 := 0.0) -> bool:
 		_: return false # (do not pass multiple flags)
 	return true
 
+func is_team_winning() -> bool:
+	return false
+
+func is_team_losing() -> bool:
+	return false
+
+func condition_value(condition: Condition) -> float:
+	var number := 0.0
+	match condition:
+		Condition.HP: number = hp
+		Condition.MAX_HP: number = 0.0
+		Condition.TEAM_ADVANTAGE: pass
+		_: push_warning("")
+	return number
+
 ## NOTE: This rams by default
 func attack(min_distance := RAMMING_DISTANCE) -> void:
 	_behavior_flags |= Behavior.ATTACK
@@ -314,10 +347,10 @@ func _calculate_trajectory_to_target() -> void:
 	var to_target_speed := linear_velocity.dot(_direction_to_target)
 	_quaternion_to_target = Quaternion(get_global_forward_direction(), to_target)
 	# NOTE: This comes from solving the differential equation:
-	#    x'' = -damp * x' [This is how Godot calculates damp force]
-	# -> x' = v_0 * exp(-damp * t)
-	# -> x = x_0 + (v_0 / damp) * (1 - exp(-damp * t) )
-	# -> x = x_0 + (v_0 / damp) [as t goes to infinity]
+	# x'' = -linear_damp * x' [This is how Godot calculates damp force]
+	# -> x' = v_0 * exp(-linear_damp * t)
+	# -> x = x_0 + (v_0 / linear_damp) * (1 - exp(-linear_damp * t) )
+	# -> x = x_0 + (v_0 / linear_damp) [as t goes to infinity]
 	# -> Δx = v_0 / damp
 	_stop_distance = to_target_speed / linear_damp
 	_stop_rotation = angular_velocity.length() / angular_damp
@@ -331,7 +364,7 @@ func _physics_process(_dt: float) -> void:
 
 func _turn_to_target(state: PhysicsDirectBodyState3D) -> void:
 	# NOTE: This comes from solving the inequality:
-	#    stop_rotation <= Δθ
+	# stop_rotation <= Δθ
 	# -> ω / angular_damp <= Δθ
 	# -> ω <= angular_damp * Δθ
 	# -> ω_0 + Δω <= angular_damp * Δθ

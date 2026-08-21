@@ -7,13 +7,15 @@ var launch_velocity := 0.0
 var linear_damp := 0.0
 var sound_variation := 0.1:
 	set = set_sound_variation
-var trail_enabled := false
 var trail := TrailData.new()
 var trail_data: Dictionary:
 	get = get_trail_data,
 	set = set_trail_data
-var trail_length := 1.0
-var trail_width_ratio := 1.0
+var trail_enabled := false
+var death_explosion := ExplosionData.new()
+var death_explosion_data: Dictionary:
+	get = get_death_explosion_data,
+	set = set_death_explosion_data
 
 func get_speed() -> float:
 	return launch_velocity
@@ -23,6 +25,12 @@ func get_trail_data() -> Dictionary:
 
 func set_trail_data(new_trail_data: Dictionary) -> void:
 	trail.load_dict(new_trail_data)
+
+func get_death_explosion_data() -> Dictionary:
+	return death_explosion.to_dict()
+
+func set_death_explosion_data(new_death_explosion_data: Dictionary) -> void:
+	death_explosion.load_dict(new_death_explosion_data)
 
 func set_sound_variation(new_sound_variation: float) -> void:
 	sound_variation = clampf(new_sound_variation, MIN_SOUND_VARIATION, MAX_SOUND_VARIATION)

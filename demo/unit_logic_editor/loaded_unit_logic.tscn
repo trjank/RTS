@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3 uid="uid://b8ppjceb5p8yi"]
+
+[ext_resource type="Texture2D" uid="uid://oachrng7auhu" path="res://icons/delete.png" id="1_8x0px"]
+[ext_resource type="Script" uid="uid://biuyjo0cs4nuw" path="res://unit_logic_editor/loaded_unit_logic.gd" id="1_fftgx"]
+[ext_resource type="Texture2D" uid="uid://cmms782tyagxb" path="res://icons/cpu.png" id="2_qcj6o"]
+
+[node name="LoadedUnitLogic" type="HBoxContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.5
+offset_top = -36.0
+offset_right = 93.5
+offset_bottom = 36.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+script = ExtResource("1_fftgx")
+
+[node name="DeleteButton" type="Button" parent="."]
+layout_mode = 2
+icon = ExtResource("1_8x0px")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_qcj6o")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LineEdit" type="LineEdit" parent="."]
+layout_mode = 2
+placeholder_text = "name"
+
+[node name="UnsavedIndicator" type="Label" parent="."]
+layout_mode = 2
+text = "*UNSAVED"
+
+[connection signal="pressed" from="DeleteButton" to="." method="_on_delete_button_pressed"]
+[connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]

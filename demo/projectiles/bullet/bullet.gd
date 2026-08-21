@@ -35,6 +35,7 @@ func set_data(new_data: BulletData) -> void:
 	texture = data.image.get_texture()
 	torque = data.torque
 	linear_damp = data.linear_damp
+	death_explosion = data.death_explosion
 	_create_trail()
 
 func begin_death_timer() -> void:
@@ -43,9 +44,8 @@ func begin_death_timer() -> void:
 func kill() -> void:
 	super()
 	#
-	var explosion := battle.explosions.create_explosion_at(global_position, ExplosionData.DEFAULT)
-	ExplosionData.DEFAULT.glow = 50.0
-	explosion.end_radius = 2.0
+	var explosion := battle.explosions.create_explosion_at(global_position, death_explosion)
+	explosion.end_radius = 5.0
 
 func order_attack() -> void:
 	if is_missile():
@@ -69,5 +69,5 @@ func _create_trail() -> void:
 	_trail = Trail.create()
 	add_child(_trail)
 	_trail.data = data.trail
-	_trail.scale = Vector3(data.trail_width_ratio, 1.0, data.trail_length)
+	_trail.scale = Vector3(data.trail.width_ratio, 1.0, data.trail.length_ratio)
 	_trail.update_shader()

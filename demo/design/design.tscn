@@ -385,6 +385,7 @@ visible = false
 
 [connection signal="button_pressed" from="UI/VBoxContainer/HBoxContainer/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
 [connection signal="part_clicked" from="UI/VBoxContainer/HBoxContainer/PartsContainer" to="." method="_on_parts_container_part_clicked"]
+[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer/BehaviorSwapButton" to="." method="_on_behavior_swap_button_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/TestButton" to="." method="_on_test_button_pressed"]
 [connection signal="item_selected" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/ResizeOptionButton" to="." method="_on_resize_option_button_item_selected"]
 [connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/HFlowContainer/ExportButton" to="." method="_on_export_button_pressed"]

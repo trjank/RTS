@@ -14,12 +14,12 @@ const PROPERTIES: Dictionary[String, Variant.Type] = {
 static var DEFAULT := ExplosionData.new():
 	set(__): push_error("(ExplosionData) ExplosionData.DEFAULT is immutable!")
 
-var fade_delay := 1.0
+var fade_delay := 5.0
 var volatility := 1.0:
 	set = set_volatility
 var skew := 0.0
-var glow := 1.0
-var color := Color.ORANGE
+var glow := 10.0
+var color := Color.ORANGE_RED
 
 static func from_dict(dict: Dictionary, always_copy := false) -> ExplosionData:
 	var data := ExplosionData.new()

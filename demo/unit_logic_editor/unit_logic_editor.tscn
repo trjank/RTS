@@ -1,0 +1,99 @@
+[gd_scene load_steps=7 format=3 uid="uid://c0amctp11de4o"]
+
+[ext_resource type="Script" uid="uid://oargflkp2nu8" path="res://unit_logic_editor/unit_logic_editor.gd" id="1_31gy1"]
+[ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="1_41is2"]
+[ext_resource type="PackedScene" uid="uid://cttfymcne3g5w" path="res://unit_logic_editor/logic_block_editor.tscn" id="1_amnoc"]
+[ext_resource type="Texture2D" uid="uid://by2clum4xu507" path="res://icons/hexagons.png" id="2_lccja"]
+[ext_resource type="PackedScene" uid="uid://b8ppjceb5p8yi" path="res://unit_logic_editor/loaded_unit_logic.tscn" id="3_8wxod"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_31gy1"]
+content_margin_left = 25.0
+content_margin_top = 25.0
+content_margin_right = 25.0
+content_margin_bottom = 25.0
+bg_color = Color(0.25, 0.120000005, 0.20450002, 1)
+
+[node name="UnitLogicEditor" type="Node"]
+script = ExtResource("1_31gy1")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackgroundColor" type="ColorRect" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Background" type="TextureRect" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_lccja")
+stretch_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="Nagivator" parent="UI/VBoxContainer" instance=ExtResource("1_41is2")]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 50
+
+[node name="List" type="PanelContainer" parent="UI/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_31gy1")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/VBoxContainer/HBoxContainer/List"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer/List/ScrollContainer"]
+layout_mode = 2
+
+[node name="LoadedUnitLogic" parent="UI/VBoxContainer/HBoxContainer/List/ScrollContainer/VBoxContainer" instance=ExtResource("3_8wxod")]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="UI/VBoxContainer/HBoxContainer/List/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "+ Add"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "THIS IS NOT EDITABLE!"
+
+[node name="BehaviorBlock" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer" instance=ExtResource("1_amnoc")]
+layout_mode = 2
+
+[node name="BehaviorBlock2" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer" instance=ExtResource("1_amnoc")]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "+ New"
+
+[node name="World" type="Node3D" parent="."]

@@ -134,6 +134,9 @@ func load_ship_from_string(ship_string: String) -> int:
 func _on_fleet_container_button_pressed(new_slot: int) -> void:
 	slot = new_slot
 
+func _on_behavior_swap_button_pressed() -> void:
+	Globals.main.state = Main.State.UNIT_LOGIC_EDITOR
+
 func _on_test_button_pressed() -> void:
 	Globals.main.state = Main.State.TRAINING_GROUNDS
 
