@@ -22,7 +22,7 @@ vec3 draw_shield(vec3 albedo, vec2 uv) {
 
 void fragment() {
 	vec4 color = texture(ship_texture, UV);
+	if (color.a < 0.5) discard;
 	ALBEDO = mix(color.rgb, player_color, color.r - color.g);
 	ALBEDO = draw_shield(ALBEDO, UV);
-	ALPHA = color.a;
 }

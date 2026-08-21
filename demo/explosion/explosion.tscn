@@ -5,17 +5,18 @@
 [ext_resource type="AudioStream" uid="uid://ccoys12aogivc" path="res://sound_effects/explosion.wav" id="3_mp546"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_x4qji"]
-radial_segments = 16
-rings = 8
+radius = 1.0
+height = 2.0
+radial_segments = 20
+rings = 10
 
 [node name="Explosion" type="MeshInstance3D" node_paths=PackedStringArray("sound_effect")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
 material_override = ExtResource("1_x4qji")
 instance_shader_parameters/age = 1.0
 instance_shader_parameters/color = Color(5.014, 2.292, 0, 1)
 instance_shader_parameters/fade_delay = 3.68800012768
-instance_shader_parameters/random_offset = Vector2(0.65918416, 0.8305222)
-instance_shader_parameters/speed = 0.1350000064125
+instance_shader_parameters/random_offset = Vector2(0.94265825, 0.90186054)
+instance_shader_parameters/skew = 1.0
 instance_shader_parameters/volatility = 1.0
 mesh = SubResource("SphereMesh_x4qji")
 script = ExtResource("2_bbm0l")

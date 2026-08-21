@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cfoj0ue4beeq3" path="res://trails/trail.tscn" id="2_nlv1p"]
 
 [node name="Thruster" type="Sprite3D" node_paths=PackedStringArray("trail")]
+sorting_offset = 100.0
 texture_filter = 0
 render_priority = 1
 script = ExtResource("1_766rx")
@@ -11,3 +12,4 @@ trail = NodePath("Trail")
 metadata/_custom_type_script = "uid://cppt8clgthcoh"
 
 [node name="Trail" parent="." instance=ExtResource("2_nlv1p")]
+instance_shader_parameters/outer_color = Color(2, 0, 0, 1)

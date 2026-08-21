@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://dgmp64e8gidtt"]
+[gd_scene load_steps=5 format=3 uid="uid://dgmp64e8gidtt"]
 
 [ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://units/unit.tscn" id="1_d4ogn"]
 [ext_resource type="Script" uid="uid://1li4eghsm5c5" path="res://projectiles/bullet/bullet.gd" id="2_yvssa"]
 [ext_resource type="AudioStream" uid="uid://ca34vcr4ki33k" path="res://sound_effects/missile_launch_1.wav" id="3_g1w5t"]
-[ext_resource type="PlaneMesh" uid="uid://dbl564nq45ww8" path="res://trails/mesh.tres" id="4_sils6"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1mdu2"]
 resource_local_to_scene = true
@@ -23,11 +22,3 @@ shape = SubResource("SphereShape3D_1mdu2")
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." index="2"]
 stream = ExtResource("3_g1w5t")
-
-[node name="Trail" type="MeshInstance3D" parent="." index="3"]
-sorting_offset = -1.0
-instance_shader_parameters/flicker_strength = 0.0750000035625
-instance_shader_parameters/inner_color = Color(1.5, 1.5, 0.5, 1)
-instance_shader_parameters/outer_color = Color(2, 0, 0, 1)
-instance_shader_parameters/roundness = 2.0
-mesh = ExtResource("4_sils6")

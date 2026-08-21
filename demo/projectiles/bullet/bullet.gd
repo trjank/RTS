@@ -43,9 +43,9 @@ func begin_death_timer() -> void:
 func kill() -> void:
 	super()
 	#
-	var explosion := Explosion.create()
-	add_sibling(explosion)
-	explosion.global_position = global_position
+	var explosion := battle.explosions.create_explosion_at(global_position, ExplosionData.DEFAULT)
+	ExplosionData.DEFAULT.glow = 50.0
+	explosion.end_radius = 2.0
 
 func order_attack() -> void:
 	if is_missile():
@@ -67,6 +67,7 @@ func _create_trail() -> void:
 	if not data.trail_enabled:
 		return
 	_trail = Trail.create()
-	_trail.data = data.trail
-	_trail.scale = Vector3(data.trail_width_ratio, 0.0, data.trail_length)
 	add_child(_trail)
+	_trail.data = data.trail
+	_trail.scale = Vector3(data.trail_width_ratio, 1.0, data.trail_length)
+	_trail.update_shader()

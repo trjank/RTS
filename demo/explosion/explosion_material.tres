@@ -7,4 +7,5 @@
 render_priority = 0
 shader = ExtResource("1_mosck")
 shader_parameter/height_map = ExtResource("2_gc1c2")
+shader_parameter/speed = 0.50000002375
 shader_parameter/smoke = 14.0

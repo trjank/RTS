@@ -10,7 +10,7 @@ radial_segments = 16
 rings = 8
 
 [node name="Shockwave" type="MeshInstance3D"]
-instance_shader_parameters/distortion = 0.31200001482
+instance_shader_parameters/distortion = 0.078000003705
 mesh = SubResource("SphereMesh_j5s51")
 script = ExtResource("2_ew3vu")
 

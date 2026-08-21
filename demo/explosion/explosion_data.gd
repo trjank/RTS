@@ -6,7 +6,7 @@ const MAX_VOLATILITY := 1.0
 const PROPERTIES: Dictionary[String, Variant.Type] = {
 	"fade_delay": TYPE_FLOAT,
 	"volatility": TYPE_FLOAT,
-	"speed": TYPE_FLOAT,
+	"skew": TYPE_FLOAT,
 	"glow": TYPE_FLOAT,
 	"color": TYPE_COLOR
 }
@@ -17,7 +17,7 @@ static var DEFAULT := ExplosionData.new():
 var fade_delay := 1.0
 var volatility := 1.0:
 	set = set_volatility
-var speed := 1.0
+var skew := 0.0
 var glow := 1.0
 var color := Color.ORANGE
 

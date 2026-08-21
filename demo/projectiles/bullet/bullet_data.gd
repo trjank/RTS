@@ -32,6 +32,7 @@ func create_projectile(from: Weapon, to: Target, _cache: Array[Node3D] ) -> void
 	#
 	var bullet := Bullet.create()
 	var ship := from.get_ship()
+	bullet.battle = ship.battle
 	bullet.data = self
 	bullet.add_collision_exception_with(ship)
 	ship.add_sibling(bullet)

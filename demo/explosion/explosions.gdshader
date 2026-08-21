@@ -2,6 +2,7 @@ shader_type spatial;
 
 render_mode unshaded;
 
+uniform float speed: hint_range(0.0, 1.0) = 0.0;
 uniform float smoke: hint_range(0.0, 100.0) = 14.0;
 uniform sampler2D height_map;
 
@@ -17,13 +18,14 @@ void vertex() {
 	// Extract the limited data we can store per instance
 	age = INSTANCE_CUSTOM.x;
 	fade_delay = INSTANCE_CUSTOM.y;
-	float speed = INSTANCE_CUSTOM.z;
+	float skew = INSTANCE_CUSTOM.z;
 	float volatility = INSTANCE_CUSTOM.w;
 	vec2 random_offset = random_vec2(INSTANCE_ID);
 	// Make the explosion non-spherical
 	vec2 uv = UV + speed * TIME * NORMAL.xy + random_offset;
 	height = age * texture(height_map, uv).r;
 	VERTEX *= 1.0 + volatility * (2.0 * height - 1.0);
+	VERTEX *= pow(1.0 - VERTEX.z, skew);
 }
 
 void fragment() {

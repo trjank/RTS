@@ -5,3 +5,4 @@
 [resource]
 render_priority = 5
 shader = ExtResource("1_cmo6q")
+shader_parameter/distribution = 10.0

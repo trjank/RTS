@@ -1342,14 +1342,15 @@
 		"glow": 10.0,
 		"tab": "hidden",
 		"y": 0.1,
-		"lifetime_sec": 3.0,
-		"launch_velocity": 10.0,
+		"lifetime_sec": 1.0,
+		"launch_velocity": 50.0,
 		"sound_variation": 0.25,
 		"trail_enabled": true,
-		"trail_width_ratio": 0.5,
-		"trail_length": 0.2,
+		"trail_width_ratio": 0.2,
+		"trail_length": 5.0,
 		"trail_data": {
-			"inner_color": "white"
+			"inner_color": "white",
+			"outer_color": "black"
 		},
 		"effective_range": 100.0,
 		"image_path": "res://part_images/projectile_bullet_energy_long.png"
