@@ -71,11 +71,11 @@ func _init() -> void:
 	_material.shader = preload("res://ships/ship.gdshader")
 	_material.set_shader_parameter("shield_texture", preload("res://ships/shield_texture.tres") )
 
-func get_db() -> ShipDatabase:
-	return _db
-
 func get_id() -> int:
 	return _id
+
+func get_db() -> ShipDatabase:
+	return _db
 	
 func sync() -> bool:
 	return _db != null and _db.sync_ship(self)

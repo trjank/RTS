@@ -29,13 +29,16 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_cls68")
 script = ExtResource("1_fk1q8")
 
-[node name="VBoxContainer" type="GridContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-columns = 2
 
 [node name="Label" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 text = "#1"
+
+[node name="DeleteButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("1_itqrd")
 
 [node name="Conditions" type="HFlowContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -60,10 +63,6 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/icon_max_width = 32
 icon = ExtResource("2_i2owq")
-
-[node name="DeleteButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-icon = ExtResource("1_itqrd")
 
 [node name="Behavior" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2

@@ -33,9 +33,6 @@ var _selecting := false
 static func distance_sorter(a: Node3D, b: Node3D, point: Vector3) -> bool:
 	return a.global_position.distance_squared_to(point) < b.global_position.distance_squared_to(point)
 
-static func _to_collider(result: Dictionary) -> Node3D:
-	return result["collider"]
-
 func _ready() -> void:
 	mesh_instance.mesh.size = Vector2.ZERO
 	_resize_hitbox()
@@ -75,7 +72,7 @@ func get_nearest_nodes(point: Vector3, mask := Globals.Layer.EVERYTHING, max_dis
 	query.transform = Transform3D(Basis(), point)
 	query.collision_mask = mask
 	# NOTE: This only checks 32 nodes by default (set max_results to change this)
-	return get_world_3d().direct_space_state.intersect_shape(query).map(_to_collider)
+	return get_world_3d().direct_space_state.intersect_shape(query).map(func(dict: Dictionary) -> Node3D: return dict["collider"] )
 
 func get_nearest_node(point: Vector3, mask := Globals.Layer.EVERYTHING, max_distance := single_select_near_range) -> Node3D:
 	var nodes := get_nearest_nodes(point, mask, max_distance)
@@ -96,7 +93,7 @@ func _resize_hitbox() -> void:
 	size_3d.y = multiselect_range
 	global_position = 0.5 * (start + end)
 	mesh_instance.mesh.size = size_2d
-	mesh_instance.set_instance_shader_parameter("size", size_2d)
+	mesh_instance.set_instance_shader_parameter(&"size", size_2d)
 	hitbox.shape.size = size_3d
 
 func _begin_selection() -> void:
@@ -151,9 +148,9 @@ func _finish_multiselection() -> void:
 	_stop_selection()
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("select") and single_select_mode != SingleSelectMode.DISABLED:
+	if event.is_action_pressed(&"select") and single_select_mode != SingleSelectMode.DISABLED:
 		_finish_single_selection()
-	if event.is_action_pressed("multiselect") and not _selecting:
+	if event.is_action_pressed(&"multiselect") and not _selecting:
 		_begin_selection()
-	if event.is_action_released("multiselect") and _selecting:
+	if event.is_action_released(&"multiselect") and _selecting:
 		_finish_multiselection()

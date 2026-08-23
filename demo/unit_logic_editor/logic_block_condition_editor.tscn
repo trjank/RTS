@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://vfsqecgyh3d8"]
+[gd_scene load_steps=3 format=3 uid="uid://vfsqecgyh3d8"]
+
+[ext_resource type="Script" uid="uid://cmya27utflwvt" path="res://unit_logic_editor/logic_block_condition_editor.gd" id="1_wfbgd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lv8my"]
 content_margin_left = 25.0
@@ -7,7 +9,7 @@ content_margin_right = 25.0
 content_margin_bottom = 25.0
 bg_color = Color(1, 0.71650004, 0.37, 1)
 
-[node name="LogicBlockConditionEditor" type="PanelContainer"]
+[node name="LogicBlockConditionEditor" type="PanelContainer" node_paths=PackedStringArray("condition_dropdown", "comparison_dropdown", "spin_box")]
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
@@ -16,6 +18,10 @@ offset_right = 201.0
 offset_bottom = 24.0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_lv8my")
+script = ExtResource("1_wfbgd")
+condition_dropdown = NodePath("HBoxContainer/ConditionOptionButton")
+comparison_dropdown = NodePath("HBoxContainer/ComparisonOptionButton")
+spin_box = NodePath("HBoxContainer/SpinBox")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -26,17 +32,29 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
+disabled = true
 selected = 0
 fit_to_longest_item = false
-item_count = 1
-popup/item_0/text = "HP RATIO"
+item_count = 6
+popup/item_0/text = "SPEED"
 popup/item_0/id = 0
+popup/item_1/text = "MASS"
+popup/item_1/id = 1
+popup/item_2/text = "HP"
+popup/item_2/id = 2
+popup/item_3/text = "MAX HP"
+popup/item_3/id = 3
+popup/item_4/text = "HP RATIO"
+popup/item_4/id = 4
+popup/item_5/text = "ENERGY"
+popup/item_5/id = 5
 
 [node name="ComparisonOptionButton" type="OptionButton" parent="HBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
+disabled = true
 selected = 0
 fit_to_longest_item = false
 item_count = 6
@@ -55,3 +73,8 @@ popup/item_5/id = 5
 
 [node name="SpinBox" type="SpinBox" parent="HBoxContainer"]
 layout_mode = 2
+editable = false
+
+[connection signal="item_selected" from="HBoxContainer/ConditionOptionButton" to="." method="_on_condition_option_button_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/ComparisonOptionButton" to="." method="_on_comparison_option_button_item_selected"]
+[connection signal="value_changed" from="HBoxContainer/SpinBox" to="." method="_on_spin_box_value_changed"]

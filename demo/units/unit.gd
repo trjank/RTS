@@ -55,6 +55,8 @@ static func create() -> Unit:
 @export var broadside_curve: Curve
 @export var hitbox: CollisionShape3D
 
+var logic := UnitLogic.DEFAULT:
+	set = set_logic
 var value := StrategicResources.NONE
 var path_arc := 0.3
 var course_correction := 3.0
@@ -169,6 +171,9 @@ func get_max_angular_velocity() -> float:
 	# -> |ω_max| = turnrate / (mass * angular_damp)
 	return torque / (mass * angular_damp)
 
+func set_logic(new_logic: UnitLogic) -> void:
+	logic = new_logic if new_logic != null else UnitLogic.DEFAULT
+
 func set_player_owner(new_player_owner: Player) -> void:
 	player_owner = new_player_owner
 
@@ -257,7 +262,7 @@ func kill() -> void:
 	died.emit()
 
 func order_attack() -> void:
-	attack()
+	logic.execute(self)
 
 func is_near() -> bool:
 	return true
@@ -284,7 +289,7 @@ func condition_value(condition: Condition) -> float:
 		Condition.HP: number = hp
 		Condition.MAX_HP: number = 0.0
 		Condition.TEAM_ADVANTAGE: pass
-		_: push_warning("")
+		_: push_error("Invalid unit condition: %d" % condition)
 	return number
 
 ## NOTE: This rams by default
@@ -298,7 +303,7 @@ func attack(min_distance := RAMMING_DISTANCE) -> void:
 func flee(safe_distance := DEFAULT_SAFE_DISTANCE) -> void:
 	_behavior_flags |= Behavior.FLEE
 	#
-	_attack_position = get_waypoint().position - safe_distance * _direction_to_waypoint
+	_attack_position = get_waypoint().global_position - safe_distance * _direction_to_waypoint
 	_internal_movement_locked = false
 
 ## NOTE: This is similar to attack(), but has better prediction for nukes and melee
