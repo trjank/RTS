@@ -1,10 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://c0amctp11de4o"]
+[gd_scene load_steps=12 format=3 uid="uid://c0amctp11de4o"]
 
 [ext_resource type="Script" uid="uid://oargflkp2nu8" path="res://unit_logic_editor/unit_logic_editor.gd" id="1_31gy1"]
 [ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="1_41is2"]
-[ext_resource type="PackedScene" uid="uid://cttfymcne3g5w" path="res://unit_logic_editor/logic_block_editor.tscn" id="1_amnoc"]
 [ext_resource type="Texture2D" uid="uid://by2clum4xu507" path="res://icons/hexagons.png" id="2_lccja"]
-[ext_resource type="PackedScene" uid="uid://b8ppjceb5p8yi" path="res://unit_logic_editor/loaded_unit_logic.tscn" id="3_8wxod"]
 [ext_resource type="Texture2D" uid="uid://bc2ocllol2460" path="res://icons/add.png" id="6_adwnx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_31gy1"]
@@ -38,8 +36,12 @@ border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_34pl7"]
 
-[node name="UnitLogicEditor" type="Node"]
+[node name="UnitLogicEditor" type="Node" node_paths=PackedStringArray("create_unit_logic_button", "create_block_button", "loaded_container", "block_container")]
 script = ExtResource("1_31gy1")
+create_unit_logic_button = NodePath("UI/VBoxContainer/HBoxContainer/List/ScrollContainer/VBoxContainer/CreateUnitLogicButton")
+create_block_button = NodePath("UI/VBoxContainer/HBoxContainer/ScrollContainer/VBoxContainer/CreateBlockButton")
+loaded_container = NodePath("UI/VBoxContainer/HBoxContainer/List/ScrollContainer/VBoxContainer/LoadedUnitLogic")
+block_container = NodePath("UI/VBoxContainer/HBoxContainer/ScrollContainer/VBoxContainer/BehaviorBlocks")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -95,12 +97,14 @@ horizontal_scroll_mode = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer/List/ScrollContainer"]
 layout_mode = 2
+theme_override_constants/separation = 25
 
-[node name="LoadedUnitLogic" parent="UI/VBoxContainer/HBoxContainer/List/ScrollContainer/VBoxContainer" instance=ExtResource("3_8wxod")]
+[node name="LoadedUnitLogic" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer/List/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 15
 
 [node name="CreateUnitLogicButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/List/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 100)
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 2
@@ -132,26 +136,24 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_34pl7")
 text = "New Unit Logic"
 icon = ExtResource("6_adwnx")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer/ScrollContainer"]
 layout_mode = 2
 theme_override_constants/separation = 25
 
-[node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "THIS IS NOT EDITABLE!"
+text = "CPU Cost: 0"
 
-[node name="BehaviorBlocks" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="BehaviorBlocks" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 25
 
-[node name="BehaviorBlock" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/BehaviorBlocks" instance=ExtResource("1_amnoc")]
-layout_mode = 2
-
-[node name="BehaviorBlock2" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/BehaviorBlocks" instance=ExtResource("1_amnoc")]
-layout_mode = 2
-
-[node name="CreateBlockButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 100)
+[node name="CreateBlockButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 2
@@ -160,7 +162,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_adwnx")
 theme_override_styles/hover = SubResource("StyleBoxFlat_x3kkc")
 icon_alignment = 1
 
-[node name="Button" type="Button" parent="UI/VBoxContainer/HBoxContainer/VBoxContainer/CreateBlockButton"]
+[node name="Button" type="Button" parent="UI/VBoxContainer/HBoxContainer/ScrollContainer/VBoxContainer/CreateBlockButton"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -186,4 +188,4 @@ icon = ExtResource("6_adwnx")
 [node name="World" type="Node3D" parent="."]
 
 [connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/List/ScrollContainer/VBoxContainer/CreateUnitLogicButton" to="." method="_on_create_unit_logic_button_pressed"]
-[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/VBoxContainer/CreateBlockButton" to="." method="_on_create_block_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/HBoxContainer/ScrollContainer/VBoxContainer/CreateBlockButton" to="." method="_on_create_block_button_pressed"]

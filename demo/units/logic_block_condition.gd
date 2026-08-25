@@ -1,30 +1,39 @@
 class_name LogicBlockCondition extends RefCounted
 
+signal edited
+
 enum Comparison {
-	EQUALS,
-	NOT_EQUALS,
-	LESS_THAN,
-	GREATER_THAN,
 	LESS_THAN_EQUALS,
 	GREATER_THAN_EQUALS
 }
 
 const BYTES := Bytes.U64 + Bytes.U8 + Bytes.FLOAT
 
-var condition := Unit.Condition.HP
-var comparison := Comparison.EQUALS
-var compare_value := 0.0
+var condition := Unit.Condition.HP:
+	set = set_condition
+var comparison := Comparison.LESS_THAN_EQUALS:
+	set = set_comparison
+var compare_value := 0.0:
+	set = set_compare_value
 
-static func compare(a: float, b: float, operation := Comparison.EQUALS) -> bool:
-	match operation:
-		Comparison.EQUALS: return a == b
-		Comparison.NOT_EQUALS: return a != b
-		Comparison.LESS_THAN: return a < b
-		Comparison.GREATER_THAN: return a > b
-		Comparison.LESS_THAN_EQUALS: return a <= b
-		Comparison.GREATER_THAN_EQUALS: return a >= b
-		_: push_warning("Invalid operation: %d" % operation)
-	return false
+static func compare(a: float, b: float, operation := Comparison.LESS_THAN_EQUALS) -> bool:
+	return a <= b if operation == Comparison.LESS_THAN_EQUALS else a >= b
+
+func set_condition(new_condition: Unit.Condition) -> void:
+	if new_condition == condition:
+		return
+	condition = new_condition
+	edited.emit()
+
+func set_comparison(new_comparison: Comparison) -> void:
+	if new_comparison == comparison:
+		return
+	comparison = new_comparison
+	edited.emit()
+
+func set_compare_value(new_compare_value: float) -> void:
+	compare_value = new_compare_value
+	edited.emit()
 
 func check(value: float) -> bool:
 	return compare(value, compare_value, comparison)

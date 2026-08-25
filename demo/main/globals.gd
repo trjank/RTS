@@ -17,8 +17,10 @@ enum Layer {
 const CONFIG_PATH := "user://settings_DO_NOT_FILESHARE.cfg"
 const PARTS_JSON_PATH := "res://parts/part_data.json"
 const SHIP_DB_PATH := "user://ship_db.db"
+const UNIT_LOGIC_DB_PATH := "user://unit_logic_db.db"
 const LOAD_LIMIT_SHIPS := 100
 const LOAD_LIMIT_FLEETS := 100
+const LOAD_LIMIT_UNIT_LOGIC := 100
 const MIN_VOLUME := 0.0
 const DEFAULT_VOLUME := 50.0
 const MAX_VOLUME := 100.0
@@ -27,8 +29,9 @@ var main: Main:
 	set = set_main
 var client := Client2.new()
 var config := ConfigFile.new()
-var ship_db := ShipDatabase.new()
 var part_manager := PartManager.new()
+var ship_db := ShipDatabase.new()
+var unit_logic_db := UnitLogicDatabase.new()
 
 var volume := DEFAULT_VOLUME:
 	set = set_volume
@@ -48,10 +51,8 @@ func set_music_volume(new_music_volume: float) -> void:
 func _init() -> void:
 	_load_json()
 	config.load(CONFIG_PATH)
-	ship_db.part_manager = part_manager
-	ship_db.load_file(SHIP_DB_PATH)
-	# Load local account data
-	ship_db.load_ships(LOAD_LIMIT_SHIPS)
+	load_ships()
+	load_unit_logic()
 	var fleets := ship_db.load_fleets(LOAD_LIMIT_FLEETS)
 	var fleet := ship_db.get_fleet(config.get_value("player", "fleet_id", -1) )
 	_load_config_data()
@@ -62,6 +63,15 @@ func _init() -> void:
 		ship_db.create_fleet(client.fleet)
 	else:
 		client.fleet = fleets[0]
+
+func load_ships() -> void:
+	ship_db.part_manager = part_manager
+	ship_db.load_file(SHIP_DB_PATH)
+	ship_db.load_ships(LOAD_LIMIT_SHIPS)
+
+func load_unit_logic() -> void:
+	unit_logic_db.load_file(UNIT_LOGIC_DB_PATH)
+	unit_logic_db.load_unit_logic(LOAD_LIMIT_UNIT_LOGIC)
 
 func _load_config_data() -> void:
 	_load_input_map()
@@ -94,6 +104,7 @@ func _load_input_map() -> void:
 
 func _save_input_map() -> void:
 	config.erase_section("keybinds")
+	#
 	for action in KeybindRow.get_custom_actions():
 		config.set_value("keybinds", action, InputMap.action_get_events(action) )
 
@@ -101,7 +112,6 @@ func _notification(what: int) -> void:
 	# We need to save account data before the game closes
 	if what != NOTIFICATION_WM_CLOSE_REQUEST:
 		return
-	# NOTE: SQLite autosaves, so we do not need to manually save databases
 	config.set_value("player", "name", client.name)
 	config.set_value("player", "color", client.color)
 	config.set_value("sound", "volume", volume)
@@ -111,11 +121,11 @@ func _notification(what: int) -> void:
 	config.save(CONFIG_PATH)
 
 ## Returns average time in microseconds
-func benchmark(f: Callable, iterations := 1) -> float:
+func benchmark(function: Callable, iterations := 1) -> float:
 	var start := Time.get_ticks_usec()
 	#
 	for i in iterations:
-		await f.call()
+		await function.call()
 	var end := Time.get_ticks_usec()
 	var dt := float(end - start)
 	return dt / iterations

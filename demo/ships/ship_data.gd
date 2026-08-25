@@ -35,8 +35,7 @@ const BYTES_PER_PART := BYTES_U16 + BYTES_U16 + BYTES_U8 + BYTES_UTF32_CODE
 var name := "":
 	set = set_name
 var grid_size: Vector2i:
-	get = get_grid_size,
-	set = set_grid_size
+	get = get_grid_size, set = set_grid_size
 var cost := StrategicResources.new()
 var mass := 0.0
 var warp_per_sec := 0.0
@@ -55,6 +54,9 @@ var image: Image:
 	set = set_image
 var is_finalized := false
 
+var _id := -1
+var _db: ShipDatabase
+var _saved := true
 var _texture: ImageTexture
 var _grid_bounds := Rect2i(Vector2i.ZERO, MIN_GRID_SIZE)
 var _ship_bounds := Rect2i()
@@ -62,8 +64,6 @@ var _part_ids := PackedInt32Grid.new(MIN_GRID_SIZE)
 var _parts: Array[ShipDataPart] = [null]
 var _part_clusters := DisjointSets.new()
 var _bytes := StreamPeerBuffer.new()
-var _db: ShipDatabase
-var _id := -1
 var _placement_error: int = PlacementError.OK
 var _material := ShaderMaterial.new()
 
@@ -76,7 +76,10 @@ func get_id() -> int:
 
 func get_db() -> ShipDatabase:
 	return _db
-	
+
+func is_saved() -> bool:
+	return _saved
+
 func sync() -> bool:
 	return _db != null and _db.sync_ship(self)
 

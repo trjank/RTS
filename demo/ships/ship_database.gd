@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS fleet_slots (
 	PRIMARY KEY (fleet_id, slot)
 );
 """
+const INVALID_ID := -1
 const ALL_COLUMNS := ["*"]
 
 var part_manager: PartManager

@@ -63,7 +63,7 @@ visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
 theme_override_font_sizes/font_size = 28
-text = " Unsaved"
+text = "Unsaved"
 
 [node name="Name" type="LineEdit" parent="PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
