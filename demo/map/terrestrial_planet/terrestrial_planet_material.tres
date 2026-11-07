@@ -8,6 +8,7 @@ colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_pghkq"]
 noise_type = 2
+frequency = 0.0092
 cellular_return_type = 0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_myt8n"]
@@ -19,6 +20,6 @@ seamless = true
 render_priority = 0
 shader = ExtResource("1_4dltr")
 shader_parameter/biome_texture = SubResource("NoiseTexture2D_myt8n")
-shader_parameter/slope_color_theshold = 0.95
-shader_parameter/slope_color_blend = 0.1
+shader_parameter/slope_color_theshold = 0.9530000452675
+shader_parameter/slope_color_blend = 0.062000002945
 shader_parameter/uv_blend_sharpness = 0.0

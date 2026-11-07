@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bvi7rt1l6hfoy"]
+[gd_scene format=3 uid="uid://bvi7rt1l6hfoy"]
 
 [ext_resource type="Script" uid="uid://yubit2roc71n" path="res://map/planet/planet.gd" id="1_3aqce"]
 [ext_resource type="PackedScene" uid="uid://hvicroe1d56b" path="res://pips/pip_bar.tscn" id="2_td387"]
@@ -9,7 +9,7 @@ resource_local_to_scene = true
 [sub_resource type="SphereShape3D" id="SphereShape3D_td387"]
 resource_local_to_scene = true
 
-[node name="Planet" type="Node3D" node_paths=PackedStringArray("ui", "label", "mesh_instance", "zone", "zone_shape", "hitbox", "hitbox_shape", "progress_bar")]
+[node name="Planet" type="Node3D" unique_id=1015453886 node_paths=PackedStringArray("ui", "label", "mesh_instance", "zone", "zone_shape", "hitbox", "hitbox_shape", "progress_bar")]
 script = ExtResource("1_3aqce")
 ui = NodePath("UI")
 label = NodePath("UI/Label3D")
@@ -21,10 +21,10 @@ hitbox_shape = NodePath("Hitbox/CollisionShape3D")
 progress_bar = NodePath("UI/PipBar")
 metadata/_custom_type_script = "uid://yubit2roc71n"
 
-[node name="UI" type="Node3D" parent="."]
+[node name="UI" type="Node3D" parent="." unique_id=1831041936]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
-[node name="Label3D" type="Label3D" parent="UI"]
+[node name="Label3D" type="Label3D" parent="UI" unique_id=1739216110]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 billboard = 1
 no_depth_test = true
@@ -35,7 +35,7 @@ text = "Planet"
 font_size = 8
 outline_size = 8
 
-[node name="PipBar" parent="UI" instance=ExtResource("2_td387")]
+[node name="PipBar" parent="UI" unique_id=532630689 instance=ExtResource("2_td387")]
 transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 instance_shader_parameters/pip_progress = 0.0
 instance_shader_parameters/pip_width = 4.9
@@ -44,22 +44,22 @@ size = Vector2(5, 1)
 max_value = 5.0
 pip_color = Color(1, 0.32, 0.32, 1)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1751150612]
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="Area3D" type="Area3D" parent="." unique_id=1506430901]
 collision_layer = 0
 collision_mask = 4
 input_ray_pickable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=2092813763]
 shape = SubResource("SphereShape3D_uj2kf")
 
-[node name="Hitbox" type="StaticBody3D" parent="."]
+[node name="Hitbox" type="StaticBody3D" parent="." unique_id=1022241276]
 collision_layer = 17
 collision_mask = 17
 input_ray_pickable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox" unique_id=138834454]
 shape = SubResource("SphereShape3D_td387")
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

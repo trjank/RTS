@@ -1,10 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://cbim2p730crar"]
+[gd_scene format=3 uid="uid://cbim2p730crar"]
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_ltjny"]
 [ext_resource type="Script" uid="uid://d3piswu2k7xgg" path="res://map/terrestrial_planet/terrestrial_planet.gd" id="2_3s5t7"]
 [ext_resource type="Resource" uid="uid://t2nnmj7dhpeo" path="res://map/terrestrial_planet/biomes/volcano.tres" id="3_56eyt"]
 [ext_resource type="Material" uid="uid://dqej8nkoler0c" path="res://map/terrestrial_planet/terrestrial_planet_material.tres" id="3_swokb"]
-[ext_resource type="ArrayMesh" uid="uid://dk37dx2qtx2xt" path="res://map/terrestrial_planet/mesh_mountains_medium.res" id="4_swokb"]
+[ext_resource type="ArrayMesh" uid="uid://csin0kvm10gnh" path="res://map/terrestrial_planet/mesh_mountains_medium.res" id="5_56eyt"]
 [ext_resource type="Shader" uid="uid://kv7l8dtml8ip" path="res://map/planet/atmosphere_dynamic_depth.gdshader" id="5_swokb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_56eyt"]
@@ -25,17 +25,17 @@ resource_local_to_scene = true
 [sub_resource type="SphereShape3D" id="SphereShape3D_6wf2m"]
 resource_local_to_scene = true
 
-[node name="TerrestrialPlanet" node_paths=PackedStringArray("atmosphere") instance=ExtResource("1_ltjny")]
+[node name="TerrestrialPlanet" unique_id=789742186 node_paths=PackedStringArray("atmosphere") instance=ExtResource("1_ltjny")]
 script = ExtResource("2_3s5t7")
 temperature = 0.52
 humidity = 0.0
 biome = ExtResource("3_56eyt")
 atmosphere = NodePath("MeshInstance3D/Atmosphere")
 
-[node name="UI" parent="." index="0"]
+[node name="UI" parent="." index="0" unique_id=1831041936]
 transform = Transform3D(0.9999996, 0, 0, 0, 1, 0, 0, 0, 0.9999996, 0, 1, 0)
 
-[node name="MeshInstance3D" parent="." index="1"]
+[node name="MeshInstance3D" parent="." index="1" unique_id=1751150612]
 transform = Transform3D(1, 0, 0, 0, -0.9983418, 0.05756398, 0, -0.05756398, -0.9983418, 0, 0, 0)
 material_override = ExtResource("3_swokb")
 instance_shader_parameters/biome_color = Color(0, 0, 0, 1)
@@ -44,9 +44,9 @@ instance_shader_parameters/shore_color = Color(0.93683565, 0.93683565, 0.9368356
 instance_shader_parameters/shore_height = 1.02
 instance_shader_parameters/steep_color = Color(0.022581305, 0.02258131, 0.022581305, 1)
 instance_shader_parameters/water_color = Color(1.8247963, 0.061161518, 0, 1)
-mesh = ExtResource("4_swokb")
+mesh = ExtResource("5_56eyt")
 
-[node name="Atmosphere" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
+[node name="Atmosphere" type="MeshInstance3D" parent="MeshInstance3D" index="0" unique_id=1059601808]
 transform = Transform3D(1, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0)
 material_override = SubResource("ShaderMaterial_56eyt")
 instance_shader_parameters/color = Color(1, 0.5813454, 0.5074651, 1)
@@ -55,8 +55,8 @@ instance_shader_parameters/rim_strength = 10.0
 mesh = SubResource("SphereMesh_hpp1k")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" parent="Area3D" index="0"]
+[node name="CollisionShape3D" parent="Area3D" parent_id_path=PackedInt32Array(1506430901) index="0" unique_id=2092813763]
 shape = SubResource("SphereShape3D_56eyt")
 
-[node name="CollisionShape3D" parent="Hitbox" index="0"]
+[node name="CollisionShape3D" parent="Hitbox" parent_id_path=PackedInt32Array(1022241276) index="0" unique_id=138834454]
 shape = SubResource("SphereShape3D_6wf2m")
