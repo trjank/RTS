@@ -232,15 +232,19 @@ func set_unit_logic_uid(new_unit_logic_uid: int) -> void:
 	unit_logic = UnitLogic.from_uid(new_unit_logic_uid)
 
 func set_thumbnail(new_thumbnail: Image) -> void:
+	if new_thumbnail == thumbnail:
+		return
 	thumbnail = new_thumbnail
 	_thumbnail_texture = ImageTexture.create_from_image(thumbnail) if thumbnail != null else null
 	generated_thumbnail.emit()
 
-func set_thumbnail_bytes(new_thumbnail_bytes: PackedByteArray) -> Error:
+func set_thumbnail_bytes(new_thumbnail_bytes: PackedByteArray) -> void:
+	if new_thumbnail_bytes.is_empty():
+		return set_thumbnail(null)
 	var new_thumbnail = Image.new()
 	var error := new_thumbnail.load_webp_from_buffer(new_thumbnail_bytes)
 	thumbnail = new_thumbnail
-	return error
+	assert(error == OK)
 
 func set_saved(new_saved: bool) -> void:
 	if new_saved == saved:

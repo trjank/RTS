@@ -90,6 +90,8 @@ func add_part(part: Node) -> void:
 	_update_error(RECALCULATE_ERROR)
 
 func save(lazy := true) -> int:
+	if ship == null:
+		return ShipData.PartError.OK
 	if lazy and _error_cache[ship] != RECALCULATE_ERROR:
 		return _error_cache[ship]
 	ship.clear()

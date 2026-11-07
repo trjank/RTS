@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bll4613yi8yxk"]
+[gd_scene format=3 uid="uid://bll4613yi8yxk"]
 
 [ext_resource type="Script" uid="uid://gn43e8awh35b" path="res://ships_screen/ship_button.gd" id="2_oyyh1"]
 
@@ -20,7 +20,7 @@ bg_color = Color(0.1, 0.1, 0.1, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqj0r"]
 bg_color = Color(0, 0, 0, 0)
 
-[node name="Button" type="Button" node_paths=PackedStringArray("ship_id", "unsaved_indicator", "name_edit", "custom_icon", "panel_container")]
+[node name="Button" type="Button" unique_id=66983356 node_paths=PackedStringArray("ship_id", "unsaved_indicator", "name_edit", "custom_icon", "panel_container")]
 custom_minimum_size = Vector2(300, 300)
 offset_right = 200.0
 offset_bottom = 10.0
@@ -38,7 +38,7 @@ custom_icon = NodePath("MarginContainer/CustomIcon")
 panel_container = NodePath("PanelContainer")
 metadata/_custom_type_script = "uid://gn43e8awh35b"
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=674035067]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 1
 anchors_preset = 10
@@ -48,24 +48,24 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_y70oc")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer" unique_id=1335586705]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="ID" type="Label" parent="PanelContainer/HBoxContainer"]
+[node name="ID" type="Label" parent="PanelContainer/HBoxContainer" unique_id=1680006396]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "#0"
 
-[node name="UnsavedIndicator" type="Label" parent="PanelContainer/HBoxContainer"]
+[node name="UnsavedIndicator" type="Label" parent="PanelContainer/HBoxContainer" unique_id=1001602639]
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
 theme_override_font_sizes/font_size = 28
 text = "Unsaved"
 
-[node name="Name" type="LineEdit" parent="PanelContainer/HBoxContainer"]
+[node name="Name" type="LineEdit" parent="PanelContainer/HBoxContainer" unique_id=47933010]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
@@ -75,7 +75,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_gqj0r")
 placeholder_text = "Unnamed"
 max_length = 50
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1448263439]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -86,7 +86,7 @@ grow_vertical = 0
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_bottom = 15
 
-[node name="CustomIcon" type="TextureRect" parent="MarginContainer"]
+[node name="CustomIcon" type="TextureRect" parent="MarginContainer" unique_id=1646338631]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 expand_mode = 3

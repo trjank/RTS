@@ -89,6 +89,8 @@ func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
 	return data is ShipButton and (in_fleet or not data.in_fleet)
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
+	assert(data is ShipButton)
+	#
 	var new_ship = data.ship
 	if can_swap(self, data):
 		data.ship = ship

@@ -29,24 +29,25 @@ CREATE TABLE IF NOT EXISTS fleet_slots (
 	PRIMARY KEY (fleet_id, slot)
 );"""
 const CREATE_PRIORITY_TRIGGERS_QUERY = """
-CREATE TRIGGER initialize_ship_priority
+CREATE TRIGGER IF NOT EXISTS initialize_ship_priority
 AFTER INSERT ON ships
 BEGIN
     UPDATE ships
     SET priority = NEW.id
     WHERE id = NEW.id;
 END;
-CREATE TRIGGER initialize_fleet_priority
+CREATE TRIGGER IF NOT EXISTS initialize_fleet_priority
 AFTER INSERT ON fleets
 BEGIN
     UPDATE fleets
     SET priority = NEW.id
     WHERE id = NEW.id;
 END;"""
+const BLOB_COLUMNS: PackedStringArray = ["thumbnail_bytes", "part_bytes", "extra_bytes"]
 
 var _db := SQLite.new()
-var _load_ship_priority := INT64_MAX
-var _load_fleet_priority := INT64_MAX
+var _load_ship_priority := -1
+var _load_fleet_priority := -1
 
 func load_file(path: String) -> bool:
 	_db.path = path
@@ -56,7 +57,7 @@ func load_file(path: String) -> bool:
 
 ## Loads highest priority ships that have not already been loaded in
 func load_ships(limit: int) -> Array:
-	_db.query_with_bindings("SELECT * FROM ships WHERE priority < ? ORDER BY priority DESC LIMIT ?", [_load_ship_priority, limit] )
+	_db.query_with_bindings("SELECT * FROM ships WHERE priority > ? ORDER BY priority ASC LIMIT ?", [_load_ship_priority, limit] )
 	var ships := _db.query_result.map(_load_ship_from_dict)
 	if not ships.is_empty():
 		_load_ship_priority = ships[-1].priority
@@ -64,7 +65,7 @@ func load_ships(limit: int) -> Array:
 
 ## Loads highest priority fleets that have not already been loaded in
 func load_fleets(limit: int) -> Array:
-	_db.query_with_bindings("SELECT * FROM fleets WHERE priority < ? ORDER BY priority DESC LIMIT ?", [_load_fleet_priority, limit] )
+	_db.query_with_bindings("SELECT * FROM fleets WHERE priority > ? ORDER BY priority ASC LIMIT ?", [_load_fleet_priority, limit] )
 	var fleets := _db.query_result.map(_load_fleet_from_dict)
 	if not fleets.is_empty():
 		_load_fleet_priority = fleets[-1].priority
@@ -98,6 +99,7 @@ func create_ship(ship: ShipData) -> bool:
 	ship.db = self
 	ship.id = _db.last_insert_rowid
 	ship.priority = _db.last_insert_rowid
+	ship_created.emit(ship)
 	return true
 
 func create_fleet(fleet: Fleet) -> bool:
@@ -105,6 +107,8 @@ func create_fleet(fleet: Fleet) -> bool:
 		return false
 	fleet.db = self
 	fleet.id = _db.last_insert_rowid
+	fleet.priority = _db.last_insert_rowid
+	fleet_created.emit(fleet)
 	return true
 
 func sync_ship(ship: ShipData) -> bool:
@@ -159,13 +163,12 @@ func _fleet_slot_to_dict(slot: int, fleet: Fleet) -> Dictionary:
 	return {"fleet_id": fleet.id, "ship_id": fleet._ships[slot].id, "slot": slot}
 
 func _load_ship_from_dict(dict: Dictionary) -> ShipData:
-	if dict["part_bytes"] == null:
-		dict["part_bytes"] = PackedByteArray()
-	if dict["extra_bytes"] == null:
-		dict["extra_bytes"] = PackedByteArray()
+	for column in BLOB_COLUMNS:
+		dict[column] = dict[column] if dict[column] != null else PackedByteArray()
 	var ship := ShipData.from_dict(dict, true)
 	ship.db = self
 	_loaded_ships[ship.id] = ship
+	ship_created.emit(ship)
 	return ship
 
 func _load_fleet_from_dict(result: Dictionary) -> Fleet:
@@ -173,4 +176,5 @@ func _load_fleet_from_dict(result: Dictionary) -> Fleet:
 	fleet.db = self
 	sync_fleet_ships(fleet)
 	_loaded_fleets[fleet.id] = fleet
+	fleet_created.emit(fleet)
 	return fleet

@@ -10,13 +10,17 @@ const MINI_ICONS: Dictionary[int, Texture] = {
 }
 
 @export var button_size := Vector2(250.0, 250.0)
-@export var fleet_id: Label
+@export var id_label: Label
 @export var name_edit: LineEdit
 @export var ship_buttons: Container
+@export var active_label: Label
+@export var active_color := Color.WHITE
 @export var collapsed := false
 
 var fleet: Fleet:
 	set = set_fleet
+var active := false:
+	set = set_active
 
 static func create() -> FleetContainer:
 	return preload("res://ships_screen/fleet_container.tscn").instantiate()
@@ -39,6 +43,12 @@ func set_fleet(new_fleet: Fleet) -> void:
 	update_ui()
 	_add_fleet_ships()
 	fleet_changed.emit(fleet)
+
+func set_active(is_active: bool) -> void:
+	if is_node_ready():
+		active_label.visible = is_active
+	self_modulate = active_color if is_active else Color.WHITE
+	active = is_active
 
 func _add_fleet_ships() -> void:
 	if not is_node_ready():
@@ -69,12 +79,12 @@ func update_ui() -> void:
 		_create_fleet_ui()
 
 func _create_fleet_ui() -> void:
-	fleet_id.text = "Fleet #%d" % fleet.id
+	id_label.text = "Fleet #%d" % fleet.id
 	name_edit.text = fleet.name
 	name_edit.editable = true
 
 func _clear_ui() -> void:
-	fleet_id.text = ""
+	id_label.text = ""
 	name_edit.text = ""
 	name_edit.editable = false
 

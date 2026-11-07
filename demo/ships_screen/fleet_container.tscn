@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://fwcp5yso0imc"]
+[gd_scene format=3 uid="uid://fwcp5yso0imc"]
 
 [ext_resource type="Script" uid="uid://df7r1lo3a8cdl" path="res://ships_screen/fleet_container.gd" id="1_12wau"]
 [ext_resource type="Texture2D" uid="uid://dlve5jskuaf0t" path="res://icons/swap_transparent.png" id="2_0j21k"]
@@ -39,7 +39,7 @@ bg_color = Color(0, 0, 0, 0)
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
 
-[node name="FleetContainer" type="PanelContainer" node_paths=PackedStringArray("fleet_id", "name_edit", "ship_buttons")]
+[node name="FleetContainer" type="PanelContainer" unique_id=2009222135 node_paths=PackedStringArray("id_label", "name_edit", "ship_buttons", "active_label")]
 clip_contents = true
 anchors_preset = 10
 anchor_right = 1.0
@@ -48,25 +48,27 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_kagd1")
 script = ExtResource("1_12wau")
-fleet_id = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ID")
+id_label = NodePath("VBoxContainer/PanelContainer/HBoxContainer/IDLabel")
 name_edit = NodePath("VBoxContainer/PanelContainer/HBoxContainer/Name")
 ship_buttons = NodePath("VBoxContainer/MarginContainer/ShipButtons")
+active_label = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ActiveLabel")
+active_color = Color(0.93389755, 1.5723749, 1.8247963, 1)
 metadata/_custom_type_script = "uid://df7r1lo3a8cdl"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=104537190]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer" unique_id=1414898925]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_rt1o0")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer" unique_id=1518347458]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="FleetSwapButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="FleetSwapButton" type="TextureButton" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=368438977]
 visible = false
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
@@ -76,7 +78,7 @@ texture_hover = ExtResource("3_0j21k")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="DeleteButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="DeleteButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1099183705]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
@@ -89,13 +91,13 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_qkrrn")
 icon = ExtResource("2_lr1pc")
 expand_icon = true
 
-[node name="ID" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="IDLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1245387926]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Fleet"
 vertical_alignment = 1
 
-[node name="Name" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="Name" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1997042348]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -109,27 +111,40 @@ alignment = 1
 max_length = 50
 expand_to_text_length = true
 
-[node name="MoveUp" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="MoveUp" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1265426946]
+visible = false
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 10
 icon = ExtResource("5_qkrrn")
 expand_icon = true
 
-[node name="MoveDown" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="MoveDown" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1494117088]
+visible = false
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 icon = ExtResource("6_0j21k")
 expand_icon = true
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="ActiveLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer" unique_id=1259455135]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.6345, 1, 0.57, 1)
+theme_override_colors/font_outline_color = Color(0.63529414, 1, 0.5686275, 1)
+theme_override_constants/outline_size = 3
+text = "Active"
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=289192793]
 layout_mode = 2
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
-[node name="ShipButtons" type="HFlowContainer" parent="VBoxContainer/MarginContainer"]
+[node name="ShipButtons" type="HFlowContainer" parent="VBoxContainer/MarginContainer" unique_id=1308653665]
 layout_mode = 2
 theme_override_constants/h_separation = -1
 theme_override_constants/v_separation = -1

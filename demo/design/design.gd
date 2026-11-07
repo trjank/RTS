@@ -59,6 +59,8 @@ func set_slot(new_slot: int) -> void:
 	slot_changed.emit(slot)
 
 func save() -> void:
+	if grid.ship == null:
+		return
 	part_selection.move_parts()
 	var error_flags := grid.save()
 	if error_flags != ShipData.PartError.OK or not grid.ship.are_parts_connected():
