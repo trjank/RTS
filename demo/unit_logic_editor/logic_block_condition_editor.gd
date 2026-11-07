@@ -1,4 +1,4 @@
-class_name LogicBlockContainerEditor extends PanelContainer
+class_name LogicBlockConditionEditor extends PanelContainer
 
 const COLORS: Dictionary[Unit.Condition, Color] = {
 	Unit.Condition.SPEED: Color(0x5e61ffff)
@@ -12,12 +12,17 @@ const DEFAULT_COLOR := Color(0xffc45eff)
 var logic_block_condition: LogicBlockCondition:
 	set = set_logic_block_condition
 
+static func create() -> LogicBlockConditionEditor:
+	return preload("res://unit_logic_editor/logic_block_condition_editor.tscn").instantiate()
+
 func set_logic_block_condition(new_logic_block_condition: LogicBlockCondition) -> void:
-	var disabled := new_logic_block_condition == null
 	logic_block_condition = new_logic_block_condition
-	condition_dropdown.disabled = disabled
-	comparison_dropdown.disabled = disabled
-	spin_box.editable = not disabled
+	toggle_edit(new_logic_block_condition != null)
+
+func toggle_edit(enabled: bool) -> void:
+	condition_dropdown.disabled = not enabled
+	comparison_dropdown.disabled = not enabled
+	spin_box.editable = enabled
 
 func _update_color() -> void:
 	self_modulate = COLORS.get(logic_block_condition.condition, DEFAULT_COLOR)

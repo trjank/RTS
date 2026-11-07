@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://vfsqecgyh3d8"]
+[gd_scene load_steps=6 format=3 uid="uid://vfsqecgyh3d8"]
 
 [ext_resource type="Script" uid="uid://cmya27utflwvt" path="res://unit_logic_editor/logic_block_condition_editor.gd" id="1_wfbgd"]
+[ext_resource type="Texture2D" uid="uid://oachrng7auhu" path="res://icons/delete.png" id="2_21gvw"]
+[ext_resource type="Texture2D" uid="uid://dx6fdu1yy0fot" path="res://icons/dropdown.png" id="2_tbuv4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lv8my"]
 content_margin_left = 25.0
@@ -8,6 +10,8 @@ content_margin_top = 25.0
 content_margin_right = 25.0
 content_margin_bottom = 25.0
 bg_color = Color(1, 0.71650004, 0.37, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_21gvw"]
 
 [node name="LogicBlockConditionEditor" type="PanelContainer" node_paths=PackedStringArray("condition_dropdown", "comparison_dropdown", "spin_box")]
 anchors_preset = 4
@@ -32,6 +36,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
+theme_override_icons/arrow = ExtResource("2_tbuv4")
 disabled = true
 selected = 0
 fit_to_longest_item = false
@@ -54,6 +59,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
+theme_override_icons/arrow = ExtResource("2_tbuv4")
 disabled = true
 selected = 0
 fit_to_longest_item = false
@@ -66,6 +72,15 @@ popup/item_1/id = 5
 [node name="SpinBox" type="SpinBox" parent="HBoxContainer"]
 layout_mode = 2
 editable = false
+
+[node name="Button" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_21gvw")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_21gvw")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_21gvw")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_21gvw")
+icon = ExtResource("2_21gvw")
 
 [connection signal="item_selected" from="HBoxContainer/ConditionOptionButton" to="." method="_on_condition_option_button_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/ComparisonOptionButton" to="." method="_on_comparison_option_button_item_selected"]

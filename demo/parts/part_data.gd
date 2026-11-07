@@ -126,10 +126,13 @@ func set_image(new_image: ImageAsset) -> void:
 	image = new_image
 	image_changed.emit()
 
-func create_ship_data_part(id := ShipData.NULL_ID, rect := Rect2i(), rotation := Rotation.Discrete.ROT_0, boundary := _boundary) -> ShipDataPart:
+func create_ship_data_part(id := ShipData.NULL_PART_ID, rect := Rect2i(), rotation := Rotation.Discrete.ROT_0, boundary := _boundary) -> ShipDataPart:
 	return ShipDataPart.new(id, self, rect, rotation, boundary)
 
 func create_part() -> Part:
 	var part := Part.new()
 	part.data = self
 	return part
+
+func _to_string() -> String:
+	return "<PartData %s>" % _code

@@ -23,6 +23,7 @@ signal team_removed(team: Team)
 
 const MAX_NUM_TEAMS := 10
 const MAX_NUM_PLAYERS := 100
+const SAVE_FOLDER := "user://battles/"
 
 @export var world: Node3D
 @export var round_timer: Timer
@@ -51,6 +52,8 @@ var host: Player:
 	set = set_host
 var time := 0.0
 var time_scale := 1.0
+var retrofit_cost_multiplier := 1.0
+var retrofits_enabled := true
 var friendly_fire_enabled := false
 var can_pause := false
 
@@ -60,6 +63,11 @@ var _teams: Dictionary[String, Team] = {}
 var _status := Status.STOPPED
 var _map_root: Node3D
 var _map_data := {}
+var _ship_db: ShipManager
+var _unit_logic_db: UnitLogicManager
+var _converted_fleets: Dictionary[int, int] = {}
+var _converted_ships: Dictionary[int, int] = {}
+var _converted_unit_logic: Dictionary[int, int] = {}
 
 func _init() -> void:
 	_default_team = create_team("Spectators")
@@ -67,11 +75,11 @@ func _init() -> void:
 	set_physics_process(false)
 
 func _ready() -> void:
-	Globals.client.fleet_changed.connect(fleet_container.set_fleet)
-	fleet_container.set_fleet(Globals.client.fleet)
+	Account.me.fleet_changed.connect(fleet_container.set_fleet)
+	fleet_container.fleet = Account.me.fleet
 	mouse_selection.plane = plane
 	me = connect_player("dev")
-	me.fleet = Globals.client.fleet
+	me.fleet = Account.me.fleet
 	host = me
 
 func is_team_alive(team: Team) -> bool:
@@ -158,6 +166,45 @@ func set_gamemode(new_gamemode: Gamemode) -> bool:
 		load_team(team)
 	return true
 
+## Clears stored ShipData and UnitLogic
+func clear_data() -> void:
+	_ship_db.clear()
+	_unit_logic_db.clear()
+
+## Clears store ShipData and UnitLogic, and deletes any database files
+func delete_data() -> void:
+	_ship_db.delete()
+	_unit_logic_db.delete()
+
+func configure(const_id: int) -> bool:
+	_ship_db = ShipManager.new(const_id)
+	_unit_logic_db = UnitLogicManager.new(const_id)
+	return _ship_db.register() and _unit_logic_db.register()
+
+func configure_db(const_id: int, file_name := "battle_%d" % const_id) -> bool:
+	_ship_db = ShipDatabase.new(const_id)
+	_unit_logic_db = UnitLogicDatabase.new(const_id)
+	return _ship_db.register() and _unit_logic_db.register() and _ship_db.load_file(SAVE_FOLDER + file_name + "_ships.db") and _unit_logic_db.load_file(SAVE_FOLDER + file_name + "_logic.db")
+
+func can_retrofit() -> bool:
+	return retrofits_enabled
+
+func converted_ship(ship: ShipData) -> ShipData:
+	return _converted_ships.get(ship)
+
+func converted_fleet(fleet: Fleet) -> Fleet:
+	return _converted_fleets.get(fleet)
+
+func converted_unit_logic(unit_logic: UnitLogic) -> UnitLogic:
+	return _converted_unit_logic.get(unit_logic)
+
+func retrofit(ship_data: ShipData) -> bool:
+	if not can_retrofit():
+		return false
+	for player in _players:
+		pass # retrofit player
+	return true
+
 func destroy_map() -> void:
 	if _map_root == null:
 		return
@@ -174,7 +221,6 @@ func generate_map() -> void:
 	_map_root = Node3D.new()
 	world.add_child(_map_root)
 	var error := map.generate(_map_root, self, rng, scenery, map_depth_limit, _map_data)
-	#
 	print("(Battle) Map generation: %s" % Map.GenerationError.find_key(error) )
 	print("(Battle) Generated %d scenery objects" % _map_data.get("scenery_count", 0) )
 
@@ -360,12 +406,10 @@ func _physics_process(dt: float) -> void:
 
 func _on_countdown_timer_timeout() -> void:
 	var start_error := start()
-	#
 	assert(start_error == StartError.OK)
 
 func _on_round_timer_timeout() -> void:
 	var can_stop := stop()
-	#
 	assert(can_stop)
 
 func _on_design_button_pressed() -> void:

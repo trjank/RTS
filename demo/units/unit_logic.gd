@@ -1,21 +1,22 @@
 class_name UnitLogic extends RefCounted
 
 signal cleared
-signal edited
 signal save_changed(is_saved: bool)
 signal block_added(block: LogicBlock)
 signal block_removed(block: LogicBlock)
 signal renamed(new_name: String)
 
-const PROPERTIES: Dictionary[String, Variant.Type] = {
+static var PROPERTIES: Dictionary[String, Variant.Type] = {
 	"name": TYPE_STRING,
 	"block_bytes": TYPE_PACKED_BYTE_ARRAY
 }
-const DB_PROPERTIES: Dictionary[String, Variant.Type] = {
-	"id": TYPE_INT,
-	"name": TYPE_STRING,
-	"block_bytes": TYPE_PACKED_BYTE_ARRAY
+static var DB_PROPERTIES: Dictionary[String, Variant.Type] = {
+	"id": TYPE_INT
 }
+
+const ID_BITS := 64 - UnitLogicManager.ID_BITS
+const MIN_ID := 0
+const MAX_ID := 2 ** ID_BITS - 1
 const MAX_NUM_BLOCKS := 100
 const MAX_NAME_LENGTH := 100
 const DUMMY_BYTE := 137
@@ -25,15 +26,16 @@ static var NONE := UnitLogic.new():
 static var DEFAULT := UnitLogic.new():
 	set(__): push_error("UnitLogic.DEFAULT is immutable!")
 
-var block_bytes: PackedByteArray:
-	get = get_block_bytes, set = deserialize
 var name := "":
 	set = set_name
 var saved := true:
 	set = set_saved
+var id := 0:
+	set = set_id
 var db: UnitLogicManager:
 	get = get_db, set = set_db
-var id := UnitLogicManager.INVALID_ID
+var block_bytes: PackedByteArray:
+	get = get_block_bytes, set = deserialize
 
 var _db: WeakRef = weakref(null)
 var _blocks: Array[LogicBlock] = []
@@ -41,6 +43,11 @@ var _block_bytes: PackedByteArray = [DUMMY_BYTE]
 
 static func _static_init() -> void:
 	DEFAULT.add_block().behavior = Unit.Behavior.ATTACK
+	DB_PROPERTIES.merge(PROPERTIES)
+
+static func from_uid(uid: int) -> UnitLogic:
+	var static_db := UnitLogicManager.from_id(uid & UnitLogicManager.MAX_ID)
+	return static_db.get_unit_logic(uid >> UnitLogicManager.ID_BITS) if static_db != null else null
 
 static func from_dict(dict: Dictionary, use_id := false, default := DEFAULT) -> UnitLogic:
 	var unit_logic := UnitLogic.new()
@@ -66,6 +73,12 @@ func get_db() -> UnitLogicManager:
 
 func get_block(i: int) -> LogicBlock:
 	return _blocks[i]
+
+func get_uid() -> int:
+	return (db.get_id() if db != null else 0) | (id << UnitLogicManager.ID_BITS)
+
+func set_id(new_id: int) -> void:
+	id = clampi(new_id, MIN_ID, MAX_ID)
 
 func set_db(new_db: UnitLogicManager) -> void:
 	_db = weakref(new_db)
@@ -111,16 +124,15 @@ func add_block() -> LogicBlock:
 	on_block_edited()
 	return block
 
-func on_block_edited() -> void:
-	saved = false
-	edited.emit()
-
 func find_block(block: LogicBlock) -> int:
 	return _blocks.find(block)
 
 func remove_block(i: int) -> void:
 	block_removed.emit(_blocks.pop_at(i) )
 	on_block_edited()
+
+func on_block_edited() -> void:
+	saved = false
 
 func execute(unit: Unit) -> bool:
 	assert(unit != null)

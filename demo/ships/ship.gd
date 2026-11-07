@@ -2,6 +2,8 @@ class_name Ship extends Unit
 
 signal target_changed(new_target: Target)
 
+const MIN_MASS := 0.1
+
 static var show_behavior := false
 
 @export var hp_bar: PipBar
@@ -90,7 +92,7 @@ func reset_stats() -> void:
 	_max_energy = data.max_energy
 	thrust = data.thrust
 	hp = data.max_hp
-	mass = data.mass
+	mass = maxf(data.mass, MIN_MASS)
 	update_inertia_tensor()
 
 func update_ui() -> void:

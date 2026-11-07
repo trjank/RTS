@@ -14,7 +14,6 @@ const MIN_CAPTURE_TIME_SEC := 0.1
 @export var hitbox: StaticBody3D
 @export var hitbox_shape: CollisionShape3D
 @export var progress_bar: PipBar
-@export var low_lod_icon: Sprite3D
 
 var resource_rate := StrategicResources.new()
 var capturable := true:
@@ -30,8 +29,6 @@ var radius := MIN_RADIUS:
 var team_owner: Team:
 	set = set_team_owner
 var capture_zone_radius_ratio := 1.5
-var low_lod := true:
-	set = set_low_lod
 
 var _capturing_team: Team
 var _contesting_team: Team
@@ -65,12 +62,6 @@ func get_capture_ratio() -> float:
 func count_capturing_ships(team: Team) -> int:
 	return _team_ship_count.get(team, 0)
 
-func set_low_lod(is_low_lod: bool) -> void:
-	low_lod = is_low_lod
-	low_lod_icon.visible = is_low_lod
-	ui.visible = not is_low_lod
-	mesh_instance.visible = not is_low_lod
-
 func set_display_name(new_display_name: String) -> void:
 	display_name = new_display_name
 	label.text = display_name if is_zero_approx(resource_rate.alloy) else "%s | %.1f" % [display_name, resource_rate.alloy]
@@ -102,7 +93,6 @@ func set_radius(new_radius: float) -> void:
 	label.position.z = -radius - LABEL_OFFSET_METERS
 	# NOTE: Ensure the mesh's size is one for this to work
 	mesh_instance.scale = radius * Vector3.ONE
-	low_lod_icon.pixel_size = Measurement.METERS_PER_PX * radius
 
 func set_team_owner(new_team_owner: Team) -> void:
 	if team_owner == new_team_owner:
@@ -124,7 +114,6 @@ func _physics_process(dt: float) -> void:
 
 func _process(_dt: float) -> void:
 	ui.global_rotation = Vector3.ZERO
-	#low_lod = global_position.distance_to(get_viewport().get_camera_3d().global_position) > 50.0
 
 func update_contesting_team() -> void:
 	_team_ship_count.clear()

@@ -133,7 +133,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_3uq55")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_mk3ss")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_8cdq8")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_34pl7")
-text = "New Unit Logic"
+text = "New Behavior"
 icon = ExtResource("6_adwnx")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="UI/VBoxContainer/HBoxContainer"]
@@ -160,6 +160,7 @@ theme_override_constants/outline_size = 2
 theme_override_constants/icon_max_width = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_adwnx")
 theme_override_styles/hover = SubResource("StyleBoxFlat_x3kkc")
+disabled = true
 icon_alignment = 1
 
 [node name="Button" type="Button" parent="UI/VBoxContainer/HBoxContainer/ScrollContainer/VBoxContainer/CreateBlockButton"]

@@ -28,6 +28,7 @@ var selection: Array[Target] = []
 var _battle: Battle
 var _battle_data := {}
 var _ships := Node3D.new()
+var _ship_counts: Dictionary[ShipData, int] = {}
 
 func _init(init_display_name := "", init_color := Color.WHITE) -> void:
 	display_name = init_display_name
@@ -45,6 +46,9 @@ func get_battle() -> Battle:
 
 func get_battle_data() -> Dictionary:
 	return _battle_data
+
+func count_ships(data: ShipData) -> int:
+	return _ship_counts.get(data, 0)
 
 func set_bot_status(bot_status: bool) -> void:
 	if bot_status == is_bot:
@@ -92,8 +96,11 @@ func clear_ships() -> void:
 func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 	if ship_data.finalize() != ShipData.PlacementError.OK:
 		print("SHIP HAS PROBLEMS")
+	_ship_counts[ship_data] = _ship_counts.get(ship_data, 0) + 1
+	# TODO: setup death decrementer
 	var ship := Ship.create()
 	_ships.add_child(ship)
+	#ship_data.generate_image()
 	ship.battle = get_battle()
 	ship.data = ship_data
 	ship.player_owner = self

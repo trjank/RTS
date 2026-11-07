@@ -1,8 +1,12 @@
 class_name UnitLogicDatabase extends UnitLogicManager
 
-const CREATE_TABLE_QUERY := "CREATE TABLE IF NOT EXISTS unit_logic (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, block_bytes BLOB NOT NULL);"
+const CREATE_TABLE_QUERY := """
+CREATE TABLE IF NOT EXISTS unit_logic (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name TEXT NOT NULL,
+	block_bytes BLOB NOT NULL
+);"""
 
-var _loaded_unit_logic: Dictionary[int, UnitLogic] = {}
 var _db := SQLite.new()
 
 ## NOTE: The database autosaves (no need to call a save function when done)
@@ -11,8 +15,15 @@ func load_file(path: String) -> bool:
 	_loaded_unit_logic.clear()
 	return _db.open_db() and _db.query(CREATE_TABLE_QUERY)
 
-func size() -> int:
-	return _loaded_unit_logic.size()
+func clear() -> void:
+	_db.delete_rows("unit_logic", "")
+	_loaded_unit_logic.clear()
+
+func delete() -> void:
+	pass
+
+func get_loaded_unit_logic() -> Array:
+	return _loaded_unit_logic.values()
 
 func get_unit_logic(id: int) -> UnitLogic:
 	if id in _loaded_unit_logic:
@@ -35,22 +46,22 @@ func create_unit_logic(unit_logic: UnitLogic) -> bool:
 	return true
 
 func delete_unit_logic(unit_logic: UnitLogic) -> bool:
-	if unit_logic == null or unit_logic.db != self or not _db.delete_rows("unit_logic", "id == %d" % unit_logic.id):
+	if not owns(unit_logic) or not _db.delete_rows("unit_logic", "id == %d" % unit_logic.id):
 		return false
 	_loaded_unit_logic.erase(unit_logic.id)
-	unit_logic.id = INVALID_ID
+	unit_logic.id = 0
 	unit_logic.db = null
 	unit_logic_deleted.emit(unit_logic)
 	return true
 
 func sync_unit_logic(unit_logic: UnitLogic) -> bool:
-	if unit_logic == null or _loaded_unit_logic.get(unit_logic.id) != unit_logic:
+	if not owns(unit_logic):
 		return false
 	var results := _db.select_rows("unit_logic", "id == %d" % unit_logic.id, ["*"] )
-	return unit_logic.load_dict(results[0] )
+	return unit_logic.load_dict(results[0], true)
 
 func save_unit_logic(unit_logic: UnitLogic) -> bool:
-	return unit_logic != null and _db.update_rows("unit_logic", "id == %d" % unit_logic.id, unit_logic.to_dict(false) )
+	return owns(unit_logic) and _db.update_rows("unit_logic", "id == %d" % unit_logic.id, unit_logic.to_dict(false) )
 
 func _load_from_dict(dict: Dictionary) -> UnitLogic:
 	var unit_logic := UnitLogic.from_dict(dict, true)

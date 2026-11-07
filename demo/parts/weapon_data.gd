@@ -44,7 +44,7 @@ func set_charge_sec(new_charge_sec: float) -> void:
 func calculate_fire_cycle_time() -> float:
 	return (burst_shots - 1) * burst_sec + reload_sec + charge_sec
 
-func create_ship_data_part(id := ShipData.NULL_ID, rect := Rect2i(), rotation := Rotation.Discrete.ROT_0, boundary := _boundary) -> ShipDataPart:
+func create_ship_data_part(id := ShipData.NULL_PART_ID, rect := Rect2i(), rotation := Rotation.Discrete.ROT_0, boundary := _boundary) -> ShipDataPart:
 	return ShipDataWeapon.new(id, self, rect, rotation, boundary)
 
 func create_part() -> Part:

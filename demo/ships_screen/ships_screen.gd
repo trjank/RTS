@@ -1,7 +1,9 @@
 class_name ShipsScreen extends Node
 
 signal fleet_changed(new_fleet: Fleet)
+signal toggled_ship_names(hidden: bool)
 
+const LOAD_SHIPS_LIMIT := 1
 const BUTTON_SIZE := Vector2(250.0, 250.0)
 const SELECTED_COLOR := Color(0.934, 1.498, 1.825, 1.0)
 
@@ -9,6 +11,7 @@ const SELECTED_COLOR := Color(0.934, 1.498, 1.825, 1.0)
 @export var fleets_box: VBoxContainer
 @export var create_ship_button: Button
 @export var delete_ship_box: TextureRect
+@export var load_ships_button: Button
 
 var fleet: Fleet:
 	set = set_fleet
@@ -20,10 +23,11 @@ var _fleet_containers: Dictionary[Fleet, FleetContainer] = {}
 
 func _ready() -> void:
 	ship_db = Globals.ship_db
-	fleet = Globals.client.fleet
+	fleet = Account.me.fleet
 
 func set_ship_db(new_ship_db: ShipDatabase) -> void:
 	ship_db = new_ship_db
+	load_ships_button.disabled = ship_db == null
 	load_ships_and_fleets()
 
 func set_fleet(new_fleet: Fleet) -> void:
@@ -33,7 +37,7 @@ func set_fleet(new_fleet: Fleet) -> void:
 		_fleet_containers[fleet].self_modulate = Color.WHITE
 	if new_fleet in _fleet_containers:
 		_fleet_containers[new_fleet].self_modulate = SELECTED_COLOR
-	Globals.client.fleet = new_fleet
+	Account.me.fleet = new_fleet
 	fleet = new_fleet
 	fleet_changed.emit(fleet)
 
@@ -65,6 +69,7 @@ func load_ship(new_ship: ShipData) -> void:
 	var button := ShipButton.create()
 	button.custom_minimum_size = BUTTON_SIZE
 	button.ship = new_ship
+	toggled_ship_names.connect(button.set_collapsed)
 	ships_box.add_child(button)
 	_reorder_children()
 	_ship_buttons[new_ship] = button
@@ -110,3 +115,9 @@ func _on_create_fleet_button_pressed() -> void:
 func _on_delete_ship_delete_requested(ship: ShipData) -> void:
 	ship.clear()
 	delete_ship(ship)
+
+func _on_show_ship_names_button_toggled(toggled_on: bool) -> void:
+	toggled_ship_names.emit(not toggled_on)
+
+func _on_load_ships_button_pressed() -> void:
+	ship_db.load_ships(LOAD_SHIPS_LIMIT)

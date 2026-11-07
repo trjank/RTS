@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Biome" load_steps=9 format=3 uid="uid://dapv2yjy8df7h"]
+[gd_resource type="Resource" script_class="Biome" format=3 uid="uid://dapv2yjy8df7h"]
 
 [ext_resource type="Script" uid="uid://c8v3w6nluuvtf" path="res://map/terrestrial_planet/biome.gd" id="5_ky8cn"]
 

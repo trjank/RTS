@@ -1,4 +1,4 @@
-class_name PartManager extends RefCounted
+extends Node
 
 signal part_created(part_data: PartData)
 
@@ -84,8 +84,13 @@ const PART_PROPERTIES: Dictionary[String, Variant.Type] = {
 	"wing_min_tilt": TYPE_FLOAT,
 	"wing_max_tilt": TYPE_FLOAT
 }
+const PARTS_JSON_PATH := "res://parts/part_data.json"
 
 var _parts: Dictionary[String, PartData] = {}
+
+func _init() -> void:
+	var error := load_json(PARTS_JSON_PATH)
+	print("PartManager status: %d" % error)
 
 func clear() -> void:
 	_parts.clear()
@@ -117,7 +122,7 @@ func create_part(code: String, size := PartData.DEFAULT_SIZE, subtype = "", boun
 func load_part(code: String, properties: Dictionary) -> LoadError:
 	# These are all constant parameters, so we cannot use set
 	var subtype = properties.get("subtype", "")
-	var width: int = properties.get("width", PartData.MIN_SIZE)
+	var width:  int = properties.get("width", PartData.MIN_SIZE)
 	var height: int = properties.get("height", PartData.MIN_SIZE)
 	#
 	if not TypeChecker.type_check(properties, PART_PROPERTIES, true, TypeChecker.CAST_NUMBERS_AND_COLORS):

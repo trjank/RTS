@@ -28,13 +28,11 @@ func set_int(x: int, y: int, value: int) -> void:
 func _index_of(x: int, y: int) -> int:
 	return x + size.x * y
 
-# TODO: If this becomes a bottleneck, write this in c++
 func fill_rect(rect: Rect2i, value: int) -> void:
 	for y in range(rect.position.y, rect.end.y):
 		for x in range(rect.position.x, rect.end.x):
 			set_int(x, y, value)
 
-# TODO: If this becomes a bottleneck, write this in c++
 func is_rect_empty(rect: Rect2i, default_value := 0) -> bool:
 	for y in range(rect.position.y, rect.end.y):
 		for x in range(rect.position.x, rect.end.x):

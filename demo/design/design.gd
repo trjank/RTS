@@ -29,9 +29,8 @@ var fleet: Fleet:
 	set = set_fleet
 
 func _ready() -> void:
-	Globals.client.fleet_changed.connect(set_fleet)
-	fleet = Globals.client.fleet
-	parts_container.part_manager = Globals.part_manager
+	Account.me.fleet_changed.connect(set_fleet)
+	fleet = Account.me.fleet
 	slot = 0
 
 func get_ship() -> ShipData:
@@ -49,8 +48,7 @@ func set_fleet(new_fleet: Fleet) -> void:
 	grid.clear_cache()
 
 func set_slot(new_slot: int) -> void:
-	new_slot = clampi(new_slot, 0, fleet.size)
-	if slot == new_slot:
+	if fleet == null or slot == new_slot or new_slot < 0 or fleet.size <= new_slot:
 		return
 	fleet_container.get_button(slot).self_modulate = Color.WHITE
 	fleet_container.get_button(new_slot).self_modulate = SELECTED_COLOR
@@ -66,6 +64,7 @@ func save() -> void:
 	if error_flags != ShipData.PartError.OK or not grid.ship.are_parts_connected():
 		return popup_error_message(error_flags)
 	grid.ship.generate_image()
+	grid.ship.generate_thumbnail()
 	grid.ship.calculate_stats()
 	grid.ship.save()
 
@@ -127,7 +126,7 @@ func load_ship_from_string(ship_string: String) -> int:
 		return ShipData.PartError.INCORRECT_SIZE_BYTES
 	var bytes := Marshalls.base64_to_raw(split[3] )
 	grid.ship.grid_size = Vector2i(int(split[1] ), int(split[2] ) )
-	var error := grid.ship.deserialize(bytes, Globals.part_manager)
+	var error := grid.ship.deserialize(bytes)
 	grid.sync(false)
 	return error
 

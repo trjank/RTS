@@ -45,16 +45,18 @@ func _add_fleet_ships() -> void:
 		return
 	for child in ship_buttons.get_children():
 		child.queue_free()
-	if fleet != null:
-		fleet.for_each_ship(_add_ship)
+	if fleet == null:
+		return
+	for slot in range(fleet.size):
+		_add_ship(fleet.get_ship(slot), slot)
 
 func _disconnect_old_fleet(old_fleet: Fleet) -> void:
-	old_fleet.ui_update.disconnect(update_ui)
+	old_fleet.renamed.disconnect(update_ui)
 	old_fleet.resized.disconnect(_add_fleet_ships)
 	old_fleet.ship_changed.disconnect(_on_fleet_ship_changed)
 
 func _connect_new_fleet(new_fleet: Fleet) -> void:
-	new_fleet.ui_update.connect(update_ui)
+	new_fleet.renamed.connect(update_ui)
 	new_fleet.resized.connect(_add_fleet_ships)
 	new_fleet.ship_changed.connect(_on_fleet_ship_changed)
 
@@ -67,7 +69,7 @@ func update_ui() -> void:
 		_create_fleet_ui()
 
 func _create_fleet_ui() -> void:
-	fleet_id.text = "Fleet #%d" % fleet.get_id()
+	fleet_id.text = "Fleet #%d" % fleet.id
 	name_edit.text = fleet.name
 	name_edit.editable = true
 

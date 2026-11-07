@@ -46,12 +46,20 @@ func set_ship(new_ship: ShipData) -> void:
 	if ship == new_ship:
 		return
 	if ship != null:
-		ship.ui_update.disconnect(update_ui)
+		_disconnect_signals(ship)
 	if new_ship != null:
-		new_ship.ui_update.connect(update_ui)
+		_connect_signals(new_ship)
 	ship = new_ship
 	update_ui()
 	ship_changed.emit(ship)
+
+func _connect_signals(new_ship: ShipData) -> void:
+	new_ship.generated_thumbnail.connect(update_ui)
+	new_ship.renamed.connect(update_ui)
+
+func _disconnect_signals(old_ship: ShipData) -> void:
+	old_ship.generated_thumbnail.disconnect(update_ui)
+	old_ship.renamed.disconnect(update_ui)
 
 func update_ui() -> void:
 	if not is_node_ready():
@@ -64,8 +72,8 @@ func update_ui() -> void:
 	panel_container.visible = not collapsed
 
 func _set_ui() -> void:
-	icon = ship.get_texture()
-	ship_id.text = "#%d" % ship.get_id()
+	icon = ship.get_thumbnail_texture()
+	ship_id.text = "#%d" % ship.id
 	name_edit.text = ship.name
 	name_edit.editable = true
 	unsaved_indicator.visible = not saved
@@ -73,8 +81,8 @@ func _set_ui() -> void:
 func _clear_ui() -> void:
 	icon = null
 	ship_id.text = ""
-	name_edit.editable = false
 	name_edit.text = "Empty"
+	name_edit.editable = false
 	unsaved_indicator.visible = false
 
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
@@ -86,11 +94,11 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		data.ship = ship
 	ship = new_ship
 
-func _get_drag_data(_at_position: Vector2) -> Variant:
+func _get_drag_data(_at_position: Vector2) -> ShipButton:
 	if ship == null:
 		return
 	var preview: ShipButton = duplicate(DuplicateFlags.DUPLICATE_SCRIPTS)
-	# NOTE: By default, previews have their top left corner at mouse
+	# Need an extra control node to have the center be at the mouse position
 	var center_preview := Control.new()
 	center_preview.add_child(preview)
 	preview.ship = ship

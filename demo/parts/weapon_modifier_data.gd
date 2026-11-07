@@ -17,5 +17,5 @@ func set_modifier_data(new_modifier_data: Dictionary) -> void:
 func set_modifiers(new_modifiers) -> void:
 	modifiers = new_modifiers if new_modifiers != null else modifiers
 
-func create_ship_data_part(id := ShipData.NULL_ID, rect := Rect2i(), rotation := Rotation.Discrete.ROT_0, boundary := _boundary) -> ShipDataPart:
+func create_ship_data_part(id := ShipData.NULL_PART_ID, rect := Rect2i(), rotation := Rotation.Discrete.ROT_0, boundary := _boundary) -> ShipDataPart:
 	return ShipDataWeaponModifier.new(id, self, rect, rotation, boundary)

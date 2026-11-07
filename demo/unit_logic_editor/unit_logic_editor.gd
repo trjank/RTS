@@ -82,6 +82,9 @@ func remove_block(logic_block: LogicBlock) -> void:
 	_blocks[logic_block].queue_free()
 	_blocks.erase(logic_block)
 
+func delete_block(logic_block: LogicBlock) -> void:
+	unit_logic.remove_block(unit_logic.find_block(logic_block) )
+
 func save(lazy := true) -> bool:
 	return unit_logic != null and unit_logic.serialize(lazy) and unit_logic.save(lazy)
 
@@ -93,7 +96,7 @@ func _connect_loaded_signals(loaded: LoadedUnitLogic) -> void:
 	unit_logic_changed.connect(loaded.on_editor_unit_logic_changed)
 
 func _connect_block_signals(block: LogicBlockEditor) -> void:
-	block.delete_requested.connect(remove_block)
+	block.delete_requested.connect(delete_block)
 
 func _connect_logic_signals(new_unit_logic: UnitLogic) -> void:
 	new_unit_logic.cleared.connect(clear_blocks)

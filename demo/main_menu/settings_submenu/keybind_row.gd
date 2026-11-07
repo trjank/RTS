@@ -28,6 +28,7 @@ static func event_to_string(event: InputEvent) -> String:
 
 func _ready() -> void:
 	sync_to_input_map()
+	#
 	for i in keybinds.size():
 		keybinds[i].pressed.connect(_begin_rebind.bind(i) )
 	label.text = _action
@@ -37,6 +38,7 @@ func sync_to_input_map() -> void:
 	#
 	_events = InputMap.action_get_events(_action)
 	_events.resize(keybinds.size() )
+	#
 	for i in keybinds.size():
 		keybinds[i].text = event_to_string(_events[i] ) if _events[i] != null else UNBOUND_KEYBIND_TEXT
 	_rebind_event = NO_REBIND_EVENT

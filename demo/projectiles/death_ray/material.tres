@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://bharayvlqs852"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bharayvlqs852"]
 
 [ext_resource type="Shader" uid="uid://cgukly02spaaw" path="res://projectiles/death_ray/death_ray.gdshader" id="1_g6etx"]
 

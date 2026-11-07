@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://dqej8nkoler0c"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dqej8nkoler0c"]
 
 [ext_resource type="Shader" uid="uid://c54eyipbxrdgo" path="res://map/terrestrial_planet/terrestrial_planet.gdshader" id="1_4dltr"]
 
