@@ -97,8 +97,8 @@ offset_bottom = 0.0
 grow_horizontal = 1
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_l1kiu")
+show_ship_names = false
 button_size = Vector2(200, 200)
-collapsed = true
 
 [node name="PanelContainer" parent="UI/FleetContainer/VBoxContainer" parent_id_path=PackedInt32Array(240012632, 104537190) index="0" unique_id=1414898925]
 visible = false

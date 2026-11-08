@@ -4,7 +4,7 @@ signal cleared
 signal priority_changed
 signal retrofitted(player: Player)
 signal save_changed(is_saved: bool)
-signal renamed(new_name: String)
+signal renamed
 signal resized(new_grid_size: Vector2i)
 signal generated_image(new_image: Image, new_texture: ImageTexture)
 signal generated_thumbnail(new_thumbnail: Image, new_thumbnail_texture: ImageTexture)
@@ -285,7 +285,7 @@ func set_name(new_name: String) -> bool:
 	if name == new_name:
 		return false
 	name = new_name
-	renamed.emit(name)
+	renamed.emit()
 	return true
 
 ## For one-line set and save do: var success := set_grid_size(..) and save()
@@ -307,7 +307,6 @@ func set_image(new_image: Image) -> void:
 
 func clear() -> void:
 	image = null
-	thumbnail = null
 	_parts = [null]
 	_part_ids.fill(NULL_PART_ID)
 	_part_clusters.resize(1)
@@ -491,9 +490,11 @@ func _deserialize_part() -> PartError:
 func generate_thumbnail() -> void:
 	if image == null:
 		return push_error("(ShipData) No thumbnail to generate for #%d" % id)
-	thumbnail = image.duplicate()
-	thumbnail.resize(THUMBNAIL_SIZE, THUMBNAIL_SIZE)
-	_thumbnail_texture = ImageTexture.create_from_image(thumbnail)
+	var new_thumbnail = image.duplicate()
+	var aspect_ratio := THUMBNAIL_SIZE / maxf(image.get_size().x, image.get_size().y)
+	var new_size := Vector2i(aspect_ratio * image.get_size() )
+	new_thumbnail.resize(new_size.x, new_size.y)
+	thumbnail = new_thumbnail
 	generated_thumbnail.emit()
 
 func generate_image() -> void:
