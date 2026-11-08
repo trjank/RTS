@@ -31,10 +31,8 @@ const SAVE_FOLDER := "user://battles/"
 @export var players_container: Node3D
 @export var fleet_container: FleetContainer
 @export var mouse_selection: MouseSelection
-@export var alloy_label: Label
-@export var crystal_label: Label
-@export var military_science_label: Label
-@export var time_left: Label
+@export var resource_counter: ResourceCounter
+#
 @export var explosions: Explosions
 @export var shockwaves: Shockwaves
 
@@ -152,6 +150,7 @@ func set_me(new_me: Player) -> bool:
 		me.selection.clear()
 	var old_me := me
 	me = new_me
+	resource_counter.resources = me.resources
 	me_changed.emit(old_me, new_me)
 	return true
 
@@ -201,9 +200,13 @@ func converted_unit_logic(unit_logic: UnitLogic) -> UnitLogic:
 func retrofit(ship_data: ShipData) -> bool:
 	if not can_retrofit():
 		return false
-	for player in _players:
-		pass # retrofit player
+	var players := _players.keys().filter(func (player: Player) -> bool: return player.count_ships(ship_data) > 0)
+	# 0 or 1 players = fine
+	# >1 players = bad
 	return true
+
+func process_retrofit(ship_data: ShipData) -> void:
+	pass
 
 func destroy_map() -> void:
 	if _map_root == null:
@@ -220,8 +223,8 @@ func generate_map() -> void:
 	rng.seed = rng.seed
 	_map_root = Node3D.new()
 	world.add_child(_map_root)
-	var error := map.generate(_map_root, self, rng, scenery, map_depth_limit, _map_data)
-	print("(Battle) Map generation: %s" % Map.GenerationError.find_key(error) )
+	var error_flags := map.generate(_map_root, self, rng, scenery, map_depth_limit, _map_data)
+	print("(Battle) Map generation: %s" % TypeChecker.format_enum(error_flags, Map.GenerationError) )
 	print("(Battle) Generated %d scenery objects" % _map_data.get("scenery_count", 0) )
 
 func start_countdown() -> StartError:
@@ -393,11 +396,8 @@ func _handle_team_rename(old_name: String, new_name: String, team: Team) -> void
 	team.display_name = new_name
 
 func _process(_dt: float) -> void:
-	var seconds := int(round_timer.time_left)
-	alloy_label.text = StrategicResources.to_str(me.resources.alloy)
-	crystal_label.text = StrategicResources.to_str(me.resources.crystals)
-	military_science_label.text = StrategicResources.to_str(me.resources.military_science)
-	time_left.text = "%dm %02ds" % [int(seconds / 60.0), seconds % 60]
+	resource_counter.time_sec = int(round_timer.time_left)
+	resource_counter.update()
 
 func _physics_process(dt: float) -> void:
 	dt *= time_scale

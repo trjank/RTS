@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS ships (
 	part_bytes BLOB,
 	extra_bytes BLOB
 );
-CREATE UNIQUE INDEX IF NOT EXISTS ship_priority ON ships (priority);"""
+CREATE INDEX IF NOT EXISTS ship_priority ON ships (priority);"""
 const CREATE_FLEETS_TABLE_QUERY := """
 CREATE TABLE IF NOT EXISTS fleets (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS fleets (
 	size INTEGER NOT NULL,
 	name TEXT NOT NULL
 );
-CREATE UNIQUE INDEX IF NOT EXISTS fleet_priority ON fleets (priority);"""
+CREATE INDEX IF NOT EXISTS fleet_priority ON fleets (priority);"""
 const CREATE_FLEET_SLOTS_TABLE_QUERY := """
 CREATE TABLE IF NOT EXISTS fleet_slots (
 	fleet_id INTEGER,
@@ -152,9 +152,11 @@ func save_fleet(fleet: Fleet) -> bool:
 	return fleet != null and save_fleet_ships(fleet) and save_fleet_metadata(fleet)
 
 func delete_ship(ship: ShipData) -> bool:
+	ship_deleted.emit(ship)
 	return ship != null and _db.delete_rows("ships", "id == %d" % ship.id) and _db.delete_rows("fleet_slots", "ship_id == %d" % ship.id) and _loaded_ships.erase(ship.id)
 
 func delete_fleet(fleet: Fleet) -> bool:
+	fleet_deleted.emit(fleet)
 	return fleet != null and _db.delete_rows("fleets", "id == %d" % fleet.id) and _db.delete_rows("fleet_slots", "fleet_id == %d" % fleet.id) and _loaded_fleets.erase(fleet.id)
 
 func _fleet_slot_to_dict(slot: int, fleet: Fleet) -> Dictionary:
@@ -167,6 +169,7 @@ func _load_ship_from_dict(dict: Dictionary) -> ShipData:
 		dict[column] = dict[column] if dict[column] != null else PackedByteArray()
 	var ship := ShipData.from_dict(dict, true)
 	ship.db = self
+	ship.saved = true
 	_loaded_ships[ship.id] = ship
 	ship_created.emit(ship)
 	return ship
@@ -174,6 +177,7 @@ func _load_ship_from_dict(dict: Dictionary) -> ShipData:
 func _load_fleet_from_dict(result: Dictionary) -> Fleet:
 	var fleet := Fleet.from_dict(result, true)
 	fleet.db = self
+	fleet.saved = true
 	sync_fleet_ships(fleet)
 	_loaded_fleets[fleet.id] = fleet
 	fleet_created.emit(fleet)

@@ -56,8 +56,8 @@ func set_crystals(new_crystals: float) -> void:
 func set_military_science(new_military_science: float) -> void:
 	military_science = clampf(new_military_science, min_military_science, max_military_science)
 
-func can_afford(cost: StrategicResources) -> bool:
-	return cost.alloy <= alloy and cost.crystals <= crystals and cost.military_science <= military_science
+func can_afford(cost: StrategicResources, multiplier := 1.0) -> bool:
+	return multiplier * cost.alloy <= alloy and multiplier * cost.crystals <= crystals and multiplier * cost.military_science <= military_science
 
 func reset() -> void:
 	alloy = 0.0

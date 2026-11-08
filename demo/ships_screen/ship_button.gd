@@ -1,25 +1,26 @@
+@tool
 class_name ShipButton extends Button
 
 signal ship_changed(new_ship: ShipData)
 
-@export var in_fleet := false
-@export var mini_icon: Texture:
-	set = set_mini_icon
+const PREVIEW_Z_INDEX := 4096
+
 @export var ship_id: Label
 @export var unsaved_indicator: Label
 @export var name_edit: LineEdit
 @export var custom_icon: TextureRect
 @export var panel_container: PanelContainer
-
-var collapsed := false:
-	set = set_collapsed
-var saved := true:
+# These require @tool annotation to update properly
+@export var mini_icon: Texture:
+	set = set_mini_icon
+@export var show_name := false:
+	set = set_show_name
+@export var saved := true:
 	set = set_saved
+@export var in_fleet := false
+
 var ship: ShipData:
 	set = set_ship
-
-static func can_swap(button: ShipButton, other_button: ShipButton) -> bool:
-	return button.in_fleet == other_button.in_fleet
 
 static func create() -> ShipButton:
 	return preload("res://ships_screen/ship_button.tscn").instantiate()
@@ -27,11 +28,8 @@ static func create() -> ShipButton:
 func _ready() -> void:
 	update_ui()
 
-func is_collapsed() -> bool:
-	return panel_container.visible
-
-func set_collapsed(collapse: bool) -> void:
-	collapsed = collapse
+func set_show_name(name_visible: bool) -> void:
+	show_name = name_visible
 	update_ui()
 
 func set_saved(is_saved: bool) -> void:
@@ -68,8 +66,8 @@ func update_ui() -> void:
 		_clear_ui()
 	else:
 		_set_ui()
+	panel_container.visible = show_name
 	custom_icon.texture = mini_icon
-	panel_container.visible = not collapsed
 
 func _set_ui() -> void:
 	icon = ship.get_thumbnail_texture()
@@ -86,27 +84,43 @@ func _clear_ui() -> void:
 	unsaved_indicator.visible = false
 
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
-	return data is ShipButton and (in_fleet or not data.in_fleet)
+	return data is ShipButton and data != self and (in_fleet or not data.in_fleet)
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
-	assert(data is ShipButton)
-	#
-	var new_ship = data.ship
-	if can_swap(self, data):
-		data.ship = ship
-	ship = new_ship
+	if in_fleet == data.in_fleet:
+		return swap_ships(data)
+	ship = data.ship
 
 func _get_drag_data(_at_position: Vector2) -> ShipButton:
 	if ship == null:
 		return
 	var preview: ShipButton = duplicate(DuplicateFlags.DUPLICATE_SCRIPTS)
-	# Need an extra control node to have the center be at the mouse position
-	var center_preview := Control.new()
-	center_preview.add_child(preview)
+	var wrapper := _wrap_and_offset(preview, -0.5 * size)
 	preview.ship = ship
-	preview.position = -size / 2
-	set_drag_preview(center_preview)
+	wrapper.z_index = PREVIEW_Z_INDEX
+	wrapper.z_as_relative = false
+	set_drag_preview(wrapper)
 	return self
+
+func _wrap_and_offset(button: ShipButton, offset: Vector2) -> Control:
+	var wrapper := Control.new()
+	wrapper.add_child(button)
+	button.position = offset
+	return wrapper
+
+func swap_ships(other_button: ShipButton) -> bool:
+	assert(other_button != null)
+	#
+	var other_ship := other_button.ship
+	other_button.ship = ship
+	ship = other_ship
+	return in_fleet or other_button.in_fleet or ship.swap_priority(other_button.ship)
+
+## NOTE: This can permanently delete the ship from its database!
+func delete_ship() -> bool:
+	var success := ship == null or ship.delete()
+	ship = null
+	return success
 
 func _on_name_focus_exited() -> void:
 	_on_name_text_submitted(name_edit.text)

@@ -3,22 +3,29 @@ class_name ShipsScreen extends Node
 signal searched_ships(query: String, matches: int)
 signal searched_fleets(query: String, matches: int)
 signal fleet_changed(new_fleet: Fleet)
-signal toggled_ship_names(hidden: bool)
+signal toggled_ship_names(visible: bool)
+signal toggled_ships(visible: bool)
 
 @export var ships_box: HFlowContainer
 @export var fleets_box: VBoxContainer
 @export var delete_ship_box: TextureRect
 @export var load_ships_button: Button
 @export var load_fleets_button: Button
-#
+## How many ships are loaded when the load button is pressed (does not affect how many are initially loaded)
 @export var load_ships_limit := 1
+## How many fleets are loaded when the load button is pressed (does not affect how many are initially loaded)
 @export var load_fleets_limit := 1
+@export var fleet_size := 10
 @export var button_size := Vector2(250.0, 250.0)
 
 var fleet: Fleet:
 	set = set_fleet
 var ship_db: ShipDatabase:
 	set = set_ship_db
+var show_ships := true:
+	set = set_show_ships
+var show_ship_names := true:
+	set = set_show_ship_names
 
 var _insert_ship_index := -1
 var _insert_fleet_index := -1
@@ -30,6 +37,14 @@ func _ready() -> void:
 	_insert_fleet_index = -fleets_box.get_child_count() - 1
 	ship_db = Globals.ship_db
 	fleet = Account.me.fleet
+
+func set_show_ships(ships_visible: bool) -> void:
+	show_ships = ships_visible
+	toggled_ships.emit(ships_visible)
+
+func set_show_ship_names(names_visible) -> void:
+	show_ship_names = names_visible
+	toggled_ship_names.emit(names_visible)
 
 func set_ship_db(new_ship_db: ShipDatabase) -> void:
 	if new_ship_db == ship_db:
@@ -92,26 +107,27 @@ func clear() -> void:
 	_ship_buttons.clear()
 	_fleet_containers.clear()
 
-func load_ships_and_fleets() -> void:
+func load_ships_and_fleets() -> bool:
 	clear()
 	if ship_db == null:
-		return
+		return false
 	for new_ship in ship_db.get_loaded_ships():
 		load_ship(new_ship)
 	for new_fleet in ship_db.get_loaded_fleets():
 		load_fleet(new_fleet)
+	return true
 
 func _disconnect_signals(old_db: ShipDatabase) -> void:
 	old_db.ship_created.disconnect(load_ship)
-	old_db.ship_deleted.disconnect(delete_ship)
+	old_db.ship_deleted.disconnect(remove_ship)
 	old_db.fleet_created.disconnect(load_fleet)
-	old_db.fleet_deleted.disconnect(delete_fleet)
+	old_db.fleet_deleted.disconnect(remove_fleet)
 
 func _connect_signals(new_db: ShipDatabase) -> void:
 	new_db.ship_created.connect(load_ship)
-	new_db.ship_deleted.connect(delete_ship)
+	new_db.ship_deleted.connect(remove_ship)
 	new_db.fleet_created.connect(load_fleet)
-	new_db.fleet_deleted.connect(delete_fleet)
+	new_db.fleet_deleted.connect(remove_fleet)
 
 func load_ship(new_ship: ShipData) -> void:
 	if new_ship in _ship_buttons:
@@ -119,7 +135,8 @@ func load_ship(new_ship: ShipData) -> void:
 	var button := ShipButton.create()
 	button.custom_minimum_size = button_size
 	button.ship = new_ship
-	toggled_ship_names.connect(button.set_collapsed)
+	button.show_name = show_ship_names
+	toggled_ship_names.connect(button.set_show_name)
 	_ship_buttons[new_ship] = button
 	# Assume that new_ship has highest priority and add to the back
 	ships_box.add_child(button)
@@ -131,27 +148,26 @@ func load_fleet(new_fleet: Fleet) -> void:
 	var fleet_container := FleetContainer.create()
 	fleet_container.fleet = new_fleet
 	fleet_container.pressed.connect(set_fleet)
-	fleet_container.delete_requested.connect(delete_fleet)
+	fleet_container.show_ships = show_ships
+	fleet_container.show_ship_names = show_ship_names
+	toggled_ships.connect(fleet_container.set_show_ships)
+	toggled_ship_names.connect(fleet_container.set_show_ship_names)
 	_fleet_containers[new_fleet] = fleet_container
 	# Assume that new_fleet has highest priority and add to the back
 	fleets_box.add_child(fleet_container)
 	fleets_box.move_child(fleet_container, _insert_fleet_index)
 
-## NOTE: This deletion is permanent (BE CAREFUL)
-func delete_ship(old_ship: ShipData) -> bool:
+func remove_ship(old_ship: ShipData) -> void:
 	if not old_ship in _ship_buttons:
-		return false
+		return
 	_ship_buttons[old_ship].queue_free()
 	_ship_buttons.erase(old_ship)
-	return ship_db.delete_ship(old_ship)
 
-## NOTE: This deletion is permanent (BE CAREFUL)
-func delete_fleet(old_fleet: Fleet) -> bool:
+func remove_fleet(old_fleet: Fleet) -> void:
 	if not old_fleet in _fleet_containers:
-		return false
+		return
 	_fleet_containers[old_fleet].queue_free()
 	_fleet_containers.erase(old_fleet)
-	return ship_db.delete_fleet(old_fleet)
 
 func _on_create_ship_button_pressed() -> void:
 	var new_ship := ShipData.new()
@@ -160,15 +176,8 @@ func _on_create_ship_button_pressed() -> void:
 
 func _on_create_fleet_button_pressed() -> void:
 	var new_fleet := Fleet.new()
-	new_fleet.size = 10
+	new_fleet.size = fleet_size
 	ship_db.create_fleet(new_fleet)
-
-func _on_delete_ship_delete_requested(ship: ShipData) -> void:
-	ship.clear()
-	delete_ship(ship)
-
-func _on_show_ship_names_button_toggled(toggled_on: bool) -> void:
-	toggled_ship_names.emit(not toggled_on)
 
 func _on_load_ships_button_pressed() -> void:
 	ship_db.load_ships(load_ships_limit)
@@ -183,3 +192,9 @@ func _on_ship_search_bar_text_submitted(new_text: String) -> void:
 
 func _on_fleet_search_bar_text_submitted(new_text: String) -> void:
 	searched_fleets.emit(new_text, search_fleets(new_text) )
+
+func _on_show_ships_button_toggled(toggled_on: bool) -> void:
+	show_ships = toggled_on
+
+func _on_show_ship_names_button_toggled(toggled_on: bool) -> void:
+	show_ship_names = toggled_on

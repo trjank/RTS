@@ -10,7 +10,7 @@
 [ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="5_tw06j"]
 [ext_resource type="Texture2D" uid="uid://d0df1o125muog" path="res://icons/checkbutton_on.png" id="6_ii65h"]
 [ext_resource type="Texture2D" uid="uid://d4f7cgh3wnd2p" path="res://icons/striped_background.png" id="6_q8tbq"]
-[ext_resource type="Script" uid="uid://c782vhcgkfnaj" path="res://ships_screen/delete_ship.gd" id="7_km3n6"]
+[ext_resource type="Script" uid="uid://c782vhcgkfnaj" path="res://ships_screen/trash_can.gd" id="7_km3n6"]
 [ext_resource type="Texture2D" uid="uid://uu1em6k3b3tu" path="res://icons/checkbutton_off.png" id="7_pv7wo"]
 [ext_resource type="Script" uid="uid://dqyojoybyoqbf" path="res://ships_screen/ship_search_label.gd" id="12_cui26"]
 [ext_resource type="Texture2D" uid="uid://uajradxufht3" path="res://icons/swap.png" id="13_nn22w"]
@@ -92,11 +92,10 @@ bg_color = Color(0, 0, 0, 0.5882353)
 script = ExtResource("1_ek2hs")
 ships_box = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/Ships/VBoxContainer/ScrollContainer/HFlowContainer")
 fleets_box = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer")
-delete_ship_box = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/DeleteShip")
+delete_ship_box = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/TrashCan")
 load_ships_button = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/Ships/VBoxContainer/ScrollContainer/HFlowContainer/CenterContainer/LoadShipsButton")
 load_fleets_button = NodePath("UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer/LoadFleetsButton")
 load_ships_limit = 2
-selected_fleet_color = Color(0.93389755, 1.4981335, 1.8247963, 1)
 
 [node name="UI" type="Control" parent="." unique_id=1517649761]
 layout_mode = 3
@@ -195,9 +194,9 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
-text = "Show names"
+text = "Show ships"
 
-[node name="ShowFleetNamesButton" type="CheckButton" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/PanelContainer/HBoxContainer" unique_id=600048133]
+[node name="ShowShipsButton" type="CheckButton" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/PanelContainer/HBoxContainer" unique_id=600048133]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_pv7wo")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_h5534")
@@ -411,7 +410,7 @@ disabled = true
 text = "Load more"
 icon = ExtResource("13_nn22w")
 
-[node name="DeleteShip" type="TextureRect" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer" unique_id=1609650829]
+[node name="TrashCan" type="TextureRect" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer" unique_id=1609650829]
 modulate = Color(1, 0.6, 0.6, 1)
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
@@ -419,7 +418,7 @@ texture = ExtResource("6_q8tbq")
 stretch_mode = 1
 script = ExtResource("7_km3n6")
 
-[node name="Label" type="Label" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/DeleteShip" unique_id=1877566480]
+[node name="Label" type="Label" parent="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/TrashCan" unique_id=1877566480]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -485,6 +484,7 @@ horizontal_alignment = 1
 [connection signal="searched_fleets" from="." to="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/PanelContainer/HBoxContainer/FleetSearchLabel" method="_on_ships_screen_searched_fleets"]
 [connection signal="searched_ships" from="." to="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/Ships/VBoxContainer/PanelContainer/HBoxContainer/ShipSearchLabel" method="_on_ships_screen_searched_ships"]
 [connection signal="text_submitted" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/PanelContainer/HBoxContainer/FleetSearchBar" to="." method="_on_fleet_search_bar_text_submitted"]
+[connection signal="toggled" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/PanelContainer/HBoxContainer/ShowShipsButton" to="." method="_on_show_ships_button_toggled"]
 [connection signal="pressed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer/MarginContainer/CreateFleetButton" to="." method="_on_create_fleet_button_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/Fleets/VBoxContainer/AllFleets/VBoxContainer/LoadFleetsButton" to="." method="_on_load_fleets_button_pressed"]
 [connection signal="text_submitted" from="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/Ships/VBoxContainer/PanelContainer/HBoxContainer/ShipSearchBar" to="." method="_on_ship_search_bar_text_submitted"]
@@ -492,4 +492,3 @@ horizontal_alignment = 1
 [connection signal="child_order_changed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/Ships/VBoxContainer/ScrollContainer/HFlowContainer" to="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/Ships/VBoxContainer/ScrollContainer/HFlowContainer/MarginContainer/CreateShipButton" method="_on_grid_container_child_order_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/Ships/VBoxContainer/ScrollContainer/HFlowContainer/MarginContainer/CreateShipButton" to="." method="_on_create_ship_button_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/Ships/VBoxContainer/ScrollContainer/HFlowContainer/CenterContainer/LoadShipsButton" to="." method="_on_load_ships_button_pressed"]
-[connection signal="delete_requested" from="UI/VBoxContainer/MarginContainer/HSplitContainer/VBoxContainer/DeleteShip" to="." method="_on_delete_ship_delete_requested"]

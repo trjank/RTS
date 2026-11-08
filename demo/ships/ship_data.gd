@@ -1,6 +1,8 @@
 class_name ShipData extends RefCounted
 
 signal cleared
+signal priority_changed
+signal retrofitted(player: Player)
 signal save_changed(is_saved: bool)
 signal renamed(new_name: String)
 signal resized(new_grid_size: Vector2i)
@@ -46,7 +48,8 @@ const MAX_GRID_SIZE := Vector2i(256, 256)
 const BYTES_PER_PART_CODE := PartData.CODE_LENGTH * Bytes.CHAR_UTF32
 const BYTES_PER_PART := Bytes.U16 + Bytes.U16 + Bytes.U8 + BYTES_PER_PART_CODE
 
-var priority := 0
+var priority := 0:
+	set = set_priority
 var name := "":
 	set = set_name
 var grid_width: int:
@@ -134,13 +137,22 @@ func get_uid() -> int:
 func is_saved() -> bool:
 	return _saved
 
-func sync(lazy := true) -> bool:
-	saved = (saved and lazy) or (db != null and db.sync_ship(self) )
+func sync() -> bool:
+	saved = db != null and db.sync_ship(self)
 	return saved
 
 func save(lazy := true) -> bool:
 	saved = (saved and lazy) or (db != null and db.save_ship(self) )
 	return saved
+
+func delete() -> bool:
+	clear()
+	if db == null:
+		return true
+	var success := db.delete_ship(self)
+	db = null
+	id = -1
+	return success
 
 func is_empty() -> bool:
 	return _parts.size() <= 1
@@ -222,14 +234,29 @@ func set_grid_width(new_grid_width: int) -> bool:
 func set_grid_height(new_grid_height: int) -> bool:
 	return set_grid_size(Vector2i(grid_width, new_grid_height) )
 
-func set_db(new_db: ShipManager) -> void:
-	_db = weakref(new_db)
-
 func set_unit_logic(new_unit_logic: UnitLogic) -> void:
 	unit_logic = new_unit_logic if new_unit_logic != null else UnitLogic.DEFAULT
 
 func set_unit_logic_uid(new_unit_logic_uid: int) -> void:
 	unit_logic = UnitLogic.from_uid(new_unit_logic_uid)
+
+func set_db(new_db: ShipManager) -> void:
+	_db = weakref(new_db)
+
+func set_priority(new_priority: int) -> void:
+	if priority == new_priority:
+		return
+	saved = false
+	priority = new_priority
+	priority_changed.emit()
+
+func swap_priority(other_ship: ShipData) -> bool:
+	if other_ship == null or other_ship.db != db:
+		return false
+	var other_priority := other_ship.priority
+	other_ship.priority = priority
+	priority = other_priority
+	return save() and other_ship.save()
 
 func set_thumbnail(new_thumbnail: Image) -> void:
 	if new_thumbnail == thumbnail:
@@ -280,6 +307,7 @@ func set_image(new_image: Image) -> void:
 
 func clear() -> void:
 	image = null
+	thumbnail = null
 	_parts = [null]
 	_part_ids.fill(NULL_PART_ID)
 	_part_clusters.resize(1)
@@ -326,6 +354,9 @@ func calculate_stats() -> void:
 	for part in part_counts:
 		add_part_stats(part, part_counts[part] )
 	stats_updated.emit()
+
+func trigger_retrofit(player: Player) -> void:
+	retrofitted.emit(player)
 
 func finalize(forceful := false) -> int:
 	if is_finalized and not forceful:

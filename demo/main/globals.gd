@@ -17,8 +17,8 @@ enum Layer {
 const CONFIG_PATH := "user://settings_DO_NOT_FILESHARE.cfg"
 const SHIP_DB_PATH := "user://ship_db.db"
 const UNIT_LOGIC_DB_PATH := "user://unit_logic_db.db"
-const LOAD_LIMIT_SHIPS := 2
-const LOAD_LIMIT_FLEETS := 1
+const LOAD_LIMIT_SHIPS := 10
+const LOAD_LIMIT_FLEETS := 10
 const LOAD_LIMIT_UNIT_LOGIC := 100
 const MIN_VOLUME := 0.0
 const MAX_VOLUME := 100.0
@@ -58,7 +58,6 @@ func load_ships() -> void:
 	ship_db.load_ships(LOAD_LIMIT_SHIPS)
 
 func load_fleets() -> void:
-	return
 	var fleets := ship_db.load_fleets(LOAD_LIMIT_FLEETS)
 	var fleet := ship_db.get_fleet(config.get_value("player", "fleet_id", -1) )
 	if fleet != null:
@@ -103,17 +102,6 @@ func save_input_map() -> void:
 	#
 	for action in KeybindRow.get_custom_actions():
 		config.set_value("keybinds", action, InputMap.action_get_events(action) )
-
-## NOTE: You can pass the enum directly for enum_dict (e.g. format_enum(3, Error) )
-func format_enum(flags: int, enum_dict: Dictionary, delimiter := " | ") -> String:
-	if flags == 0 and 0 in enum_dict:
-		return enum_dict[0]
-	var strings := PackedStringArray()
-	#
-	for property in enum_dict:
-		if flags & enum_dict[property]:
-			strings.append(property)
-	return delimiter.join(strings)
 
 ## Returns time in microseconds
 func benchmark(function: Callable) -> int:

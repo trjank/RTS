@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://coexpo0l4q1vv"]
+[gd_scene format=3 uid="uid://coexpo0l4q1vv"]
 
 [ext_resource type="Script" uid="uid://cphbaayi2hnoj" path="res://design/design.gd" id="1_wctwy"]
 [ext_resource type="PackedScene" uid="uid://bfjh4qh7fjvbt" path="res://navbar/navbar.tscn" id="2_6gxgq"]
@@ -107,7 +107,7 @@ albedo_color = Color(0.35000002, 0.72916675, 1, 1)
 resource_local_to_scene = true
 material = ExtResource("12_r41aq")
 
-[node name="Design" type="Node" node_paths=PackedStringArray("part_selection", "parts_container", "fleet_container", "grid", "stats_box", "save_popup", "export_popup", "import_popup", "resize_option_button")]
+[node name="Design" type="Node" unique_id=296061247 node_paths=PackedStringArray("part_selection", "parts_container", "fleet_container", "grid", "stats_box", "save_popup", "export_popup", "import_popup", "resize_option_button")]
 script = ExtResource("1_wctwy")
 part_selection = NodePath("World/Grid/PartSelection")
 parts_container = NodePath("UI/VBoxContainer/HBoxContainer/PartsContainer")
@@ -121,7 +121,7 @@ resize_option_button = NodePath("UI/VBoxContainer/HBoxContainer/HFlowContainer/R
 metadata/_custom_type_script = "uid://cphbaayi2hnoj"
 metadata/_edit_vertical_guides_ = [136.0]
 
-[node name="UI" type="Control" parent="."]
+[node name="UI" type="Control" parent="." unique_id=1422586331]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -130,7 +130,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI" unique_id=1880305587]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -139,16 +139,16 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="Nagivator" parent="UI/VBoxContainer" instance=ExtResource("2_6gxgq")]
+[node name="Nagivator" parent="UI/VBoxContainer" unique_id=715094645 instance=ExtResource("2_6gxgq")]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer" unique_id=38971981]
 clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 
-[node name="FleetContainer" parent="UI/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("ship_buttons") instance=ExtResource("3_rmp56")]
+[node name="FleetContainer" parent="UI/VBoxContainer/HBoxContainer" unique_id=1731459081 node_paths=PackedStringArray("ship_buttons") instance=ExtResource("3_rmp56")]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 1
@@ -156,47 +156,41 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_r41aq")
 button_size = Vector2(500, 500)
 ship_buttons = NodePath("VBoxContainer/MarginContainer/ScrollContainer/ShipButtons")
 
-[node name="PanelContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer" index="0"]
+[node name="PanelContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer" parent_id_path=PackedInt32Array(1731459081, 104537190) index="0" unique_id=1414898925]
 custom_minimum_size = Vector2(0, 92)
 
-[node name="FleetSwapButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" index="0"]
+[node name="FleetSwapButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" parent_id_path=PackedInt32Array(1731459081, 1518347458) index="0" unique_id=368438977]
 visible = true
 
-[node name="DeleteButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" index="1"]
+[node name="DeleteButton" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" parent_id_path=PackedInt32Array(1731459081, 1518347458) index="1" unique_id=1099183705]
 visible = false
 
-[node name="MoveUp" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" index="4"]
-visible = false
-
-[node name="MoveDown" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/PanelContainer/HBoxContainer" index="5"]
-visible = false
-
-[node name="MarginContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer" index="1"]
+[node name="MarginContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer" parent_id_path=PackedInt32Array(1731459081, 104537190) index="1" unique_id=289192793]
 size_flags_vertical = 3
 
-[node name="ShipButtons" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/MarginContainer" index="0"]
+[node name="ShipButtons" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/MarginContainer" index="0" unique_id=1308653665]
 visible = false
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/MarginContainer" index="1"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/MarginContainer" index="1" unique_id=61466614]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
 
-[node name="ShipButtons" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/MarginContainer/ScrollContainer"]
+[node name="ShipButtons" type="VBoxContainer" parent="UI/VBoxContainer/HBoxContainer/FleetContainer/VBoxContainer/MarginContainer/ScrollContainer" unique_id=313310514]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 20
 
-[node name="Blur" type="ColorRect" parent="UI/VBoxContainer/HBoxContainer/FleetContainer"]
+[node name="Blur" type="ColorRect" parent="UI/VBoxContainer/HBoxContainer/FleetContainer" unique_id=2040207818]
 modulate = Color(1, 1, 1, 0.019607844)
 show_behind_parent = true
 material = ExtResource("4_rmp56")
 layout_mode = 2
 mouse_filter = 2
 
-[node name="PartsContainer" parent="UI/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("tabs") instance=ExtResource("9_3c8mw")]
+[node name="PartsContainer" parent="UI/VBoxContainer/HBoxContainer" unique_id=959775292 node_paths=PackedStringArray("tabs") instance=ExtResource("9_3c8mw")]
 layout_mode = 2
 size_flags_horizontal = 0
 tabs = {
@@ -207,7 +201,7 @@ tabs = {
 "weapons": NodePath("VBoxContainer/MarginContainer/ScrollContainer/PartTabs/Weapons")
 }
 
-[node name="HFlowContainer" type="HFlowContainer" parent="UI/VBoxContainer/HBoxContainer"]
+[node name="HFlowContainer" type="HFlowContainer" parent="UI/VBoxContainer/HBoxContainer" unique_id=562282795]
 custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -215,15 +209,15 @@ theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 15
 alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer" unique_id=772396502]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_lhyb1")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer" unique_id=1247579266]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="BehaviorSwapButton" type="TextureButton" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer"]
+[node name="BehaviorSwapButton" type="TextureButton" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer" unique_id=198363566]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -232,13 +226,13 @@ texture_hover = ExtResource("7_7jtw0")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer" unique_id=751582878]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 text = "Behavior: DEFAULT"
 vertical_alignment = 1
 
-[node name="CPULabel" type="Label" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer"]
+[node name="CPULabel" type="Label" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer/PanelContainer/HBoxContainer" unique_id=1985461651]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
@@ -246,7 +240,7 @@ theme_override_constants/outline_size = 5
 text = "20 CPU"
 vertical_alignment = 1
 
-[node name="TestButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
+[node name="TestButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer" unique_id=1769525542]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -260,7 +254,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_q8dch")
 text = "Test ship"
 icon = ExtResource("8_q8dch")
 
-[node name="ResizeOptionButton" type="OptionButton" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
+[node name="ResizeOptionButton" type="OptionButton" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer" unique_id=1248130261]
 layout_mode = 2
 size_flags_horizontal = 0
 theme = SubResource("Theme_cg3po")
@@ -287,7 +281,7 @@ popup/item_3/text = "128x128 Grid"
 popup/item_3/icon = ExtResource("15_5l545")
 popup/item_3/id = 3
 
-[node name="ExportButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
+[node name="ExportButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer" unique_id=783030982]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/h_separation = 15
@@ -299,7 +293,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_bggdi")
 text = "Export"
 icon = ExtResource("16_licix")
 
-[node name="ImportButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer"]
+[node name="ImportButton" type="Button" parent="UI/VBoxContainer/HBoxContainer/HFlowContainer" unique_id=1526014548]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/h_separation = 15
@@ -311,30 +305,30 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_3qscj")
 text = "Import"
 icon = ExtResource("17_cg3po")
 
-[node name="World" type="Node3D" parent="."]
+[node name="World" type="Node3D" parent="." unique_id=777509737]
 
-[node name="MouseSelection" parent="World" instance=ExtResource("13_r41aq")]
+[node name="MouseSelection" parent="World" unique_id=1582789181 instance=ExtResource("13_r41aq")]
 input_ray_pickable = false
 single_select_ray_range = 25.0
 single_select_mode = 1
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="World"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="World" unique_id=487821053]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 
-[node name="SubViewport" type="SubViewport" parent="World"]
+[node name="SubViewport" type="SubViewport" parent="World" unique_id=2132859229]
 transparent_bg = true
 size = Vector2i(700, 512)
 
-[node name="StatsBox" parent="World/SubViewport" instance=ExtResource("12_rmp56")]
+[node name="StatsBox" parent="World/SubViewport" unique_id=24395874 instance=ExtResource("12_rmp56")]
 offset_right = 846.0
 offset_bottom = 490.0
 
-[node name="Stats3D" type="Sprite3D" parent="World"]
+[node name="Stats3D" type="Sprite3D" parent="World" unique_id=1238313447]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.582675, 0, 2.6538885)
 axis = 1
 texture = SubResource("ViewportTexture_rmp56")
 
-[node name="Grid" type="MeshInstance3D" parent="World" node_paths=PackedStringArray("grid_center_marker")]
+[node name="Grid" type="MeshInstance3D" parent="World" unique_id=1454520400 node_paths=PackedStringArray("grid_center_marker")]
 sorting_offset = -2.0
 instance_shader_parameters/num_tiles = Vector2(5, 5)
 instance_shader_parameters/square_color = Color(1, 1, 1, 0.039215688)
@@ -343,14 +337,14 @@ script = ExtResource("8_r41aq")
 grid_center_marker = NodePath("GridCenterMarker")
 metadata/_custom_type_script = "uid://rrpw8rs1x5wn"
 
-[node name="GridCenterMarker" type="MeshInstance3D" parent="World/Grid"]
+[node name="GridCenterMarker" type="MeshInstance3D" parent="World/Grid" unique_id=198347513]
 mesh = SubResource("SphereMesh_r41aq")
 
-[node name="ShipCenterMarker" type="MeshInstance3D" parent="World/Grid"]
+[node name="ShipCenterMarker" type="MeshInstance3D" parent="World/Grid" unique_id=784002040]
 material_override = SubResource("StandardMaterial3D_6gxgq")
 mesh = SubResource("SphereMesh_r41aq")
 
-[node name="PartSelection" type="StaticBody3D" parent="World/Grid" node_paths=PackedStringArray("mouse_selection", "mesh_instance", "grid", "collision_shape")]
+[node name="PartSelection" type="StaticBody3D" parent="World/Grid" unique_id=22980492 node_paths=PackedStringArray("mouse_selection", "mesh_instance", "grid", "collision_shape")]
 script = ExtResource("10_6vk6i")
 rotation_ease = 2
 mouse_selection = NodePath("../../MouseSelection")
@@ -358,15 +352,15 @@ mesh_instance = NodePath("Stripes")
 grid = NodePath("..")
 collision_shape = NodePath("CollisionShape3D")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Grid/PartSelection"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Grid/PartSelection" unique_id=1870169623]
 shape = SubResource("BoxShape3D_djjwm")
 
-[node name="Stripes" type="MeshInstance3D" parent="World/Grid/PartSelection"]
+[node name="Stripes" type="MeshInstance3D" parent="World/Grid/PartSelection" unique_id=996673092]
 sorting_offset = -1.0
 instance_shader_parameters/line_color = Color(1, 0.49, 0.49, 1)
 mesh = SubResource("PlaneMesh_rmp56")
 
-[node name="SaveShipPopup" type="AcceptDialog" parent="."]
+[node name="SaveShipPopup" type="AcceptDialog" parent="." unique_id=1812214665]
 auto_translate_mode = 1
 oversampling_override = 1.0
 title = "ALERT"
@@ -377,10 +371,10 @@ unresizable = true
 theme = ExtResource("14_7jtw0")
 ok_button_text = "Return to design"
 
-[node name="ExportShipPopup" parent="." instance=ExtResource("27_ponbb")]
+[node name="ExportShipPopup" parent="." unique_id=216609054 instance=ExtResource("27_ponbb")]
 visible = false
 
-[node name="ImportShipPopup" parent="." instance=ExtResource("28_ponbb")]
+[node name="ImportShipPopup" parent="." unique_id=1770287424 instance=ExtResource("28_ponbb")]
 visible = false
 
 [connection signal="button_pressed" from="UI/VBoxContainer/HBoxContainer/FleetContainer" to="." method="_on_fleet_container_button_pressed"]

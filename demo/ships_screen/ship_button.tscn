@@ -36,6 +36,7 @@ unsaved_indicator = NodePath("PanelContainer/HBoxContainer/UnsavedIndicator")
 name_edit = NodePath("PanelContainer/HBoxContainer/Name")
 custom_icon = NodePath("MarginContainer/CustomIcon")
 panel_container = NodePath("PanelContainer")
+show_name = true
 metadata/_custom_type_script = "uid://gn43e8awh35b"
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=674035067]
@@ -56,7 +57,6 @@ alignment = 1
 [node name="ID" type="Label" parent="PanelContainer/HBoxContainer" unique_id=1680006396]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "#0"
 
 [node name="UnsavedIndicator" type="Label" parent="PanelContainer/HBoxContainer" unique_id=1001602639]
 visible = false
@@ -72,8 +72,10 @@ theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_gqj0r")
 theme_override_styles/read_only = SubResource("StyleBoxFlat_gqj0r")
 theme_override_styles/focus = SubResource("StyleBoxFlat_gqj0r")
+text = "Empty"
 placeholder_text = "Unnamed"
 max_length = 50
+editable = false
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1448263439]
 layout_mode = 1

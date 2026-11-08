@@ -89,8 +89,8 @@ const PARTS_JSON_PATH := "res://parts/part_data.json"
 var _parts: Dictionary[String, PartData] = {}
 
 func _init() -> void:
-	var error := load_json(PARTS_JSON_PATH)
-	print("PartManager status: %d" % error)
+	var error_flags := load_json(PARTS_JSON_PATH)
+	print("(PartManager) Parts loaded: %s" % TypeChecker.format_enum(error_flags, LoadError) )
 
 func clear() -> void:
 	_parts.clear()

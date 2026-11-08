@@ -14,6 +14,15 @@ const CAST_NUMBERS_AND_COLORS: Dictionary[Variant.Type, Variant.Type] = {
 	TYPE_STRING: TYPE_COLOR
 }
 
+## NOTE: You can pass the enum directly for enum_dict (e.g. format_enum(3, Error) )
+static func format_enum(flags: int, enum_dict: Dictionary, delimiter := " | ") -> String:
+	var strings := PackedStringArray()
+	#
+	for property in enum_dict:
+		if flags & enum_dict[property] or flags == enum_dict[property]:
+			strings.append(property)
+	return delimiter.join(strings)
+
 static func type_check_key(key: Variant, data: Dictionary, template: Dictionary[String, Variant.Type], strict_keys := true, allowed_casts: Dictionary[Variant.Type, Variant.Type] = {} ) -> bool:
 	if not key in template:
 		return not strict_keys

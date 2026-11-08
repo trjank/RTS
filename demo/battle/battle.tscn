@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://clxf0rnk677i8"]
+[gd_scene format=3 uid="uid://clxf0rnk677i8"]
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
@@ -8,17 +8,16 @@
 [ext_resource type="Texture2D" uid="uid://cd8t3je15dn86" path="res://icons/stats_cost.png" id="3_hvjow"]
 [ext_resource type="Texture2D" uid="uid://cx7lh1wwowlht" path="res://icons/menu.png" id="3_iorop"]
 [ext_resource type="StyleBox" uid="uid://qbg2x0y2va1d" path="res://battle/button_normal.tres" id="3_rxlun"]
+[ext_resource type="PackedScene" uid="uid://dt4dy48fd0mvk" path="res://battle/resource_counter.tscn" id="3_sf8fp"]
 [ext_resource type="Script" uid="uid://bwysy4g5mfiae" path="res://battle/formation_indicator.gd" id="4_7fucf"]
-[ext_resource type="Texture2D" uid="uid://cms7xiyps10hd" path="res://icons/crystals.png" id="4_phvbk"]
 [ext_resource type="Texture2D" uid="uid://5vle78fcfii8" path="res://icons/tab_energy.png" id="4_qybyd"]
 [ext_resource type="StyleBox" uid="uid://cpus28fjbdw4d" path="res://battle/button_pressed.tres" id="4_rxlun"]
-[ext_resource type="Texture2D" uid="uid://bpeacb6y6j5no" path="res://icons/hourglass.png" id="5_eu6g2"]
-[ext_resource type="Texture2D" uid="uid://c1fkfssn7ug34" path="res://icons/beaker.png" id="5_t8p1f"]
 [ext_resource type="StyleBox" uid="uid://dpnhdvo8bfxyx" path="res://battle/button_hover.tres" id="5_vlrs1"]
 [ext_resource type="Texture2D" uid="uid://b5riwlxwyb5kj" path="res://icons/count.png" id="7_a56dj"]
 [ext_resource type="Script" uid="uid://dwken4rn36b3k" path="res://battle/selection_info.gd" id="7_dxsh4"]
 [ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="7_rgsk0"]
 [ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="8_tkkqt"]
+[ext_resource type="Texture2D" uid="uid://dxepsqmp7nfuv" path="res://icons/warning.png" id="12_220ih"]
 [ext_resource type="PackedScene" uid="uid://ctal01hmjjewl" path="res://explosion/explosions.tscn" id="20_sf8fp"]
 [ext_resource type="PackedScene" uid="uid://k55tf3pcr005" path="res://shockwave/shockwaves.tscn" id="21_ihybe"]
 
@@ -36,6 +35,13 @@ content_margin_right = 50.0
 content_margin_bottom = 50.0
 bg_color = Color(0, 0, 0, 0)
 border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sf8fp"]
+content_margin_left = 15.0
+content_margin_top = 15.0
+content_margin_right = 15.0
+content_margin_bottom = 15.0
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Environment" id="Environment_70s20"]
 background_mode = 3
@@ -58,7 +64,7 @@ material = SubResource("StandardMaterial3D_7fucf")
 radius = 0.05
 height = 0.1
 
-[node name="Battle" type="Node" node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection", "alloy_label", "crystal_label", "military_science_label", "time_left", "explosions", "shockwaves")]
+[node name="Battle" type="Node" unique_id=1421054269 node_paths=PackedStringArray("world", "round_timer", "countdown_timer", "players_container", "fleet_container", "mouse_selection", "resource_counter", "explosions", "shockwaves")]
 script = ExtResource("1_nohcx")
 world = NodePath("World")
 round_timer = NodePath("RoundTimer")
@@ -66,15 +72,12 @@ countdown_timer = NodePath("CountdownTimer")
 players_container = NodePath("World/Players")
 fleet_container = NodePath("UI/FleetContainer")
 mouse_selection = NodePath("World/MouseSelection")
-alloy_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/AlloyCount")
-crystal_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/CrystalsCount")
-military_science_label = NodePath("UI/PanelContainer/HBoxContainer/Resources/MilitaryScienceCount")
-time_left = NodePath("UI/PanelContainer/HBoxContainer/Resources/TimeLeft")
+resource_counter = NodePath("UI/PanelContainer/HBoxContainer/ResourceCounter")
 explosions = NodePath("World/Explosions")
 shockwaves = NodePath("World/Shockwaves")
 metadata/_custom_type_script = "uid://bvfy718iilaa1"
 
-[node name="UI" type="Control" parent="."]
+[node name="UI" type="Control" parent="." unique_id=1587574494]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -82,7 +85,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="FleetContainer" parent="UI" instance=ExtResource("2_4mnim")]
+[node name="FleetContainer" parent="UI" unique_id=240012632 instance=ExtResource("2_4mnim")]
 custom_minimum_size = Vector2(399, 0)
 layout_mode = 1
 anchors_preset = 2
@@ -97,106 +100,31 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_l1kiu")
 button_size = Vector2(200, 200)
 collapsed = true
 
-[node name="PanelContainer" parent="UI/FleetContainer/VBoxContainer" index="0"]
+[node name="PanelContainer" parent="UI/FleetContainer/VBoxContainer" parent_id_path=PackedInt32Array(240012632, 104537190) index="0" unique_id=1414898925]
 visible = false
 
-[node name="MarginContainer" parent="UI/FleetContainer/VBoxContainer" index="1"]
+[node name="MarginContainer" parent="UI/FleetContainer/VBoxContainer" parent_id_path=PackedInt32Array(240012632, 104537190) index="1" unique_id=289192793]
 size_flags_vertical = 3
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="UI"]
+[node name="PanelContainer" type="PanelContainer" parent="UI" unique_id=844701980]
 layout_mode = 1
 offset_right = 255.0
 offset_bottom = 188.0
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_wu24d")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/PanelContainer" unique_id=141643570]
 layout_mode = 2
 theme_override_constants/separation = 50
 
-[node name="Resources" type="GridContainer" parent="UI/PanelContainer/HBoxContainer"]
+[node name="ResourceCounter" parent="UI/PanelContainer/HBoxContainer" unique_id=853580642 instance=ExtResource("3_sf8fp")]
 layout_mode = 2
-theme_override_constants/h_separation = 15
-theme_override_constants/v_separation = 10
-columns = 2
 
-[node name="AlloyIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/Resources"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-texture = ExtResource("3_hvjow")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="AlloyCount" type="Label" parent="UI/PanelContainer/HBoxContainer/Resources"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 5
-text = "1000"
-vertical_alignment = 1
-
-[node name="CrystalsIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/Resources"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-texture = ExtResource("4_phvbk")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="CrystalsCount" type="Label" parent="UI/PanelContainer/HBoxContainer/Resources"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 0.45999998, 0.45999998, 1)
-theme_override_colors/font_outline_color = Color(1, 0.45882353, 0.45882353, 1)
-theme_override_constants/outline_size = 5
-text = "1000"
-vertical_alignment = 1
-
-[node name="MilitaryScienceIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/Resources"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-texture = ExtResource("5_t8p1f")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="MilitaryScienceCount" type="Label" parent="UI/PanelContainer/HBoxContainer/Resources"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.33599997, 0.83160007, 0.84, 1)
-theme_override_colors/font_outline_color = Color(0.3372549, 0.83137256, 0.8392157, 1)
-theme_override_constants/outline_size = 5
-text = "0"
-vertical_alignment = 1
-
-[node name="TimeIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/Resources"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-texture = ExtResource("5_eu6g2")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="TimeLeft" type="Label" parent="UI/PanelContainer/HBoxContainer/Resources"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.38039216, 1, 0.5058824, 1)
-theme_override_colors/font_outline_color = Color(0.38039216, 1, 0.5058824, 1)
-theme_override_constants/outline_size = 5
-text = "29m 30s"
-vertical_alignment = 1
-
-[node name="SelectionInfo" type="GridContainer" parent="UI/PanelContainer/HBoxContainer" node_paths=PackedStringArray("count_label")]
+[node name="SelectionInfo" type="GridContainer" parent="UI/PanelContainer/HBoxContainer" unique_id=969598229 node_paths=PackedStringArray("count_label")]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 10
@@ -204,7 +132,7 @@ columns = 2
 script = ExtResource("7_dxsh4")
 count_label = NodePath("Count")
 
-[node name="CountIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="CountIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo" unique_id=1964810539]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -213,7 +141,7 @@ texture = ExtResource("7_a56dj")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Count" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="Count" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo" unique_id=781488178]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -222,7 +150,7 @@ theme_override_constants/outline_size = 5
 text = "1"
 vertical_alignment = 1
 
-[node name="NetAlloyIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetAlloyIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo" unique_id=448582435]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -231,7 +159,7 @@ texture = ExtResource("3_hvjow")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="NetAlloy" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetAlloy" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo" unique_id=997110977]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 0.8666667, 0.34117648, 1)
@@ -240,7 +168,7 @@ theme_override_constants/outline_size = 5
 text = "1000"
 vertical_alignment = 1
 
-[node name="NetHPIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetHPIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo" unique_id=1441755321]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -249,7 +177,7 @@ texture = ExtResource("7_rgsk0")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="NetHP" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetHP" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo" unique_id=948403600]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 0.45, 0.45, 1)
@@ -258,7 +186,7 @@ theme_override_constants/outline_size = 5
 text = "100"
 vertical_alignment = 1
 
-[node name="NetShieldIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetShieldIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo" unique_id=157011333]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -267,7 +195,7 @@ texture = ExtResource("8_tkkqt")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="NetShield" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetShield" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo" unique_id=1008213646]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.4, 0.9882353, 1, 1)
@@ -276,7 +204,7 @@ theme_override_constants/outline_size = 5
 text = "0"
 vertical_alignment = 1
 
-[node name="NetEnergyIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetEnergyIcon" type="TextureRect" parent="UI/PanelContainer/HBoxContainer/SelectionInfo" unique_id=939081114]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -285,7 +213,7 @@ texture = ExtResource("4_qybyd")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="NetEnergy" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo"]
+[node name="NetEnergy" type="Label" parent="UI/PanelContainer/HBoxContainer/SelectionInfo" unique_id=467709289]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.4, 0.9882353, 1, 1)
@@ -294,7 +222,23 @@ theme_override_constants/outline_size = 5
 text = "0"
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+[node name="FriendlyFireActive" type="Button" parent="UI/PanelContainer/HBoxContainer" unique_id=874231217]
+modulate = Color(1, 0.37166673, 0.35000002, 1)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+theme_override_constants/icon_max_width = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_sf8fp")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_sf8fp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sf8fp")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_sf8fp")
+theme_override_styles/focus = SubResource("StyleBoxFlat_sf8fp")
+text = "Friendly fire enabled"
+icon = ExtResource("12_220ih")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI" unique_id=825402867]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -304,7 +248,7 @@ offset_bottom = 70.0
 grow_horizontal = 0
 theme_override_constants/separation = 15
 
-[node name="DesignButton" type="Button" parent="UI/HBoxContainer"]
+[node name="DesignButton" type="Button" parent="UI/HBoxContainer" unique_id=196872442]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 32
@@ -314,7 +258,7 @@ theme_override_styles/hover = ExtResource("5_vlrs1")
 text = "Design"
 icon = ExtResource("2_wu24d")
 
-[node name="MenuButton" type="Button" parent="UI/HBoxContainer"]
+[node name="MenuButton" type="Button" parent="UI/HBoxContainer" unique_id=2083421671]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 32
@@ -325,7 +269,7 @@ text = "Menu
 "
 icon = ExtResource("3_iorop")
 
-[node name="FormationIndicator" type="Label" parent="UI"]
+[node name="FormationIndicator" type="Label" parent="UI" unique_id=1201377484]
 visible = false
 layout_mode = 1
 anchors_preset = 5
@@ -342,39 +286,39 @@ theme_override_constants/outline_size = 2
 text = "Formation: LINE"
 script = ExtResource("4_7fucf")
 
-[node name="World" type="Node3D" parent="."]
+[node name="World" type="Node3D" parent="." unique_id=415245036]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World" unique_id=1475257269]
 environment = SubResource("Environment_70s20")
 
-[node name="Players" type="Node3D" parent="World"]
+[node name="Players" type="Node3D" parent="World" unique_id=1804812022]
 
-[node name="UnitFormation" type="Node3D" parent="World" node_paths=PackedStringArray("mouse_selection", "multimesh_instance")]
+[node name="UnitFormation" type="Node3D" parent="World" unique_id=197300220 node_paths=PackedStringArray("mouse_selection", "multimesh_instance")]
 script = ExtResource("2_xooj7")
 mouse_selection = NodePath("../MouseSelection")
 multimesh_instance = NodePath("MultiMeshInstance3D")
 metadata/_custom_type_script = "uid://butv3bkqoil8c"
 
-[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="World/UnitFormation"]
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="World/UnitFormation" unique_id=488065324]
 multimesh = SubResource("MultiMesh_rxlun")
 
-[node name="MouseSelection" parent="World" instance=ExtResource("3_70s20")]
+[node name="MouseSelection" parent="World" unique_id=1942917076 instance=ExtResource("3_70s20")]
 collision_layer = 4
 collision_mask = 4
 single_select_mode = 2
 
-[node name="OriginMarker" type="MeshInstance3D" parent="World"]
+[node name="OriginMarker" type="MeshInstance3D" parent="World" unique_id=1574905560]
 cast_shadow = 0
 mesh = SubResource("SphereMesh_7fucf")
 
-[node name="Explosions" parent="World" instance=ExtResource("20_sf8fp")]
+[node name="Explosions" parent="World" unique_id=347085750 instance=ExtResource("20_sf8fp")]
 
-[node name="Shockwaves" parent="World" instance=ExtResource("21_ihybe")]
+[node name="Shockwaves" parent="World" unique_id=246797482 instance=ExtResource("21_ihybe")]
 
-[node name="RoundTimer" type="Timer" parent="."]
+[node name="RoundTimer" type="Timer" parent="." unique_id=1917002809]
 one_shot = true
 
-[node name="CountdownTimer" type="Timer" parent="."]
+[node name="CountdownTimer" type="Timer" parent="." unique_id=1540772634]
 one_shot = true
 
 [connection signal="button_pressed" from="UI/FleetContainer" to="." method="_on_fleet_container_button_pressed"]

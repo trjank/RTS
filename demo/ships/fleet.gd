@@ -64,6 +64,7 @@ func get_db() -> ShipManager:
 func set_priority(new_priority: int) -> void:
 	if priority == new_priority:
 		return
+	saved = false
 	priority = new_priority
 	priority_changed.emit()
 
@@ -73,23 +74,36 @@ func set_saved(new_saved: bool) -> void:
 	saved = new_saved
 	save_changed.emit(saved)
 
-func sync_metadata() -> bool:
-	return _db != null and _db.sync_fleet_metadata(self)
-
 func sync_ships() -> bool:
-	return _db != null and _db.sync_fleet_ships(self)
+	return db != null and db.sync_fleet_ships(self)
+
+func sync_metadata() -> bool:
+	saved = db != null and db.sync_fleet_metadata(self)
+	return saved
 
 func sync() -> bool:
-	return _db != null and _db.sync_fleet(self)
+	saved = db != null and db.sync_fleet(self)
+	return saved
 
-func save_metadata() -> bool:
-	return _db != null and _db.save_fleet_metadata(self)
+func save(lazy := true) -> bool:
+	saved = (saved and lazy) or (db != null and db.save_fleet(self) )
+	return saved
+
+func save_metadata(lazy := true) -> bool:
+	saved = (saved and lazy) or (db != null and db.save_fleet_metadata(self) )
+	return saved
 
 func save_ships() -> bool:
-	return _db != null and db.save_fleet_ships(self)
+	return db != null and db.save_fleet_ships(self)
 
-func save() -> bool:
-	return _db != null and _db.save_fleet(self)
+## NOTE: Deletion is immediate and permanent (BE CAREFUL!)
+func delete() -> bool:
+	if db == null:
+		return true
+	var success := db.delete_fleet(self)
+	db = null
+	id = -1
+	return success
 
 func has_slot(slot: int) -> bool:
 	return 0 <= slot and slot < _ships.size()
@@ -106,6 +120,14 @@ func get_ship(slot: int) -> ShipData:
 func set_db(new_db: ShipManager) -> void:
 	_db = weakref(new_db)
 
+func swap_priority(other_fleet: Fleet) -> bool:
+	if other_fleet == null or other_fleet.db != db:
+		return false
+	var other_priority := other_fleet.priority
+	other_fleet.priority = priority
+	priority = other_priority
+	return save_metadata() and other_fleet.save_metadata()
+
 ## For one-line set and save do: var success := set_ship(..) and save_ships()
 func set_ship(slot: int, ship: ShipData) -> bool:
 	if not has_slot(slot) or ship == _ships[slot]:
@@ -119,6 +141,7 @@ func set_name(new_name: String) -> bool:
 	new_name = new_name.substr(0, MAX_NAME_LENGTH)
 	if name == new_name:
 		return false
+	saved = false
 	name = new_name
 	renamed.emit(name)
 	return true
@@ -128,6 +151,7 @@ func set_size(new_size: int) -> bool:
 	new_size = clampi(new_size, MIN_SIZE, MAX_SIZE)
 	if size == new_size:
 		return false
+	saved = false
 	_ships.resize(new_size)
 	resized.emit(new_size)
 	return true

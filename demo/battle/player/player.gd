@@ -89,16 +89,26 @@ func set_team(new_team: Team) -> void:
 	team = new_team
 
 func clear_ships() -> void:
+	_ship_counts.clear()
 	_ships.queue_free()
 	_ships = Node3D.new()
 	add_child(_ships, false, Node.INTERNAL_MODE_BACK)
 
+## Only use this if you know what you're doing
+func increment_count(ship: ShipData, amount := 1) -> void:
+	_ship_counts[ship] = _ship_counts.get(ship, 0) + amount
+
+## Only use this if you know what you're doing
+func decrement_count(ship: ShipData, amount := 1) -> void:
+	if _ship_counts.get(ship, 0) <= amount:
+		return _ship_counts.erase(ship)
+	_ship_counts[ship] -= amount
+
 func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 	if ship_data.finalize() != ShipData.PlacementError.OK:
-		print("SHIP HAS PROBLEMS")
-	_ship_counts[ship_data] = _ship_counts.get(ship_data, 0) + 1
-	# TODO: setup death decrementer
+		return null
 	var ship := Ship.create()
+	increment_count(ship_data)
 	_ships.add_child(ship)
 	#ship_data.generate_image()
 	ship.battle = get_battle()
@@ -119,13 +129,18 @@ func spawn_ship_slot(slot: int, spawnpoint := Vector3.ZERO) -> Ship:
 func build_ship_slot(slot: int, spawnpoint := Vector3.ZERO) -> Ship:
 	return build_ship(fleet.get_ship(slot), spawnpoint) if fleet != null else null
 
-func register_death(unit: Unit) -> void:
-	if team != null:
-		team.register_death(unit)
-
 func register_kill(unit: Unit) -> void:
 	if team != null:
 		team.register_kill(unit)
+
+func register_death(unit: Unit) -> void:
+	if team != null:
+		team.register_death(unit)
+	if unit is Ship:
+		decrement_count(unit.data)
+
+func can_afford_retrofit(ship: ShipData, cost_multiplier := 1.0) -> bool:
+	return resources.can_afford(ship.cost, cost_multiplier * count_ships(ship) )
 
 func _physics_process(dt: float) -> void:
 	if alive and team != null:

@@ -1,0 +1,89 @@
+[gd_scene format=3 uid="uid://dt4dy48fd0mvk"]
+
+[ext_resource type="Texture2D" uid="uid://cd8t3je15dn86" path="res://icons/stats_cost.png" id="1_nw5ch"]
+[ext_resource type="Script" uid="uid://b7cmeqhr8j16q" path="res://battle/resource_counter.gd" id="1_qk80x"]
+[ext_resource type="Texture2D" uid="uid://cms7xiyps10hd" path="res://icons/crystals.png" id="2_qk80x"]
+[ext_resource type="Texture2D" uid="uid://c1fkfssn7ug34" path="res://icons/beaker.png" id="3_qykvw"]
+[ext_resource type="Texture2D" uid="uid://bpeacb6y6j5no" path="res://icons/hourglass.png" id="4_2kia0"]
+
+[node name="ResourceCounter" type="GridContainer" unique_id=853580642 node_paths=PackedStringArray("alloy_label", "crystals_label", "military_science_label", "time_label")]
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 10
+columns = 2
+script = ExtResource("1_qk80x")
+alloy_label = NodePath("AlloyCount")
+crystals_label = NodePath("CrystalsCount")
+military_science_label = NodePath("MilitaryScienceCount")
+time_label = NodePath("TimeCount")
+
+[node name="AlloyIcon" type="TextureRect" parent="." unique_id=1879752814]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+texture = ExtResource("1_nw5ch")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AlloyCount" type="Label" parent="." unique_id=890480929]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "--"
+vertical_alignment = 1
+
+[node name="CrystalsIcon" type="TextureRect" parent="." unique_id=975390736]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+texture = ExtResource("2_qk80x")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CrystalsCount" type="Label" parent="." unique_id=377284482]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.45999998, 0.45999998, 1)
+theme_override_colors/font_outline_color = Color(1, 0.45882353, 0.45882353, 1)
+theme_override_constants/outline_size = 5
+text = "--"
+vertical_alignment = 1
+
+[node name="MilitaryScienceIcon" type="TextureRect" parent="." unique_id=842625284]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+texture = ExtResource("3_qykvw")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MilitaryScienceCount" type="Label" parent="." unique_id=1409953816]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.33599997, 0.83160007, 0.84, 1)
+theme_override_colors/font_outline_color = Color(0.3372549, 0.83137256, 0.8392157, 1)
+theme_override_constants/outline_size = 5
+text = "--"
+vertical_alignment = 1
+
+[node name="TimeIcon" type="TextureRect" parent="." unique_id=1719858967]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+texture = ExtResource("4_2kia0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TimeCount" type="Label" parent="." unique_id=313351373]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.38039216, 1, 0.5058824, 1)
+theme_override_colors/font_outline_color = Color(0.38039216, 1, 0.5058824, 1)
+theme_override_constants/outline_size = 5
+text = "0m 0s"
+vertical_alignment = 1
