@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://b2kacfltjuvi0"]
+
+[ext_resource type="Script" uid="uid://byvh8w2eh7c50" path="res://chat_box/chat_box.gd" id="1_u4lv8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yv4mg"]
+content_margin_left = 25.0
+content_margin_top = 25.0
+content_margin_right = 25.0
+content_margin_bottom = 25.0
+bg_color = Color(0, 0.26, 0.186333, 0.392157)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ot5k6"]
+content_margin_left = 50.0
+content_margin_top = 25.0
+content_margin_right = 25.0
+content_margin_bottom = 25.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_color = Color(0, 0.830769, 0.597912, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_am503"]
+content_margin_left = 50.0
+content_margin_top = 25.0
+content_margin_right = 25.0
+content_margin_bottom = 25.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 10
+border_color = Color(0, 0.831373, 0.596078, 1)
+
+[node name="ChatBox" type="VBoxContainer" unique_id=603022892 node_paths=PackedStringArray("message_container", "send_message_input")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_u4lv8")
+message_container = NodePath("PanelContainer/ScrollContainer/Messages")
+send_message_input = NodePath("SendMessage")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1678427107]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_yv4mg")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer" unique_id=1020499736]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Messages" type="VBoxContainer" parent="PanelContainer/ScrollContainer" unique_id=653339970]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+alignment = 2
+
+[node name="SendMessage" type="LineEdit" parent="." unique_id=950679960]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_placeholder_color = Color(0.55, 0.55, 0.55, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_ot5k6")
+theme_override_styles/focus = SubResource("StyleBoxFlat_am503")
+placeholder_text = "send message..."
+keep_editing_on_text_submit = true
+
+[connection signal="text_submitted" from="SendMessage" to="." method="_on_send_message_text_submitted"]

@@ -51,13 +51,13 @@ func _add_battle_teams(new_battle: Battle) -> void:
 		add_team(team)
 
 func _disconnect_signals(old_battle: Battle) -> void:
-	request_join_team.disconnect(old_battle.request_join_team)
-	request_add_bot.disconnect(old_battle.request_add_bot)
+	request_join_team.disconnect(old_battle.join_team)
+	request_add_bot.disconnect(old_battle.add_bot)
 	old_battle.team_created.disconnect(add_team)
 	old_battle.team_removed.disconnect(remove_team)
 
 func _connect_signals(new_battle: Battle) -> void:
-	request_join_team.connect(new_battle.request_join_team)
-	request_add_bot.connect(new_battle.request_add_bot)
+	request_join_team.connect(new_battle.join_team)
+	request_add_bot.connect(new_battle.add_bot)
 	new_battle.team_created.connect(add_team)
 	new_battle.team_removed.connect(remove_team)

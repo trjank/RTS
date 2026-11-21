@@ -104,14 +104,10 @@ func to_unnested_dict() -> Dictionary:
 	_add_to_unnested_dict(dict)
 	return dict
 
-func save_json(path: String, nested := false) -> bool:
+func save_json(path: String, nested := false, indent := "\t") -> bool:
 	var file := FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
-		return false
 	var dict := to_nested_dict() if nested else to_unnested_dict()
-	file.store_string(JSON.stringify(dict, "\t") )
-	file.close()
-	return true
+	return file != null and file.store_string(JSON.stringify(dict, indent) )
 
 func _generate_one(index: int, count: int, parent: Node3D, battle: Battle, rng: RandomNumberGenerator, node_storage: Array[Scenery], depth_limit := 1, shared_variables := {}, layer_variables := {} ) -> int:
 	var scenery := Scenery.create(subtype)

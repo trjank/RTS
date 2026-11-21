@@ -30,7 +30,7 @@ void vertex() {
 	height = length(VERTEX);
 	vec3 uv_power_normal = to_uv_power_normal(NORMAL, uv_blend_sharpness);
 	biome_value = clamp(triplanar_texture(biome_texture, uv_power_normal, VERTEX).r, 0.0, 1.0);
-	VERTEX = normalize(VERTEX) * max(height, 1.01);
+	VERTEX = normalize(VERTEX) * max(height, water_height);
 }
 
 void fragment() {

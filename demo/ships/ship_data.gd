@@ -2,7 +2,7 @@ class_name ShipData extends RefCounted
 
 signal cleared
 signal priority_changed
-signal retrofitted(player: Player)
+signal retrofitted
 signal save_changed(is_saved: bool)
 signal renamed
 signal resized(new_grid_size: Vector2i)
@@ -218,9 +218,9 @@ func get_unit_logic_uid() -> int:
 
 ## This creates a copy (if you can, use get_part instead)
 func get_parts() -> Array[ShipDataPart]:
-	var copy := _parts.duplicate()
-	copy.remove_at(NULL_PART_ID)
-	return copy
+	var parts := _parts.duplicate()
+	parts.remove_at(NULL_PART_ID)
+	return parts
 
 func get_grid_width() -> int:
 	return _grid_bounds.size.x
@@ -354,11 +354,46 @@ func calculate_stats() -> void:
 		add_part_stats(part, part_counts[part] )
 	stats_updated.emit()
 
-func trigger_retrofit(player: Player) -> void:
-	retrofitted.emit(player)
+func copy_stats(from: ShipData) -> void:
+	if from == null or from == self:
+		return push_error("(ShipData) Invalid ship to copy stats from!")
+	cost           = from.cost.copy()
+	thrust         = from.thrust
+	mass           = from.mass
+	torque         = from.torque
+	max_hp         = from.max_hp
+	max_warp       = from.max_warp
+	max_shield     = from.max_shield
+	max_energy     = from.max_energy
+	warp_per_sec   = from.warp_per_sec
+	shield_per_sec = from.shield_per_sec
+	energy_per_sec = from.energy_per_sec
 
-func finalize(forceful := false) -> int:
-	if is_finalized and not forceful:
+func calculate_retrofit_cost(from: ShipData) -> StrategicResources:
+	var difference := cost.copy()
+	difference.subtract(from.cost)
+	return difference
+
+func copy(from: ShipData) -> void:
+	if from == null or from == self:
+		return push_error("(ShipData) Invalid retrofit!")
+	_copy_parts(from)
+	_part_ids = from._part_ids.copy()
+	part_counts = from.part_counts.duplicate()
+	image = from.image.duplicate() if from.image != null else null
+	thumbnail = from.thumbnail.duplicate() if from.thumbnail != null else null
+	copy_stats(from)
+	retrofitted.emit()
+
+func _copy_parts(from: ShipData) -> void:
+	_parts = from._parts.duplicate()
+	#
+	for i in range(1, _parts.size() ):
+		_parts[i] = _parts[i].copy()
+	assert(_parts[0] == null)
+
+func finalize(lazy := true) -> int:
+	if is_finalized and lazy:
 		return _placement_error
 	for i in range(1, _parts.size() ):
 		_placement_error |= _parts[i].on_ship_data_pre_finalize(self)
@@ -417,7 +452,7 @@ func add_part(part_data: PartData, top_left_corner: Vector2i, rotation := Rotati
 	var rect := Rect2i(top_left_corner, size)
 	if not _grid_bounds.encloses(rect):
 		return PartError.OUT_OF_BOUNDS
-	if boundary != Boundary.NONE and not _part_ids.is_rect_empty(rect, NULL_PART_ID):
+	if boundary != Boundary.NONE and not _part_ids.compare_rect(rect, NULL_PART_ID):
 		return PartError.OVERLAP
 	_create_part(part_data, rect, rotation, boundary, serialize_part)
 	is_finalized = false
@@ -515,3 +550,6 @@ func _draw_part(to_image: Image, part: ShipDataPart, offset: Vector2i) -> void:
 	var from := Rect2i(Vector2i.ZERO, part_image.get_size() )
 	var to := Measurement.PX_PER_TILE * part.get_rect().position
 	to_image.blit_rect(part_image, from, to - offset)
+
+func _to_string() -> String:
+	return "<ShipData #%d>" % get_uid()

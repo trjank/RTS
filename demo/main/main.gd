@@ -22,6 +22,7 @@ const DEFAULT_ADAPTIVE_FOV_RATIO := 3e-4
 @export var world: Node3D
 @export var ui: CanvasLayer
 @export var background: TextureRect
+@export var terminal: Terminal
 
 var _world_nodes: Dictionary[State, Node3D] = {}
 var _ui_nodes: Dictionary[State, Control] = {}
@@ -72,9 +73,6 @@ func set_state(new_state: State) -> void:
 	state = new_state
 	state_changed.emit(new_state)
 
-func _process(_dt: float) -> void:
-	camera.fov = get_adaptive_fov() if state == State.MAIN_MENU else base_fov
-
 func prepare_subscene(substate: State, subscene_root: Node) -> void:
 	# NOTE: World nodes are affected by the camera while UI is not
 	var subworld := subscene_root.get_node("World") as Node3D
@@ -90,3 +88,12 @@ func prepare_subscene(substate: State, subscene_root: Node) -> void:
 	_ui_nodes[substate] = subui
 	toggle_node(subworld, state == substate)
 	toggle_node(subui, state == substate)
+
+func _process(_dt: float) -> void:
+	camera.fov = get_adaptive_fov() if state == State.MAIN_MENU else base_fov
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"open terminal"):
+		terminal.show()
+	if event is InputEventMouseButton and event.is_pressed() and get_viewport().gui_get_focus_owner() != null:
+		get_viewport().gui_release_focus()

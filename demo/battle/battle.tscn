@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
+[ext_resource type="PackedScene" uid="uid://b2kacfltjuvi0" path="res://chat_box/chat_box.tscn" id="2_ihybe"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="2_wu24d"]
 [ext_resource type="Script" uid="uid://butv3bkqoil8c" path="res://battle/unit_formation.gd" id="2_xooj7"]
 [ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://main/mouse_selection.tscn" id="3_70s20"]
@@ -41,7 +42,11 @@ content_margin_left = 15.0
 content_margin_top = 15.0
 content_margin_right = 15.0
 content_margin_bottom = 15.0
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0, 0, 0, 0.7058824)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="Environment" id="Environment_70s20"]
 background_mode = 3
@@ -84,6 +89,22 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="UI" unique_id=550880381]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="UI/HSplitContainer" unique_id=1131012228]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ChatBox" parent="UI/HSplitContainer" unique_id=603022892 node_paths=PackedStringArray("battle") instance=ExtResource("2_ihybe")]
+layout_mode = 2
+battle = NodePath("../../..")
 
 [node name="FleetContainer" parent="UI" unique_id=240012632 instance=ExtResource("2_4mnim")]
 custom_minimum_size = Vector2(399, 0)
@@ -227,8 +248,8 @@ modulate = Color(1, 0.37166673, 0.35000002, 1)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/h_separation = 10
 theme_override_constants/icon_max_width = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_sf8fp")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_sf8fp")

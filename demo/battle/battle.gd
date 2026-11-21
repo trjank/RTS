@@ -21,9 +21,20 @@ signal player_left(player: Player)
 signal team_created(team: Team)
 signal team_removed(team: Team)
 
+const PARENT_DIRECTORY := "user://battles/"
 const MAX_NUM_TEAMS := 10
 const MAX_NUM_PLAYERS := 100
-const SAVE_FOLDER := "user://battles/"
+
+static var PROPERTIES: Dictionary[String, Variant.Type] = {
+	"seed": TYPE_INT,
+	"time": TYPE_FLOAT,
+	"time_scale": TYPE_FLOAT,
+	"map_config": TYPE_DICTIONARY,
+	"map_data": TYPE_DICTIONARY,
+	"copied_ships": TYPE_DICTIONARY,
+	"copied_fleets": TYPE_DICTIONARY,
+	"copied_unit_logic": TYPE_DICTIONARY
+}
 
 @export var world: Node3D
 @export var round_timer: Timer
@@ -32,13 +43,17 @@ const SAVE_FOLDER := "user://battles/"
 @export var fleet_container: FleetContainer
 @export var mouse_selection: MouseSelection
 @export var resource_counter: ResourceCounter
-#
 @export var explosions: Explosions
 @export var shockwaves: Shockwaves
 
 var rng := RandomNumberGenerator.new()
+var chat_log := ChatLog.new():
+	set(__): push_error("(Battle) Do not create a new chat log")
 var scenery: Array[Scenery] = []
 var map: Map
+var map_config: Dictionary:
+	get = get_map_config, set = set_map_config
+var map_data := {}
 var map_depth_limit := 5
 var gamemode: Gamemode:
 	set = set_gamemode
@@ -54,18 +69,27 @@ var retrofit_cost_multiplier := 1.0
 var retrofits_enabled := true
 var friendly_fire_enabled := false
 var can_pause := false
+var state := SaveState.new()
+var folder_path := PARENT_DIRECTORY.path_join("temporary/"):
+	set = set_folder_path
+## NOTE: This value is never null (defaults to ShipManager.TEMPORARY)
+var ship_db := ShipManager.TEMPORARY:
+	set = set_ship_db
+## NOTE: This value is never null (defaults to UnitLogicManager.TEMPORARY)
+var unit_logic_db := UnitLogicManager.TEMPORARY:
+	set = set_unit_logic_db
+# These map global ids to ids of copies made by the battle (avoid messing with them)
+var copied_fleets: Dictionary[int, int] = {}
+var copied_ships: Dictionary[int, int] = {}
+var copied_unit_logic: Dictionary[int, int] = {}
 
 var _default_team: Team
-var _players: Dictionary[String, Player] = {}
 var _teams: Dictionary[String, Team] = {}
+var _players: Dictionary[String, Player] = {}
+var _id_to_player: Dictionary[int, Player] = {}
+var _player_count := 0
 var _status := Status.STOPPED
 var _map_root: Node3D
-var _map_data := {}
-var _ship_db: ShipManager
-var _unit_logic_db: UnitLogicManager
-var _converted_fleets: Dictionary[int, int] = {}
-var _converted_ships: Dictionary[int, int] = {}
-var _converted_unit_logic: Dictionary[int, int] = {}
 
 func _init() -> void:
 	_default_team = create_team("Spectators")
@@ -76,21 +100,39 @@ func _ready() -> void:
 	Account.me.fleet_changed.connect(fleet_container.set_fleet)
 	fleet_container.fleet = Account.me.fleet
 	mouse_selection.plane = plane
-	me = connect_player("dev")
-	me.fleet = Account.me.fleet
+	me = add_player("dev")
+	me.fleet = copy_fleet(Account.me.fleet)
 	host = me
+
+func to_dict() -> Dictionary:
+	return TypeChecker.to_dict(self, PROPERTIES)
+
+func load_dict(dict: Dictionary) -> bool:
+	return TypeChecker.load_dict(self, dict, PROPERTIES, TypeChecker.CAST_NUMBERS)
+
+func is_spectator(player: Player) -> bool:
+	return player.team == _default_team
 
 func is_team_alive(team: Team) -> bool:
 	return team != _default_team and team.is_alive()
 
+func is_player_alive(player: Player) -> bool:
+	return player.team != _default_team and player.alive
+
 func is_team_name_alive(team_name: String) -> bool:
 	return is_team_alive(_teams[team_name] )
+
+func is_player_name_alive(player_name: String) -> bool:
+	return is_player_alive(_players[player_name] )
 
 func count_players() -> int:
 	return _players.size()
 
 func count_teams() -> int:
 	return _teams.size()
+
+func get_player_from_id(id: int) -> Player:
+	return _id_to_player.get(id)
 
 func get_player(player_name: String) -> Player:
 	return _players.get(player_name)
@@ -104,32 +146,49 @@ func get_default_team() -> Team:
 func get_status() -> Status:
 	return _status
 
-func get_map_data() -> Dictionary:
-	return _map_data
+func get_team_names() -> Array:
+	return _teams.keys()
 
-func get_team_names() -> PackedStringArray:
-	return PackedStringArray(_teams.keys() )
+func get_player_names() -> Array:
+	return _players.keys()
 
-func get_alive_team_names() -> PackedStringArray:
-	return PackedStringArray(_teams.keys().filter(is_team_name_alive) )
+func get_alive_team_names() -> Array:
+	return _teams.keys().filter(is_team_name_alive)
 
-func get_player_names() -> PackedStringArray:
-	return PackedStringArray(_players.keys() )
+func get_alive_player_names() -> Array:
+	return _players.keys().filter(is_player_name_alive)
 
 func get_alive_teams() -> Array[Team]:
 	return _teams.values().filter(is_team_alive)
 
+func get_alive_players() -> Array[Player]:
+	return _players.values().filter(is_player_alive)
+
 ## This creates a copy (if you can, use get_player instead)
-func get_players() -> Array[Player]:
-	var copy := [] as Array[Player]
-	copy.assign(_players.values() )
-	return copy
+func get_players() -> Array:
+	return _players.values()
 
 ## This creates a copy (if you can, use get_team instead)
-func get_teams() -> Array[Team]:
-	var copy := [] as Array[Team]
-	copy.assign(_teams.values() )
-	return copy
+func get_teams() -> Array:
+	return _teams.values()
+
+func get_map_config() -> Dictionary:
+	return {} if map == null else map.to_dict()
+
+func get_state_path() -> String:
+	return folder_path.path_join("state" + SaveState.FILE_EXTENSION)
+
+func get_json_path() -> String:
+	return folder_path.path_join("data.json")
+
+func get_ship_db_path() -> String:
+	return folder_path.path_join("ships.db")
+
+func get_unit_logic_db_path() -> String:
+	return folder_path.path_join("unit_logic.db")
+
+func set_map_config(new_map_config: Dictionary) -> void:
+	map = Map.from_dict(new_map_config)
 
 func set_plane(new_plane: Plane) -> void:
 	plane = new_plane
@@ -165,53 +224,111 @@ func set_gamemode(new_gamemode: Gamemode) -> bool:
 		load_team(team)
 	return true
 
-## Clears stored ShipData and UnitLogic
-func clear_data() -> void:
-	_ship_db.clear()
-	_unit_logic_db.clear()
+func set_ship_db(new_ship_db: ShipManager) -> void:
+	ship_db = new_ship_db if new_ship_db != null else ShipManager.TEMPORARY
 
-## Clears store ShipData and UnitLogic, and deletes any database files
-func delete_data() -> void:
-	_ship_db.delete()
-	_unit_logic_db.delete()
+func set_unit_logic_db(new_unit_logic_db: UnitLogicManager) -> void:
+	unit_logic_db = new_unit_logic_db if new_unit_logic_db != null else UnitLogicManager.TEMPORARY
 
-func configure(const_id: int) -> bool:
-	_ship_db = ShipManager.new(const_id)
-	_unit_logic_db = UnitLogicManager.new(const_id)
-	return _ship_db.register() and _unit_logic_db.register()
-
-func configure_db(const_id: int, file_name := "battle_%d" % const_id) -> bool:
-	_ship_db = ShipDatabase.new(const_id)
-	_unit_logic_db = UnitLogicDatabase.new(const_id)
-	return _ship_db.register() and _unit_logic_db.register() and _ship_db.load_file(SAVE_FOLDER + file_name + "_ships.db") and _unit_logic_db.load_file(SAVE_FOLDER + file_name + "_logic.db")
-
-func can_retrofit() -> bool:
-	return retrofits_enabled
-
-func converted_ship(ship: ShipData) -> ShipData:
-	return _converted_ships.get(ship)
-
-func converted_fleet(fleet: Fleet) -> Fleet:
-	return _converted_fleets.get(fleet)
-
-func converted_unit_logic(unit_logic: UnitLogic) -> UnitLogic:
-	return _converted_unit_logic.get(unit_logic)
-
-func retrofit(ship_data: ShipData) -> bool:
-	if not can_retrofit():
+func set_folder_path(new_folder_path: String) -> bool:
+	if not new_folder_path.begins_with(PARENT_DIRECTORY) or new_folder_path.contains(".."):
 		return false
-	var players := _players.keys().filter(func (player: Player) -> bool: return player.count_ships(ship_data) > 0)
-	# 0 or 1 players = fine
-	# >1 players = bad
+	folder_path = new_folder_path
 	return true
 
-func process_retrofit(ship_data: ShipData) -> void:
-	pass
+func open_ship_db(id: int, path := get_ship_db_path() ) -> bool:
+	ship_db = ShipDatabase.create(id)
+	return ship_db.load_file(path)
+
+func open_unit_logic_db(id: int, path := get_unit_logic_db_path() ) -> bool:
+	unit_logic_db = UnitLogicDatabase.create(id)
+	return unit_logic_db.load_file(path)
+
+## NOTE: This only copies the ship once (you can call this multiple times on the same ship)
+func copy_ship(ship: ShipData) -> ShipData:
+	if ship == null or ship.db == ship_db:
+		return ship
+	var uid := ship.get_uid()
+	if uid in copied_ships:
+		return ship_db.get_ship(copied_ships[uid] )
+	var copy := ShipData.new()
+	copy.copy(ship)
+	ship_db.create_ship(copy)
+	copied_ships[uid] = copy.id
+	return copy
+
+## NOTE: This only copies the fleet once (you can call this multiple times on the same fleet)
+func copy_fleet(fleet: Fleet) -> Fleet:
+	if fleet == null or fleet.db == ship_db:
+		return fleet
+	var uid := fleet.get_uid()
+	if uid in copied_fleets:
+		return ship_db.get_fleet(copied_fleets[uid] )
+	var copy := Fleet.new()
+	copy.copy(fleet)
+	ship_db.create_fleet(copy)
+	copied_fleets[uid] = copy.id
+	return copy
+
+## NOTE: This only copies the fleet and each ship once (you can call this multiple times on the same fleet)
+func copy_fleet_and_ships(fleet: Fleet) -> Fleet:
+	var copy := copy_fleet(fleet)
+	if copy == null:
+		return null
+	for i in range(copy.size):
+		copy.set_ship(i, copy_ship(copy.get_ship(i) ) )
+	return copy
+
+## NOTE: This only copies the unit logic once (you can call this multiple times on the same unit logic)
+func copy_unit_logic(unit_logic: UnitLogic) -> UnitLogic:
+	if unit_logic == null or unit_logic.db == unit_logic_db:
+		return unit_logic
+	var uid := unit_logic.get_uid()
+	if uid in copied_unit_logic:
+		return unit_logic_db.get_unit_logic(copied_unit_logic[uid] )
+	var copy := UnitLogic.new()
+	copy.copy(unit_logic)
+	unit_logic_db.create_unit_logic(copy)
+	return copy
+
+func _can_afford_retrofit(player: Player, copied: ShipData, cost: StrategicResources) -> bool:
+	return player.resources.can_afford(cost, player.count_ships(copied) )
+
+func retrofit_ship(ship_data: ShipData) -> bool:
+	if not retrofits_enabled:
+		return false
+	var copied := copy_ship(ship_data)
+	var cost := ship_data.cost.copy()
+	var players := get_alive_players()
+	cost.subtract(copied.cost)
+	cost.multiply(retrofit_cost_multiplier)
+	#
+	if not players.all(_can_afford_retrofit.bind(copied, cost) ):
+		return false
+	for player: Player in players:
+		player.resources.subtract(cost, player.count_ships(copied) )
+	copied.retrofit(ship_data)
+	return true
+
+func retrofit_fleet(fleet: Fleet) -> void:
+	copy_fleet(fleet).copy(fleet)
+
+func retrofit_unit_logic(unit_logic: UnitLogic) -> void:
+	copy_unit_logic(unit_logic).copy(unit_logic)
+
+func validate_ships() -> bool:
+	return copied_ships.keys().any(func (uid: int) -> bool: return ShipData.from_uid(uid) == null)
+
+func validate_fleets() -> bool:
+	return copied_fleets.keys().any(func (uid: int) -> bool: return Fleet.from_uid(uid) == null)
+
+func validate_unit_logic() -> bool:
+	return copied_unit_logic.keys().any(func (uid: int) -> bool: return UnitLogic.from_uid(uid) == null)
 
 func destroy_map() -> void:
 	if _map_root == null:
 		return
-	_map_data.clear()
+	map_data.clear()
 	_map_root.queue_free()
 	_map_root = null
 	scenery.clear()
@@ -223,9 +340,9 @@ func generate_map() -> void:
 	rng.seed = rng.seed
 	_map_root = Node3D.new()
 	world.add_child(_map_root)
-	var error_flags := map.generate(_map_root, self, rng, scenery, map_depth_limit, _map_data)
+	var error_flags := map.generate(_map_root, self, rng, scenery, map_depth_limit, map_data)
 	print("(Battle) Map generation: %s" % TypeChecker.format_enum(error_flags, Map.GenerationError) )
-	print("(Battle) Generated %d scenery objects" % _map_data.get("scenery_count", 0) )
+	print("(Battle) Generated %d scenery objects" % map_data.get("scenery_count", 0) )
 
 func start_countdown() -> StartError:
 	if _status != Status.STOPPED:
@@ -241,6 +358,7 @@ func start() -> StartError:
 		return StartError.ALREADY_RUNNING
 	if not gamemode.is_map_compatible(map):
 		return StartError.INCOMPATIBLE_MAP
+	state.clear()
 	reset_teams()
 	generate_map()
 	if gamemode.spawn_teams(self) != Gamemode.SpawnError.OK:
@@ -264,10 +382,10 @@ func stop() -> bool:
 	stopped.emit(winners)
 	return true
 
-func connect_player(player_name: String, color := Color.WHITE) -> Player:
+func add_player(player_name: String, color := Color.WHITE) -> Player:
 	assert(_default_team != null)
 	#
-	if MAX_NUM_PLAYERS <= _players.size():
+	if MAX_NUM_PLAYERS <= _players.size() or not Player.is_name_valid(player_name):
 		return null
 	player_name = _find_unique_name(player_name, _players)
 	#
@@ -277,22 +395,26 @@ func connect_player(player_name: String, color := Color.WHITE) -> Player:
 	player.display_name_changed.connect(_handle_player_rename.bind(player) )
 	player._battle = self
 	player.team = _default_team
+	player.id = _player_count
+	_player_count += 1
+	_id_to_player[player.id] = player
 	player_joined.emit(player)
 	return player
 
-func disconnect_player(player_name: String) -> bool:
+func remove_player(player_name: String) -> bool:
 	if not player_name in _players:
 		return false
 	var player := _players[player_name]
 	player.queue_free()
 	player_left.emit(player)
 	_players.erase(player_name)
+	_id_to_player.erase(player.id)
 	return true
 
-func request_add_bot(team: Team) -> Player:
+func add_bot(team: Team) -> Player:
 	if team.is_full():
 		return null
-	var bot := connect_player("bot")
+	var bot := add_player("bot")
 	if bot == null:
 		return null
 	bot.team = team
@@ -300,23 +422,49 @@ func request_add_bot(team: Team) -> Player:
 	gamemode.setup_bot(bot)
 	return bot
 
+func deserialize_state() -> SaveState.LoadError:
+	var error := SaveState.LoadError.OK
+	#
+	while error == SaveState.LoadError.OK:
+		error = state.deserialize_node(self)
+	return error
+
+func load_state(path := get_state_path() ) -> bool:
+	return state.load_binary(path) and deserialize_state() == SaveState.LoadError.NO_MORE_DATA
+
+func load_json(path := get_json_path() ) -> bool:
+	var text := FileAccess.get_file_as_string(path)
+	var json = JSON.parse_string(text)
+	return json is Dictionary and load_dict(json)
+
+func save_state(path := get_state_path() ) -> bool:
+	var error_flags: int = SaveState.SaveError.OK
+	#
+	for player in _players:
+		error_flags |= _players[player].save_to(state)
+	return state.save_binary(path) and error_flags == SaveState.SaveError.OK
+
+func save_json(path := get_json_path(), indent := "\t") -> bool:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	return file != null and file.store_string(JSON.stringify(to_dict(), indent) )
+
 func can_join_team(team: Team, player := me) -> bool:
 	return _status == Status.STOPPED or (player != null and player.is_admin) and team != null
 
 func can_team_kick(from := me) -> bool:
 	return (from == host and _status == Status.STOPPED) or (from != null and from.is_admin)
 
-func request_join_team(team: Team, player := me) -> bool:
+func join_team(team: Team, player := me) -> bool:
 	return can_join_team(team, player) and team.add_player(player)
 
-func request_team_kick(player: Player, from := me) -> bool:
+func team_kick(player: Player, from := me) -> bool:
 	return can_team_kick(from) and _default_team.add_player(player)
 
-func request_kick(player: Player, from := me) -> bool:
+func kick(player: Player, from := me) -> bool:
 	if player == null:
 		return false
 	if player.is_bot or (from != null and from.is_admin):
-		return disconnect_player(player.display_name)
+		return remove_player(player.display_name)
 	cast_vote()
 	return false
 

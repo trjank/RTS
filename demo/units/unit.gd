@@ -32,6 +32,7 @@ enum Condition {
 	BATTLE_TIME_RATIO
 }
 
+const UNIT_BYTES := Bytes.U8 + 6 * Bytes.FLOAT
 const MAX_NUM_WAYPOINTS := 10
 const RAMMING_DISTANCE := 0.0
 const DEFAULT_SAFE_DISTANCE := 10_000.0
@@ -332,6 +333,30 @@ func kite(min_distance: float, max_distance: float) -> void:
 	if _distance_to_waypoint < min_distance:
 		return flee()
 	attack(max_distance)
+
+func serialize(buffer_size := UNIT_BYTES) -> PackedByteArray:
+	var bytes := PackedByteArray()
+	bytes.resize(maxi(buffer_size, UNIT_BYTES) )
+	bytes.encode_float(0, path_arc)
+	bytes.encode_float(Bytes.FLOAT, course_correction)
+	bytes.encode_float(2 * Bytes.FLOAT, hp)
+	bytes.encode_float(3 * Bytes.FLOAT, warp)
+	bytes.encode_float(4 * Bytes.FLOAT, thrust)
+	bytes.encode_float(5 * Bytes.FLOAT, torque)
+	bytes.encode_u8(6 * Bytes.FLOAT, movement_locked)
+	return []
+
+func deserialize(bytes: PackedByteArray) -> bool:
+	if bytes.size() < UNIT_BYTES:
+		return false
+	path_arc = bytes.decode_float(0)
+	course_correction = bytes.decode_float(Bytes.FLOAT)
+	hp = bytes.decode_float(2 * Bytes.FLOAT)
+	warp = bytes.decode_float(3 * Bytes.FLOAT)
+	thrust = bytes.decode_float(4 * Bytes.FLOAT)
+	torque = bytes.decode_float(5 * Bytes.FLOAT)
+	movement_locked = bool(bytes.decode_u8(0) )
+	return true
 
 func _calculate_trajectory_to_waypoint() -> void:
 	var to_waypoint := get_waypoint().global_position - global_position

@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://bgx6pbxte11v8"]
+[gd_scene format=3 uid="uid://bgx6pbxte11v8"]
 
 [ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main/main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="2_67ri8"]
-[ext_resource type="PackedScene" uid="uid://bbw701x53gipl" path="res://chat_box/chat.tscn" id="3_grrlh"]
+[ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="2_fwcvl"]
+[ext_resource type="Script" uid="uid://dgia5glc0igrd" path="res://main/terminal.gd" id="3_na0o7"]
 [ext_resource type="Script" uid="uid://pca8mdhmpyek" path="res://main/camera.gd" id="4_0i4oc"]
 [ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://battle/battle.tscn" id="4_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://c60au813wrr5i" path="res://main_menu/main_menu.tscn" id="6_4dugh"]
@@ -11,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://2vhw5b8l4nvs" path="res://training_grounds/training_grounds.tscn" id="10_bsumw"]
 [ext_resource type="PackedScene" uid="uid://c0amctp11de4o" path="res://unit_logic_editor/unit_logic_editor.tscn" id="11_bsumw"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]
+[ext_resource type="PackedScene" uid="uid://b2kacfltjuvi0" path="res://chat_box/chat_box.tscn" id="11_fwcvl"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_grrlh"]
 
@@ -19,7 +21,7 @@ plane = Plane(0, -1, 0, 0)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_grrlh"]
 
-[node name="Main" type="Node" node_paths=PackedStringArray("nodes", "camera", "camera_body", "world", "ui", "background")]
+[node name="Main" type="Node" unique_id=153330007 node_paths=PackedStringArray("nodes", "camera", "camera_body", "world", "ui", "background", "terminal")]
 script = ExtResource("1_h0c8p")
 nodes = {
 0: NodePath("MainMenu"),
@@ -35,12 +37,26 @@ camera_body = NodePath("World/CameraBody")
 world = NodePath("World")
 ui = NodePath("UI")
 background = NodePath("Background/TextureRect")
+terminal = NodePath("Terminal")
 metadata/_custom_type_script = "uid://bed2cq2pcsh86"
 
-[node name="Background" type="CanvasLayer" parent="."]
+[node name="Terminal" type="Window" parent="." unique_id=1974109321 node_paths=PackedStringArray("chat_box")]
+oversampling_override = 1.0
+title = "TERMINAL"
+initial_position = 1
+size = Vector2i(750, 500)
+visible = false
+min_size = Vector2i(750, 500)
+theme = ExtResource("2_fwcvl")
+script = ExtResource("3_na0o7")
+chat_box = NodePath("ChatBox")
+
+[node name="ChatBox" parent="Terminal" unique_id=603022892 instance=ExtResource("11_fwcvl")]
+
+[node name="Background" type="CanvasLayer" parent="." unique_id=212417149]
 layer = -100
 
-[node name="TextureRect" type="TextureRect" parent="Background"]
+[node name="TextureRect" type="TextureRect" parent="Background" unique_id=1276745804]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -52,29 +68,25 @@ texture = ExtResource("2_67ri8")
 expand_mode = 3
 stretch_mode = 6
 
-[node name="Chat" parent="." instance=ExtResource("3_grrlh")]
-layer = 2
-visible = false
+[node name="UI" type="CanvasLayer" parent="." unique_id=1299313426]
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="World" type="Node3D" parent="." unique_id=1952746951]
 
-[node name="World" type="Node3D" parent="."]
-
-[node name="Floor" type="StaticBody3D" parent="World"]
+[node name="Floor" type="StaticBody3D" parent="World" unique_id=1397038268]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 input_ray_pickable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Floor" unique_id=283080196]
 shape = SubResource("WorldBoundaryShape3D_grrlh")
 
-[node name="Ceiling" type="StaticBody3D" parent="World"]
+[node name="Ceiling" type="StaticBody3D" parent="World" unique_id=1355177814]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 500, 0)
 input_ray_pickable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Ceiling"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Ceiling" unique_id=938193784]
 shape = SubResource("WorldBoundaryShape3D_0i4oc")
 
-[node name="CameraBody" type="RigidBody3D" parent="World"]
+[node name="CameraBody" type="RigidBody3D" parent="World" unique_id=111642326]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 axis_lock_angular_x = true
 axis_lock_angular_y = true
@@ -85,24 +97,25 @@ linear_damp = 2.0
 script = ExtResource("4_0i4oc")
 force = Vector3(100, 100, 100)
 
-[node name="Camera3D" type="Camera3D" parent="World/CameraBody"]
+[node name="Camera3D" type="Camera3D" parent="World/CameraBody" unique_id=1691629633]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="World/CameraBody"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/CameraBody" unique_id=1651323418]
 shape = SubResource("SphereShape3D_grrlh")
 
-[node name="Design" parent="." instance=ExtResource("11_dg77c")]
+[node name="Design" parent="." unique_id=1963468671 instance=ExtResource("11_dg77c")]
 
-[node name="Battle" parent="." instance=ExtResource("4_kfbq2")]
+[node name="Battle" parent="." unique_id=310720118 instance=ExtResource("4_kfbq2")]
 
-[node name="Fleets" parent="." instance=ExtResource("6_kfbq2")]
+[node name="Fleets" parent="." unique_id=246963386 instance=ExtResource("6_kfbq2")]
 
-[node name="MainMenu" parent="." instance=ExtResource("6_4dugh")]
+[node name="MainMenu" parent="." unique_id=1018266239 instance=ExtResource("6_4dugh")]
 
-[node name="Singleplayer" parent="." instance=ExtResource("10_0i4oc")]
+[node name="Singleplayer" parent="." unique_id=806874539 instance=ExtResource("10_0i4oc")]
 
-[node name="TrainingGrounds" parent="." instance=ExtResource("10_bsumw")]
+[node name="TrainingGrounds" parent="." unique_id=581787927 instance=ExtResource("10_bsumw")]
 
-[node name="UnitLogicEditor" parent="." instance=ExtResource("11_bsumw")]
+[node name="UnitLogicEditor" parent="." unique_id=689271020 instance=ExtResource("11_bsumw")]
 
 [connection signal="state_changed" from="." to="TrainingGrounds" method="_on_main_state_changed"]
+[connection signal="close_requested" from="Terminal" to="Terminal" method="_on_close_requested"]

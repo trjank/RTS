@@ -11,8 +11,7 @@ var lifetime_sec := MIN_LIFETIME_SEC:
 	set = set_lifetime_sec
 var mining_rate := StrategicResources.new()
 var mining_rate_data: Dictionary:
-	get = get_mining_rate_data,
-	set = set_mining_rate_data
+	get = get_mining_rate_data, set = set_mining_rate_data
 var can_mine := false
 
 func get_speed() -> float:

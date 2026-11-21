@@ -15,7 +15,7 @@
 	"display_name": "",
 	"min_count": 1,
 	"max_count": 1,
-	"min_temperature": 0.5,
-	"max_temperature": 1.0,
+	"min_temperature": 0.1,
+	"max_temperature": 0.1,
 	"capturable": false
 }

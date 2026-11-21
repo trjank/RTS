@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://c60au813wrr5i"]
+[gd_scene format=3 uid="uid://c60au813wrr5i"]
 
 [ext_resource type="Script" uid="uid://76pjt8trd8dg" path="res://main_menu/main_menu.gd" id="1_6tl50"]
 [ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://battle/battle.tscn" id="1_512ns"]
@@ -35,20 +35,20 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="MainMenu" node_paths=PackedStringArray("submenus") instance=ExtResource("1_512ns")]
+[node name="MainMenu" unique_id=1891008150 node_paths=PackedStringArray("submenus") instance=ExtResource("1_512ns")]
 script = ExtResource("1_6tl50")
 submenus = NodePath("UI/Options/TabContainer")
 
-[node name="FleetContainer" parent="UI" index="0"]
+[node name="FleetContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="0" unique_id=240012632]
 visible = false
 
-[node name="PanelContainer" parent="UI" index="1"]
+[node name="PanelContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="1" unique_id=844701980]
 visible = false
 
-[node name="HBoxContainer" parent="UI" index="2"]
+[node name="HBoxContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="2" unique_id=825402867]
 visible = false
 
-[node name="Background" type="TextureRect" parent="UI" index="4"]
+[node name="Background" type="TextureRect" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="4" unique_id=1250786679]
 modulate = Color(1, 1, 1, 0.78431374)
 layout_mode = 1
 anchors_preset = 15
@@ -59,7 +59,7 @@ grow_vertical = 2
 texture = ExtResource("4_t6bnd")
 stretch_mode = 1
 
-[node name="Options" type="ScrollContainer" parent="UI" index="5"]
+[node name="Options" type="ScrollContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="5" unique_id=2106931620]
 z_index = 10
 layout_mode = 1
 anchors_preset = 15
@@ -70,7 +70,7 @@ grow_vertical = 2
 theme = ExtResource("2_nhs7o")
 theme_override_styles/panel = SubResource("StyleBoxFlat_ahnob")
 
-[node name="TabContainer" type="TabContainer" parent="UI/Options" index="0"]
+[node name="TabContainer" type="TabContainer" parent="UI/Options" index="0" unique_id=1479008253]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
@@ -78,18 +78,18 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_qvn4f")
 current_tab = 0
 tabs_visible = false
 
-[node name="Buttons" type="VBoxContainer" parent="UI/Options/TabContainer" index="1"]
+[node name="Buttons" type="VBoxContainer" parent="UI/Options/TabContainer" index="1" unique_id=1443840869]
 layout_mode = 2
 theme_override_constants/separation = 25
 metadata/_tab_index = 0
 
-[node name="BannerName" type="HBoxContainer" parent="UI/Options/TabContainer/Buttons" index="0"]
+[node name="BannerName" type="HBoxContainer" parent="UI/Options/TabContainer/Buttons" index="0" unique_id=1420358359]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 20
 
-[node name="Title" type="Label" parent="UI/Options/TabContainer/Buttons/BannerName" index="0"]
+[node name="Title" type="Label" parent="UI/Options/TabContainer/Buttons/BannerName" index="0" unique_id=1203665269]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -101,20 +101,20 @@ theme_override_font_sizes/font_size = 50
 text = "Project Stardust"
 vertical_alignment = 2
 
-[node name="Version" type="Label" parent="UI/Options/TabContainer/Buttons/BannerName" index="1"]
+[node name="Version" type="Label" parent="UI/Options/TabContainer/Buttons/BannerName" index="1" unique_id=1585336410]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_ia84y")
 text = "alpha"
 
-[node name="BannerDescription" type="Label" parent="UI/Options/TabContainer/Buttons" index="1"]
+[node name="BannerDescription" type="Label" parent="UI/Options/TabContainer/Buttons" index="1" unique_id=2133454273]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 text = "Build. Kill. Conquer."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Warning" type="Label" parent="UI/Options/TabContainer/Buttons" index="2"]
+[node name="Warning" type="Label" parent="UI/Options/TabContainer/Buttons" index="2" unique_id=677411739]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.7607843, 0.36078432, 1)
@@ -125,7 +125,7 @@ flashing and flickering lights."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SingleplayerButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="3"]
+[node name="SingleplayerButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="3" unique_id=1211559403]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
@@ -134,7 +134,7 @@ theme_override_styles/hover = ExtResource("5_0w23u")
 text = "Singleplayer"
 alignment = 0
 
-[node name="MultiplayerButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="4"]
+[node name="MultiplayerButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="4" unique_id=761066494]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = ExtResource("3_sl4gw")
@@ -143,7 +143,7 @@ theme_override_styles/hover = ExtResource("5_0w23u")
 text = "Multiplayer"
 alignment = 0
 
-[node name="DesignButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="5"]
+[node name="DesignButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="5" unique_id=1550894854]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 40
@@ -155,7 +155,7 @@ text = "Design"
 icon = ExtResource("8_6at21")
 alignment = 0
 
-[node name="FleetsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="6"]
+[node name="FleetsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="6" unique_id=1616834245]
 layout_mode = 2
 theme_override_constants/h_separation = 14
 theme_override_constants/icon_max_width = 40
@@ -167,7 +167,7 @@ text = "Fleets"
 icon = ExtResource("9_og6xe")
 alignment = 0
 
-[node name="SettingsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="7"]
+[node name="SettingsButton" type="Button" parent="UI/Options/TabContainer/Buttons" index="7" unique_id=2056157713]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_constants/h_separation = 15
@@ -181,17 +181,17 @@ text = "Settings
 icon = ExtResource("8_ia84y")
 alignment = 0
 
-[node name="SingleplayerSubmenu" parent="UI/Options/TabContainer" index="2" instance=ExtResource("11_qvn4f")]
+[node name="SingleplayerSubmenu" parent="UI/Options/TabContainer" index="2" unique_id=1448396093 instance=ExtResource("11_qvn4f")]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="SettingsSubmenu" parent="UI/Options/TabContainer" index="3" instance=ExtResource("12_g1omr")]
+[node name="SettingsSubmenu" parent="UI/Options/TabContainer" index="3" unique_id=722879820 instance=ExtResource("12_g1omr")]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="RoundTimer" parent="." index="2"]
+[node name="RoundTimer" parent="." index="2" unique_id=1917002809]
 wait_time = 100.0
 
 [connection signal="pressed" from="UI/Options/TabContainer/Buttons/SingleplayerButton" to="." method="_on_singleplayer_button_pressed"]

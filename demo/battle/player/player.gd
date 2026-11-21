@@ -6,7 +6,9 @@ signal icon_changed(old_icon: Texture2D, new_icon: Texture2D)
 signal bot_status_changed
 
 const MAX_CLAN_LENGTH := 10
+const MAX_NAME_LENGTH := 25
 
+var id := -1
 var display_name: String:
 	set = set_display_name
 var color: Color
@@ -17,7 +19,8 @@ var clan := "":
 	set = set_clan
 var icon: Texture2D = preload("res://icons/skull.png"):
 	set = set_icon
-var resources := StrategicResources.new()
+var resources := StrategicResources.new():
+	set = set_resources
 var fleet: Fleet
 var is_bot := false:
 	set = set_bot_status
@@ -28,12 +31,17 @@ var selection: Array[Target] = []
 var _battle: Battle
 var _battle_data := {}
 var _ships := Node3D.new()
+var _projectiles := Node3D.new()
 var _ship_counts: Dictionary[ShipData, int] = {}
+
+static func is_name_valid(new_name: String) -> bool:
+	return new_name.length() <= MAX_NAME_LENGTH
 
 func _init(init_display_name := "", init_color := Color.WHITE) -> void:
 	display_name = init_display_name
 	color = init_color
 	add_child(_ships, false, Node.INTERNAL_MODE_BACK)
+	add_child(_projectiles, false, Node.INTERNAL_MODE_BACK)
 
 func is_me() -> bool:
 	return _battle != null and self == _battle.me
@@ -49,6 +57,15 @@ func get_battle_data() -> Dictionary:
 
 func count_ships(data: ShipData) -> int:
 	return _ship_counts.get(data, 0)
+
+func count_total_ships() -> int:
+	return _ships.get_child_count()
+
+func count_total_projectiles() -> int:
+	return _projectiles.get_child_count()
+
+func set_resources(new_resources: StrategicResources) -> void:
+	resources = new_resources if new_resources != null else resources
 
 func set_bot_status(bot_status: bool) -> void:
 	if bot_status == is_bot:
@@ -73,6 +90,8 @@ func set_icon(new_icon: Texture2D) -> void:
 	icon_changed.emit(old_icon, new_icon)
 
 func set_display_name(new_display_name: String) -> void:
+	new_display_name = new_display_name.left(MAX_NAME_LENGTH)
+	#
 	if new_display_name == display_name:
 		return
 	var old_display_name := display_name
@@ -94,6 +113,11 @@ func clear_ships() -> void:
 	_ships = Node3D.new()
 	add_child(_ships, false, Node.INTERNAL_MODE_BACK)
 
+func clear_projectiles() -> void:
+	_projectiles.queue_free()
+	_projectiles = Node3D.new()
+	add_child(_projectiles, false, Node.INTERNAL_MODE_BACK)
+
 ## Only use this if you know what you're doing
 func increment_count(ship: ShipData, amount := 1) -> void:
 	_ship_counts[ship] = _ship_counts.get(ship, 0) + amount
@@ -105,7 +129,7 @@ func decrement_count(ship: ShipData, amount := 1) -> void:
 	_ship_counts[ship] -= amount
 
 func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
-	if ship_data.finalize() != ShipData.PlacementError.OK:
+	if ship_data == null or ship_data.finalize() != ShipData.PlacementError.OK:
 		return null
 	var ship := Ship.create()
 	increment_count(ship_data)
@@ -118,7 +142,7 @@ func spawn_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
 	return ship
 
 func build_ship(ship_data: ShipData, spawnpoint := Vector3.ZERO) -> Ship:
-	if not resources.can_afford(ship_data.cost):
+	if ship_data == null or not resources.can_afford(ship_data.cost):
 		return null
 	resources.subtract(ship_data.cost)
 	return spawn_ship(ship_data, spawnpoint)
@@ -132,6 +156,7 @@ func build_ship_slot(slot: int, spawnpoint := Vector3.ZERO) -> Ship:
 func register_kill(unit: Unit) -> void:
 	if team != null:
 		team.register_kill(unit)
+	# TODO: Player-specific kill rewards
 
 func register_death(unit: Unit) -> void:
 	if team != null:
@@ -139,8 +164,20 @@ func register_death(unit: Unit) -> void:
 	if unit is Ship:
 		decrement_count(unit.data)
 
-func can_afford_retrofit(ship: ShipData, cost_multiplier := 1.0) -> bool:
-	return resources.can_afford(ship.cost, cost_multiplier * count_ships(ship) )
+func load_node(node: Node3D) -> void:
+	if not node is Ship:
+		return _projectiles.add_child(node)
+	increment_count(node.data)
+	_ships.add_child(node)
+
+func save_to(save_state: SaveState) -> int:
+	var error_flags: int = SaveState.SaveError.OK
+	#
+	for node in _ships.get_children():
+		error_flags |= save_state.serialize_node(node, self)
+	for node in _projectiles.get_children():
+		error_flags |= save_state.serialize_node(node, self)
+	return error_flags
 
 func _physics_process(dt: float) -> void:
 	if alive and team != null:

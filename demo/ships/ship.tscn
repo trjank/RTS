@@ -1,16 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://bclfkleo04c2s"]
+[gd_scene format=3 uid="uid://bclfkleo04c2s"]
 
 [ext_resource type="PackedScene" uid="uid://dt0p75hngjhet" path="res://units/unit.tscn" id="1_aujvj"]
 [ext_resource type="Script" uid="uid://c1kpbbaqx8xxa" path="res://ships/ship.gd" id="1_n6m1k"]
 [ext_resource type="PackedScene" uid="uid://hvicroe1d56b" path="res://pips/pip_bar.tscn" id="3_an5v1"]
 [ext_resource type="Material" uid="uid://j3s8wx61unm0" path="res://ships/ship_material.tres" id="3_d0hxi"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_6juyh"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_d0hxi"]
 resource_local_to_scene = true
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_h2j6u"]
 
-[node name="Ship" node_paths=PackedStringArray("hp_bar", "shield_bar", "energy_bar", "ui", "behavior_indicator", "part_nodes", "detection") instance=ExtResource("1_aujvj")]
+[node name="Ship" unique_id=381259001 node_paths=PackedStringArray("hp_bar", "shield_bar", "energy_bar", "ui", "behavior_indicator", "part_nodes", "detection") instance=ExtResource("1_aujvj")]
 script = ExtResource("1_n6m1k")
 hp_bar = NodePath("UI/HPBar")
 shield_bar = NodePath("UI/ShieldBar")
@@ -26,13 +26,13 @@ instance_shader_parameters/player_color = Color(0, 0, 0, 1)
 instance_shader_parameters/shield = 1.0
 
 [node name="CollisionShape3D" parent="." index="1"]
-shape = SubResource("SphereShape3D_6juyh")
+shape = SubResource("SphereShape3D_d0hxi")
 
-[node name="PartNodes" type="Node3D" parent="." index="2"]
+[node name="PartNodes" type="Node3D" parent="." index="2" unique_id=30747621]
 
-[node name="UI" type="Node3D" parent="." index="3"]
+[node name="UI" type="Node3D" parent="." index="3" unique_id=858529407]
 
-[node name="EnergyBar" parent="UI" index="0" instance=ExtResource("3_an5v1")]
+[node name="EnergyBar" parent="UI" index="0" unique_id=1627856545 instance=ExtResource("3_an5v1")]
 transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 instance_shader_parameters/base_color = Color(0, 0.5, 0.5, 1)
 instance_shader_parameters/border_color = Color(1, 1, 1, 1)
@@ -48,7 +48,7 @@ max_value = 10.0
 base_color = Color(0, 0.5, 0.5, 1)
 pip_color = Color(0, 1, 1, 1)
 
-[node name="HPBar" parent="UI" index="1" instance=ExtResource("3_an5v1")]
+[node name="HPBar" parent="UI" index="1" unique_id=2033606970 instance=ExtResource("3_an5v1")]
 transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1)
 instance_shader_parameters/base_color = Color(0.25, 0.0775, 0.0775, 1)
 instance_shader_parameters/pip_width = 0.99
@@ -61,7 +61,7 @@ max_value = 10.0
 base_color = Color(0.25, 0.0775, 0.0775, 1)
 pip_color = Color(1, 0.32, 0.32, 1)
 
-[node name="ShieldBar" parent="UI" index="2" instance=ExtResource("3_an5v1")]
+[node name="ShieldBar" parent="UI" index="2" unique_id=314425755 instance=ExtResource("3_an5v1")]
 transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -2)
 instance_shader_parameters/base_color = Color(0.10416663, 0, 0.25, 1)
 instance_shader_parameters/border_color = Color(1, 1, 1, 1)
@@ -77,7 +77,7 @@ max_value = 10.0
 base_color = Color(0.10416663, 0, 0.25, 1)
 pip_color = Color(0.4166665, 0, 1, 1)
 
-[node name="BehaviorIndicator" type="Label3D" parent="UI" index="3"]
+[node name="BehaviorIndicator" type="Label3D" parent="UI" index="3" unique_id=1916856230]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1, -4)
 pixel_size = 0.05
 render_priority = 4
@@ -87,9 +87,9 @@ outline_modulate = Color(0.8666667, 0.5019608, 1, 1)
 text = "NONE"
 outline_size = 2
 
-[node name="Detection" type="Area3D" parent="." index="4"]
+[node name="Detection" type="Area3D" parent="." index="4" unique_id=270792969]
 collision_layer = 0
 collision_mask = 4
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Detection" index="0"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Detection" index="0" unique_id=843059701]
 shape = SubResource("SphereShape3D_h2j6u")

@@ -34,6 +34,9 @@ func get_image() -> Image:
 func get_boundary() -> int:
 	return _boundary
 
+func copy() -> ShipDataPart:
+	return ShipDataPart.new(_id, _data, _rect, _rotation, _boundary)
+
 ## Runs after every ShipDataPart has been added to ShipData, but before on_ship_data_post_finalize
 func on_ship_data_pre_finalize(_ship_data: ShipData) -> ShipData.PlacementError:
 	return ShipData.PlacementError.OK

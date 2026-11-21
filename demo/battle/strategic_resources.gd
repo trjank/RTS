@@ -2,14 +2,10 @@ class_name StrategicResources extends RefCounted
 
 static var NONE := StrategicResources.new():
 	set(__): push_error("(StrategicResources) StrategicResources.NONE is immutable!")
-static var INFINITE := StrategicResources.from_dict({
-	"alloy": INF,
-	"crystals": INF,
-	"military_science": INF
-}):
+static var INFINITE := StrategicResources.from_dict( {"alloy": INF, "crystals": INF, "military_science": INF} ):
 	set(__): push_error("(StrategicResources) StrategicResources.INFINITE is immutable!")
 
-const SYNTAX: Dictionary[String, Variant.Type] = {
+const PROPERTIES: Dictionary[String, Variant.Type] = {
 	"alloy": TYPE_FLOAT,
 	"crystals": TYPE_FLOAT,
 	"military_science": TYPE_FLOAT,
@@ -42,10 +38,10 @@ static func from_dict(dict: Dictionary, always_copy := false) -> StrategicResour
 	return resources if resources.load_dict(dict) or always_copy else NONE
 
 func to_dict() -> Dictionary:
-	return TypeChecker.to_dict(self, SYNTAX)
+	return TypeChecker.to_dict(self, PROPERTIES)
 
 func load_dict(dict: Dictionary) -> bool:
-	return TypeChecker.load_dict(self, dict, SYNTAX, TypeChecker.CAST_NUMBERS)
+	return TypeChecker.load_dict(self, dict, PROPERTIES, TypeChecker.CAST_NUMBERS)
 
 func set_alloy(new_alloy: float) -> void:
 	alloy = clampf(new_alloy, min_alloy, max_alloy)
@@ -58,6 +54,11 @@ func set_military_science(new_military_science: float) -> void:
 
 func can_afford(cost: StrategicResources, multiplier := 1.0) -> bool:
 	return multiplier * cost.alloy <= alloy and multiplier * cost.crystals <= crystals and multiplier * cost.military_science <= military_science
+
+func copy() -> StrategicResources:
+	var result := StrategicResources.new()
+	result.add(self)
+	return result
 
 func reset() -> void:
 	alloy = 0.0
@@ -86,6 +87,11 @@ func add(from: StrategicResources, multiplier := 1.0) -> void:
 
 func subtract(from: StrategicResources, multiplier := 1.0) -> void:
 	add(from, -multiplier)
+
+func multiply(scalar: float) -> void:
+	alloy *= scalar
+	crystals *= scalar
+	military_science *= scalar
 
 ## This ensures total alloy is always conserved
 func transfer_alloy(to: StrategicResources, alloy_limit := INF) -> void:

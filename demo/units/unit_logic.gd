@@ -142,6 +142,9 @@ func execute(unit: Unit) -> bool:
 		i += 1
 	return i < _blocks.size()
 
+func copy(from: UnitLogic) -> void:
+	pass
+
 func serialize(lazy := true) -> bool:
 	if saved and lazy:
 		return true

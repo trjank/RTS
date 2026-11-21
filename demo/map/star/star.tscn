@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://5yhk4cd760g7"]
+[gd_scene format=3 uid="uid://5yhk4cd760g7"]
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_b5dfa"]
 [ext_resource type="Script" uid="uid://b7ip1206r8sxu" path="res://map/star/star.gd" id="2_v7ku8"]
@@ -16,27 +16,27 @@ resource_local_to_scene = true
 [sub_resource type="SphereShape3D" id="SphereShape3D_xjd5i"]
 resource_local_to_scene = true
 
-[node name="Star" instance=ExtResource("1_b5dfa")]
+[node name="Star" unique_id=2104930608 instance=ExtResource("1_b5dfa")]
 script = ExtResource("2_v7ku8")
 energy = 5.0
 temperature = 0.33
 
-[node name="MeshInstance3D" parent="." index="1"]
+[node name="MeshInstance3D" parent="." index="1" unique_id=1751150612]
 material_override = ExtResource("3_v7ku8")
 cast_shadow = 0
-instance_shader_parameters/accretion_disk_light_color = Color(1, 0.6019757, 0, 1)
-instance_shader_parameters/accretion_disk_light_dropoff = 5.000000142499999
-instance_shader_parameters/accretion_disk_light_glow = 8.0
-instance_shader_parameters/accretion_disk_start_rotation = 0.5
+instance_shader_parameters/accretion_disk_light_color = Color(1, 0.20000005, 0, 1)
+instance_shader_parameters/accretion_disk_light_dropoff = 15.0000006175
+instance_shader_parameters/accretion_disk_light_glow = 5.0
+instance_shader_parameters/accretion_disk_start_rotation = 0.1
 mesh = SubResource("SphereMesh_v7ku8")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="." index="3"]
+[node name="CollisionShape3D" parent="Area3D" parent_id_path=PackedInt32Array(1506430901) index="0" unique_id=2092813763]
+shape = SubResource("SphereShape3D_v7ku8")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." index="3" unique_id=2033988031]
 light_energy = 25.0
 shadow_enabled = true
 omni_range = 4096.0
 
-[node name="CollisionShape3D" parent="Area3D" index="0"]
-shape = SubResource("SphereShape3D_v7ku8")
-
-[node name="CollisionShape3D" parent="Hitbox" index="0"]
+[node name="CollisionShape3D" parent="Hitbox" parent_id_path=PackedInt32Array(1022241276) index="0" unique_id=138834454]
 shape = SubResource("SphereShape3D_xjd5i")

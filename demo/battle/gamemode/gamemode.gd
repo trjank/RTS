@@ -53,7 +53,7 @@ func spawn_team(team: Team, spawnpoints: Array[Spawnpoint] ) -> int:
 func spawn_teams(battle: Battle) -> int:
 	assert(battle != null)
 	#
-	var spawnpoints := Spawnpoint.get_team_spawnpoints(battle.get_map_data() )
+	var spawnpoints := Spawnpoint.get_team_spawnpoints(battle.map_data)
 	var team_names := battle.get_alive_team_names()
 	if team_names.is_empty():
 		return SpawnError.NO_TEAMS

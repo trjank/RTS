@@ -1,10 +1,11 @@
 class_name Fleet extends RefCounted
 
+signal retrofitted
+signal priority_changed
 signal resized(new_size: int)
 signal renamed(new_name: String)
-signal priority_changed
-signal ship_changed(new_ship: ShipData, slot: int)
 signal save_changed(is_saved: bool)
+signal ship_changed(new_ship: ShipData, slot: int)
 
 const MIN_SIZE := 1
 const MAX_SIZE := 20
@@ -120,14 +121,6 @@ func get_ship(slot: int) -> ShipData:
 func set_db(new_db: ShipManager) -> void:
 	_db = weakref(new_db)
 
-func swap_priority(other_fleet: Fleet) -> bool:
-	if other_fleet == null or other_fleet.db != db:
-		return false
-	var other_priority := other_fleet.priority
-	other_fleet.priority = priority
-	priority = other_priority
-	return save_metadata() and other_fleet.save_metadata()
-
 ## For one-line set and save do: var success := set_ship(..) and save_ships()
 func set_ship(slot: int, ship: ShipData) -> bool:
 	if not has_slot(slot) or ship == _ships[slot]:
@@ -155,3 +148,20 @@ func set_size(new_size: int) -> bool:
 	_ships.resize(new_size)
 	resized.emit(new_size)
 	return true
+
+func swap_priority(other_fleet: Fleet) -> bool:
+	if other_fleet == null or other_fleet.db != db:
+		return false
+	var other_priority := other_fleet.priority
+	other_fleet.priority = priority
+	priority = other_priority
+	return save_metadata() and other_fleet.save_metadata()
+
+func copy(from: Fleet) -> void:
+	_ships = from._ships.duplicate()
+	size = from.size
+	name = from.name
+	retrofitted.emit()
+
+func _to_string() -> String:
+	return "<Fleet #%d>" % get_uid()

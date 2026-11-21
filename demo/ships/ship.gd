@@ -2,6 +2,7 @@ class_name Ship extends Unit
 
 signal target_changed(new_target: Target)
 
+const SHIP_BYTES := UNIT_BYTES + 2 * Bytes.FLOAT
 const MIN_MASS := 0.1
 
 static var show_behavior := false
@@ -153,26 +154,24 @@ func drain_energy(energy_drain: float) -> void:
 func distance_sorter(a: Node3D, b: Node3D) -> bool:
 	return a.global_position.distance_squared_to(global_position) < b.global_position.distance_squared_to(global_position)
 
-func update_behavior_indicator() -> void:
-	var behavior := get_behavior_flags()
-	var text := ""
-	if behavior & Behavior.KITE:
-		text += " KITE "
-	if behavior & Behavior.BROADSIDE:
-		text += " BROADSIDE "
-	if behavior & Behavior.TRACK:
-		text += " TRACK "
-	if behavior & Behavior.FLEE:
-		text += " FLEE "
-	if behavior & Behavior.ATTACK:
-		text += " ATTACK "
-	behavior_indicator.text = text
+func serialize(buffer_size := SHIP_BYTES) -> PackedByteArray:
+	var bytes := super(maxi(buffer_size, SHIP_BYTES) )
+	bytes.encode_float(UNIT_BYTES, shield)
+	bytes.encode_float(UNIT_BYTES + Bytes.FLOAT, energy)
+	return bytes
+
+func deserialize(bytes: PackedByteArray) -> bool:
+	if bytes.size() < SHIP_BYTES:
+		return false
+	shield = bytes.decode_float(UNIT_BYTES)
+	energy = bytes.decode_float(UNIT_BYTES + Bytes.FLOAT)
+	return super(bytes)
 
 func _physics_process(dt: float) -> void:
 	energy += data.energy_per_sec * dt
 
 func _process(_dt: float) -> void:
-	update_behavior_indicator()
+	behavior_indicator.text = TypeChecker.format_enum(get_behavior_flags(), Behavior)
 	ui.global_rotation = Vector3.ZERO
 	hp_bar.value = hp
 	shield_bar.value = shield

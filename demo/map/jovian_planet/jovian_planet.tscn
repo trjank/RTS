@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b8pwym56tfmx"]
+[gd_scene format=3 uid="uid://b8pwym56tfmx"]
 
 [ext_resource type="PackedScene" uid="uid://bvi7rt1l6hfoy" path="res://map/planet/planet.tscn" id="1_miubj"]
 [ext_resource type="Script" uid="uid://se4t0qo4oph6" path="res://map/jovian_planet/jovian_planet.gd" id="2_eosxs"]
@@ -33,38 +33,37 @@ shader_parameter/color_secondary = Color(1, 1, 1, 1)
 [sub_resource type="PlaneMesh" id="PlaneMesh_eosxs"]
 size = Vector2(5, 5)
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_ag2gk"]
+resource_local_to_scene = true
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_hl5rp"]
 resource_local_to_scene = true
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_mllep"]
-resource_local_to_scene = true
-
-[node name="JovianPlanet" instance=ExtResource("1_miubj")]
+[node name="JovianPlanet" unique_id=1221931149 instance=ExtResource("1_miubj")]
 script = ExtResource("2_eosxs")
 
-[node name="MeshInstance3D" parent="." index="1"]
+[node name="MeshInstance3D" parent="." index="1" unique_id=1751150612]
 material_override = ExtResource("3_1hplw")
 instance_shader_parameters/primary_color = Color(1, 0.35000002, 0, 1)
 instance_shader_parameters/secondary_color = Color(1, 0.7783333, 0.3, 1)
 mesh = SubResource("SphereMesh_fc2gh")
 
-[node name="Atmosphere" type="MeshInstance3D" parent="MeshInstance3D" index="0"]
+[node name="Atmosphere" type="MeshInstance3D" parent="MeshInstance3D" index="0" unique_id=1057781130]
 transform = Transform3D(1, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0)
 material_override = SubResource("ShaderMaterial_hl5rp")
-instance_shader_parameters/atmosphere_color = Color(1, 1, 1, 1)
-instance_shader_parameters/density = 0.750000035625
+instance_shader_parameters/density = 0.60800002888
 instance_shader_parameters/rim_strength = 10.0
 mesh = SubResource("SphereMesh_hl5rp")
 skeleton = NodePath("../..")
 
-[node name="Rings" type="MeshInstance3D" parent="MeshInstance3D" index="1"]
+[node name="Rings" type="MeshInstance3D" parent="MeshInstance3D" index="1" unique_id=1818727260]
 transform = Transform3D(0.9531907, -0.3023699, 0, 0.3023699, 0.9531907, 0, 0, 0, 1, 0, 0, 0)
 material_override = SubResource("ShaderMaterial_1hplw")
 mesh = SubResource("PlaneMesh_eosxs")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" parent="Area3D" index="0"]
-shape = SubResource("SphereShape3D_hl5rp")
+[node name="CollisionShape3D" parent="Area3D" parent_id_path=PackedInt32Array(1506430901) index="0" unique_id=2092813763]
+shape = SubResource("SphereShape3D_ag2gk")
 
-[node name="CollisionShape3D" parent="Hitbox" index="0"]
-shape = SubResource("SphereShape3D_mllep")
+[node name="CollisionShape3D" parent="Hitbox" parent_id_path=PackedInt32Array(1022241276) index="0" unique_id=138834454]
+shape = SubResource("SphereShape3D_hl5rp")

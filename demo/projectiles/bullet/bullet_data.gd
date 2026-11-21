@@ -9,13 +9,11 @@ var sound_variation := 0.1:
 	set = set_sound_variation
 var trail := TrailData.new()
 var trail_data: Dictionary:
-	get = get_trail_data,
-	set = set_trail_data
+	get = get_trail_data, set = set_trail_data
 var trail_enabled := false
 var death_explosion := ExplosionData.new()
 var death_explosion_data: Dictionary:
-	get = get_death_explosion_data,
-	set = set_death_explosion_data
+	get = get_death_explosion_data, set = set_death_explosion_data
 
 func get_speed() -> float:
 	return launch_velocity

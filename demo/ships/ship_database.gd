@@ -49,6 +49,13 @@ var _db := SQLite.new()
 var _load_ship_priority := -1
 var _load_fleet_priority := -1
 
+static func create(id: int, fallback := TEMPORARY) -> ShipManager:
+	var manager := ShipDatabase.new(id)
+	return manager if manager.register() else fallback
+
+func can_save() -> bool:
+	return true
+
 func load_file(path: String) -> bool:
 	_db.path = path
 	_loaded_ships.clear()
@@ -182,3 +189,6 @@ func _load_fleet_from_dict(result: Dictionary) -> Fleet:
 	_loaded_fleets[fleet.id] = fleet
 	fleet_created.emit(fleet)
 	return fleet
+
+func _to_string() -> String:
+	return "<ShipDatabase #%d>" % _id

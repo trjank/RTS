@@ -6,7 +6,7 @@ render_mode unshaded;
 
 const float ANIMATION_PERIOD = 1.0;
 const float G_M = 0.5;
-const float SCHWARZCHILD_RADIUS = 0.4;
+const float SCHWARZCHILD_RADIUS = 0.31;
 const float MIN_DT = 0.2 * SCHWARZCHILD_RADIUS;
 const float MAX_DT = 1.0 * SCHWARZCHILD_RADIUS;
 const float ACCRETION_DISK_OUTER_RADIUS = 1.0;
@@ -73,11 +73,11 @@ vec3 calculate_accretion_disk_light(vec2 xy, float r) {
 
 bool hit_accretion_disk(vec3 ray_from, vec3 ray_to) {
 	// NOTE: The accretion disk lies entirely on the plane y = 0
-	return ray_from.y * ray_to.y > 0.0;
+	return ray_from.y * ray_to.y <= 0.0;
 }
 
 vec3 intersect_accretion_disk(vec3 ray_from, vec3 ray_to, vec3 albedo) {
-	if (hit_accretion_disk(ray_from, ray_to) ) return albedo;
+	if (!hit_accretion_disk(ray_from, ray_to) ) return albedo;
 	// Calculate the exact intersection point (without this, the disk looks blocky)
 	float t_intersect = ray_from.y / (ray_from.y - ray_to.y);
 	vec3 intersection = mix(ray_from, ray_to, t_intersect);

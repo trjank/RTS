@@ -94,12 +94,6 @@ func get_rotated_size(rotation: Rotation.Discrete) -> Vector2i:
 func get_rotated_boundary(rotation: Rotation.Discrete) -> int:
 	return Boundary.inverse_transform(_boundary, rotation)
 
-func get_rotated_torque(_rotation: Rotation.Discrete) -> float:
-	return torque
-
-func get_rotated_thrust(_rotation: Rotation.Discrete) -> float:
-	return thrust
-
 func get_cost_data() -> Dictionary:
 	return cost.to_dict()
 

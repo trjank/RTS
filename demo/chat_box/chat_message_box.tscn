@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://dpcfcisd4vm8t"]
+
+[ext_resource type="PackedScene" uid="uid://cosoya0jnm0ke" path="res://battle/player/player_box.tscn" id="1_del8m"]
+[ext_resource type="Script" uid="uid://divjol11df5m0" path="res://chat_box/chat_message_box.gd" id="2_uev0o"]
+
+[node name="ChatMessageBox" unique_id=845893239 node_paths=PackedStringArray("content_label", "admin_label") instance=ExtResource("1_del8m")]
+anchors_preset = 10
+anchor_bottom = 0.0
+offset_bottom = 48.0
+grow_vertical = 1
+script = ExtResource("2_uev0o")
+content_label = NodePath("Content")
+admin_label = NodePath("AdminLabel")
+
+[node name="KickButton" parent="." index="5" unique_id=256418064]
+visible = false
+
+[node name="TeamKickButton" parent="." index="6" unique_id=115257612]
+visible = false
+
+[node name="SeparatorLabel" type="Label" parent="." index="7" unique_id=1328840011]
+layout_mode = 2
+text = ":"
+
+[node name="Content" type="Label" parent="." index="8" unique_id=93056173]
+layout_mode = 2
+text = "The actual message goes here"
+
+[node name="MuteCheckBox" parent="." index="9" unique_id=1462197070]
+visible = false

@@ -9,11 +9,20 @@ const ID_BITS := 16
 const MIN_ID := 0
 const MAX_ID := 2 ** ID_BITS - 1
 
+static var TEMPORARY := UnitLogicManager.new(0)
+
 static var _registry: Dictionary[int, UnitLogicManager] = {}
 
 var _id: int
 var _last_insert_id := -1
 var _loaded_unit_logic: Dictionary[int, UnitLogic] = {}
+
+static func _static_init() -> void:
+	TEMPORARY.register()
+
+static func create(id: int, fallback := TEMPORARY) -> UnitLogicManager:
+	var manager := UnitLogicManager.new(id)
+	return manager if manager.register() else fallback
 
 static func from_id(id: int) -> UnitLogicManager:
 	return _registry.get(id)
@@ -33,6 +42,10 @@ func clear() -> void:
 
 func delete() -> void:
 	clear()
+
+func load_file(path: String) -> bool:
+	push_warning("(UnitLogicManager) load_file on '%s' does nothing" % path)
+	return true
 
 func owns(unit_logic: UnitLogic) -> bool:
 	return unit_logic != null and unit_logic.db == self

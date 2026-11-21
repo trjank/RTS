@@ -11,6 +11,8 @@ const ID_BITS := 16
 const MIN_ID := 0
 const MAX_ID := 2 ** ID_BITS - 1
 
+static var TEMPORARY := ShipManager.new(0)
+
 static var _registry: Dictionary[int, ShipManager] = {}
 
 var _id: int
@@ -19,11 +21,21 @@ var _last_fleet_insert_id := -1
 var _loaded_ships: Dictionary[int, ShipData] = {}
 var _loaded_fleets: Dictionary[int, Fleet] = {}
 
+static func _static_init() -> void:
+	TEMPORARY.register()
+
+static func create(id: int, fallback := TEMPORARY) -> ShipManager:
+	var manager := ShipManager.new(id)
+	return manager if manager.register() else fallback
+
 static func from_id(id: int) -> ShipManager:
 	return _registry.get(id)
 
 func _init(const_id: int) -> void:
 	_id = clampi(const_id, MIN_ID, MAX_ID)
+
+func can_save() -> bool:
+	return false
 
 func get_id() -> int:
 	return _id
@@ -50,6 +62,10 @@ func count_loaded_ships() -> int:
 
 func count_loaded_fleets() -> int:
 	return _loaded_fleets.size()
+
+func load_file(path: String) -> bool:
+	push_warning("(ShipManager) load_file on '%s' does nothing" % path)
+	return true
 
 func load_ships(_limit: int) -> Array:
 	return _loaded_ships.values()
@@ -132,3 +148,6 @@ func delete_fleet(fleet: Fleet) -> bool:
 	fleet.id = -1
 	fleet_deleted.emit(fleet)
 	return true
+
+func _to_string() -> String:
+	return "<ShipManager #%d>" % _id

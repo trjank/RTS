@@ -9,6 +9,10 @@ CREATE TABLE IF NOT EXISTS unit_logic (
 
 var _db := SQLite.new()
 
+static func create(id: int, fallback := TEMPORARY) -> UnitLogicManager:
+	var manager := UnitLogicDatabase.new(id)
+	return manager if manager.register() else fallback
+
 ## NOTE: The database autosaves (no need to call a save function when done)
 func load_file(path: String) -> bool:
 	_db.path = path
