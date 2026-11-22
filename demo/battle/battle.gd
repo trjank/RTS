@@ -24,6 +24,7 @@ signal started
 signal stopped(winners: Array[Team] )
 signal host_changed(old_host: Player, new_host: Player)
 signal me_changed(old_me: Player, new_me: Player)
+signal friendly_fire_changed(enabled: bool)
 signal player_joined(player: Player)
 signal player_left(player: Player)
 signal team_created(team: Team)
@@ -77,7 +78,8 @@ var time := 0.0
 var time_scale := 1.0
 var retrofit_cost_multiplier := 1.0
 var retrofits_enabled := true
-var friendly_fire_enabled := false
+var friendly_fire_enabled := false:
+	set = set_friendly_fire_enabled
 var can_pause := false
 var state := SaveState.new()
 var folder_path := PARENT_DIRECTORY.path_join("temporary_battle/"):
@@ -114,6 +116,7 @@ func _ready() -> void:
 	me.fleet = copy_fleet(Account.me.fleet)
 	host = me
 	bind_commands()
+	bind_variables()
 
 func bind_commands() -> void:
 	var parser := chat_log.command_parser
@@ -122,11 +125,24 @@ func bind_commands() -> void:
 	parser.add_command("start", start_countdown, {} )
 	parser.add_command("stop", stop, {} )
 
+func bind_variables() -> void:
+	var parser := chat_log.command_parser
+	parser.add_var("time", TYPE_FLOAT, func() -> void: broadcast("time = %.1f" % time), func(new_time: float) -> void: time = new_time)
+	parser.add_var("time_scale", TYPE_FLOAT, func() -> void: broadcast("time_scale = %.4f" % time_scale), func(new_time_scale: float) -> void: time_scale = new_time_scale)
+	parser.add_var("friendly_fire", TYPE_BOOL, func() -> void: broadcast("friendly_fire = %s" % friendly_fire_enabled), func(enable: bool) -> void: friendly_fire_enabled = enable)
+	parser.add_var("retrofits", TYPE_BOOL, func() -> void: broadcast("retrofits = %s" % retrofits_enabled), func(enable: bool) -> void: retrofits_enabled = enable)
+	parser.failed_command.connect(broadcast_help_message)
+	parser.failed_get.connect(broadcast_invalid_var)
+	parser.failed_set.connect(broadcast_invalid_var)
+
 func broadcast(content: String) -> void:
 	chat_log.push_message(ChatLogMessage.new(-1, "Server", content), false)
 
 func broadcast_help_message(command := "") -> void:
 	broadcast(chat_log.command_parser.get_help_message(command) )
+
+func broadcast_invalid_var(var_name: String, _value := "") -> void:
+	broadcast("Invalid variable '%s' (valid variables: %s)" % [var_name, ", ".join(chat_log.command_parser.get_variable_list() ) ] )
 
 func to_dict() -> Dictionary:
 	return TypeChecker.to_dict(self, PROPERTIES)
@@ -268,6 +284,12 @@ func set_folder_path(new_folder_path: String) -> bool:
 		return false
 	folder_path = new_folder_path
 	return true
+
+func set_friendly_fire_enabled(enable_friendly_fire: bool) -> void:
+	if enable_friendly_fire == friendly_fire_enabled:
+		return
+	friendly_fire_enabled = enable_friendly_fire
+	friendly_fire_changed.emit(enable_friendly_fire)
 
 func make_folder() -> bool:
 	return DirAccess.make_dir_recursive_absolute(folder_path) == OK

@@ -23,6 +23,7 @@ func _ready() -> void:
 	#
 	map = Map.from_json(MAP_PRESET_PATH)
 	chat_log.command_parser.add_command("save", save_files_and_print, {} )
+	chat_log.command_parser.add_command("pwd", pwd, {} )
 
 func set_save_slot(new_save_slot: int) -> bool:
 	if save_slot == new_save_slot:
@@ -31,6 +32,9 @@ func set_save_slot(new_save_slot: int) -> bool:
 	folder_path = get_save_slot_path(new_save_slot)
 	save_slot_changed.emit(new_save_slot)
 	return load_json() and load_state()
+
+func pwd() -> void:
+	broadcast("Save directory: %s" % folder_path)
 
 func load_files_and_print() -> void:
 	var error_flags := load_files()

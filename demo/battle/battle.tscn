@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://b03aq4iweiskw" path="res://icons/stats_hp.png" id="7_rgsk0"]
 [ext_resource type="Texture2D" uid="uid://qlxu2t5byr2w" path="res://icons/stats_shield.png" id="8_tkkqt"]
 [ext_resource type="Texture2D" uid="uid://dxepsqmp7nfuv" path="res://icons/warning.png" id="12_220ih"]
+[ext_resource type="Script" uid="uid://bik86tpi3rs78" path="res://battle/friendly_fire_indicator.gd" id="12_ju8jl"]
 [ext_resource type="PackedScene" uid="uid://ctal01hmjjewl" path="res://explosion/explosions.tscn" id="20_sf8fp"]
 [ext_resource type="PackedScene" uid="uid://k55tf3pcr005" path="res://shockwave/shockwaves.tscn" id="21_ihybe"]
 
@@ -246,7 +247,18 @@ theme_override_constants/outline_size = 5
 text = "0"
 vertical_alignment = 1
 
-[node name="FriendlyFireActive" type="Button" parent="UI/PanelContainer/HBoxContainer" unique_id=874231217]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI" unique_id=474277405]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -179.5
+offset_right = 179.5
+offset_bottom = 125.0
+grow_horizontal = 2
+theme_override_constants/separation = 15
+
+[node name="FriendlyFireIndicator" type="Button" parent="UI/VBoxContainer" unique_id=874231217 node_paths=PackedStringArray("battle")]
 modulate = Color(1, 0.37166673, 0.35000002, 1)
 layout_mode = 2
 size_flags_vertical = 0
@@ -261,6 +273,18 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_sf8fp")
 theme_override_styles/focus = SubResource("StyleBoxFlat_sf8fp")
 text = "Friendly fire enabled"
 icon = ExtResource("12_220ih")
+script = ExtResource("12_ju8jl")
+battle = NodePath("../../..")
+
+[node name="FormationIndicator" type="Label" parent="UI/VBoxContainer" unique_id=1201377484]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+text = "Formation: LINE"
+script = ExtResource("4_7fucf")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI" unique_id=825402867]
 layout_mode = 1
@@ -292,23 +316,6 @@ theme_override_styles/hover = ExtResource("5_vlrs1")
 text = "Menu
 "
 icon = ExtResource("3_iorop")
-
-[node name="FormationIndicator" type="Label" parent="UI" unique_id=1201377484]
-visible = false
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -107.0
-offset_top = 30.0
-offset_right = 107.0
-offset_bottom = 69.375
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 2
-text = "Formation: LINE"
-script = ExtResource("4_7fucf")
 
 [node name="World" type="Node3D" parent="." unique_id=415245036]
 
@@ -345,11 +352,14 @@ one_shot = true
 [node name="CountdownTimer" type="Timer" parent="." unique_id=1540772634]
 one_shot = true
 
+[connection signal="friendly_fire_changed" from="." to="UI/VBoxContainer/FriendlyFireIndicator" method="_on_battle_friendly_fire_changed"]
+[connection signal="started" from="." to="UI/VBoxContainer/FriendlyFireIndicator" method="_on_battle_started"]
 [connection signal="button_pressed" from="UI/FleetContainer" to="." method="_on_fleet_container_button_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/FriendlyFireIndicator" to="UI/VBoxContainer/FriendlyFireIndicator" method="_on_pressed"]
 [connection signal="pressed" from="UI/HBoxContainer/DesignButton" to="." method="_on_design_button_pressed"]
 [connection signal="pressed" from="UI/HBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
-[connection signal="action_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_action_changed"]
-[connection signal="formation_changed" from="World/UnitFormation" to="UI/FormationIndicator" method="_on_unit_formation_formation_changed"]
+[connection signal="action_changed" from="World/UnitFormation" to="UI/VBoxContainer/FormationIndicator" method="_on_unit_formation_action_changed"]
+[connection signal="formation_changed" from="World/UnitFormation" to="UI/VBoxContainer/FormationIndicator" method="_on_unit_formation_formation_changed"]
 [connection signal="mouse_moved" from="World/MouseSelection" to="." method="_on_mouse_selection_mouse_moved"]
 [connection signal="selected" from="World/MouseSelection" to="." method="_on_mouse_selection_selected"]
 [connection signal="selected" from="World/MouseSelection" to="UI/PanelContainer/HBoxContainer/SelectionInfo" method="_on_mouse_selection_selected"]

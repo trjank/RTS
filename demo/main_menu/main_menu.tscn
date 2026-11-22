@@ -48,7 +48,7 @@ visible = false
 [node name="PanelContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="2" unique_id=844701980]
 visible = false
 
-[node name="HBoxContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="3" unique_id=825402867]
+[node name="FriendlyFireIndicator" parent="UI/VBoxContainer" parent_id_path=PackedInt32Array(474277405) index="0" unique_id=874231217]
 visible = false
 
 [node name="Background" type="TextureRect" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="4" unique_id=1250786679]
@@ -193,6 +193,9 @@ metadata/_tab_index = 1
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
+
+[node name="HBoxContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="6" unique_id=825402867]
+visible = false
 
 [node name="RoundTimer" parent="." index="2" unique_id=1917002809]
 wait_time = 100.0
