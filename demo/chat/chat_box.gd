@@ -1,5 +1,9 @@
+@tool
 class_name ChatBox extends VBoxContainer
 
+@export var collapsed := false:
+	set = set_collapsed
+@export var panel_container: PanelContainer
 @export var message_container: VBoxContainer
 @export var send_message_input: LineEdit
 @export var battle: Battle
@@ -7,15 +11,19 @@ class_name ChatBox extends VBoxContainer
 var chat_log: ChatLog:
 	set = set_chat_log
 var my_name := "me"
-var command_prefix := "$ "
 
 var _message_boxes: Dictionary[ChatLogMessage, ChatMessageBox]
 
 func _ready() -> void:
 	chat_log = chat_log if battle == null else battle.chat_log
+	update_visibility()
 
 func get_message_box(message: ChatLogMessage) -> ChatMessageBox:
 	return _message_boxes.get(message)
+
+func set_collapsed(is_collapsed: bool) -> void:
+	collapsed = is_collapsed
+	update_visibility()
 
 func set_chat_log(new_chat_log: ChatLog) -> void:
 	if chat_log == new_chat_log:
@@ -32,13 +40,9 @@ func clear() -> void:
 	for node in message_container.get_children():
 		node.queue_free()
 
-func determine_type(content: String) -> ChatLogMessage.Type:
-	return ChatLogMessage.Type.COMMAND if content.begins_with(command_prefix) else ChatLogMessage.Type.TEXT
-
 func generate_message(content: String) -> ChatLogMessage:
 	var me := battle.me if battle != null else null
-	var type := determine_type(content)
-	return ChatLogMessage.from_player(me, content, type) if me != null else ChatLogMessage.new(ChatLogMessage.NO_SENDER_ID, my_name, content, type)
+	return ChatLogMessage.from_player(me, content) if me != null else ChatLogMessage.new(ChatLogMessage.NO_SENDER_ID, my_name, content)
 
 func _connect_signals(new_chat_log: ChatLog) -> void:
 	new_chat_log.pushed_message.connect(push_message)
@@ -47,6 +51,12 @@ func _connect_signals(new_chat_log: ChatLog) -> void:
 func _disconnect_signals(old_chat_log: ChatLog) -> void:
 	old_chat_log.pushed_message.disconnect(push_message)
 	old_chat_log.popped_message.disconnect(pop_message)
+
+func update_visibility() -> void:
+	if not is_node_ready():
+		return
+	panel_container.visible = not collapsed
+	send_message_input.visible = not collapsed
 
 func push_message(message: ChatLogMessage) -> void:
 	if message in _message_boxes:
@@ -68,3 +78,6 @@ func _on_send_message_text_submitted(new_text: String) -> void:
 		return
 	chat_log.push_message(generate_message(new_text) )
 	send_message_input.clear()
+
+func _on_collapse_button_pressed() -> void:
+	collapsed = not collapsed

@@ -39,13 +39,16 @@ corner_radius_bottom_left = 5
 script = ExtResource("1_6tl50")
 submenus = NodePath("UI/Options/TabContainer")
 
-[node name="FleetContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="0" unique_id=240012632]
+[node name="ChatBox" parent="UI/HSplitContainer" parent_id_path=PackedInt32Array(550880381) index="1" unique_id=603022892]
 visible = false
 
-[node name="PanelContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="1" unique_id=844701980]
+[node name="FleetContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="1" unique_id=240012632]
 visible = false
 
-[node name="HBoxContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="2" unique_id=825402867]
+[node name="PanelContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="2" unique_id=844701980]
+visible = false
+
+[node name="HBoxContainer" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="3" unique_id=825402867]
 visible = false
 
 [node name="Background" type="TextureRect" parent="UI" parent_id_path=PackedInt32Array(1587574494) index="4" unique_id=1250786679]

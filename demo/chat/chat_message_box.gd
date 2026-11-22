@@ -14,7 +14,7 @@ var content := "":
 	set = set_content
 
 static func create() -> ChatMessageBox:
-	return preload("res://chat_box/chat_message_box.tscn").instantiate()
+	return preload("res://chat/chat_message_box.tscn").instantiate()
 
 func _ready() -> void:
 	super()
@@ -39,9 +39,10 @@ func _clear_ui() -> void:
 		return super()
 	name_label.text = message.sender
 	clan_label.text = ""
+	admin_label.visible = false
 	host_label.visible = false
-	icon.texture = ICONS.get(message.type)
 	team_kick_button.visible = false
+	icon.texture = ICONS.get(message.type)
 
 func _connect_message_signals(new_message: ChatLogMessage) -> void:
 	new_message.content_changed.connect(set_content)

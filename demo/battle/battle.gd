@@ -11,6 +11,14 @@ enum StartError {
 	INCOMPATIBLE_MAP,
 	SPAWN_FAILURE
 }
+enum SaveError {
+	OK = 0,
+	MISSING_DIRECTORY = 1 << 0,
+	METADATA_FAILURE = 1 << 1,
+	TABLE_FAILURE = 1 << 2,
+	MAP_FAILURE = 1 << 3,
+	STATE_FAILURE = 1 << 4
+}
 
 signal started
 signal stopped(winners: Array[Team] )
@@ -21,7 +29,7 @@ signal player_left(player: Player)
 signal team_created(team: Team)
 signal team_removed(team: Team)
 
-const PARENT_DIRECTORY := "user://battles/"
+const PARENT_DIRECTORY := "user://"
 const MAX_NUM_TEAMS := 10
 const MAX_NUM_PLAYERS := 100
 
@@ -29,11 +37,15 @@ static var PROPERTIES: Dictionary[String, Variant.Type] = {
 	"seed": TYPE_INT,
 	"time": TYPE_FLOAT,
 	"time_scale": TYPE_FLOAT,
-	"map_config": TYPE_DICTIONARY,
 	"map_data": TYPE_DICTIONARY,
-	"copied_ships": TYPE_DICTIONARY,
-	"copied_fleets": TYPE_DICTIONARY,
-	"copied_unit_logic": TYPE_DICTIONARY
+	"friendly_fire_enabled": TYPE_BOOL,
+	"retrofits_enabled": TYPE_BOOL,
+	"retrofit_cost_multiplier": TYPE_FLOAT
+}
+static var TABLES_PROPERTIES: Dictionary[String, Variant.Type] = {
+	"ship_uid_to_copy_id": TYPE_DICTIONARY,
+	"fleet_uid_to_copy_id": TYPE_DICTIONARY,
+	"unit_logic_uid_to_copy_id": TYPE_DICTIONARY
 }
 
 @export var world: Node3D
@@ -48,11 +60,9 @@ static var PROPERTIES: Dictionary[String, Variant.Type] = {
 
 var rng := RandomNumberGenerator.new()
 var chat_log := ChatLog.new():
-	set(__): push_error("(Battle) Do not create a new chat log")
+	set(__): push_error("(Battle) Do not create a new chat log!")
 var scenery: Array[Scenery] = []
 var map: Map
-var map_config: Dictionary:
-	get = get_map_config, set = set_map_config
 var map_data := {}
 var map_depth_limit := 5
 var gamemode: Gamemode:
@@ -70,7 +80,7 @@ var retrofits_enabled := true
 var friendly_fire_enabled := false
 var can_pause := false
 var state := SaveState.new()
-var folder_path := PARENT_DIRECTORY.path_join("temporary/"):
+var folder_path := PARENT_DIRECTORY.path_join("temporary_battle/"):
 	set = set_folder_path
 ## NOTE: This value is never null (defaults to ShipManager.TEMPORARY)
 var ship_db := ShipManager.TEMPORARY:
@@ -103,12 +113,32 @@ func _ready() -> void:
 	me = add_player("dev")
 	me.fleet = copy_fleet(Account.me.fleet)
 	host = me
+	bind_commands()
+
+func bind_commands() -> void:
+	var parser := chat_log.command_parser
+	parser.add_command("help", broadcast_help_message, {"<command>": TYPE_STRING}, [""] )
+	parser.add_command("echo", broadcast, {"<message>": TYPE_STRING} )
+	parser.add_command("start", start_countdown, {} )
+	parser.add_command("stop", stop, {} )
+
+func broadcast(content: String) -> void:
+	chat_log.push_message(ChatLogMessage.new(-1, "Server", content), false)
+
+func broadcast_help_message(command := "") -> void:
+	broadcast(chat_log.command_parser.get_help_message(command) )
 
 func to_dict() -> Dictionary:
 	return TypeChecker.to_dict(self, PROPERTIES)
 
+func tables_to_dict() -> Dictionary:
+	return TypeChecker.to_dict(self, TABLES_PROPERTIES)
+
 func load_dict(dict: Dictionary) -> bool:
 	return TypeChecker.load_dict(self, dict, PROPERTIES, TypeChecker.CAST_NUMBERS)
+
+func load_tables_dict(dict: Dictionary) -> bool:
+	return TypeChecker.load_dict(self, dict, TABLES_PROPERTIES, TypeChecker.CAST_NUMBERS)
 
 func is_spectator(player: Player) -> bool:
 	return player.team == _default_team
@@ -172,14 +202,17 @@ func get_players() -> Array:
 func get_teams() -> Array:
 	return _teams.values()
 
-func get_map_config() -> Dictionary:
-	return {} if map == null else map.to_dict()
-
 func get_state_path() -> String:
 	return folder_path.path_join("state" + SaveState.FILE_EXTENSION)
 
 func get_json_path() -> String:
-	return folder_path.path_join("data.json")
+	return folder_path.path_join("metadata.json")
+
+func get_tables_json_path() -> String:
+	return folder_path.path_join("tables.json")
+
+func get_map_json_path() -> String:
+	return folder_path.path_join("map.json")
 
 func get_ship_db_path() -> String:
 	return folder_path.path_join("ships.db")
@@ -187,8 +220,8 @@ func get_ship_db_path() -> String:
 func get_unit_logic_db_path() -> String:
 	return folder_path.path_join("unit_logic.db")
 
-func set_map_config(new_map_config: Dictionary) -> void:
-	map = Map.from_dict(new_map_config)
+func get_player_manifest_path() -> String:
+	return folder_path.path_join("player_manifest.csv")
 
 func set_plane(new_plane: Plane) -> void:
 	plane = new_plane
@@ -235,6 +268,9 @@ func set_folder_path(new_folder_path: String) -> bool:
 		return false
 	folder_path = new_folder_path
 	return true
+
+func make_folder() -> bool:
+	return DirAccess.make_dir_recursive_absolute(folder_path) == OK
 
 func open_ship_db(id: int, path := get_ship_db_path() ) -> bool:
 	ship_db = ShipDatabase.create(id)
@@ -351,6 +387,7 @@ func start_countdown() -> StartError:
 		return StartError.INCOMPATIBLE_MAP
 	_status = Status.STARTING
 	countdown_timer.start()
+	broadcast("Starting game in %s seconds" % int(countdown_timer.wait_time) )
 	return StartError.OK
 
 func start() -> StartError:
@@ -370,6 +407,7 @@ func start() -> StartError:
 	gamemode.on_battle_start(self)
 	round_timer.start()
 	started.emit()
+	broadcast("Game has started!")
 	return StartError.OK
 
 func stop() -> bool:
@@ -380,6 +418,7 @@ func stop() -> bool:
 	round_timer.stop()
 	set_physics_process(false)
 	stopped.emit(winners)
+	broadcast("Game has ended.")
 	return true
 
 func add_player(player_name: String, color := Color.WHITE) -> Player:
@@ -437,6 +476,15 @@ func load_json(path := get_json_path() ) -> bool:
 	var json = JSON.parse_string(text)
 	return json is Dictionary and load_dict(json)
 
+func load_tables_json(path := get_tables_json_path() ) -> bool:
+	var text := FileAccess.get_file_as_string(path)
+	var json = JSON.parse_string(text)
+	return json is Dictionary and load_tables_dict(json)
+
+func load_map_json(path := get_map_json_path() ) -> bool:
+	map = Map.from_json(path)
+	return map != null
+
 func save_state(path := get_state_path() ) -> bool:
 	var error_flags: int = SaveState.SaveError.OK
 	#
@@ -447,6 +495,33 @@ func save_state(path := get_state_path() ) -> bool:
 func save_json(path := get_json_path(), indent := "\t") -> bool:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	return file != null and file.store_string(JSON.stringify(to_dict(), indent) )
+
+func save_tables_json(path := get_tables_json_path(), indent := "\t") -> bool:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	return file != null and file.store_string(JSON.stringify(tables_to_dict(), indent) )
+
+func save_map_json(path := get_map_json_path(), indent := "\t") -> bool:
+	return map != null and map.save_json(path, false, indent)
+
+## Requires folder_path to be set as a precondition
+func load_files() -> int:
+	var error_flags: int = SaveError.OK
+	if not make_folder(): error_flags |= SaveError.MISSING_DIRECTORY
+	if not load_json(): error_flags |= SaveError.METADATA_FAILURE
+	if not load_tables_json(): error_flags |= SaveError.TABLE_FAILURE
+	if not load_state(): error_flags |= SaveError.STATE_FAILURE
+	if not load_map_json(): error_flags |= SaveError.MAP_FAILURE
+	return error_flags
+
+## Requires folder_path to be set as a precondition
+func save_files() -> int:
+	var error_flags: int = SaveError.OK
+	if not make_folder(): error_flags |= SaveError.MISSING_DIRECTORY
+	if not save_json(): error_flags |= SaveError.METADATA_FAILURE
+	if not save_tables_json(): error_flags |= SaveError.TABLE_FAILURE
+	if not save_state(): error_flags |= SaveError.STATE_FAILURE
+	if not save_map_json(): error_flags |= SaveError.MAP_FAILURE
+	return error_flags
 
 func can_join_team(team: Team, player := me) -> bool:
 	return _status == Status.STOPPED or (player != null and player.is_admin) and team != null

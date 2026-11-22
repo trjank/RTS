@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bvfy718iilaa1" path="res://battle/battle.gd" id="1_nohcx"]
 [ext_resource type="PackedScene" uid="uid://fwcp5yso0imc" path="res://ships_screen/fleet_container.tscn" id="2_4mnim"]
-[ext_resource type="PackedScene" uid="uid://b2kacfltjuvi0" path="res://chat_box/chat_box.tscn" id="2_ihybe"]
+[ext_resource type="PackedScene" uid="uid://b2kacfltjuvi0" path="res://chat/chat_box.tscn" id="2_ihybe"]
 [ext_resource type="Texture2D" uid="uid://b5hk5q7wb138j" path="res://icons/tab_armor.png" id="2_wu24d"]
 [ext_resource type="Script" uid="uid://butv3bkqoil8c" path="res://battle/unit_formation.gd" id="2_xooj7"]
 [ext_resource type="PackedScene" uid="uid://or06g4kohoyo" path="res://main/mouse_selection.tscn" id="3_70s20"]
@@ -97,6 +97,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+split_offsets = PackedInt32Array(-179)
+split_offset = -179
 
 [node name="Control" type="Control" parent="UI/HSplitContainer" unique_id=1131012228]
 layout_mode = 2
@@ -104,6 +106,7 @@ size_flags_horizontal = 3
 
 [node name="ChatBox" parent="UI/HSplitContainer" unique_id=603022892 node_paths=PackedStringArray("battle") instance=ExtResource("2_ihybe")]
 layout_mode = 2
+collapsed = true
 battle = NodePath("../../..")
 
 [node name="FleetContainer" parent="UI" unique_id=240012632 instance=ExtResource("2_4mnim")]

@@ -23,6 +23,7 @@ const LOAD_LIMIT_UNIT_LOGIC := 100
 const MIN_VOLUME := 0.0
 const MAX_VOLUME := 100.0
 const DEFAULT_VOLUME := 50.0
+const NUM_SINGLEPLAYER_SAVES := 5
 
 var main: Main:
 	set = set_main

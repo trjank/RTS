@@ -2,9 +2,12 @@ extends PanelContainer
 
 signal back_button_pressed
 
+@export var saves_container: VBoxContainer
 @export var team_settings: TeamSettings
 
 func _ready() -> void:
+	for i in range(Globals.NUM_SINGLEPLAYER_SAVES):
+		saves_container.add_child(SingleplayerSaveFile.create() )
 	Globals.main_ready.connect(_on_globals_main_ready)
 
 func _on_globals_main_ready() -> void:

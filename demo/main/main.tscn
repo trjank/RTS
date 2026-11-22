@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://2vhw5b8l4nvs" path="res://training_grounds/training_grounds.tscn" id="10_bsumw"]
 [ext_resource type="PackedScene" uid="uid://c0amctp11de4o" path="res://unit_logic_editor/unit_logic_editor.tscn" id="11_bsumw"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]
-[ext_resource type="PackedScene" uid="uid://b2kacfltjuvi0" path="res://chat_box/chat_box.tscn" id="11_fwcvl"]
+[ext_resource type="PackedScene" uid="uid://b2kacfltjuvi0" path="res://chat/chat_box.tscn" id="11_fwcvl"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_grrlh"]
 

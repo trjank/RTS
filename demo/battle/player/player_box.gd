@@ -50,15 +50,17 @@ func _set_ui() -> void:
 	name_label.text = player.display_name
 	clan_label.text = player.clan
 	host_label.visible = player.is_host()
-	icon.texture = player.icon
+	admin_label.visible = player.is_admin
 	team_kick_button.visible = not player.is_bot
+	icon.texture = player.icon
 
 func _clear_ui() -> void:
 	name_label.text = "--"
 	clan_label.text = ""
 	host_label.visible = false
-	icon.texture = null
+	admin_label.visible = false
 	team_kick_button.visible = false
+	icon.texture = null
 
 func _on_kick_button_pressed() -> void:
 	player.get_battle().kick(player)
