@@ -28,16 +28,16 @@ func set_player(new_player: Player) -> void:
 	update_ui()
 
 func _disconnect_signals(old_player: Player) -> void:
-	old_player.display_name_changed.disconnect(update_ui)
-	old_player.clan_changed.disconnect(update_ui)
-	old_player.icon_changed.disconnect(update_ui)
-	old_player.bot_status_changed.disconnect(update_ui)
+	old_player.display_name_changed.disconnect(_update_ui_callback)
+	old_player.clan_changed.disconnect(_update_ui_callback)
+	old_player.icon_changed.disconnect(_update_ui_callback)
+	old_player.bot_status_changed.disconnect(_update_ui_callback)
 
 func _connect_signals(new_player: Player) -> void:
-	new_player.display_name_changed.connect(update_ui)
-	new_player.clan_changed.connect(update_ui)
-	new_player.icon_changed.connect(update_ui)
-	new_player.bot_status_changed.connect(update_ui)
+	new_player.display_name_changed.connect(_update_ui_callback)
+	new_player.clan_changed.connect(_update_ui_callback)
+	new_player.icon_changed.connect(_update_ui_callback)
+	new_player.bot_status_changed.connect(_update_ui_callback)
 
 func update_ui() -> void:
 	if not is_node_ready():
@@ -46,13 +46,16 @@ func update_ui() -> void:
 		return _clear_ui()
 	_set_ui()
 
+func _update_ui_callback(_useless_1 = null, _useless_2 = null) -> void:
+	update_ui()
+
 func _set_ui() -> void:
 	name_label.text = player.display_name
 	clan_label.text = player.clan
 	host_label.visible = player.is_host()
 	admin_label.visible = player.is_admin
 	team_kick_button.visible = not player.is_bot
-	icon.texture = player.icon
+	icon.texture = player.get_texture()
 
 func _clear_ui() -> void:
 	name_label.text = "--"

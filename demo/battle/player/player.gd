@@ -1,14 +1,34 @@
 class_name Player extends Node3D
 
-signal display_name_changed(old_display_name: String, new_display_name: String)
-signal clan_changed(old_clan: String, new_clan: String)
-signal icon_changed(old_icon: Texture2D, new_icon: Texture2D)
+signal id_changed(old_id: int, new_id: int)
+signal display_name_changed(old_name: String, new_name: String)
+signal clan_changed(new_clan: String)
+signal icon_changed(new_icon: Texture2D)
 signal bot_status_changed
 
+enum Icon {
+	NONE,
+	SKULL,
+	COMPUTER
+}
+
+const ICONS: Array[Texture2D] = [
+	null,
+	preload("res://icons/skull.png"),
+	preload("res://icons/cpu.png")
+]
 const MAX_CLAN_LENGTH := 10
 const MAX_NAME_LENGTH := 25
 
-var id := -1
+static var PROPERTIES: Dictionary[String, Variant.Type] = {
+	"id": TYPE_INT,
+	"icon": TYPE_INT,
+	"display_name": TYPE_STRING,
+	"color": TYPE_COLOR,
+}
+
+var id := -1:
+	set = set_id
 var display_name: String:
 	set = set_display_name
 var color: Color
@@ -17,7 +37,7 @@ var team: Team:
 	set = set_team
 var clan := "":
 	set = set_clan
-var icon: Texture2D = preload("res://icons/skull.png"):
+var icon := Icon.NONE:
 	set = set_icon
 var resources := StrategicResources.new():
 	set = set_resources
@@ -37,17 +57,27 @@ var _ship_counts: Dictionary[ShipData, int] = {}
 static func is_name_valid(new_name: String) -> bool:
 	return new_name.length() <= MAX_NAME_LENGTH
 
-func _init(init_display_name := "", init_color := Color.WHITE) -> void:
+func _init(init_display_name := "", init_color := Color.WHITE, init_icon := Icon.NONE) -> void:
 	display_name = init_display_name
 	color = init_color
+	icon = init_icon
 	add_child(_ships, false, Node.INTERNAL_MODE_BACK)
 	add_child(_projectiles, false, Node.INTERNAL_MODE_BACK)
+
+func to_dict() -> Dictionary:
+	return TypeChecker.to_dict(self, PROPERTIES)
+
+func load_dict(dict: Dictionary) -> bool:
+	return TypeChecker.load_dict(self, dict, PROPERTIES, TypeChecker.CAST_NUMBERS_AND_COLORS)
 
 func is_me() -> bool:
 	return _battle != null and self == _battle.me
 
 func is_host() -> bool:
 	return _battle != null and self == _battle.host
+
+func get_texture() -> Texture2D:
+	return ICONS[icon]
 
 func get_battle() -> Battle:
 	return _battle
@@ -67,6 +97,13 @@ func count_total_projectiles() -> int:
 func set_resources(new_resources: StrategicResources) -> void:
 	resources = new_resources if new_resources != null else resources
 
+func set_id(new_id: int) -> void:
+	if new_id == id:
+		return
+	var old_id := id
+	id = new_id
+	id_changed.emit(old_id, new_id)
+
 func set_bot_status(bot_status: bool) -> void:
 	if bot_status == is_bot:
 		return
@@ -82,12 +119,11 @@ func set_clan(new_clan: String) -> void:
 	clan = new_clan
 	clan_changed.emit(old_clan, new_clan)
 
-func set_icon(new_icon: Texture2D) -> void:
-	if new_icon == icon or new_icon == null:
+func set_icon(new_icon: Icon) -> void:
+	if new_icon == icon:
 		return
-	var old_icon := icon
 	icon = new_icon
-	icon_changed.emit(old_icon, new_icon)
+	icon_changed.emit(ICONS[icon] )
 
 func set_display_name(new_display_name: String) -> void:
 	new_display_name = new_display_name.left(MAX_NAME_LENGTH)

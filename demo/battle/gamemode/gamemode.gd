@@ -32,7 +32,7 @@ func on_battle_start(_battle: Battle) -> void:
 	pass
 
 func setup_bot(bot: Player) -> void:
-	bot.icon = preload("res://icons/cpu.png")
+	bot.icon = Player.Icon.COMPUTER
 
 func battle_tick(_battle: Battle, _dt: float) -> void:
 	pass # (Add any frequent or timed events here)

@@ -36,10 +36,11 @@ alignment = 0
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer" unique_id=1365597526]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_xf2ag")
-current_tab = 0
+current_tab = 1
 tabs_visible = false
 
 [node name="Saves" type="VBoxContainer" parent="VBoxContainer/TabContainer" unique_id=1831373786]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 25
 metadata/_tab_index = 0
@@ -49,7 +50,6 @@ layout_mode = 2
 text = "Choose a save file to load or create a game"
 
 [node name="CreateGame" type="VBoxContainer" parent="VBoxContainer/TabContainer" unique_id=1378138658]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 50
 metadata/_tab_index = 1

@@ -17,7 +17,8 @@ enum SaveError {
 	METADATA_FAILURE = 1 << 1,
 	TABLE_FAILURE = 1 << 2,
 	MAP_FAILURE = 1 << 3,
-	STATE_FAILURE = 1 << 4
+	STATE_FAILURE = 1 << 4,
+	MANIFEST_FAILURE = 1 << 5
 }
 
 signal started
@@ -42,11 +43,6 @@ static var PROPERTIES: Dictionary[String, Variant.Type] = {
 	"friendly_fire_enabled": TYPE_BOOL,
 	"retrofits_enabled": TYPE_BOOL,
 	"retrofit_cost_multiplier": TYPE_FLOAT
-}
-static var TABLES_PROPERTIES: Dictionary[String, Variant.Type] = {
-	"ship_uid_to_copy_id": TYPE_DICTIONARY,
-	"fleet_uid_to_copy_id": TYPE_DICTIONARY,
-	"unit_logic_uid_to_copy_id": TYPE_DICTIONARY
 }
 
 @export var world: Node3D
@@ -90,10 +86,9 @@ var ship_db := ShipManager.TEMPORARY:
 ## NOTE: This value is never null (defaults to UnitLogicManager.TEMPORARY)
 var unit_logic_db := UnitLogicManager.TEMPORARY:
 	set = set_unit_logic_db
-# These map global ids to ids of copies made by the battle (avoid messing with them)
-var copied_fleets: Dictionary[int, int] = {}
-var copied_ships: Dictionary[int, int] = {}
-var copied_unit_logic: Dictionary[int, int] = {}
+var copied_fleets := TwoWayIDMap.new()
+var copied_ships := TwoWayIDMap.new()
+var copied_unit_logic := TwoWayIDMap.new()
 
 var _default_team: Team
 var _teams: Dictionary[String, Team] = {}
@@ -112,7 +107,7 @@ func _ready() -> void:
 	Account.me.fleet_changed.connect(fleet_container.set_fleet)
 	fleet_container.fleet = Account.me.fleet
 	mouse_selection.plane = plane
-	me = add_player("dev")
+	me = add_player("developer", Color.RED, Player.Icon.SKULL)
 	me.fleet = copy_fleet(Account.me.fleet)
 	host = me
 	bind_commands()
@@ -147,14 +142,22 @@ func broadcast_invalid_var(var_name: String, _value := "") -> void:
 func to_dict() -> Dictionary:
 	return TypeChecker.to_dict(self, PROPERTIES)
 
-func tables_to_dict() -> Dictionary:
-	return TypeChecker.to_dict(self, TABLES_PROPERTIES)
+func players_to_dict() -> Dictionary:
+	var dict := {}
+	#
+	for player in _players:
+		dict[player] = _players[player].to_dict()
+	return dict
+
+func teams_to_dict() -> Dictionary:
+	var dict := {}
+	#
+	for team in _teams:
+		dict[team] = _teams[team].to_dict()
+	return dict
 
 func load_dict(dict: Dictionary) -> bool:
 	return TypeChecker.load_dict(self, dict, PROPERTIES, TypeChecker.CAST_NUMBERS)
-
-func load_tables_dict(dict: Dictionary) -> bool:
-	return TypeChecker.load_dict(self, dict, TABLES_PROPERTIES, TypeChecker.CAST_NUMBERS)
 
 func is_spectator(player: Player) -> bool:
 	return player.team == _default_team
@@ -221,13 +224,19 @@ func get_teams() -> Array:
 func get_state_path() -> String:
 	return folder_path.path_join("state" + SaveState.FILE_EXTENSION)
 
-func get_json_path() -> String:
+func get_metadata_path() -> String:
 	return folder_path.path_join("metadata.json")
 
-func get_tables_json_path() -> String:
-	return folder_path.path_join("tables.json")
+func get_ship_table_path() -> String:
+	return folder_path.path_join("ship_table.csv")
 
-func get_map_json_path() -> String:
+func get_fleet_table_path() -> String:
+	return folder_path.path_join("fleet_table.csv")
+
+func get_unit_logic_table_path() -> String:
+	return folder_path.path_join("unit_logic_table.csv")
+
+func get_map_path() -> String:
 	return folder_path.path_join("map.json")
 
 func get_ship_db_path() -> String:
@@ -307,12 +316,12 @@ func copy_ship(ship: ShipData) -> ShipData:
 	if ship == null or ship.db == ship_db:
 		return ship
 	var uid := ship.get_uid()
-	if uid in copied_ships:
-		return ship_db.get_ship(copied_ships[uid] )
+	if copied_ships.has_old_id(uid):
+		return ship_db.get_ship(copied_ships.find_new_id(uid) )
 	var copy := ShipData.new()
 	copy.copy(ship)
 	ship_db.create_ship(copy)
-	copied_ships[uid] = copy.id
+	copied_ships.link(uid, copy.id)
 	return copy
 
 ## NOTE: This only copies the fleet once (you can call this multiple times on the same fleet)
@@ -320,12 +329,12 @@ func copy_fleet(fleet: Fleet) -> Fleet:
 	if fleet == null or fleet.db == ship_db:
 		return fleet
 	var uid := fleet.get_uid()
-	if uid in copied_fleets:
-		return ship_db.get_fleet(copied_fleets[uid] )
+	if copied_fleets.has_old_id(uid):
+		return ship_db.get_fleet(copied_fleets.find_new_id(uid) )
 	var copy := Fleet.new()
 	copy.copy(fleet)
 	ship_db.create_fleet(copy)
-	copied_fleets[uid] = copy.id
+	copied_fleets.link(uid, copy.id)
 	return copy
 
 ## NOTE: This only copies the fleet and each ship once (you can call this multiple times on the same fleet)
@@ -342,11 +351,12 @@ func copy_unit_logic(unit_logic: UnitLogic) -> UnitLogic:
 	if unit_logic == null or unit_logic.db == unit_logic_db:
 		return unit_logic
 	var uid := unit_logic.get_uid()
-	if uid in copied_unit_logic:
-		return unit_logic_db.get_unit_logic(copied_unit_logic[uid] )
+	if copied_unit_logic.has_old_id(uid):
+		return unit_logic_db.get_unit_logic(copied_unit_logic.find_new_id(uid) )
 	var copy := UnitLogic.new()
 	copy.copy(unit_logic)
 	unit_logic_db.create_unit_logic(copy)
+	copied_unit_logic.link(uid, copy.id)
 	return copy
 
 func _can_afford_retrofit(player: Player, copied: ShipData, cost: StrategicResources) -> bool:
@@ -443,14 +453,14 @@ func stop() -> bool:
 	broadcast("Game has ended.")
 	return true
 
-func add_player(player_name: String, color := Color.WHITE) -> Player:
+func add_player(player_name: String, color := Color.WHITE, icon := Player.Icon.NONE) -> Player:
 	assert(_default_team != null)
 	#
 	if MAX_NUM_PLAYERS <= _players.size() or not Player.is_name_valid(player_name):
 		return null
 	player_name = _find_unique_name(player_name, _players)
 	#
-	var player := Player.new(player_name, color)
+	var player := Player.new(player_name, color, icon)
 	players_container.add_child(player, false, Node.INTERNAL_MODE_BACK)
 	_players[player_name] = player
 	player.display_name_changed.connect(_handle_player_rename.bind(player) )
@@ -493,19 +503,23 @@ func deserialize_state() -> SaveState.LoadError:
 func load_state(path := get_state_path() ) -> bool:
 	return state.load_binary(path) and deserialize_state() == SaveState.LoadError.NO_MORE_DATA
 
-func load_json(path := get_json_path() ) -> bool:
+func load_metadata(path := get_metadata_path() ) -> bool:
 	var text := FileAccess.get_file_as_string(path)
 	var json = JSON.parse_string(text)
 	return json is Dictionary and load_dict(json)
 
-func load_tables_json(path := get_tables_json_path() ) -> bool:
-	var text := FileAccess.get_file_as_string(path)
-	var json = JSON.parse_string(text)
-	return json is Dictionary and load_tables_dict(json)
-
-func load_map_json(path := get_map_json_path() ) -> bool:
+func load_map(path := get_map_path() ) -> bool:
 	map = Map.from_json(path)
 	return map != null
+
+func load_ship_table(path := get_ship_table_path(), delimeter := ",") -> bool:
+	return copied_ships.load_csv(path, delimeter)
+
+func load_fleet_table(path := get_fleet_table_path(), delimeter := ",") -> bool:
+	return copied_fleets.load_csv(path, delimeter)
+
+func load_unit_logic_table(path := get_unit_logic_table_path(), delimeter := ",") -> bool:
+	return copied_unit_logic.load_csv(path, delimeter)
 
 func save_state(path := get_state_path() ) -> bool:
 	var error_flags: int = SaveState.SaveError.OK
@@ -514,35 +528,40 @@ func save_state(path := get_state_path() ) -> bool:
 		error_flags |= _players[player].save_to(state)
 	return state.save_binary(path) and error_flags == SaveState.SaveError.OK
 
-func save_json(path := get_json_path(), indent := "\t") -> bool:
+func save_metadata(path := get_metadata_path(), indent := "\t") -> bool:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	return file != null and file.store_string(JSON.stringify(to_dict(), indent) )
 
-func save_tables_json(path := get_tables_json_path(), indent := "\t") -> bool:
-	var file := FileAccess.open(path, FileAccess.WRITE)
-	return file != null and file.store_string(JSON.stringify(tables_to_dict(), indent) )
-
-func save_map_json(path := get_map_json_path(), indent := "\t") -> bool:
+func save_map(path := get_map_path(), indent := "\t") -> bool:
 	return map != null and map.save_json(path, false, indent)
+
+func save_ship_table(path := get_ship_table_path(), delimeter := ",") -> bool:
+	return copied_ships.save_csv(path, delimeter)
+
+func save_fleet_table(path := get_fleet_table_path(), delimeter := ",") -> bool:
+	return copied_fleets.save_csv(path, delimeter)
+
+func save_unit_logic_table(path := get_unit_logic_table_path(), delimeter := ",") -> bool:
+	return copied_unit_logic.save_csv(path, delimeter)
 
 ## Requires folder_path to be set as a precondition
 func load_files() -> int:
 	var error_flags: int = SaveError.OK
 	if not make_folder(): error_flags |= SaveError.MISSING_DIRECTORY
-	if not load_json(): error_flags |= SaveError.METADATA_FAILURE
-	if not load_tables_json(): error_flags |= SaveError.TABLE_FAILURE
+	if not load_metadata(): error_flags |= SaveError.METADATA_FAILURE
 	if not load_state(): error_flags |= SaveError.STATE_FAILURE
-	if not load_map_json(): error_flags |= SaveError.MAP_FAILURE
+	if not load_map(): error_flags |= SaveError.MAP_FAILURE
+	if not load_ship_table() or not load_fleet_table() or not load_unit_logic_table(): error_flags |= SaveError.TABLE_FAILURE
 	return error_flags
 
 ## Requires folder_path to be set as a precondition
 func save_files() -> int:
 	var error_flags: int = SaveError.OK
 	if not make_folder(): error_flags |= SaveError.MISSING_DIRECTORY
-	if not save_json(): error_flags |= SaveError.METADATA_FAILURE
-	if not save_tables_json(): error_flags |= SaveError.TABLE_FAILURE
+	if not save_metadata(): error_flags |= SaveError.METADATA_FAILURE
 	if not save_state(): error_flags |= SaveError.STATE_FAILURE
-	if not save_map_json(): error_flags |= SaveError.MAP_FAILURE
+	if not save_map(): error_flags |= SaveError.MAP_FAILURE
+	if not save_ship_table() or not save_fleet_table() or not save_unit_logic_table(): error_flags |= SaveError.TABLE_FAILURE
 	return error_flags
 
 func can_join_team(team: Team, player := me) -> bool:

@@ -31,7 +31,7 @@ func set_save_slot(new_save_slot: int) -> bool:
 	save_slot = new_save_slot
 	folder_path = get_save_slot_path(new_save_slot)
 	save_slot_changed.emit(new_save_slot)
-	return load_json() and load_state()
+	return load_files()
 
 func pwd() -> void:
 	broadcast("Save directory: %s" % folder_path)
