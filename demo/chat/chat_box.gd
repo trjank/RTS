@@ -1,22 +1,24 @@
-@tool
 class_name ChatBox extends VBoxContainer
 
-@export var collapsed := false:
-	set = set_collapsed
 @export var panel_container: PanelContainer
 @export var message_container: VBoxContainer
 @export var send_message_input: LineEdit
 @export var battle: Battle
+@export var collapsed := false:
+	set = set_collapsed
+## This is ignored if Battle is defined
+@export var sender := "me"
+## This is ignored if Battle is defined
+@export var sender_id := ChatLogMessage.NO_SENDER_ID
 
 var chat_log: ChatLog:
 	set = set_chat_log
-var my_name := "me"
 
 var _message_boxes: Dictionary[ChatLogMessage, ChatMessageBox]
 
 func _ready() -> void:
-	chat_log = chat_log if battle == null else battle.chat_log
 	update_visibility()
+	chat_log = battle.chat_log if battle != null else null
 
 func get_message_box(message: ChatLogMessage) -> ChatMessageBox:
 	return _message_boxes.get(message)
@@ -39,10 +41,6 @@ func set_chat_log(new_chat_log: ChatLog) -> void:
 func clear() -> void:
 	for node in message_container.get_children():
 		node.queue_free()
-
-func generate_message(content: String) -> ChatLogMessage:
-	var me := battle.me if battle != null else null
-	return ChatLogMessage.from_player(me, content) if me != null else ChatLogMessage.new(ChatLogMessage.NO_SENDER_ID, my_name, content)
 
 func _connect_signals(new_chat_log: ChatLog) -> void:
 	new_chat_log.pushed_message.connect(push_message)
@@ -76,7 +74,10 @@ func pop_message(message: ChatLogMessage) -> void:
 func _on_send_message_text_submitted(new_text: String) -> void:
 	if chat_log == null or new_text == "":
 		return
-	chat_log.push_message(generate_message(new_text) )
+	if battle == null:
+		chat_log.push_message(ChatLogMessage.new(sender_id, sender, new_text) )
+	else: # Let the battle handle any network requests
+		battle.send_serverwide_message(new_text)
 	send_message_input.clear()
 
 func _on_collapse_button_pressed() -> void:

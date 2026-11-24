@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://bd5sm7jkojglg"]
+
+[ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="1_osw5p"]
+[ext_resource type="Script" uid="uid://dgia5glc0igrd" path="res://chat/terminal.gd" id="2_sd0vt"]
+[ext_resource type="PackedScene" uid="uid://b2kacfltjuvi0" path="res://chat/chat_box.tscn" id="3_rke4j"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b8y1j"]
+bg_color = Color(0.137895, 0.163722, 0.205289, 1)
+
+[node name="Terminal" type="Window" unique_id=646708065 node_paths=PackedStringArray("chat_box")]
+oversampling_override = 1.0
+title = "TERMINAL"
+initial_position = 1
+size = Vector2i(750, 500)
+min_size = Vector2i(750, 500)
+theme = ExtResource("1_osw5p")
+script = ExtResource("2_sd0vt")
+chat_box = NodePath("PanelContainer/ChatBox")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=482255174]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_b8y1j")
+
+[node name="ChatBox" parent="PanelContainer" unique_id=603022892 instance=ExtResource("3_rke4j")]
+layout_mode = 2
+
+[node name="CollapseButton" parent="PanelContainer/ChatBox/HBoxContainer" parent_id_path=PackedInt32Array(603022892, 221122951) index="1" unique_id=1698218039]
+visible = false
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+
+[editable path="PanelContainer/ChatBox"]

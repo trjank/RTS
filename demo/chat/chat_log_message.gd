@@ -17,7 +17,7 @@ const TYPE_PREFIXES: Dictionary[Type, String] = {
 	Type.TEXT: "",
 	Type.ERROR: "ERROR ",
 	Type.WARNING: "/!\\ ",
-	Type.COMMAND: "> "
+	Type.COMMAND: "COMMAND "
 }
 const MAX_LENGTH := 1000
 const NO_SENDER_ID := -1
@@ -32,7 +32,7 @@ var content := "":
 var timestamp := ""
 
 static func from_player(player: Player, init_content: String, init_type := Type.TEXT, init_timestamp := Time.get_time_string_from_system() ) -> ChatLogMessage:
-	return ChatLogMessage.new(player.id, player.display_name, init_content, init_type, init_timestamp)
+	return ChatLogMessage.new(player.id, player.display_name, init_content, init_type, init_timestamp) if player != null else null
 
 func _init(init_sender_id: int, init_sender: String, init_content: String, init_type := Type.TEXT, init_timestamp := Time.get_time_string_from_system() ) -> void:
 	type = init_type

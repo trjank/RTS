@@ -130,8 +130,23 @@ func bind_variables() -> void:
 	parser.failed_get.connect(broadcast_invalid_var)
 	parser.failed_set.connect(broadcast_invalid_var)
 
-func broadcast(content: String) -> void:
-	chat_log.push_message(ChatLogMessage.new(-1, "Server", content), false)
+func push_message(sender_id: int, sender: String, content: String, type := ChatLogMessage.Type.TEXT) -> bool:
+	return chat_log.push_message(ChatLogMessage.new(sender_id, sender, content, type) ) != null
+
+func broadcast(content: String, type := ChatLogMessage.Type.TEXT) -> bool:
+	return push_message(-1, "Server", content, type)
+
+func send_message(content: String, type := ChatLogMessage.Type.TEXT) -> bool:
+	return me != null and chat_log.push_message(ChatLogMessage.from_player(me, content, type) ) != null
+
+func push_serverwide_message(sender_id: int, sender: String, content: String, type := ChatLogMessage.Type.TEXT) -> void:
+	push_message(sender_id, sender, content, type)
+
+func send_serverwide_message(content: String, type := ChatLogMessage.Type.TEXT) -> void:
+	send_message(content, type)
+
+func serverwide_broadcast(content: String, type := ChatLogMessage.Type.TEXT) -> void:
+	broadcast(content, type)
 
 func broadcast_help_message(command := "") -> void:
 	broadcast(chat_log.command_parser.get_help_message(command) )

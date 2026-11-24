@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b1j227w71blew"]
+[gd_scene format=3 uid="uid://b1j227w71blew"]
 
 [ext_resource type="StyleBox" uid="uid://dlbo22wcfy65n" path="res://main_menu/settings_submenu/panel.tres" id="1_00qj5"]
 [ext_resource type="Script" uid="uid://b4jhjs6yiaehh" path="res://main_menu/settings_submenu/settings_submenu.gd" id="1_evcc7"]
@@ -12,10 +12,29 @@
 [ext_resource type="StyleBox" uid="uid://d0yij55vfjfkd" path="res://main_menu/slider_grabber.tres" id="7_f3nkv"]
 [ext_resource type="StyleBox" uid="uid://c0sk5i4rrnngc" path="res://main_menu/settings_submenu/keybind_reset_button_pressed.tres" id="7_yccn8"]
 [ext_resource type="StyleBox" uid="uid://cmgl01ocl3g50" path="res://main_menu/settings_submenu/keybind_reset_button_hover.tres" id="8_f3nkv"]
+[ext_resource type="Script" uid="uid://co7lgsqf2ydi5" path="res://main_menu/settings_submenu/icon_container.gd" id="9_oqg2v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqg2v"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 0.5, 0.5, 0.39215687)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00qj5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wp64a"]
 
-[node name="SettingsSubmenu" type="PanelContainer" node_paths=PackedStringArray("keybind_rows", "reset_button", "volume_value", "music_volume_value", "volume_slider", "music_volume_slider")]
+[node name="SettingsSubmenu" type="PanelContainer" unique_id=1065730316 node_paths=PackedStringArray("keybind_rows", "reset_button", "volume_value", "music_volume_value", "volume_slider", "music_volume_slider")]
 offset_right = 550.0
 theme_override_styles/panel = ExtResource("1_00qj5")
 script = ExtResource("1_evcc7")
@@ -26,12 +45,12 @@ music_volume_value = NodePath("VBoxContainer/Sound/GridContainer/MusicVolumeValu
 volume_slider = NodePath("VBoxContainer/Sound/GridContainer/VolumeSlider")
 music_volume_slider = NodePath("VBoxContainer/Sound/GridContainer/MusicVolumeSlider")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=668977698]
 layout_mode = 2
 theme_override_constants/separation = 75
 metadata/_tab_index = 2
 
-[node name="BackButton" type="Button" parent="VBoxContainer"]
+[node name="BackButton" type="Button" parent="VBoxContainer" unique_id=1192340620]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/h_separation = 15
@@ -43,39 +62,39 @@ text = "Back"
 icon = ExtResource("1_quw4y")
 alignment = 0
 
-[node name="General" type="VBoxContainer" parent="VBoxContainer"]
+[node name="General" type="VBoxContainer" parent="VBoxContainer" unique_id=1934374128]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="VBoxContainer/General"]
+[node name="Label" type="Label" parent="VBoxContainer/General" unique_id=25994933]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 text = "General"
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/General"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/General" unique_id=269736476]
 layout_mode = 2
 theme_override_styles/separator = ExtResource("4_qjcg3")
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/General"]
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/General" unique_id=2046147162]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 15
 columns = 3
 
-[node name="MovementSpeedLabel" type="Label" parent="VBoxContainer/General/GridContainer"]
+[node name="MovementSpeedLabel" type="Label" parent="VBoxContainer/General/GridContainer" unique_id=1577140579]
 layout_mode = 2
 text = "Movement speed"
 
-[node name="MovementSpeedValue" type="Label" parent="VBoxContainer/General/GridContainer"]
+[node name="MovementSpeedValue" type="Label" parent="VBoxContainer/General/GridContainer" unique_id=1708540992]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 text = "50"
 
-[node name="MovementSpeedSlider" type="HSlider" parent="VBoxContainer/General/GridContainer"]
+[node name="MovementSpeedSlider" type="HSlider" parent="VBoxContainer/General/GridContainer" unique_id=48373520]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -87,32 +106,32 @@ theme_override_styles/grabber_area = ExtResource("7_f3nkv")
 theme_override_styles/grabber_area_highlight = ExtResource("7_f3nkv")
 value = 50.0
 
-[node name="Sound" type="VBoxContainer" parent="VBoxContainer"]
+[node name="Sound" type="VBoxContainer" parent="VBoxContainer" unique_id=2105628927]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="VBoxContainer/Sound"]
+[node name="Label" type="Label" parent="VBoxContainer/Sound" unique_id=1969199627]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 text = "Sound"
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/Sound"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/Sound" unique_id=1866644796]
 layout_mode = 2
 theme_override_styles/separator = ExtResource("4_qjcg3")
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/Sound"]
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/Sound" unique_id=50954981]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 15
 columns = 3
 
-[node name="VolumeLabel" type="Label" parent="VBoxContainer/Sound/GridContainer"]
+[node name="VolumeLabel" type="Label" parent="VBoxContainer/Sound/GridContainer" unique_id=275624062]
 layout_mode = 2
 text = "Volume"
 
-[node name="VolumeValue" type="Label" parent="VBoxContainer/Sound/GridContainer"]
+[node name="VolumeValue" type="Label" parent="VBoxContainer/Sound/GridContainer" unique_id=1217329661]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -120,7 +139,7 @@ theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 text = "50"
 
-[node name="VolumeSlider" type="HSlider" parent="VBoxContainer/Sound/GridContainer"]
+[node name="VolumeSlider" type="HSlider" parent="VBoxContainer/Sound/GridContainer" unique_id=425150614]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -132,11 +151,11 @@ theme_override_styles/grabber_area = ExtResource("7_f3nkv")
 theme_override_styles/grabber_area_highlight = ExtResource("7_f3nkv")
 value = 50.0
 
-[node name="MusicVolumeLabel" type="Label" parent="VBoxContainer/Sound/GridContainer"]
+[node name="MusicVolumeLabel" type="Label" parent="VBoxContainer/Sound/GridContainer" unique_id=1051411174]
 layout_mode = 2
 text = "Music volume"
 
-[node name="MusicVolumeValue" type="Label" parent="VBoxContainer/Sound/GridContainer"]
+[node name="MusicVolumeValue" type="Label" parent="VBoxContainer/Sound/GridContainer" unique_id=780629238]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -144,7 +163,7 @@ theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 text = "50"
 
-[node name="MusicVolumeSlider" type="HSlider" parent="VBoxContainer/Sound/GridContainer"]
+[node name="MusicVolumeSlider" type="HSlider" parent="VBoxContainer/Sound/GridContainer" unique_id=1154707315]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 2
@@ -156,22 +175,78 @@ theme_override_styles/grabber_area = ExtResource("7_f3nkv")
 theme_override_styles/grabber_area_highlight = ExtResource("7_f3nkv")
 value = 50.0
 
-[node name="Keybinds" type="VBoxContainer" parent="VBoxContainer"]
+[node name="Account" type="VBoxContainer" parent="VBoxContainer" unique_id=1158235829]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="VBoxContainer/Keybinds"]
+[node name="Label" type="Label" parent="VBoxContainer/Account" unique_id=1906771369]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+text = "Account"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/Account" unique_id=1282048974]
+layout_mode = 2
+theme_override_styles/separator = ExtResource("4_qjcg3")
+
+[node name="Disclaimer" type="PanelContainer" parent="VBoxContainer/Account" unique_id=624044270]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_oqg2v")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/Account/Disclaimer" unique_id=1673762652]
+layout_mode = 2
+bbcode_enabled = true
+text = "[img=32]res://icons/information.png[/img] We do not store or verify accounts, even in multiplayer. All account data is local and can be changed at any time."
+fit_content = true
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/Account" unique_id=1374577147]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+columns = 2
+
+[node name="NameLabel" type="Label" parent="VBoxContainer/Account/GridContainer" unique_id=1596582726]
+layout_mode = 2
+text = "Name"
+
+[node name="VolumeValue" type="LineEdit" parent="VBoxContainer/Account/GridContainer" unique_id=1828933982]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+placeholder_text = "Anonymous"
+
+[node name="IconLabel" type="Label" parent="VBoxContainer/Account/GridContainer" unique_id=895489576]
+layout_mode = 2
+text = "Insignia"
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/Account/GridContainer" unique_id=1522015973]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_00qj5")
+
+[node name="IconContainer" type="TabBar" parent="VBoxContainer/Account/GridContainer/PanelContainer" unique_id=1823942555]
+layout_mode = 2
+script = ExtResource("9_oqg2v")
+
+[node name="Keybinds" type="VBoxContainer" parent="VBoxContainer" unique_id=2103071290]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="VBoxContainer/Keybinds" unique_id=738198404]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 text = "Keybinds"
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/Keybinds"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/Keybinds" unique_id=1804454980]
 layout_mode = 2
 theme_override_styles/separator = ExtResource("4_qjcg3")
 
-[node name="ResetButton" type="Button" parent="VBoxContainer/Keybinds"]
+[node name="ResetButton" type="Button" parent="VBoxContainer/Keybinds" unique_id=1759462813]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/h_separation = 15
@@ -183,11 +258,11 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_wp64a")
 text = "Reset to defaults"
 icon = ExtResource("6_81w0t")
 
-[node name="Spacer" type="Control" parent="VBoxContainer/Keybinds"]
+[node name="Spacer" type="Control" parent="VBoxContainer/Keybinds" unique_id=1102390117]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 
-[node name="KeybindRows" type="VBoxContainer" parent="VBoxContainer/Keybinds"]
+[node name="KeybindRows" type="VBoxContainer" parent="VBoxContainer/Keybinds" unique_id=2134099499]
 layout_mode = 2
 theme_override_constants/separation = 20
 

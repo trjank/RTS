@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://qalpmdaxh65t"]
+
+[ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://battle/battle.tscn" id="1_wqcjs"]
+[ext_resource type="Script" uid="uid://djgckhqgn0nu" path="res://battle_multiplayer/multiplayer_battle.gd" id="2_02nxw"]
+
+[node name="MultiplayerBattle" unique_id=1421054269 instance=ExtResource("1_wqcjs")]
+script = ExtResource("2_02nxw")
+
+[editable path="UI/FleetContainer"]

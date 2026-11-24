@@ -2,17 +2,15 @@
 
 [ext_resource type="Script" uid="uid://bed2cq2pcsh86" path="res://main/main.gd" id="1_h0c8p"]
 [ext_resource type="Texture2D" uid="uid://dg2qfu3t1vm5g" path="res://images_backgrounds/updated.png" id="2_67ri8"]
-[ext_resource type="Theme" uid="uid://dd70c0klgj1qh" path="res://design/popups/popup_menu.tres" id="2_fwcvl"]
-[ext_resource type="Script" uid="uid://dgia5glc0igrd" path="res://main/terminal.gd" id="3_na0o7"]
+[ext_resource type="PackedScene" uid="uid://bd5sm7jkojglg" path="res://chat/terminal.tscn" id="2_bsumw"]
 [ext_resource type="Script" uid="uid://pca8mdhmpyek" path="res://main/camera.gd" id="4_0i4oc"]
-[ext_resource type="PackedScene" uid="uid://clxf0rnk677i8" path="res://battle/battle.tscn" id="4_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://c60au813wrr5i" path="res://main_menu/main_menu.tscn" id="6_4dugh"]
+[ext_resource type="PackedScene" uid="uid://qalpmdaxh65t" path="res://battle_multiplayer/multiplayer_battle.tscn" id="6_bsumw"]
 [ext_resource type="PackedScene" uid="uid://owpblejfs8ky" path="res://ships_screen/ships_screen.tscn" id="6_kfbq2"]
 [ext_resource type="PackedScene" uid="uid://dos22dgb4cqta" path="res://singleplayer/singleplayer.tscn" id="10_0i4oc"]
 [ext_resource type="PackedScene" uid="uid://2vhw5b8l4nvs" path="res://training_grounds/training_grounds.tscn" id="10_bsumw"]
 [ext_resource type="PackedScene" uid="uid://c0amctp11de4o" path="res://unit_logic_editor/unit_logic_editor.tscn" id="11_bsumw"]
 [ext_resource type="PackedScene" uid="uid://coexpo0l4q1vv" path="res://design/design.tscn" id="11_dg77c"]
-[ext_resource type="PackedScene" uid="uid://b2kacfltjuvi0" path="res://chat/chat_box.tscn" id="11_fwcvl"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_grrlh"]
 
@@ -26,7 +24,7 @@ script = ExtResource("1_h0c8p")
 nodes = {
 0: NodePath("MainMenu"),
 1: NodePath("Design"),
-2: NodePath("Battle"),
+2: NodePath("MultiplayerBattle"),
 3: NodePath("Fleets"),
 4: NodePath("Singleplayer"),
 5: NodePath("TrainingGrounds"),
@@ -40,18 +38,8 @@ background = NodePath("Background/TextureRect")
 terminal = NodePath("Terminal")
 metadata/_custom_type_script = "uid://bed2cq2pcsh86"
 
-[node name="Terminal" type="Window" parent="." unique_id=1974109321 node_paths=PackedStringArray("chat_box")]
-oversampling_override = 1.0
-title = "TERMINAL"
-initial_position = 1
-size = Vector2i(750, 500)
+[node name="Terminal" parent="." unique_id=646708065 instance=ExtResource("2_bsumw")]
 visible = false
-min_size = Vector2i(750, 500)
-theme = ExtResource("2_fwcvl")
-script = ExtResource("3_na0o7")
-chat_box = NodePath("ChatBox")
-
-[node name="ChatBox" parent="Terminal" unique_id=603022892 instance=ExtResource("11_fwcvl")]
 
 [node name="Background" type="CanvasLayer" parent="." unique_id=212417149]
 layer = -100
@@ -105,7 +93,7 @@ shape = SubResource("SphereShape3D_grrlh")
 
 [node name="Design" parent="." unique_id=1963468671 instance=ExtResource("11_dg77c")]
 
-[node name="Battle" parent="." unique_id=310720118 instance=ExtResource("4_kfbq2")]
+[node name="MultiplayerBattle" parent="." unique_id=1421054269 instance=ExtResource("6_bsumw")]
 
 [node name="Fleets" parent="." unique_id=246963386 instance=ExtResource("6_kfbq2")]
 
@@ -118,4 +106,3 @@ shape = SubResource("SphereShape3D_grrlh")
 [node name="UnitLogicEditor" parent="." unique_id=689271020 instance=ExtResource("11_bsumw")]
 
 [connection signal="state_changed" from="." to="TrainingGrounds" method="_on_main_state_changed"]
-[connection signal="close_requested" from="Terminal" to="Terminal" method="_on_close_requested"]

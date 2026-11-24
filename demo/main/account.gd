@@ -6,8 +6,7 @@ static var me := Account.new():
 	set(__): push_error("(Account) Account.me is immutable!")
 
 var name := ""
-var rank := 0
-var permissions := 0
+var icon := Player.Icon.NONE
 var fleet: Fleet:
 	set = set_fleet
 var color := Color.WHITE
