@@ -6,13 +6,12 @@
 [ext_resource type="StyleBox" uid="uid://bcmtw4y0fr8d" path="res://battle/player/kick_button_normal.tres" id="3_vvvix"]
 [ext_resource type="Texture2D" uid="uid://dbbopdl6muf60" path="res://icons/checkbox_off.png" id="4_vvvix"]
 
-[node name="PlayerBox" type="HBoxContainer" unique_id=845893239 node_paths=PackedStringArray("clan_label", "name_label", "host_label", "admin_label", "icon", "team_kick_button")]
+[node name="PlayerBox" type="HFlowContainer" unique_id=2030944961 node_paths=PackedStringArray("clan_label", "name_label", "host_label", "admin_label", "icon", "team_kick_button")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 10
 script = ExtResource("1_qcx7q")
 clan_label = NodePath("ClanLabel")
 name_label = NodePath("NameLabel")
@@ -20,6 +19,7 @@ host_label = NodePath("HostLabel")
 admin_label = NodePath("AdminLabel")
 icon = NodePath("Icon")
 team_kick_button = NodePath("TeamKickButton")
+metadata/_custom_type_script = "uid://b01xfrqaj1fir"
 
 [node name="Icon" type="TextureRect" parent="." unique_id=428978923]
 custom_minimum_size = Vector2(40, 40)

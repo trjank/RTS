@@ -111,8 +111,11 @@ func execute(command: String, args: PackedStringArray, start_index := 0) -> bool
 		return handle_failed_command(command)
 	var types: Array[Variant.Type] = data.arguments.values()
 	var typed_args := []
+	var defaults_start := data.defaults.size() - data.payload.get_argument_count() + num_args
 	#
-	for i in range(data.payload.get_argument_count() ):
-		typed_args.append(type_convert(args[start_index + i] if i < num_args else data.defaults[i - num_args], types[i] ) )
+	for i in range(num_args):
+		typed_args.append(type_convert(args[start_index + i], types[i] ) )
+	for i in range(num_args, data.payload.get_argument_count() ):
+		typed_args.append(type_convert(data.defaults[defaults_start + i], types[i] ) )
 	data.payload.callv(typed_args)
 	return true

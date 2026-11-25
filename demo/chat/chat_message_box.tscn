@@ -6,31 +6,56 @@
 [node name="ChatMessageBox" unique_id=845893239 node_paths=PackedStringArray("content_label") instance=ExtResource("1_del8m")]
 anchors_preset = 10
 anchor_bottom = 0.0
-offset_bottom = 48.0
+offset_bottom = 126.0
 grow_vertical = 1
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
 script = ExtResource("2_uev0o")
 content_label = NodePath("Content")
+can_show_kick_button = false
+
+[node name="Icon" parent="." index="0" unique_id=428978923]
+size_flags_vertical = 0
+
+[node name="AdminLabel" parent="." index="1" unique_id=456453957]
+size_flags_vertical = 0
+
+[node name="HostLabel" parent="." index="2" unique_id=541101790]
+size_flags_vertical = 0
+
+[node name="ClanLabel" parent="." index="3" unique_id=366013503]
+size_flags_vertical = 0
 
 [node name="NameLabel" parent="." index="4" unique_id=1206954439]
+size_flags_vertical = 0
 text = "Name"
 
 [node name="KickButton" parent="." index="5" unique_id=256418064]
 visible = false
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
 [node name="TeamKickButton" parent="." index="6" unique_id=115257612]
 visible = false
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
-[node name="SeparatorLabel" type="Label" parent="." index="7" unique_id=1328840011]
+[node name="MuteCheckBox" parent="." index="7" unique_id=1462197070]
+visible = false
+
+[node name="SeparatorLabel" type="Label" parent="." index="8" unique_id=1328840011]
 layout_mode = 2
+size_flags_vertical = 0
 theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_colors/font_outline_color = Color(0.5019608, 0.5019608, 0.5019608, 1)
 theme_override_constants/outline_size = 4
 text = ": "
 
-[node name="Content" type="Label" parent="." index="8" unique_id=93056173]
+[node name="Content" type="Label" parent="." index="9" unique_id=93056173]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 text = "<content>"
-
-[node name="MuteCheckBox" parent="." index="9" unique_id=1462197070]
-visible = false
+autowrap_mode = 3

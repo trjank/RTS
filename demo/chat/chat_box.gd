@@ -43,10 +43,12 @@ func clear() -> void:
 		node.queue_free()
 
 func _connect_signals(new_chat_log: ChatLog) -> void:
+	new_chat_log.cleared.connect(clear)
 	new_chat_log.pushed_message.connect(push_message)
 	new_chat_log.popped_message.connect(pop_message)
 
 func _disconnect_signals(old_chat_log: ChatLog) -> void:
+	old_chat_log.cleared.disconnect(clear)
 	old_chat_log.pushed_message.disconnect(push_message)
 	old_chat_log.popped_message.disconnect(pop_message)
 

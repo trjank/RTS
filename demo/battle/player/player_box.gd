@@ -1,4 +1,4 @@
-class_name PlayerBox extends HBoxContainer
+class_name PlayerBox extends HFlowContainer
 
 @export var clan_label: Label
 @export var name_label: Label
@@ -6,6 +6,7 @@ class_name PlayerBox extends HBoxContainer
 @export var admin_label: Label
 @export var icon: TextureRect
 @export var team_kick_button: Button
+@export var can_show_kick_button := true
 
 var player: Player:
 	set = set_player
@@ -54,7 +55,7 @@ func _set_ui() -> void:
 	clan_label.text = player.clan
 	host_label.visible = player.is_host()
 	admin_label.visible = player.is_admin
-	team_kick_button.visible = not player.is_bot
+	team_kick_button.visible = can_show_kick_button and not player.is_bot
 	icon.texture = player.get_texture()
 
 func _clear_ui() -> void:

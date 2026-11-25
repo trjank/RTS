@@ -50,6 +50,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_yv4mg")
 [node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer" unique_id=1020499736]
 layout_mode = 2
 horizontal_scroll_mode = 0
+vertical_scroll_mode = 4
 
 [node name="Messages" type="VBoxContainer" parent="PanelContainer/ScrollContainer" unique_id=653339970]
 layout_mode = 2

@@ -468,6 +468,10 @@ func stop() -> bool:
 	broadcast("Game has ended.")
 	return true
 
+## Override this method to use subclasses of Player
+func _new_player(player_name: String, color: Color, icon: Player.Icon) -> Player:
+	return Player.new(player_name, color, icon)
+
 func add_player(player_name: String, color := Color.WHITE, icon := Player.Icon.NONE) -> Player:
 	assert(_default_team != null)
 	#
@@ -475,7 +479,7 @@ func add_player(player_name: String, color := Color.WHITE, icon := Player.Icon.N
 		return null
 	player_name = _find_unique_name(player_name, _players)
 	#
-	var player := Player.new(player_name, color, icon)
+	var player := _new_player(player_name, color, icon)
 	players_container.add_child(player, false, Node.INTERNAL_MODE_BACK)
 	_players[player_name] = player
 	player.display_name_changed.connect(_handle_player_rename.bind(player) )

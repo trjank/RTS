@@ -53,6 +53,7 @@ metadata/_tab_index = 2
 [node name="BackButton" type="Button" parent="VBoxContainer" unique_id=1192340620]
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/icon_max_width = 32
 theme_override_styles/normal = ExtResource("2_qr2ik")
@@ -85,19 +86,21 @@ columns = 3
 
 [node name="MovementSpeedLabel" type="Label" parent="VBoxContainer/General/GridContainer" unique_id=1577140579]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Movement speed"
 
 [node name="MovementSpeedValue" type="Label" parent="VBoxContainer/General/GridContainer" unique_id=1708540992]
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 text = "50"
+horizontal_alignment = 1
 
 [node name="MovementSpeedSlider" type="HSlider" parent="VBoxContainer/General/GridContainer" unique_id=48373520]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_icons/grabber = ExtResource("4_wvtck")
 theme_override_icons/grabber_highlight = ExtResource("4_wvtck")
@@ -129,6 +132,7 @@ columns = 3
 
 [node name="VolumeLabel" type="Label" parent="VBoxContainer/Sound/GridContainer" unique_id=275624062]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Volume"
 
 [node name="VolumeValue" type="Label" parent="VBoxContainer/Sound/GridContainer" unique_id=1217329661]
@@ -138,11 +142,11 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 text = "50"
+horizontal_alignment = 1
 
 [node name="VolumeSlider" type="HSlider" parent="VBoxContainer/Sound/GridContainer" unique_id=425150614]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 4
 theme_override_icons/grabber = ExtResource("4_wvtck")
 theme_override_icons/grabber_highlight = ExtResource("4_wvtck")
@@ -153,6 +157,7 @@ value = 50.0
 
 [node name="MusicVolumeLabel" type="Label" parent="VBoxContainer/Sound/GridContainer" unique_id=1051411174]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Music volume"
 
 [node name="MusicVolumeValue" type="Label" parent="VBoxContainer/Sound/GridContainer" unique_id=780629238]
@@ -162,11 +167,11 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5
 text = "50"
+horizontal_alignment = 1
 
 [node name="MusicVolumeSlider" type="HSlider" parent="VBoxContainer/Sound/GridContainer" unique_id=1154707315]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
-size_flags_horizontal = 2
 size_flags_vertical = 4
 theme_override_icons/grabber = ExtResource("4_wvtck")
 theme_override_icons/grabber_highlight = ExtResource("4_wvtck")
@@ -230,6 +235,23 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_00qj5")
 [node name="IconContainer" type="TabBar" parent="VBoxContainer/Account/GridContainer/PanelContainer" unique_id=1823942555]
 layout_mode = 2
 script = ExtResource("9_oqg2v")
+
+[node name="ColorLabel" type="Label" parent="VBoxContainer/Account/GridContainer" unique_id=110699080]
+layout_mode = 2
+text = "Color"
+
+[node name="ColorPicker" type="ColorPicker" parent="VBoxContainer/Account/GridContainer" unique_id=2051174946]
+layout_mode = 2
+theme_override_constants/margin = 0
+edit_alpha = false
+edit_intensity = false
+color_mode = 1
+picker_shape = 2
+can_add_swatches = false
+sampler_visible = false
+color_modes_visible = false
+sliders_visible = false
+presets_visible = false
 
 [node name="Keybinds" type="VBoxContainer" parent="VBoxContainer" unique_id=2103071290]
 layout_mode = 2

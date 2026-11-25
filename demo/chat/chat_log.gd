@@ -2,6 +2,7 @@ class_name ChatLog extends RefCounted
 
 const MAX_NUM_MESSAGES := 100
 
+signal cleared
 signal pushed_message(message: ChatLogMessage)
 signal popped_message(message: ChatLogMessage)
 
@@ -14,6 +15,10 @@ var _messages: Array[ChatLogMessage] = []
 
 func get_messages() -> Array[ChatLogMessage]:
 	return _messages.duplicate()
+
+func clear() -> void:
+	_messages.clear()
+	cleared.emit()
 
 func try_command(message: ChatLogMessage) -> void:
 	if message.type & ChatLogMessage.Type.COMMAND == 0:
